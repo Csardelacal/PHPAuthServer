@@ -1,0 +1,32 @@
+.home .auction-card {
+  background: #fff;
+  border-radius: 3px;
+  border: solid 1px #BBB;
+  margin: 15px;
+  padding: 0px 0px 5px;
+  display: inline-block;
+  color: #282828;
+  width: 202px;
+  text-align: left; }
+  .home .auction-card .preview {
+    width: 200px;
+    height: 200px; }
+  .home .auction-card .title {
+    padding: 7px 10px 7px;
+    font-weight: bold;
+    display: block;
+    font-size: 14px;
+    height: 50px; }
+  .home .auction-card .timer {
+    padding: 0 10px;
+    float: right;
+    display: block;
+    color: #777;
+    font-size: 12px; }
+  .home .auction-card .bid {
+    padding: 0 10px;
+    display: inline-block;
+    color: #777;
+    font-size: 12px; }
+
+/*# sourceMappingURL=home.css.map */
