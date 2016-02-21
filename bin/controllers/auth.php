@@ -14,26 +14,19 @@ class AuthController extends Controller
 		}
 	}
 	
-	public function xauth() {
-		
-	}
-	
-	public function register() {
+	/**
+	 * As opposed to the OAuth endpoint, the xauth endpoint allows a machine to
+	 * log in a user by using their credentials.
+	 * 
+	 * The use of tokens is still enforced. Some installations may have this 
+	 * endpoint disabled to force OAuth.
+	 * 
+	 * @param string $token
+	 */
+	public function xauth($token) {
 		
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			$user = db()->table('user')->newRecord();
-			$user->email    = $_POST['email'];
-			$user->password = $_POST['password'];
-			$user->verified = false;
-			$user->created  = time();
-			$user->store();
 			
-			$username = db()->table('username')->newRecord();
-			$username->user = $user;
-			$username->name = $_POST['username'];
-			$username->store();
-			
-			return $this->response->getHeaders()->redirect((string)new URL('user', 'dashboard'));
 		}
 	}
 	
