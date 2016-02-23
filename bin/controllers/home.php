@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Prebuilt test controller. Use this to test all the components built into
- * for right operation. This should be deleted whe using Spitfire.
+ * This controller greets the users when they get to the application. If the app
+ * was not yet set up, it will redirect the user over to the SetupController
+ * 
  */
-
 class HomeController extends Controller
 {
 	public function index() {
@@ -14,8 +14,8 @@ class HomeController extends Controller
 		
 		$s = new session();
 		
-		#If the user is logged in, we show them their dashboard, otherwise we'll send them away.
+		#If the user is logged in, we show them their dashboard, otherwise we'll send them away to get logged in.
 		if ($s->getUser()) {	$this->view->set('user', db()->table('user')->get('_id', $s->getUser())); } 
-		else               { $this->view->set('user', null); }
+		else               { return $this->response->getHeaders()->redirect(new URL('user', 'login')); }
 	}
 }

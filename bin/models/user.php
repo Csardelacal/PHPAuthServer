@@ -12,6 +12,8 @@ class UserModel extends spitfire\Model
 		$schema->created  = new IntegerField();
 		$schema->picture  = new FileField();
 		
+		$schema->usernames = new ChildrenField('username', 'user');
+		
 		$schema->email->setUnique(true);
 		
 	}

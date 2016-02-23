@@ -20,6 +20,9 @@ class UserController extends Controller
 			$username->name = $_POST['username'];
 			$username->store();
 			
+			$s = new session();
+			$s->lock($user->__id);
+			
 			return $this->response->getHeaders()->redirect((string)new URL('user', 'dashboard'));
 		}
 		
@@ -27,6 +30,24 @@ class UserController extends Controller
 		$query->addRestriction('required', true);
 		
 		$this->view->set('attributes', $query->fetchAll());
+	}
+	
+	public function login() {
+		
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			
+			$query = db()->table('user')->getAll();
+			
+			$query->group()
+					  ->addRestriction('email', $_POST['username'])
+					  ->addRestriction('usernames', db()->table('username')->get('name', $_POST['username'])->addRestriction('expires', NULL, 'IS'))
+					->endGroup();
+			
+			var_dump($query->fetch());
+			print_r(spitfire()->getMessages());
+			die();
+		}
+		
 	}
 	
 }
