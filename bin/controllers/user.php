@@ -43,9 +43,15 @@ class UserController extends Controller
 					  ->addRestriction('usernames', db()->table('username')->get('name', $_POST['username'])->addRestriction('expires', NULL, 'IS'))
 					->endGroup();
 			
-			var_dump($query->fetch());
-			print_r(spitfire()->getMessages());
-			die();
+			$user = $query->fetch();
+			
+			if ($user && $user->checkPassword($_POST['password'])) {
+				$session = new session();
+				$session->lock($user->_id);
+				return $this->response->getHeaders()->redirect(new URL());
+			} else {
+				$this->view->set('message', 'Username or password did not match');
+			}
 		}
 		
 	}
