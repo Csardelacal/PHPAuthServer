@@ -6,6 +6,7 @@ class AttributeModel extends spitfire\Model
 	public function definitions(\spitfire\storage\database\Schema $schema) {
 		
 		$schema->_id      = new StringField( 20);
+		$schema->_id->setPrimary(true);
 		
 		$schema->name     = new StringField( 50);
 		$schema->default  = new StringField(200);

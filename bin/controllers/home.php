@@ -15,7 +15,7 @@ class HomeController extends Controller
 		$s = new session();
 		
 		#If the user is logged in, we show them their dashboard, otherwise we'll send them away to get logged in.
-		if ($s->getUser()) {	$this->view->set('user', db()->table('user')->get('_id', $s->getUser())); } 
+		if ($s->getUser()) {	$this->view->set('user', db()->table('user')->get('_id', $s->getUser())->fetch()); } 
 		else               { return $this->response->getHeaders()->redirect(new URL('user', 'login')); }
 	}
 }

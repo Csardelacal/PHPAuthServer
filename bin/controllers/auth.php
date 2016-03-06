@@ -9,9 +9,16 @@ class AuthController extends Controller
 	
 	public function oauth($token) {
 		
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			
-		}
+		$successURL = isset($_GET['success'])? $_GET['success'] : null;
+		$failureURL = isset($_GET['failure'])? $_GET['failure'] : null;
+		
+		$grant      = isset($_GET['grant'])  ? (int)$_GET['grant'] === 1 : null;
+		$session    = new session();
+		
+		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(new URL('user', 'login', Array('returnto' => URL::current()))); }
+		if ($grant === true)      { return $this->response->getHeaders()->redirect($successURL); }
+		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
+		
 	}
 	
 	/**

@@ -1,6 +1,8 @@
 <?php namespace user;
 
-class AttributeModel extends spitfire\Model
+use spitfire\Model;
+
+class AttributeModel extends Model
 {
 	
 	public function definitions(\spitfire\storage\database\Schema $schema) {

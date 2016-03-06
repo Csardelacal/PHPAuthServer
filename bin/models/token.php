@@ -15,5 +15,19 @@ class TokenModel extends spitfire\Model
 		$schema->token->setUnique(true);
 		
 	}
+	
+	public static function create($app, $expires = 14400, $extends = true) {
+		$token = md5(uniqid(mt_rand(), true));
+		
+		$record = db()->table('token')->newRecord();
+		$record->token   = $token;
+		$record->user    = null;
+		$record->app     = $app;
+		$record->expires = $expires;
+		$record->extends = $extends;
+		$record->store();
+		
+		return $record;
+	}
 
 }

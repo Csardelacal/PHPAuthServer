@@ -7,14 +7,15 @@ class UserModel extends spitfire\Model
 	
 	
 	public function definitions(\spitfire\storage\database\Schema $schema) {
-		$schema->password = new StringField(90);
-		$schema->email    = new StringField(30);
+		$schema->password  = new StringField(90);
+		$schema->email     = new StringField(30);
 		
-		$schema->verified = new BooleanField();
-		$schema->created  = new IntegerField();
-		$schema->picture  = new FileField();
+		$schema->verified  = new BooleanField();
+		$schema->created   = new IntegerField();
+		$schema->picture   = new FileField();
 		
 		$schema->usernames = new ChildrenField('username', 'user');
+		$schema->attributes= new ChildrenField('user\attribute', 'user');
 		
 		$schema->email->setUnique(true);
 		
