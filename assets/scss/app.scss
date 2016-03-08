@@ -22,7 +22,7 @@ body {
 	padding-bottom: 100px;
 	min-height: 100%;
 	position: relative;
-	background: rgba(0, 0, 0, 0) url("https://upload.wikimedia.org/wikipedia/commons/6/67/Inside_the_Batad_rice_terraces.jpg") repeat scroll center center;
+	background-color: #EEE;
 }
 
 .wrapper {
@@ -107,8 +107,8 @@ form.condensed {
 	
 	.message {
 		position: relative;
-		padding: 10px 5px;
-		font-size: 12px;
+		padding: 10px 10px;
+		font-size: 13px;
 		
 		&.success {
 			border: solid 1px #3C7619;
@@ -124,11 +124,11 @@ form.condensed {
 		&.error {
 			border: solid 1px #590C0E;
 			border-style: none solid none solid;
-			background: #F2A5A7;
-			color: #590C0E;
+			background: #F2B5B7;
+			color: #490C0E;
 			
 			&:after {
-				border-color: transparent transparent #F2A5A7 transparent;
+				border-color: transparent transparent #F2B5B7 transparent;
 			}
 		}
 		
@@ -465,15 +465,11 @@ footer {
 	}
 }
 
-.help-panel {
-	font-size: .8em;
-}
-
-.explicit {
+.login-logo {
+	text-align: center;
 	
-	&:before {
-		color: #D00;
-		content: 'E';
+	img {
+		max-width: 500px;
 	}
 }
 

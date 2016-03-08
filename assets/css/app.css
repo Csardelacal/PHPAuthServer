@@ -19,7 +19,7 @@ body {
   padding-bottom: 100px;
   min-height: 100%;
   position: relative;
-  background: transparent url("https://upload.wikimedia.org/wikipedia/commons/6/67/Inside_the_Batad_rice_terraces.jpg") repeat scroll center center; }
+  background-color: #EEE; }
 
 .wrapper {
   max-width: 500px;
@@ -80,8 +80,8 @@ form.condensed {
     background-image: linear-gradient(0deg, #0571B1 0%, #25A9F8 6%); }
   form.condensed .message {
     position: relative;
-    padding: 10px 5px;
-    font-size: 12px; }
+    padding: 10px 10px;
+    font-size: 13px; }
     form.condensed .message.success {
       border: solid 1px #3C7619;
       border-style: none solid none solid;
@@ -92,10 +92,10 @@ form.condensed {
     form.condensed .message.error {
       border: solid 1px #590C0E;
       border-style: none solid none solid;
-      background: #F2A5A7;
-      color: #590C0E; }
+      background: #F2B5B7;
+      color: #490C0E; }
       form.condensed .message.error:after {
-        border-color: transparent transparent #F2A5A7 transparent; }
+        border-color: transparent transparent #F2B5B7 transparent; }
     form.condensed .message:after {
       position: absolute;
       bottom: 100%;
@@ -331,12 +331,10 @@ footer {
   .material .padded {
     padding: 20px 15px 15px; }
 
-.help-panel {
-  font-size: .8em; }
-
-.explicit:before {
-  color: #D00;
-  content: 'E'; }
+.login-logo {
+  text-align: center; }
+  .login-logo img {
+    max-width: 500px; }
 
 .user-icon {
   border-radius: 50%;
@@ -526,6 +524,8 @@ footer {
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     padding: 3px; }
+    div[class^="span"] img {
+      max-width: 100%; }
 
   div.row, div.row1, div.row2, div.row3, div.row4, div.row5, div.row6, div.row7, div.row8, div.row9, div.row10 {
     display: block;
@@ -535,7 +535,8 @@ footer {
     -moz-box-sizing: border-box; }
     div.row:after, div.row1:after, div.row2:after, div.row3:after, div.row4:after, div.row5:after, div.row6:after, div.row7:after, div.row8:after, div.row9:after, div.row10:after {
       content: "";
-      display: table; }
+      display: table;
+      clear: both; }
 
   div.row1 > div.span1 {
     width: 95.83333%; }

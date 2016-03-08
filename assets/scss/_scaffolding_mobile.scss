@@ -19,6 +19,10 @@ div[class^="span"] {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	padding: 3px;
+	
+	img {
+		max-width: 100%;
+	}
 }
 
 div.row {
@@ -32,6 +36,7 @@ div.row {
 	&:after {
 		content: "";
 		display: table;
+		clear:    both;
 	}
 }
 
