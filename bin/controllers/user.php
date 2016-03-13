@@ -56,4 +56,26 @@ class UserController extends Controller
 		
 	}
 	
+	public function detail($userid) {
+		
+		if ($_GET['token']) { $token = db()->table('token')->get('token', $_GET['token'])->fetch(); }
+		else                { $token = null; }
+		
+		if ($token !== null && $token->expires !== null && $token->expires !== '' && $token->expires < time()) 
+			{ throw new \spitfire\exceptions\PublicException('Your token is expired', 401); }
+		
+		#Check if the two users are in the same group
+		$groupquery = db()->table('group')->getAll();
+		$groupquery->addRestriction('members', db()->table('user\group')->get('user__id', db()->table('user')->get('_id', $userid)));
+		$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user->getQuery()));
+		
+		$groups = $groupquery->fetch();
+		
+		#Get the public attributes
+		$attributes = db()->table('attribute')->get('readable', 'public')->fetchAll();
+		
+		print_r(spitfire()->getMessages());
+		die();
+	}
+	
 }
