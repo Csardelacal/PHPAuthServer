@@ -66,7 +66,7 @@ class UserController extends Controller
 		
 		#Check if the two users are in the same group
 		$groupquery = db()->table('group')->getAll();
-		$groupquery->addRestriction('members', db()->table('user\group')->get('user__id', db()->table('user')->get('_id', $userid)));
+		$groupquery->addRestriction('members', db()->table('user\group')->get('user', db()->table('user')->get('_id', $userid)));
 		$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user->getQuery()));
 		
 		$groups = $groupquery->fetch();
