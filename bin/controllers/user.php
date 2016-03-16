@@ -64,17 +64,30 @@ class UserController extends Controller
 		if ($token !== null && $token->expires !== null && $token->expires !== '' && $token->expires < time()) 
 			{ throw new \spitfire\exceptions\PublicException('Your token is expired', 401); }
 		
+		#Get the affected profile
+		$profile = db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->addRestriction('expires', NULL, 'IS'))->fetch();
+		if (!$profile) { throw new \spitfire\exceptions\PublicException('No user found', 404); }
+		
+		#Set the base permissions
+		$permissions = Array('public');
+		
 		#Check if the two users are in the same group
 		$groupquery = db()->table('group')->getAll();
-		$groupquery->addRestriction('members', db()->table('user\group')->get('user__id', db()->table('user')->get('_id', $userid)));
+		$groupquery->addRestriction('members', db()->table('user\group')->get('user', $profile->getQuery()));
 		$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user->getQuery()));
 		
-		$groups = $groupquery->fetch();
+		$groups = $groupquery->fetchAll();
+		if (isset($groups[0])) { $permissions[] = 'group'; }
+		
+		#Check if the user is himself
+		if ($profile->_id === $token->user->_id) { $permissions[] = 'me'; }
 		
 		#Get the public attributes
-		$attributes = db()->table('attribute')->get('readable', 'public')->fetchAll();
+		$attributes = db()->table('attribute')->get('readable', $permissions)->fetchAll();
 		
-		print_r(spitfire()->getMessages());
+		var_dump($permissions);
+		var_dump($attributes);
+		var_dump(spitfire()->getMessages());
 		die();
 	}
 	

@@ -16,6 +16,7 @@ class UserModel extends spitfire\Model
 		
 		$schema->usernames = new ChildrenField('username', 'user');
 		$schema->attributes= new ChildrenField('user\attribute', 'user');
+		$schema->memberof  = new ChildrenField('user\group', 'user');
 		
 		$schema->email->setUnique(true);
 		
