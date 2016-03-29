@@ -72,15 +72,17 @@ class UserController extends Controller
 		$permissions = Array('public');
 		
 		#Check if the two users are in the same group
-		$groupquery = db()->table('group')->getAll();
-		$groupquery->addRestriction('members', db()->table('user\group')->get('user', $profile->getQuery()));
-		$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user->getQuery()));
-		
-		$groups = $groupquery->fetchAll();
-		if (isset($groups[0])) { $permissions[] = 'group'; }
+		if ($token !== null) {
+			$groupquery = db()->table('group')->getAll();
+			$groupquery->addRestriction('members', db()->table('user\group')->get('user', $profile->getQuery()));
+			$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user));
+			
+			$groups = $groupquery->fetchAll();
+			if (isset($groups[0])) { $permissions[] = 'group'; }
+		}
 		
 		#Check if the user is himself
-		if ($profile->_id === $token->user->_id) { $permissions[] = 'me'; }
+		if ($token && $profile->_id === $token->user->_id) { $permissions[] = 'me'; }
 		
 		#Get the public attributes
 		$attributes = db()->table('attribute')->get('readable', $permissions)->fetchAll();

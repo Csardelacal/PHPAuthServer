@@ -14,8 +14,17 @@ class HomeController extends Controller
 		
 		$s = new session();
 		
+		#Get the user model
+		$user = $s->getUser()? db()->table('user')->get('_id', $s->getUser())->fetch() : null;
+		
 		#If the user is logged in, we show them their dashboard, otherwise we'll send them away to get logged in.
-		if ($s->getUser()) {	$this->view->set('user', db()->table('user')->get('_id', $s->getUser())->fetch()); } 
-		else               { return $this->response->getHeaders()->redirect(new URL('user', 'login')); }
+		if ($user !== null) { $this->view->set('user', $user); } 
+		else                { return $this->response->getHeaders()->redirect(new URL('user', 'login')); }
+		
+		#Check if the user is an administrator
+		$admingroupid = SysSettingModel::getValue('admin.group');
+		$isAdmin      = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
+		
+		$this->view->set('userIsAdmin', $isAdmin);
 	}
 }
