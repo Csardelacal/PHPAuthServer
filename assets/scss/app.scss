@@ -22,7 +22,7 @@ body {
 	padding-bottom: 100px;
 	min-height: 100%;
 	position: relative;
-	background-color: #EEE;
+	background-color: #F3F3F3;
 }
 
 .wrapper {
@@ -529,3 +529,6 @@ footer {
 @media all and (max-width: 960px) {
 	@import '_scaffolding_mobile';
 }
+
+
+@import '_admin';

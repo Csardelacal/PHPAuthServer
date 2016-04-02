@@ -19,7 +19,7 @@ body {
   padding-bottom: 100px;
   min-height: 100%;
   position: relative;
-  background-color: #EEE; }
+  background-color: #F3F3F3; }
 
 .wrapper {
   max-width: 500px;
@@ -677,5 +677,18 @@ footer {
     width: 95.83333%; }
   div.row10 > div.span10 {
     width: 95.83333%; } }
+.admin-navigation {
+  background: #222;
+  color: #FFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); }
+  .admin-navigation .menu-item {
+    background: #222;
+    color: #FFF;
+    padding: 10px;
+    width: 100%;
+    display: inline-block; }
+    .admin-navigation .menu-item:hover {
+      background: #FFF;
+      color: #222; }
 
 /*# sourceMappingURL=app.css.map */
