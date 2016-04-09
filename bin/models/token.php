@@ -23,7 +23,7 @@ class TokenModel extends spitfire\Model
 		$record->token   = $token;
 		$record->user    = null;
 		$record->app     = $app;
-		$record->expires = $expires;
+		$record->expires = time() + $expires;
 		$record->extends = $extends;
 		$record->store();
 		
