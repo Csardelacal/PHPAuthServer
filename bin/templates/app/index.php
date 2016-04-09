@@ -11,8 +11,14 @@
 
 <div class="row1">
 	<div class="span1 material">
-		<?php foreach ($query->fetchAll() as $row): ?>
+		<?php foreach ($query->fetchAll() as $app): ?>
+		<div class="list-element">
+			<a href="<?= new URL('app', 'detail', $app->_id) ?>"><?=  $app->name ?></a>
+		</div>
 		<?php endforeach; ?>
 		<?= $pagination ?>
 	</div>
 </div>
+
+<?= var_dump(base64_encode(openssl_random_pseudo_bytes(35, $secure))) ?>
+<pre><?= print_r(spitfire()->getMessages()) ?></pre>

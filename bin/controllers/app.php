@@ -24,4 +24,32 @@ class AppController extends BaseController
 		
 	}
 	
+	public function create() {
+		
+		if ($this->request->isPost()) {
+			$secure = false;
+			
+			$app = db()->table('authapp')->newRecord();
+			$app->name      = $_POST['name'];
+			$app->appSecret = base64_encode(openssl_random_pseudo_bytes(35, $secure));
+			
+			if (!$secure) {
+				throw new \spitfire\exceptions\PrivateException('Could not generate safe AppSecret');
+			}
+			
+			if ($_POST['icon'] instanceof spitfire\io\Upload) {
+				$app->icon = $_POST['icon']->store();
+			}
+			
+			do {
+				$id = $app->appID = mt_rand();
+				$count = db()->table('authapp')->get('appID', $id)->count();
+			} while ($count !== 0);
+			
+			$app->store();
+			$this->response->getHeaders()->redirect(new URL('app', 'index', null, Array('success' => 'yes')));
+		}
+		
+	}
+	
 }
