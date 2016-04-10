@@ -23,6 +23,9 @@ class UserController extends Controller
 			$s = new session();
 			$s->lock($user->__id);
 			
+			if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) 
+				{ $this->response->getHeaders()->redirect($_GET['returnto']); }
+			
 			return $this->response->getHeaders()->redirect((string)new URL('user', 'dashboard'));
 		}
 		
@@ -48,6 +51,10 @@ class UserController extends Controller
 			if ($user && $user->checkPassword($_POST['password'])) {
 				$session = new session();
 				$session->lock($user->_id);
+			
+				if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) 
+					{ return $this->response->getHeaders()->redirect($_GET['returnto']); }
+				
 				return $this->response->getHeaders()->redirect(new URL());
 			} else {
 				$this->view->set('message', 'Username or password did not match');

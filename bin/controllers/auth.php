@@ -1,23 +1,38 @@
 <?php
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
 	
 	public function index() {
 		
 	}
 	
-	public function oauth($token) {
+	public function oauth($tokenid) {
 		
-		$successURL = isset($_GET['success'])? $_GET['success'] : null;
-		$failureURL = isset($_GET['failure'])? $_GET['failure'] : null;
+		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : null;
+		$failureURL = isset($_GET['cancelurl'])? $_GET['cancelurl'] : $successURL;
 		
-		$grant      = isset($_GET['grant'])  ? (int)$_GET['grant'] === 1 : null;
+		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
 		$session    = new session();
 		
-		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(new URL('user', 'login', Array('returnto' => URL::current()))); }
-		if ($grant === true)      { return $this->response->getHeaders()->redirect($successURL); }
+		$token      = db()->table('token')->get('token', $tokenid)->fetch();
+		
+		#No token, no access
+		if (!$token) { throw new \spitfire\exceptions\PublicException('No token', 404); }
+		
+		$this->view->set('token',     $token);
+		$this->view->set('cancelURL', $failureURL);
+		$this->view->set('continue',  (string) new URL('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
+		
+		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(new URL('user', 'login', Array('returnto' => (string)URL::current()))); }
 		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
+		
+		if ($grant === true)      { 
+			$token->user = $this->user;
+			$token->store();
+			
+			return $this->response->getHeaders()->redirect($successURL); 
+		}
 		
 	}
 	

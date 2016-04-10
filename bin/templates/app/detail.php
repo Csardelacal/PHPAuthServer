@@ -27,7 +27,9 @@
 			</div>
 			<div class="field">
 				<label for="icon">Icon</label>
+				<?php if (file_exists($app->icon)): ?>
 				<img src="<?= \spitfire\io\DataURI::fromFile($app->icon) ?>" style="max-width: 512px">
+				<?php endif; ?>
 				<input type="file" name="icon" id="icon">
 			</div>
 			<div class="field">
