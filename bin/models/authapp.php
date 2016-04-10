@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * 
+ * @todo Add ownership to the apps. So a certain user can administrate his own apps
+ */
 class AuthAppModel extends spitfire\Model
 {
 	

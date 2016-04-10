@@ -275,6 +275,15 @@ small {
 	color: #777;
 }
 
+blockquote {
+	margin-left :                  0;
+	padding:      15px 5px 15px 15px;
+	border-left :     solid 3px #AAA;
+	background:              #F9F9F9;
+	color:                      #555;
+	font-size:                  .9em;
+}
+
 #bid-success {
 	padding: 20px 25px 10px;
 	margin: 0 auto;
@@ -287,6 +296,36 @@ small {
 	
 	p {
 		color: #444;
+	}
+}
+
+table {
+	width: 100%;
+	border:    solid 1px #EEE;
+	border-radius:        3px;
+	border-collapse: collapse;
+	font-size:          .85em;
+	
+	thead tr {
+		background: #E4E4E4;
+	}
+	
+	tr {
+		background: #FFF;
+		border-top: solid 1px #DDD;
+	}
+	
+	tr:first-child {
+		border-top: none;
+	}
+	
+	tr:nth-child(2n) {
+		background: #F5F5F5;
+	}
+	
+	td, th {
+		margin: 0;
+		padding: 8px 20px;
 	}
 }
 

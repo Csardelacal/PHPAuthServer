@@ -1,6 +1,14 @@
 
 <div class="spacer" style="height: 50px"></div>
 
+<?php if (isset($_GET['message']) && $_GET['message'] === 'success') : ?>
+<div class="message success">
+	<p>Application created successfully.</p>
+</div>
+
+<div class="spacer" style="height: 30px"></div>
+<?php endif; ?>
+
 <div class="row1">
 	<div class="span1" style="text-align: right">
 		<a class="button" href="<?= new URL('app', 'create') ?>">Create App</a>
