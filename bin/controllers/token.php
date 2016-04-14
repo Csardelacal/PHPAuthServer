@@ -2,8 +2,21 @@
 
 use spitfire\exceptions\PublicException;
 
-class TokenController extends Controller
+class TokenController extends BaseController
 {
+	
+	public function index() {
+		
+		$query = db()->table('token')->getAll();
+		if (!$this->isAdmin) { $query->addRestriction('user', $this->user); }
+		
+		$query->group()
+				->addRestriction('expires', null, 'IS')
+				->addRestriction('expires', time(), '>');
+		
+		$this->view->set('pagination', new Pagination($query));
+		$this->view->set('records',    $query->fetchAll());;
+	}
 	
 	public function create() {
 		$appid  = isset($_POST['appID'])    ? $_POST['appID']     : $_GET['appID'];
@@ -19,5 +32,22 @@ class TokenController extends Controller
 		//Send the token to the view so it can render it
 		$this->view->set('token', $token);
 	}
+	
+	/**
+	 * 
+	 * @template none
+	 * @param string $tokenid
+	 */
+	public function end($tokenid) {
+		$token = db()->table('token')->get('token', $tokenid)->fetch();
+		
+		if (!$token) { throw new PublicException('No token found', 404); }
+		if ($token->expires && $token->expires < time()) { throw new PublicException('Token already expired', 403); }
+		
+		$token->expires = time();
+		$token->store();
+		
+		$this->response->getHeaders()->redirect(new URL('token', Array('message' => 'ended')));
+	} 
 	
 }

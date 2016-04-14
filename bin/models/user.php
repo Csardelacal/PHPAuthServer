@@ -66,5 +66,16 @@ class UserModel extends spitfire\Model
 		
 		return true;
 	}
+	
+	public function __toString() {
+		
+		$q = db()->table('username')->get('user__id', $this->_id);
+		$q->addRestriction('expires', null, 'IS');
+		
+		$record = $q->fetch();
+		$username = $record->username;
+		
+		return sprintf('User (%s)', $username);
+	}
 
 }

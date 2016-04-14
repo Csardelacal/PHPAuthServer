@@ -9,7 +9,7 @@ class AuthController extends BaseController
 	
 	public function oauth($tokenid) {
 		
-		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : null;
+		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : new URL('auth', 'invalidReturn');
 		$failureURL = isset($_GET['cancelurl'])? $_GET['cancelurl'] : $successURL;
 		
 		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
