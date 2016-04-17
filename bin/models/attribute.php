@@ -12,6 +12,8 @@ class AttributeModel extends spitfire\Model
 		$schema->default  = new StringField(200);
 		$schema->required = new BooleanField();
 		
+		$schema->datatype = new EnumField('string', 'int', 'boolean');
+		
 		$schema->readable = new EnumField('public', 'groups', 'related', 'me', 'nem');
 		$schema->writable = new EnumField('public', 'groups', 'related', 'me', 'nem');
 	}
