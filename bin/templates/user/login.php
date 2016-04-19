@@ -24,3 +24,5 @@
 	<a href="<?= new URL('user', 'recover') ?>" >Forgot password?</a> ·
 	<a href="<?= new URL('user', 'register') ?>">Create account</a>
 </p>
+
+<?php var_dump(spitfire()->getMessages());

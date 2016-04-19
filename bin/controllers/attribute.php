@@ -39,4 +39,28 @@ class AttributeController extends BaseController
 		
 		$this->view->set('bean', $bean);
 	}
+	
+	public function edit($id) {
+		
+		$record = db()->table('attribute')->getById($id);
+		
+		$bean = db()->table('attribute')->getBean();
+		$bean->setDBRecord($record);
+		
+		if (!$record) { throw new \spitfire\exceptions\PublicException('Not found', 404); }
+		
+		try {
+			$bean->validate();
+			$bean->readPost();
+			$bean->updateDBRecord()->store();
+			
+			$this->response->getHeaders()->redirect(new URL('attribute', Array('message' => 'created')));
+		} catch (\spitfire\validation\ValidationException$e) {
+			$this->view->set('messages', $e->getResult());
+		} catch (\spitfire\io\beans\UnSubmittedException$e) {
+			//Do nothing
+		}
+		
+		$this->view->set('bean', $bean);
+	}
 }

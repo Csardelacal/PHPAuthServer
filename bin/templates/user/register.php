@@ -13,6 +13,12 @@
 	<input type="text"     name="username" placeholder="Username">
 	<input type="email"    name="email"    placeholder="Email">
 	<input type="password" name="password" placeholder="Password">
+	<?php foreach ($attributes as $attribute): ?> 
+	<input type="text" 
+			 name="<?= $attribute->_id ?>" 
+			 placeholder="<?= $attribute->name ?>" 
+			 value="<?= isset($POST[$attribute->_id])? __($_POST[$attribute->_id]) : $attribute->default ?>">
+	<?php endforeach; ?> 
 	<input type="submit">
 </form>
 
