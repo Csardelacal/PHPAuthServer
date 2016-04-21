@@ -746,4 +746,20 @@ ul.pagination {
       background: #25A9F8;
       color: #FFF; }
 
+.separator {
+  border-top: solid 1px #CCC;
+  margin: 10px 0; }
+
+.editable-property {
+  display: block; }
+  .editable-property .property-name {
+    display: inline-block;
+    width: 33%; }
+  .editable-property .property-value {
+    display: inline-block;
+    width: 50%; }
+  .editable-property .edit-link {
+    display: inline-block;
+    width: 17%; }
+
 /*# sourceMappingURL=app.css.map */

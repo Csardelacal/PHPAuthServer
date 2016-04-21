@@ -73,7 +73,7 @@ class UserModel extends spitfire\Model
 		$q->addRestriction('expires', null, 'IS');
 		
 		$record = $q->fetch();
-		$username = $record->username;
+		$username = $record->name;
 		
 		return sprintf('User (%s)', $username);
 	}

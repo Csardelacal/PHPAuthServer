@@ -105,7 +105,10 @@ class UserController extends Controller
 			{ throw new PublicException('Your token is expired', 401); }
 		
 		#Get the affected profile
-		$profile = db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->addRestriction('expires', NULL, 'IS'))->fetch();
+		$profile = db()->table('user')->get('_id', $userid)->fetch()? :
+				db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->addRestriction('expires', NULL, 'IS'))->fetch();
+		
+		#If there was no profile. Throw an error
 		if (!$profile) { throw new PublicException('No user found', 404); }
 		
 		#Set the base permissions
@@ -127,10 +130,12 @@ class UserController extends Controller
 		#Get the public attributes
 		$attributes = db()->table('attribute')->get('readable', $permissions)->fetchAll();
 		
+		$this->view->set('profile', $profile);
+		$this->view->set('permissions', $permissions);
+		$this->view->set('attributes', $attributes);
 		var_dump($permissions);
 		var_dump($attributes);
 		var_dump(spitfire()->getMessages());
-		die();
 	}
 	
 }

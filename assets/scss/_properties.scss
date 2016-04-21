@@ -1,0 +1,29 @@
+
+.separator {
+	border-top: solid 1px #CCC;
+	margin:     10px 0;
+}
+
+.editable-property
+{
+	
+	display: block;
+	
+	.property-name {
+		display: inline-block;
+		width:            33%;
+	}
+	
+	.property-value {
+		display: inline-block;
+		width:            50%;
+		
+	}
+	
+	.edit-link {
+		display: inline-block;
+		width:            17%;
+		
+	}
+	
+}
