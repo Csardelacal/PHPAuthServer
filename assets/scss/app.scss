@@ -147,6 +147,13 @@ form.condensed {
 		}
 	}
 	
+	.description {
+		background: #FFF;
+		padding:    10px;
+		color:      #333;
+		font-size: 13px;
+	}
+	
 	&.standalone {
 		max-width: 350px;
 		border-radius: 4px;

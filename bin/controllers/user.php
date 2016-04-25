@@ -4,7 +4,7 @@ use spitfire\exceptions\PublicException;
 use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MinLengthValidationRule;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
 	
 	
@@ -121,11 +121,17 @@ class UserController extends Controller
 			$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user));
 			
 			$groups = $groupquery->fetchAll();
-			if (isset($groups[0])) { $permissions[] = 'group'; }
+			if (isset($groups[0])) { $permissions[] = 'groups'; }
 		}
 		
 		#Check if the user is himself
-		if ($token && $token->user && $profile->_id === $token->user->_id) { $permissions[] = 'me'; }
+		if ($token && $token->user && $profile->_id === $token->user->_id) { $permissions = array_merge($permissions, Array('me', 'groups', 'related')); }
+		
+		#Check if the user is an administrator
+		if ($this->isAdmin) { $permissions = array_merge($permissions, Array('me', 'groups', 'related', 'nem')); }
+		
+		#If permissions aren't empty, let the system filter those
+		if (!empty($permissions)) { $permissions = array_unique($permissions); }
 		
 		#Get the public attributes
 		$attributes = db()->table('attribute')->get('readable', $permissions)->fetchAll();
@@ -133,9 +139,6 @@ class UserController extends Controller
 		$this->view->set('profile', $profile);
 		$this->view->set('permissions', $permissions);
 		$this->view->set('attributes', $attributes);
-		var_dump($permissions);
-		var_dump($attributes);
-		var_dump(spitfire()->getMessages());
 	}
 	
 }
