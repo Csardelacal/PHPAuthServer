@@ -18,22 +18,27 @@ class EditController extends BaseController
 			if (!preg_match('/^[a-zA-z][a-zA-z0-9\-\_]{2,19}$/', $username)) { throw new PublicException('Invalid username', 400); }
 			
 			#Check if the new username is taken
-			$dupquery = db()->table('username')->get('name', $username)->addRestriction('user__id', $this->user->_id, '<>')
+			$dupquery = db()->table('username')->get('name', $username)
 					->group()
 						->addRestriction('expires', null, 'IS')
 						->addRestriction('expires', time(), '>')
 					->endGroup();
 			
+			$taken = $dupquery->fetch();
 			/*
 			 * Check if the username was already taken / is still locked by a user
 			 * that is not the current one.
 			 */
-			if ($dupquery->count() === 1 && $dupquery->fetch()->user->_id === $this->user->_id) {/*Do nothing*/}
+			if ($taken && $taken->user->_id === $this->user->_id) {/*Do nothing*/}
 			elseif ($dupquery->count() !== 0) { throw new PublicException('Username is taken', 400); }
+			
+			#In case the user is moving back to a previous alias, we will let him do so
+			$new = $taken !== null? $taken : db()->table('username')->newRecord();
 			
 			#Go on, now setting the old username as past
 			$old = $this->user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch();
-			$new = db()->table('username')->newRecord();
+			
+			$dupquery->count();
 			
 			$old->expires = time() + (90 * 24 * 3600);
 			$old->store();

@@ -106,7 +106,8 @@ class UserController extends BaseController
 		
 		#Get the affected profile
 		$profile = db()->table('user')->get('_id', $userid)->fetch()? :
-				db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->addRestriction('expires', NULL, 'IS'))->fetch();
+				db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->
+						group()->addRestriction('expires', NULL, 'IS')->addRestriction('expires', time(), '>')->endGroup())->fetch();
 		
 		#If there was no profile. Throw an error
 		if (!$profile) { throw new PublicException('No user found', 404); }
