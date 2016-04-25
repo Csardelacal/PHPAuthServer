@@ -67,6 +67,32 @@ class UserModel extends spitfire\Model
 		return true;
 	}
 	
+	/**
+	 * Set a new password for the user. The method will automatically encrypt it
+	 * in an according manner.
+	 * 
+	 * Please note that this function does not invoke the store() function. You 
+	 * need to do that manually.
+	 * 
+	 * @param string $password
+	 * @throws PrivateException
+	 */
+	public function setPassword($password) {
+		/*
+		 * If there is no password hashing mechanism, we should abort ASAP. Since 
+		 * nothing the application could do then would make any sense.
+		 */
+		if (!function_exists('password_hash')) 
+			{ throw new PrivateException('Password hashing algorithm is missing. Please check your PHP version', 201604251501); }
+		
+		/*
+		 * Hash and set the new password. Please note that this function does not
+		 * invoke the store() function. This prevents the method from being called
+		 * by accident.
+		 */
+		$this->password = password_hash($password, PASSWORD_DEFAULT);
+	}
+	
 	public function __toString() {
 		
 		$q = db()->table('username')->get('user__id', $this->_id);

@@ -1,6 +1,9 @@
 <?php
 
 use spitfire\exceptions\PublicException;
+use spitfire\validation\EmptyValidationRule;
+use spitfire\validation\FilterValidationRule;
+use spitfire\validation\MinLengthValidationRule;
 
 class EditController extends BaseController
 {
@@ -9,11 +12,9 @@ class EditController extends BaseController
 		if (!$this->user) { throw new PublicException('You need to be logged in', 401); }
 		
 		if ($this->request->isPost()) {
-			#Check if the suername was sent at all
-			if (!isset($_POST['username'])) { throw new PublicException('Invalid request', 400); }
 			
-			#Once we know it's here, check if it's valid
-			$username = $_POST['username'];
+			#Read the username if it was sent, check if it's valid
+			$username = _def($_POST['username'], '');
 			if (!preg_match('/^[a-zA-z][a-zA-z0-9\-\_]{2,19}$/', $username)) { throw new PublicException('Invalid username', 400); }
 			
 			#Check if the new username is taken
@@ -23,7 +24,12 @@ class EditController extends BaseController
 						->addRestriction('expires', time(), '>')
 					->endGroup();
 			
-			if ($dupquery->count() !== 0) { throw new PublicException('Username is taken', 400); }
+			/*
+			 * Check if the username was already taken / is still locked by a user
+			 * that is not the current one.
+			 */
+			if ($dupquery->count() === 1 && $dupquery->fetch()->user->_id === $this->user->_id) {/*Do nothing*/}
+			elseif ($dupquery->count() !== 0) { throw new PublicException('Username is taken', 400); }
 			
 			#Go on, now setting the old username as past
 			$old = $this->user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch();
@@ -36,7 +42,108 @@ class EditController extends BaseController
 			$new->name = $username;
 			$new->expires = null;
 			$new->store();
+			
+			return $this->response->getHeaders()->redirect(new URL());
 		}
+	}
+	
+	public function email() {
+		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
+		
+		if ($this->request->isPost()) {
+			#Read the email from Post
+			$email = _def($_POST['email'], '');
+			
+			#Check if the email is actually an email
+			$v = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email'));
+			validate($v->setValue($email));
+			
+			#Check if the email is currently in use
+			if (db()->table('user')->get('email', $email)->count() !== 0) {
+				throw new PublicException('Email is duplicated');
+			}
+			
+			#Store the new email and de-verify the account.
+			$this->user->email = $email;
+			$this->user->verified = false;
+			$this->user->store();
+			
+			return $this->response->getHeaders()->redirect(new URL());
+		}
+		
+	}
+	
+	public function password() {
+		
+		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
+		
+		if ($this->request->isPost()) {
+			#Read the email from Post
+			$passNew = _def($_POST['password'], '');
+			$passVer = _def($_POST['password_verify'], '');
+			$passOld = _def($_POST['password_old'], '');
+			
+			#Check if the email is actually an email
+			$v = validate()->addRule(new MinLengthValidationRule(8, 'Your password needs to be at least 8 characters'));
+			validate($v->setValue($passNew));
+			
+			#Check if the verification and Password match
+			if ($passNew !== $passVer) { throw new PublicException('Passwords do not match', 400); }
+			
+			#Check if the old password is correct
+			if (!$this->user->checkPassword($passOld)) {
+				throw new PublicException('Old password is incorrect');
+			}
+			
+			#Store the new email and de-verify the account.
+			$this->user->setPassword($passNew);
+			$this->user->store();
+			
+			return $this->response->getHeaders()->redirect(new URL());
+		}
+	}
+	
+	public function attribute($attrid) {
+		
+		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
+		
+		/*
+		 * Check if the attribute exists and is writable. This should prevent users
+		 * from causing vandalism on the site.
+		 */
+		$attribute = db()->table('attribute')->get('_id', $attrid)->fetch();
+		if (!$attribute || $attribute->writable === 'nem') { throw new Exception('No property found', 404); }
+		
+		$attributeValue = db()->table('user\attribute')->get('user', $this->user)->addRestriction('attr', $attribute)->fetch();
+		
+		if ($this->request->isPost()) {
+			
+			/*
+			 * It may happen that this user never defined this attribute, in this 
+			 * case, we're creating it.
+			 */
+			if ($attributeValue === null) { 
+				$attributeValue = db()->table('user\attribute')->newRecord(); 
+				$attributeValue->user = $this->user;
+				$attributeValue->attr = $attribute;
+			}
+		
+			$v = validate();
+			if ($attribute->required) { $v->addRule(new EmptyValidationRule('Value cannot be empty')); }
+			
+			$value = _def($_POST['value'], '');
+			
+			#Validate the new value
+			validate($v->setValue($value));
+			
+			$attributeValue->value = $value;
+			$attributeValue->store();
+			
+			return $this->response->getHeaders()->redirect(new URL());
+		}
+		
+		$this->view->set('attribute', $attribute);
+		$this->view->set('value', $attributeValue? $attributeValue->value : '');
 	}
 	
 }
