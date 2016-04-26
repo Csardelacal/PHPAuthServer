@@ -10,7 +10,7 @@ $data['username'] = $profile->usernames->getQuery()->addRestriction('expires', n
 
 #Set the aliases
 $data['aliases'] = Array();
-$aliases = $profile->usernames->getQuery()->addRestriction('expires', null, 'IS NOT')->fetchAll();
+$aliases = $profile->usernames->getQuery()->addRestriction('expires', null, 'IS NOT')->addRestriction('expires', time(), '>')->fetchAll();
 foreach ($aliases as $alias) { $data['aliases'][] = $alias->name; }
 
 #Define since when the user is a member
