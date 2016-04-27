@@ -19,14 +19,23 @@
 
 <div class="row1">
 	<div class="span1 material">
-		<?php foreach ($query->fetchAll() as $app): ?>
-		<div class="list-element">
-			<a href="<?= new URL('app', 'detail', $app->_id) ?>"><?=  $app->name ?></a>
-		</div>
-		<?php endforeach; ?>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th></th>
+				</tr>
+			</thead>
+			<?php foreach ($query->fetchAll() as $app): ?>
+			<tr>
+				<td>
+					<img src="<?= new URL('image', 'app', $app->_id) ?>" style="vertical-align: middle;">
+					<?=  $app->name ?>
+				</td>
+				<td><a href="<?= new URL('app', 'detail', $app->_id) ?>">Edit</a></td>
+			</tr>
+			<?php endforeach; ?>
+		</table>
 		<?= $pagination ?>
 	</div>
 </div>
-
-<?= var_dump(base64_encode(openssl_random_pseudo_bytes(35, $secure))) ?>
-<pre><?= print_r(spitfire()->getMessages()) ?></pre>
