@@ -36,6 +36,6 @@
 		</p>
 	</div>
 	<div class="span1" style="text-align: right">
-		<a class="button">Edit</a>
+		<a class="button" href="<?= new URL('admin', 'logo') ?>">Edit</a>
 	</div>
 </div>
