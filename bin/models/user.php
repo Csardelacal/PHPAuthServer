@@ -91,6 +91,11 @@ class UserModel extends spitfire\Model
 		 * by accident.
 		 */
 		$this->password = password_hash($password, PASSWORD_DEFAULT);
+		
+		/*
+		 * For the sake of method chaining we return the pointer to this.
+		 */
+		return $this;
 	}
 	
 	public function __toString() {

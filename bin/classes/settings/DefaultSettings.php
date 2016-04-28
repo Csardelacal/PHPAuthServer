@@ -8,7 +8,10 @@ class DefaultSettings
 	static private $defaults = Array(
 		 
 		 //PAGE SETTINGS
-		'page.logo' => 'img/logo-default.png'
+		'page.logo' => 'img/logo-default.png',
+		 
+		 //Email Settings
+		'smtp.from' => 'admin@yourserver.com'
 	);
 	
 	public static function get($key) {

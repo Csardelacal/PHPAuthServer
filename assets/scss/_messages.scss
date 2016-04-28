@@ -1,0 +1,26 @@
+
+.message {
+	padding: 10px 10px;
+	font-size: 13px;
+	border-color: #777;
+	border-width: 3px;
+	border-style: none none none solid;
+	border-radius: 2px;
+	
+	a{
+		font-weight: bold;
+		color: inherit;
+	}
+	
+	&.success {
+		border-color: #3C7619;
+		background: #84D950;
+		color: #3C7619;
+	}
+	
+	&.error {
+		border-color: #8c1013;
+		background: #F2B5B7;
+		color: #490C0E;
+	}
+}

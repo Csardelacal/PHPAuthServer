@@ -142,4 +142,48 @@ class UserController extends BaseController
 		$this->view->set('attributes', $attributes);
 	}
 	
+	public function recover($tokenid = null) {
+		
+		$token = $tokenid? db()->table('token')->get('token', $tokenid)->fetch() : null;
+		
+		if ($token && $token->app !== null) {
+			throw new PublicException('Token level insufficient', 403);
+		}
+		
+		if ($token && $this->request->isPost()) {
+			#Store the new password
+			if ($_POST['password'][0] !== $_POST['password'][1]) {
+				//TODO: Handle
+			}
+			
+			$token->user->setPassword($_POST['password'])->store();
+			return $this->response->getHeaders()->redirect(new URL());
+			
+		}
+		elseif ($token) {
+			#Let the user enter a new password
+			$this->view->set('action', 'passwordform');
+			$this->view->set('user', $token->user);
+		} 
+		elseif ($this->request->isPost()) {
+			#Tell the user the email was dispatched
+			$user = isset($_POST['email'])? db()->table('user')->get('email', $_POST['email'])->fetch() : null;
+			
+			if ($user) {
+				$token = TokenModel::create(null, 1800, false);
+				$token->user = $user;
+				$token->store();
+				$url   = new absoluteURL('user', 'recover', $token->token);
+				EmailModel::queue($user->email, 'Recover your password', sprintf('Click here to recover your password: <a href="%s">%s</a>', $url, $url));
+			}
+			
+			$this->view->set('action', 'emailform');
+			$this->view->set('user', $user);
+		} 
+		else {
+			#Show instructions to recover your password
+			$this->view->set('action', 'emailform');
+		}
+	}
+	
 }

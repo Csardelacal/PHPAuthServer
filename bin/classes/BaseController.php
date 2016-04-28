@@ -26,6 +26,7 @@ abstract class BaseController extends Controller
 		}
 		
 		$this->isAdmin = $isAdmin;
+		$this->view->set('authUser', $this->user);
 		$this->view->set('userIsAdmin', $isAdmin);
 	}
 	
