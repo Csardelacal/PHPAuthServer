@@ -7,7 +7,15 @@ use spitfire\validation\MinLengthValidationRule;
 class UserController extends BaseController
 {
 	
-	
+	public function index() {
+		$query = db()->table('user')->get('disabled', null, 'IS');
+		$paginator = new Pagination($query);
+		
+		$this->view->set('page.title', 'User list');
+		$this->view->set('users', $query->fetchAll());
+		$this->view->set('pagination', $paginator);
+		
+	}
 	
 	public function register() {
 		

@@ -16,5 +16,9 @@ class AuthAppModel extends spitfire\Model
 		
 		$schema->appID->setUnique(true);
 	}
+	
+	public function __toString() {
+		return sprintf('App(%s)', $this->name);
+	}
 
 }
