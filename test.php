@@ -1,9 +1,12 @@
 <?php
 
+define('APPID', '465662825');
+define('APPSec', 'rfTjJz9HTjDWIgpoy0bu7NTIZfSVkAjYJrf3Bv4EB3VMLmU=');
+
 $token = isset($_GET['token'])? $_GET['token'] : null;
 
 if (!$token) {
-	$ch = curl_init('http://localhost/PHPAuthServer/token/create.json?appID=465662825&appSecret=' . urlencode('rfTjJz9HTjDWIgpoy0bu7NTIZfSVkAjYJrf3Bv4EB3VMLmU='));
+	$ch = curl_init('http://localhost/PHPAuthServer/token/create.json?appID=' . APPID . '&appSecret=' . urlencode(APPSec));
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	
 	$json = json_decode($msg = curl_exec($ch));
