@@ -6,6 +6,26 @@ use spitfire\exceptions\PrivateException;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
+/**
+ * The Email queue model allows the application to send emails in an asynchronous
+ * way. This will avoid requests to the user being delayed due to the server 
+ * having a high latency connection with the email provider.
+ * 
+ * Instead, the web server can push the email to a queue and let the email be sent 
+ * at a later point in time. This should improve, both latency and usability.
+ * 
+ * The message class property is a value specifically used to prevent the server
+ * from notifying a certain behavior twice. Imagine a user that uploads an auction
+ * with several slots. The system would send several messages at once, which is
+ * not the preferred behavior.
+ * 
+ * @property int    $id        The id of the message. This is only used to identify the record inside the DBMS
+ * @property string $to        The email address we wish the email to be delivered to
+ * @property string $subject   The subject line of the email being sent
+ * @property string $body      The full HTML message being sent to the user
+ * @property int    $scheduled Timestamp after which the message should be delivered
+ * @property int    $delivered Timestamp the message was delivered, or NULL if it wasn't
+ */
 class EmailModel extends Model
 {
 	

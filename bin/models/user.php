@@ -14,6 +14,8 @@ class UserModel extends spitfire\Model
 		$schema->created   = new IntegerField();
 		$schema->picture   = new FileField();
 		
+		$schema->disabled  = new IntegerField(); #Timestamp the user was disabled
+		
 		$schema->usernames = new ChildrenField('username', 'user');
 		$schema->attributes= new ChildrenField('user\attribute', 'user');
 		$schema->memberof  = new ChildrenField('user\group', 'user');
