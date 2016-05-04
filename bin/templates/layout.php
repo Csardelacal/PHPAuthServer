@@ -18,7 +18,7 @@
 		</div>
 		<?php endif; ?>
 		
-		<?php if ($authUser && $authUser->verified !== true): ?> 
+		<?php if (isset($authUser) && $authUser && $authUser->verified !== true): ?> 
 		<div class="spacer" style="height: 30px;"></div>
 		<div class="row1">
 			<div class="span1 message error">
