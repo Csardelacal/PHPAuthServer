@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		
-		<?php if (isset($authUser) && $authUser && $authUser->verified !== true): ?> 
+		<?php if (isset($authUser) && $authUser && !$authUser->verified): ?> 
 		<!-- 
 			You haven't verified your account yet, that is quite a big deal for some
 			applications, which may rely on you activating your account to make sure 
@@ -29,7 +29,7 @@
 		<div class="spacer" style="height: 30px;"></div>
 		<div class="row1">
 			<div class="span1 message error">
-				Your account has not yet been activated. <a href="<?= new URL() ?>">Resend activation mail</a>
+				Your account has not yet been activated. <a href="<?= new URL('user', 'activate') ?>">Resend activation mail</a>
 			</div>
 		</div>
 		<?php endif; ?> 

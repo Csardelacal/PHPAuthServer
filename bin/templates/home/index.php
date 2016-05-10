@@ -1,6 +1,18 @@
 
 <div class="spacer" style="height: 30px;"></div>
 
+<?php if (isset($_GET['message']) && $_GET['message'] === 'success') : ?>
+<div class="row1">
+	<div class="span1">
+		<div class="message success">
+			Request successful.
+		</div>
+	</div>
+</div>
+
+<div class="spacer" style="height: 30px"></div>
+<?php endif; ?>
+
 <div class="row1">
 	<div class="span1">
 		<h1>Your account</h1>

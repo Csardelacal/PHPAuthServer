@@ -158,17 +158,12 @@ class UserController extends BaseController
 			throw new PublicException('Token level insufficient', 403);
 		}
 		
-		if ($token && $this->request->isPost()) {
+		if ($token && $this->request->isPost() && $_POST['password'][0] === $_POST['password'][1] ) {
 			#Store the new password
-			if ($_POST['password'][0] !== $_POST['password'][1]) {
-				//TODO: Handle
-			}
-			
 			$token->user->setPassword($_POST['password'])->store();
 			return $this->response->getHeaders()->redirect(new URL());
-			
 		}
-		elseif ($token) {
+		elseif ($token) { //The user clicked on the recovery email
 			#Let the user enter a new password
 			$this->view->set('action', 'passwordform');
 			$this->view->set('user', $token->user);
@@ -192,6 +187,31 @@ class UserController extends BaseController
 			#Show instructions to recover your password
 			$this->view->set('action', 'emailform');
 		}
+	}
+	
+	public function activate($tokenid = null) {
+		$token = $tokenid? db()->table('token')->get('token', $tokenid)->fetch() : null;
+		
+		#The token should have been created by the Auth Server
+		if ($token && $token->app !== null) {
+			throw new PublicException('Token level insufficient', 403);
+		}
+		
+		if ($token) {
+			$token->user->verified = 1;
+			$token->user->store();
+		}
+		else {
+			$token = TokenModel::create(null, 1800, false);
+			$token->user = $this->user;
+			$token->store();
+			$url   = new absoluteURL('user', 'activate', $token->token);
+			EmailModel::queue($this->user->email, 'Activate your account', 
+					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url));
+		}
+		
+		#We need to redirect the user back to the home page
+		$this->response->getHeaders()->redirect(new URL(Array('message' => 'success')));
 	}
 	
 }

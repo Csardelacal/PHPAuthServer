@@ -9,11 +9,15 @@ abstract class BaseController extends Controller
 	public function _onload() {
 		
 		#Get the user session, if no session is given - we skip all of the processing
+		#The user could also check the token
 		$s = new session();
-		if (!$s->getUser()) { return; }
+		$u = $s->getUser();
+		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
+		
+		if (!$u && !$t) { return; }
 		
 		#Export the user to the controllers that may need it.
-		$user = db()->table('user')->get('_id', $s->getUser())->fetch();
+		$user = $u? db()->table('user')->get('_id', $u)->fetch() : $t->user;
 		$this->user = $user;
 		
 		try {

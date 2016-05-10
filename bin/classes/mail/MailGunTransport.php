@@ -35,6 +35,8 @@ class MailGunTransport implements TransportInterface
 		$json     = curl_exec($ch);
 		$response = $json? json_decode($json) : false;
 		
+		if (!$response) { throw new \spitfire\exceptions\PublicException('Invalid response from Mailgun'); }
+		
 		return $response !== false;
 	}
 
