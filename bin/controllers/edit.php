@@ -108,6 +108,23 @@ class EditController extends BaseController
 		}
 	}
 	
+	public function avatar() {
+		
+		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
+		
+		if ($this->request->isPost() && $_POST['upload'] instanceof spitfire\io\Upload) {
+			#Read the email from Post
+			$upload = $_POST['upload'];
+			$image  = new spitfire\io\Image($upload->store());
+			
+			#Store the new email and de-verify the account.
+			$this->user->picture = $upload->store();
+			$this->user->store();
+			
+			return $this->response->getHeaders()->redirect(new URL());
+		}
+	}
+	
 	public function attribute($attrid) {
 		
 		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }

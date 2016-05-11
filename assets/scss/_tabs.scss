@@ -1,0 +1,27 @@
+/*
+Contains the code needed to create a tabbed area to ease filtered navigation.
+*/
+/* 
+    Created on : May 3, 2016, 11:55:02 AM
+    Author     : cesar
+*/
+
+.tabs 
+{
+	border-bottom: solid 1px #999;
+	
+	&.centered {
+		text-align: center;
+	}
+	
+	.tab { 
+		color: #242424; 
+		padding: 5px 15px;
+		display: inline-block;
+		
+		&.active {
+			border-bottom: solid 3px #333;
+		}
+	}
+	
+}

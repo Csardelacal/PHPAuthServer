@@ -59,6 +59,16 @@
 			--></div>
 		</div>
 		
+		<div class="separator"></div>
+		
+		<div class="padded" style="padding-top: 5px; padding-bottom: 5px;">
+			<div class="editable-property"><!--
+				--><div class="property-name">Avatar</div><!--
+				--><div class="property-value"></div><!--
+				--><div class="edit-link"><a href="<?= new URL('edit', 'avatar') ?>">Edit</a></div><!--
+			--></div>
+		</div>
+		
 		<?php $attributes = db()->table('attribute')->get('writable', Array('me', 'groups', 'public'))->fetchAll(); ?>
 		<?php foreach ($attributes as $attribute): ?>
 		<div class="separator"></div>

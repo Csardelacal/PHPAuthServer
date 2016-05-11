@@ -9,6 +9,7 @@
 					<th>Token</th>
 					<th>User</th>
 					<th>App</th>
+					<th>Expires</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -17,6 +18,7 @@
 				<td><?= $record->token ?></td>
 				<td><?= $record->user? __($record->user) : '<i>Not authenticated</i>' ?></td>
 				<td><?= $record->app ? __($record->app ) : '<i>System</i>' ?></td>
+				<td><?= date('M d, Y H:i', $record->expires) ?></td>
 				<td><a href="<?= new URL('token', 'end', $record->token) ?>">End session</a></td>
 			</tr>
 			<?php endforeach; ?>

@@ -8,10 +8,12 @@
 		
 		<div class="admin-navigation">
 			<div class="row7">
+				<?php if(isset($authUser)): ?>
 				<div class="span1"><a href="<?= new URL('') ?>"      class="menu-item">Account</a></div>
 				<div class="span1"><a href="<?= new URL('token') ?>" class="menu-item">Sessions</a></div>
 				<div class="span1"><a href="<?= new URL('user') ?>"  class="menu-item">Users</a></div>
 				<div class="span1"><a href="<?= new URL('group') ?>" class="menu-item">Groups</a></div>
+				<?php endif; ?>
 				<?php if(isset($userIsAdmin) && $userIsAdmin): ?> 
 				<div class="span1"><a href="<?= new URL('admin') ?>" class="menu-item">Admin</a></div>
 				<div class="span1"><a href="<?= new URL('app') ?>"   class="menu-item">Apps</a></div>
