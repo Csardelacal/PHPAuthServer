@@ -15,7 +15,7 @@
 			</thead>
 			<?php foreach ($records as $record): ?> 
 			<tr>
-				<td><?= $record->token ?></td>
+				<td><span title="<?= $record->token ?>"><?= Strings::ellipsis($record->token, 20) ?></span></td>
 				<td><?= $record->user? __($record->user) : '<i>Not authenticated</i>' ?></td>
 				<td><?= $record->app ? __($record->app ) : '<i>System</i>' ?></td>
 				<td><?= date('M d, Y H:i', $record->expires) ?></td>

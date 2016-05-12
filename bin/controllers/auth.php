@@ -3,8 +3,20 @@
 class AuthController extends BaseController
 {
 	
-	public function index() {
+	/**
+	 * The auth/index endpoint provides an application with the means to retrieve
+	 * information about a token they authorized.
+	 * 
+	 * If the token is expired it will act as if there was no token and return an
+	 * unathorized as result.
+	 * 
+	 * @param string $tokenid
+	 */
+	public function index($tokenid = null) {
+		if ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->addRestriction('expires', time(), '>')->fetch(); }
+		else          { $token = null; }
 		
+		$this->view->set('token', $token);
 	}
 	
 	public function oauth($tokenid) {

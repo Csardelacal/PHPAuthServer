@@ -4,7 +4,7 @@
 <?php if ($editable): ?>
 <div class="row1">
 	<div class="span1" style="text-align: right">
-		<a class="button error" href="<?= new URL('app', 'delete', $group->_id) ?>">Delete Group</a>
+		<a class="button error" href="<?= new URL('group', 'delete', $group->_id) ?>">Delete Group</a>
 	</div>
 </div>
 <?php endif; ?>
