@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '512M');
+
 class ImageController extends Controller
 {
 	
