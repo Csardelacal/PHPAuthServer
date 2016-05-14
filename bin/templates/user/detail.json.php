@@ -30,6 +30,12 @@ $data['verified'] = !!$profile->verified;
 $data['registered']      = date('r', $profile->created);
 $data['registered_unix'] = $profile->created;
 
+#Avatar
+$data['avatar']          = Array();
+$data['avatar']['32']    = (string)new absoluteURL('image', 'user', $profile->_id, 32);
+$data['avatar']['64']    = (string)new absoluteURL('image', 'user', $profile->_id, 64);
+$data['avatar']['128']   = (string)new absoluteURL('image', 'user', $profile->_id, 128);
+
 #Get the properties
 $data['attributes'] = Array();
 foreach ($attributes as $attribute) {

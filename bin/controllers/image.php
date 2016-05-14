@@ -63,10 +63,12 @@ class ImageController extends Controller
 			throw new spitfire\exceptions\PublicException('Invalid size', 201604272250);
 		}
 		
-		if (!file_exists($file)) {
+		if (!file_exists($file) && file_exists($icon)) {
 			$img = new \spitfire\io\Image($icon);
 			$img->fitInto($size, $size);
 			$img->store($file);
+		} else {
+			$file = './assets/img/user.png';
 		}
 		
 		$this->response->getHeaders()->set('Content-type', 'image/png');

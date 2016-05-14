@@ -17,7 +17,7 @@ class TokenModel extends spitfire\Model
 	}
 	
 	public static function create($app, $expires = 14400, $extends = true) {
-		$token = substr(str_replace(Array('&', '=', '+'), '', base64_encode(openssl_random_pseudo_bytes(45, $secure))), 0, 50);
+		$token = substr(str_replace(Array('&', '=', '+', '/'), '', base64_encode(openssl_random_pseudo_bytes(45, $secure))), 0, 50);
 		
 		if (!$secure) { throw new spitfire\exceptions\PrivateException('Could not generate secure token', 403); }
 		

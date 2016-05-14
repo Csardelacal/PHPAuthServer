@@ -64,10 +64,10 @@ class UserController extends BaseController
 			}
 			
 			$s = new session();
-			$s->lock($user->__id);
+			$s->lock($user->_id);
 			
-			if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) 
-				{ $this->response->getHeaders()->redirect($_GET['returnto']); }
+			if (isset($_GET['returnto'])) 
+				{ return $this->response->getHeaders()->redirect($_GET['returnto']); }
 			
 			return $this->response->getHeaders()->redirect((string)new URL('user', 'dashboard'));
 		}
