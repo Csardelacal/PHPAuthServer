@@ -9,7 +9,7 @@
 
 <div class="spacer" style="height: 30px;"></div>
 
-<form method="post" class="condensed standalone" action="<?= new URL('user', 'login', $_GET) ?>" enctype="multipart/form-data">
+<form method="post" class="condensed standalone" action="" enctype="multipart/form-data">
 	<input type="text"     name="username" placeholder="Username">
 	<input type="password" name="password" placeholder="Password">
 	<?php if (isset($message) && $message): ?> 
@@ -24,5 +24,3 @@
 	<a href="<?= new URL('user', 'recover') ?>" >Forgot password?</a> ·
 	<a href="<?= new URL('user', 'register') ?>">Create account</a>
 </p>
-
-<?php var_dump(spitfire()->getMessages());

@@ -29,7 +29,3 @@
 		<?= $pagination ?>
 	</div>
 </div>
-
-<pre>
-	<?php var_dump(spitfire()->getMessages()); ?>
-</pre>

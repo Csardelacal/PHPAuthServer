@@ -104,6 +104,13 @@ class UserController extends BaseController
 		
 	}
 	
+	public function logout() {
+		$s = new session();
+		$s->destroy();
+		
+		return $this->response->getHeaders()->redirect(new URL());
+	}
+	
 	public function detail($userid) {
 		
 		if ($_GET['token']) { $token = db()->table('token')->get('token', $_GET['token'])->fetch(); }

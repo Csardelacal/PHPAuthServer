@@ -9,7 +9,7 @@
 <div class="spacer" style="height: 30px"></div>
 <?php endif; ?>
 
-<?php if(isset($isAdmin) && $isAdmin): ?>
+<?php if(isset($userIsAdmin) && $userIsAdmin): ?>
 <div class="row1">
 	<div class="span1" style="text-align: right">
 		<a class="button" href="<?= new URL('group', 'create') ?>">Create Group</a>
@@ -43,7 +43,3 @@
 		<?= $pagination ?>
 	</div>
 </div>
-
-<pre>
-	<?php var_dump(spitfire()->getMessages()); ?>
-</pre>

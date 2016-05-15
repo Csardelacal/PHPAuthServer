@@ -2,7 +2,7 @@
 
 $data = Array();
 
-if ($token) {
+if ($token && $token->user) {
 	$data['authenticated'] = true;
 	$data['token']         = $token->token;
 	$data['expires']       = $token->expires;

@@ -21,7 +21,7 @@ class TokenController extends BaseController
 	public function create() {
 		$appid   = isset($_POST['appID'])    ? $_POST['appID']     : $_GET['appID'];
 		$secret  = isset($_POST['appSecret'])? $_POST['appSecret'] : $_GET['appSecret'];
-		$expires = (int) _def($_GET['expires'], 14400);
+		$expires = (int) isset($_GET['expires'])? $_GET['expires'] : 14400;
 		
 		$app = db()->table('authapp')->get('appID', $appid)
 				  ->addRestriction('appSecret', $secret)->fetch();

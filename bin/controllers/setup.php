@@ -29,7 +29,7 @@ class SetupController extends Controller
 			$group->name    = 'Administrators';
 			$group->description = 'System administrators';
 			$group->public  = true;
-			$group->open    = false;
+			$group->open    = 0;
 			$group->store();
 			
 			#Set the group as admin group

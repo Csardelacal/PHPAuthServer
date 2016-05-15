@@ -86,8 +86,3 @@
 		<div class="spacer" style="height: 10px;"></div>
 	</div>
 </div>
-
-<?= $user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name ?>
-<?= $user->attributes->getQuery()->count() ?>
-
-<pre><?= var_dump(spitfire()->getMessages()) ?></pre>
