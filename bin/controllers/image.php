@@ -67,7 +67,7 @@ class ImageController extends Controller
 			$img = new \spitfire\io\Image($icon);
 			$img->fitInto($size, $size);
 			$img->store($file);
-		} else {
+		} elseif (!file_exists($icon)) {
 			$file = './assets/img/user.png';
 		}
 		

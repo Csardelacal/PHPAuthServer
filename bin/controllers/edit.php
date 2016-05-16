@@ -1,9 +1,13 @@
 <?php
 
+use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
+use spitfire\io\Image;
+use spitfire\io\Upload;
 use spitfire\validation\EmptyValidationRule;
 use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MinLengthValidationRule;
+use spitfire\validation\ValidationException;
 
 class EditController extends BaseController
 {
@@ -11,11 +15,12 @@ class EditController extends BaseController
 	public function username() {
 		if (!$this->user) { throw new PublicException('You need to be logged in', 401); }
 		
-		if ($this->request->isPost()) {
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
 			
 			#Read the username if it was sent, check if it's valid
 			$username = _def($_POST['username'], '');
-			if (!preg_match('/^[a-zA-z][a-zA-z0-9\-\_]{2,19}$/', $username)) { throw new PublicException('Invalid username', 400); }
+			if (!preg_match('/^[a-zA-z][a-zA-z0-9\-\_]{2,19}$/', $username)) { throw new ValidationException('Invalid username', 400, Array('Username is invalid')); }
 			
 			#Check if the new username is taken
 			$dupquery = db()->table('username')->get('name', $username)
@@ -30,7 +35,7 @@ class EditController extends BaseController
 			 * that is not the current one.
 			 */
 			if ($taken && $taken->user->_id === $this->user->_id) {/*Do nothing*/}
-			elseif ($dupquery->count() !== 0) { throw new PublicException('Username is taken', 400); }
+			elseif ($dupquery->count() !== 0) { throw new ValidationException('Username is taken', 400, Array('Username is taken')); }
 			
 			#In case the user is moving back to a previous alias, we will let him do so
 			$new = $taken !== null? $taken : db()->table('username')->newRecord();
@@ -49,7 +54,9 @@ class EditController extends BaseController
 			$new->store();
 			
 			return $this->response->getHeaders()->redirect(new URL());
-		}
+		} 
+		catch (HTTPMethodException$e) {/*Do nothing here*/}
+		catch (ValidationException$e) { $this->view->set('messages', $e->getResult());}
 	}
 	
 	public function email() {
@@ -112,10 +119,10 @@ class EditController extends BaseController
 		
 		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
 		
-		if ($this->request->isPost() && $_POST['upload'] instanceof spitfire\io\Upload) {
+		if ($this->request->isPost() && $_POST['upload'] instanceof Upload) {
 			#Read the email from Post
 			$upload = $_POST['upload'];
-			$image  = new spitfire\io\Image($upload->store());
+			$image  = new Image($upload->store());
 			
 			#Store the new email and de-verify the account.
 			$this->user->picture = $upload->store();
