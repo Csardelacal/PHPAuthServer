@@ -1,5 +1,8 @@
 <?php
 
+use spitfire\exceptions\PublicException;
+use spitfire\io\session\Session;
+
 class AuthController extends BaseController
 {
 	
@@ -25,12 +28,12 @@ class AuthController extends BaseController
 		$failureURL = isset($_GET['cancelurl'])? $_GET['cancelurl'] : $successURL;
 		
 		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
-		$session    = new session();
+		$session    = Session::getInstance();
 		
 		$token      = db()->table('token')->get('token', $tokenid)->fetch();
 		
 		#No token, no access
-		if (!$token) { throw new \spitfire\exceptions\PublicException('No token', 404); }
+		if (!$token) { throw new PublicException('No token', 404); }
 		
 		$this->view->set('token',     $token);
 		$this->view->set('cancelURL', $failureURL);

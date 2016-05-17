@@ -1,5 +1,8 @@
 <?php
 
+use spitfire\exceptions\PrivateException;
+use spitfire\io\session\Session;
+
 abstract class BaseController extends Controller
 {
 	
@@ -10,7 +13,7 @@ abstract class BaseController extends Controller
 		
 		#Get the user session, if no session is given - we skip all of the processing
 		#The user could also check the token
-		$s = new session();
+		$s = Session::getInstance();
 		$u = $s->getUser();
 		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
 		
@@ -25,7 +28,7 @@ abstract class BaseController extends Controller
 			$admingroupid = SysSettingModel::getValue('admin.group');
 			$isAdmin      = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
 		}
-		catch (spitfire\exceptions\PrivateException$e) {
+		catch (PrivateException$e) {
 			$isAdmin      = false;
 		}
 		

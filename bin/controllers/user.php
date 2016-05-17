@@ -1,6 +1,7 @@
 <?php
 
 use spitfire\exceptions\PublicException;
+use spitfire\io\session\Session;
 use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MinLengthValidationRule;
 
@@ -63,7 +64,7 @@ class UserController extends BaseController
 				$userattribute->store();
 			}
 			
-			$s = new session();
+			$s = Session::getInstance();
 			$s->lock($user->_id);
 			
 			if (isset($_GET['returnto'])) 
@@ -90,7 +91,7 @@ class UserController extends BaseController
 			$user = $query->fetch();
 			
 			if ($user && $user->checkPassword($_POST['password'])) {
-				$session = new session();
+				$session = Session::getInstance();
 				$session->lock($user->_id);
 			
 				if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) 
@@ -105,7 +106,7 @@ class UserController extends BaseController
 	}
 	
 	public function logout() {
-		$s = new session();
+		$s = Session::getInstance();
 		$s->destroy();
 		
 		return $this->response->getHeaders()->redirect(new URL());
