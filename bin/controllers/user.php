@@ -32,6 +32,7 @@ class UserController extends BaseController
 			 * and therefore requires quite a lot of attention
 			 */
 			$validatorUsername = validate()->addRule(new MinLengthValidationRule(4, 'Username must be more than 3 characters'));
+			$validatorUsername->addRule(new \spitfire\validation\RegexValidationRule('^[a-zA-z][a-zA-z0-9\-\_]+$', 'Username must only contain characters, numbers, underscores and hyphens'));
 			$validatorEmail    = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email found'));
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
 			
@@ -39,6 +40,10 @@ class UserController extends BaseController
 					$validatorEmail->setValue(_def($_POST['email'], '')), 
 					$validatorUsername->setValue(_def($_POST['username'], '')), 
 					$validatorPassword->setValue(_def($_POST['password'], '')));
+			
+			if (db()->table('username')->get('name', $_POST['username'])->fetch()) {
+				throw new \spitfire\validation\ValidationException('Username is taken', 0, Array('Username is taken'));
+			}
 			
 			/**
 			 * Once we validated the data, let's move onto the next step, store the 
