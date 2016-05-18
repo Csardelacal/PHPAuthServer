@@ -19,6 +19,11 @@
 			 placeholder="<?= $attribute->name ?>" 
 			 value="<?= isset($POST[$attribute->_id])? __($_POST[$attribute->_id]) : $attribute->default ?>">
 	<?php endforeach; ?> 
+	<?php if (isset($messages)): foreach($messages as $message): ?>
+	<div class="message error">
+		<?= __($message) ?>
+	</div>
+	<?php endforeach; endif; ?>
 	<input type="submit">
 </form>
 

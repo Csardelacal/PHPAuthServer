@@ -1,9 +1,12 @@
 <?php
 
+use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\session\Session;
 use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MinLengthValidationRule;
+use spitfire\validation\RegexValidationRule;
+use spitfire\validation\ValidationException;
 
 class UserController extends BaseController
 {
@@ -24,15 +27,15 @@ class UserController extends BaseController
 		$query->addRestriction('required', true);
 		$attributes = $query->fetchAll();
 		
-		
-		if ($this->request->isPost()) {
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
 			
 			/*
 			 * We need to validate the data the user sends. This is a delicate process
 			 * and therefore requires quite a lot of attention
 			 */
 			$validatorUsername = validate()->addRule(new MinLengthValidationRule(4, 'Username must be more than 3 characters'));
-			$validatorUsername->addRule(new \spitfire\validation\RegexValidationRule('^[a-zA-z][a-zA-z0-9\-\_]+$', 'Username must only contain characters, numbers, underscores and hyphens'));
+			$validatorUsername->addRule(new RegexValidationRule('/^[a-zA-z][a-zA-z0-9\-\_]+$/', 'Username must only contain characters, numbers, underscores and hyphens'));
 			$validatorEmail    = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email found'));
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
 			
@@ -42,7 +45,7 @@ class UserController extends BaseController
 					$validatorPassword->setValue(_def($_POST['password'], '')));
 			
 			if (db()->table('username')->get('name', $_POST['username'])->fetch()) {
-				throw new \spitfire\validation\ValidationException('Username is taken', 0, Array('Username is taken'));
+				throw new ValidationException('Username is taken', 0, Array('Username is taken'));
 			}
 			
 			/**
@@ -75,8 +78,10 @@ class UserController extends BaseController
 			if (isset($_GET['returnto'])) 
 				{ return $this->response->getHeaders()->redirect($_GET['returnto']); }
 			
-			return $this->response->getHeaders()->redirect((string)new URL('user', 'dashboard'));
-		}
+			return $this->response->getHeaders()->redirect((string)new URL());
+		} 
+		catch(HTTPMethodException$e) { /*Do nothing, we'll show the form*/}
+		catch(ValidationException$e) { $this->view->set('messages', $e->getResult()); }
 		
 		
 		$this->view->set('attributes', $attributes);
