@@ -35,7 +35,7 @@ class AppController extends BaseController
 			
 			$app = db()->table('authapp')->newRecord();
 			$app->name      = $_POST['name'];
-			$app->appSecret = str_replace(Array('&', '=', '+'), '', base64_encode(openssl_random_pseudo_bytes(35, $secure)));
+			$app->appSecret = str_replace(Array('&', '=', '+', '/'), '', base64_encode(openssl_random_pseudo_bytes(35, $secure)));
 			
 			if (!$secure) {
 				throw new PrivateException('Could not generate safe AppSecret');
