@@ -44,8 +44,12 @@ class UserController extends BaseController
 					$validatorUsername->setValue(_def($_POST['username'], '')), 
 					$validatorPassword->setValue(_def($_POST['password'], '')));
 			
-			if (db()->table('username')->get('name', $_POST['username'])->fetch()) {
+			if (db()->table('username')->get('name', $_POST['username'])->addRestriction('expires', null, 'IS')->fetch()) {
 				throw new ValidationException('Username is taken', 0, Array('Username is taken'));
+			}
+			
+			if (db()->table('user')->get('email', $_POST['email'])->fetch()) {
+				throw new ValidationException('Email is taken', 0, Array('Email is already in use'));
 			}
 			
 			/**
@@ -178,7 +182,7 @@ class UserController extends BaseController
 		
 		if ($token && $this->request->isPost() && $_POST['password'][0] === $_POST['password'][1] ) {
 			#Store the new password
-			$token->user->setPassword($_POST['password'])->store();
+			$token->user->setPassword($_POST['password'][0])->store();
 			return $this->response->getHeaders()->redirect(new URL());
 		}
 		elseif ($token) { //The user clicked on the recovery email
