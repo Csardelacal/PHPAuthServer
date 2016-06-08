@@ -28,6 +28,7 @@ class SetupController extends Controller
 			$group->creator = $user;
 			$group->name    = 'Administrators';
 			$group->description = 'System administrators';
+			$group->groupId     = 'sysadmins';
 			$group->public  = true;
 			$group->open    = 0;
 			$group->store();
