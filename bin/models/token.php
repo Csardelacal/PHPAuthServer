@@ -10,6 +10,7 @@ class TokenModel extends spitfire\Model
 		$schema->app     = new Reference('authapp');
 		
 		$schema->expires = new IntegerField();
+		$schema->ttl     = new IntegerField();
 		$schema->extends = new BooleanField();
 		
 		$schema->token->setUnique(true);
@@ -28,6 +29,7 @@ class TokenModel extends spitfire\Model
 		$record->app     = $app;
 		$record->expires = time() + $expires;
 		$record->extends = $extends;
+		$record->ttl     = $expires;
 		$record->store();
 		
 		return $record;
