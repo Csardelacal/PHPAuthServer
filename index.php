@@ -15,6 +15,9 @@
 /* Define bootstrap settings. Environments are a better way to handle
  * config but we need to create them first.
  */
+if (empty($_SERVER['SCRIPT_FILENAME'])){ $_SERVER['SCRIPT_FILENAME'] = exec("pwd"); }
+define ('BASEDIR', rtrim(dirname($_SERVER['SCRIPT_FILENAME']),DIRECTORY_SEPARATOR), true);
+define ('SPITFIRE_BASEDIR',      BASEDIR.'/spitfire',true);
 define ('APP_DIRECTORY',         'bin/apps/',        true);
 define ('CONFIG_DIRECTORY',      'bin/settings/',    true);
 define ('CONTROLLERS_DIRECTORY', 'bin/controllers/', true);
