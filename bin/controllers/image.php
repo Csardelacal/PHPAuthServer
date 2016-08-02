@@ -1,11 +1,15 @@
 <?php
 
+use spitfire\exceptions\PrivateException;
+
 ini_set('memory_limit', '512M');
 
 class ImageController extends Controller
 {
 	
 	private static $thumbSizes = Array( 32, 48, 64, 128, 256 );
+
+	const DEFAULT_APP_ICON = BASEDIR . '/assets/img/app.png';
 	
 	public function app($id, $size = 32) {
 		$app  = db()->table('authapp')->get('_id', $id)->fetch();
@@ -15,6 +19,9 @@ class ImageController extends Controller
 		}
 		
 		$icon = $app->icon;
+		if (empty($icon)){
+			$icon = self::DEFAULT_APP_ICON;
+		}
 		
 		/*
 		 * Define the filename of the target, we store the thumbs for the objects
@@ -27,14 +34,22 @@ class ImageController extends Controller
 		}
 		
 		if (!file_exists($file)) {
-			$img = new \spitfire\io\Image($icon);
+			try {
+				$img = new \spitfire\io\Image($icon);
+			}
+			catch (PrivateException$e){
+				if (strpos($e->getMessage(), "doesn't exist") === false){ throw $e; }
+
+				$img = new \spitfire\io\Image(self::DEFAULT_APP_ICON);
+			}
 			$img->fitInto($size, $size);
 			$img->store($file);
 		}
 		
-		$this->response->getHeaders()->set('Content-type', 'image/png');
-		$this->response->getHeaders()->set('Cache-Control', 'no-transform,public,max-age=3600');
-		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
+		$responseHeaders = $this->response->getHeaders();
+		$responseHeaders->set('Content-type', 'image/png');
+		$responseHeaders->set('Cache-Control', 'no-transform,public,max-age=3600');
+		$responseHeaders->set('Expires', date('r', time() + 3600));
 		
 		if (ob_get_length() !== 0) {
 			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);

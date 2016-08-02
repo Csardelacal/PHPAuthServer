@@ -1,9 +1,9 @@
 
 <div class="spacer" style="height: 50px"></div>
 
-<?php if (isset($_GET['message']) && $_GET['message'] === 'success') : ?>
+<?php if (isset($_GET['message']) && in_array($_GET['message'], array('success','deleted'))): ?>
 <div class="message success">
-	<p>Application created successfully.</p>
+	<p>Application <?= $_GET['message'] === 'success' ? 'created' : 'deleted' ?> successfully.</p>
 </div>
 
 <div class="spacer" style="height: 30px"></div>
@@ -32,7 +32,7 @@
 					<img src="<?= new URL('image', 'app', $app->_id) ?>" style="vertical-align: middle;">
 					<?=  $app->name ?>
 				</td>
-				<td><a href="<?= new URL('app', 'detail', $app->_id) ?>">Edit</a></td>
+				<td><a href="<?= new URL('app', 'detail', $app->_id) ?>">Details</a></td>
 			</tr>
 			<?php endforeach; ?>
 		</table>
