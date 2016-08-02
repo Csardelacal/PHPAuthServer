@@ -23,7 +23,7 @@ class ImageController extends Controller
 		$file = rtrim(dirname($icon), '\/') . DIRECTORY_SEPARATOR . $size . '_' . basename($icon);
 		
 		if(!in_array($size, self::$thumbSizes)) {
-			throw new spitfire\exceptions\PublicException('Invalid size', 201604272250);
+			throw new spitfire\exceptions\PublicException('Invalid size', 1604272250);
 		}
 		
 		if (!file_exists($file)) {
@@ -37,7 +37,7 @@ class ImageController extends Controller
 		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
 		
 		if (ob_get_length() !== 0) {
-			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 201604272248);
+			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
 		return $this->response->setBody(file_get_contents($file));
@@ -60,7 +60,7 @@ class ImageController extends Controller
 		$file = rtrim(dirname($icon), '\/') . DIRECTORY_SEPARATOR . $size . '_' . basename($icon);
 		
 		if(!in_array($size, self::$thumbSizes)) {
-			throw new spitfire\exceptions\PublicException('Invalid size', 201604272250);
+			throw new spitfire\exceptions\PublicException('Invalid size', 1604272250);
 		}
 		
 		if (!file_exists($file) && file_exists($icon)) {
@@ -76,7 +76,7 @@ class ImageController extends Controller
 		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
 		
 		if (ob_get_length() !== 0) {
-			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 201604272248);
+			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
 		return $this->response->setBody(file_get_contents($file));
