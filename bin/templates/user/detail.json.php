@@ -20,7 +20,13 @@ $data['groups']  = Array();
 $groups  = $profile->memberof;
 
 foreach ($groups as $group) { 
-	if($group->group->public) { $data['groups'][] = (int)$group->group->_id; } 
+	if($group->group->public) { 
+		$data['groups'][] = Array(
+			'id'   => (int)$group->group->_id,
+			'name' => $group->group->name,
+			'role' => $group->role
+		); 
+	} 
 }
 
 #Let the application know whether the profile was verified

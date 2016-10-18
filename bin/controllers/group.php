@@ -7,7 +7,7 @@ class GroupController extends BaseController
 	
 	public function index() {
 		
-		if (!$this->user) { throw new PublicException('Only registered users', 401); }
+		//if (!$this->user) { throw new PublicException('Only registered users', 401); }
 		
 		if ($this->isAdmin) { $query = db()->table('group')->getAll(); }
 		else {
@@ -24,7 +24,7 @@ class GroupController extends BaseController
 	}
 	
 	public function detail($id) {
-		if (!$this->user) { throw new PublicException('Members only', 401); }
+		//if (!$this->user) { throw new PublicException('Members only', 401); }
 		
 		$group = db()->table('group')->get('_id', $id)->fetch();
 		
