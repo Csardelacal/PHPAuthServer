@@ -36,7 +36,7 @@ class UserModel extends spitfire\Model
 		if (function_exists('password_hash')) {
 			$this->password = password_hash($this->password, PASSWORD_DEFAULT);
 		} else {
-			throw new PrivateException('Password hashing algorithm is missing. Please check your PHP version', 201602270011);
+			throw new PrivateException('Password hashing algorithm is missing. Please check your PHP version', 1602270011);
 		}
 		
 		return parent::insert();
@@ -49,7 +49,7 @@ class UserModel extends spitfire\Model
 		 * nothing the application could do then would make any sense.
 		 */
 		if (!function_exists('password_hash')) 
-			{ throw new PrivateException('Password hashing algorithm is missing. Please check your PHP version', 201602270012); }
+			{ throw new PrivateException('Password hashing algorithm is missing. Please check your PHP version', 1602270012); }
 		
 		/*
 		 * If the password doesn't match, then we need to tell the user that whatever
@@ -85,7 +85,7 @@ class UserModel extends spitfire\Model
 		 * nothing the application could do then would make any sense.
 		 */
 		if (!function_exists('password_hash')) 
-			{ throw new PrivateException('Password hashing algorithm is missing. Please check your PHP version', 201604251501); }
+			{ throw new PrivateException('Password hashing algorithm is missing. Please check your PHP version', 1604251501); }
 		
 		/*
 		 * Hash and set the new password. Please note that this function does not

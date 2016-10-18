@@ -21,6 +21,6 @@
 <div class="spacer" style="height: 10px;"></div>
 
 <p style="text-align: center">
-	<a href="<?= new URL('user', 'recover') ?>" >Forgot password?</a> ·
-	<a href="<?= new URL('user', 'register') ?>">Create account</a>
+	<a href="<?= new URL('user', 'recover') ?>"                                 >Forgot password?</a> ·
+	<a href="<?= new URL('user', 'register', Array('returnto' => $returnto)) ?>">Create account</a>
 </p>

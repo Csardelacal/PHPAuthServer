@@ -11,8 +11,8 @@
 
 <div class="row1">
 	<div class="span1 material">
-		<h1>Create new Application</h1>
-		<p>This dialog allows you to create an application</p>
+		<h1>Application Details</h1>
+		<p>View oAuth codes &amp; change the application's metadata</p>
 		
 		<form method="POST" enctype="multipart/form-data">
 			<div class="field">
@@ -33,7 +33,7 @@
 				<input type="file" name="icon" id="icon">
 			</div>
 			<div class="field">
-				<input type="submit" value="Create">
+				<input type="submit" value="Save">
 			</div>
 		</form>
 	</div>

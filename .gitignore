@@ -1,4 +1,6 @@
-/spitfire/
-/spitfire
 .DS_Store
 /nbproject/private/
+bin/settings/environments.php
+bin/usr/sessions/
+bin/usr/uploads/
+assets/img/*_app.png

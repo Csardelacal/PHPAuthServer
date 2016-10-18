@@ -18,7 +18,7 @@ class AuthAppModel extends spitfire\Model
 	}
 	
 	public function __toString() {
-		return sprintf('App(%s)', $this->name);
+		return sprintf('App (%s)', $this->name);
 	}
 
 }

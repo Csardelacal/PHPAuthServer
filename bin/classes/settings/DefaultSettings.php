@@ -18,6 +18,6 @@ class DefaultSettings
 		#If there is an already available default setting we grab it.
 		if (isset(self::$defaults[$key])) { return self::$defaults[$key]; }
 		#Otherwise we crash the app
-		throw new PrivateException('You attempted reading ' . $key .'\'s default value, which was not defined', 201603072206);
+		throw new PrivateException('You attempted reading ' . $key .'\'s default value, which was not defined', 1603072206);
 	}
 }

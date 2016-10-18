@@ -35,7 +35,7 @@
 			<div class="editable-property"><!--
 				--><div class="property-name">Username</div><!--
 				--><div class="property-value"><?= $user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name ?></div><!--
-				--><div class="edit-link"><a href="<?= new URL('edit', 'username') ?>">Edit</a></div><!--
+				--><div class="edit-link"><a href="<?= new URL('edit', 'username') ?>">Change</a></div><!--
 			--></div>
 		</div>
 		
@@ -45,7 +45,7 @@
 			<div class="editable-property"><!--
 				--><div class="property-name">Email Address</div><!--
 				--><div class="property-value"><?= $user->email ?></div><!--
-				--><div class="edit-link"><a href="<?= new URL('edit', 'email') ?>">Edit</a></div><!--
+				--><div class="edit-link"><a href="<?= new URL('edit', 'email') ?>">Change</a></div><!--
 			--></div>
 		</div>
 		
@@ -55,7 +55,7 @@
 			<div class="editable-property"><!--
 				--><div class="property-name">Password</div><!--
 				--><div class="property-value"><em>Encrypted</em></div><!--
-				--><div class="edit-link"><a href="<?= new URL('edit', 'password') ?>">Edit</a></div><!--
+				--><div class="edit-link"><a href="<?= new URL('edit', 'password') ?>">Change</a></div><!--
 			--></div>
 		</div>
 		
@@ -65,7 +65,7 @@
 			<div class="editable-property"><!--
 				--><div class="property-name">Avatar</div><!--
 				--><div class="property-value"></div><!--
-				--><div class="edit-link"><a href="<?= new URL('edit', 'avatar') ?>">Edit</a></div><!--
+				--><div class="edit-link"><a href="<?= new URL('edit', 'avatar') ?>">Change</a></div><!--
 			--></div>
 		</div>
 		

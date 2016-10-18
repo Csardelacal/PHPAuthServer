@@ -19,6 +19,12 @@ class AuthController extends BaseController
 		if ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->addRestriction('expires', time(), '>')->fetch(); }
 		else          { $token = null; }
 		
+		#If the token does auto-extend, do so now.
+		if ($token && $token->extends) {
+			$token->expires = time() + $token->ttl;
+			$token->store();
+		}
+		
 		$this->view->set('token', $token);
 	}
 	

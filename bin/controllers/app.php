@@ -27,15 +27,24 @@ class AppController extends BaseController
 		$this->view->set('pagination', $pag);
 		
 	}
+
+	static private function _getRandomBytes($length, &$crypto_strong = null){
+		if (function_exists('random_bytes')){
+			$crypto_strong = true;
+			return random_bytes($length);
+		}
+		else {
+			$crypto_strong = false;
+			return openssl_random_pseudo_bytes($length, $crypto_strong);
+		}
+	}
 	
 	public function create() {
 		
 		if ($this->request->isPost()) {
-			$secure = false;
-			
 			$app = db()->table('authapp')->newRecord();
 			$app->name      = $_POST['name'];
-			$app->appSecret = str_replace(Array('&', '=', '+', '/'), '', base64_encode(openssl_random_pseudo_bytes(35, $secure)));
+			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(self::_getRandomBytes(35, $secure)));
 			
 			if (!$secure) {
 				throw new PrivateException('Could not generate safe AppSecret');

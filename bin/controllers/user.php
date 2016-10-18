@@ -23,6 +23,13 @@ class UserController extends BaseController
 	
 	public function register() {
 		
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 
+			$returnto = $_GET['returnto']; 
+		}
+		else {
+			$returnto = (string)new URL();
+		}
+		
 		$query = db()->table('attribute')->get('writable', Array('public', 'groups', 'related', 'me'));
 		$query->addRestriction('required', true);
 		$attributes = $query->fetchAll();
@@ -79,10 +86,7 @@ class UserController extends BaseController
 			$s = Session::getInstance();
 			$s->lock($user->_id);
 			
-			if (isset($_GET['returnto'])) 
-				{ return $this->response->getHeaders()->redirect($_GET['returnto']); }
-			
-			return $this->response->getHeaders()->redirect((string)new URL());
+			return $this->response->getHeaders()->redirect($returnto);
 		} 
 		catch(HTTPMethodException$e) { /*Do nothing, we'll show the form*/}
 		catch(ValidationException$e) { $this->view->set('messages', $e->getResult()); }
@@ -93,6 +97,13 @@ class UserController extends BaseController
 	
 	public function login() {
 		
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 
+			$returnto = $_GET['returnto']; 
+		}
+		else {
+			$returnto = (string)new URL();
+		}
+					
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			
 			$query = db()->table('user')->getAll();
@@ -107,16 +118,14 @@ class UserController extends BaseController
 			if ($user && $user->checkPassword($_POST['password'])) {
 				$session = Session::getInstance();
 				$session->lock($user->_id);
-			
-				if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) 
-					{ return $this->response->getHeaders()->redirect($_GET['returnto']); }
 				
-				return $this->response->getHeaders()->redirect(new URL());
+				return $this->response->getHeaders()->redirect($returnto);
 			} else {
 				$this->view->set('message', 'Username or password did not match');
 			}
 		}
 		
+		$this->view->set('returnto', $returnto);
 	}
 	
 	public function logout() {

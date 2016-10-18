@@ -8,6 +8,6 @@
 	</div>
 	<input name="password"        type="password" placeholder="Set your new password">
 	<input name="password_verify" type="password" placeholder="Verify your password">
-	<input name="password_old"    type="password" placeholder="Set your new password">
+	<input name="password_old"    type="password" placeholder="Your current password">
 	<input type="submit" value="Store">
 </form>
