@@ -32,6 +32,10 @@ a {
 a img {
   border: none; }
 
+h1 {
+  font-size: 22px;
+  color: #222; }
+
 form.condensed {
   margin: 20px 0;
   margin: 0 auto; }
@@ -166,7 +170,7 @@ form.regular .field {
     height: 150px; }
 form.regular .form-footer {
   padding-top: 15px;
-  padding-right: 5%;
+  padding-right: 10px;
   margin-top: 15px;
   text-align: right; }
 form.regular input[type="submit"] {
