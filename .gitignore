@@ -4,3 +4,4 @@ bin/settings/environments.php
 bin/usr/sessions/
 bin/usr/uploads/
 assets/img/*_app.png
+assets/css/*.css.map

@@ -1,43 +1,37 @@
 
-<div class="spacer" style="height: 30px"></div>
+<div class="spacer" style="height: 50px"></div>
 
-<?php if ($editable): ?>
-<div class="row1">
-	<div class="span1" style="text-align: right">
-		<a class="button error" href="<?= new URL('group', 'delete', $group->_id) ?>">Delete Group</a>
-	</div>
-</div>
-<?php endif; ?>
-
-<div class="spacer" style="height: 20px"></div>
-
-<div class="row1">
-	<div class="span1">
+<div class="row4">
+	<div class="span3">
 		<h1><?= $group->name ?></h1>
 	</div>
+	<?php if ($editable): ?>
+	<div class="span1" style="text-align: right; padding-top: 10px;">
+		<a href="<?= new URL('group', 'delete', $group->_id) ?>">Delete Group</a>
+	</div>
+	<?php endif; ?>
 </div>
 
 <div class="row1">
 	<div class="span1 material">
-		<p>Here you can see this group and it's members</p>
 		
 		<?php if ($editable): ?>
-		<form method="POST" enctype="multipart/form-data">
+		<form class="regular" method="POST" enctype="multipart/form-data">
 			<div class="field">
 				<label for="name">Name</label>
 				<input type="text" name="name" id="name" value="<?= __($group->name) ?>">
 			</div>
 			<div class="field">
-				<label for="name">Name</label>
-				<textarea name="name" id="name"><?= __($group->description) ?>"</textarea>
+				<label for="description">Description</label>
+				<textarea name="description" id="description"><?= __($group->description) ?></textarea>
 			</div>
-			<div class="field">
-				<input type="submit" value="Create">
+			<div class="form-footer">
+				<input type="submit" value="Store">
 			</div>
 		</form>
 		<?php else: ?>
 		<div class="field">
-			<p>Name: <?= __($group->name) ?></p>
+			<p><?= __($group->description) ?></p>
 		</div>
 		<?php endif; ?>
 	</div>
@@ -61,7 +55,7 @@
 				<td><?= $member->role ?></td>
 				<?php if ($editable): ?> 
 				<td>
-					<a href="<?= new URL('user', 'remove', $member->_id) ?>">Kick</a>
+					<a href="<?= new URL('group', 'remove', $member->_id, 'from', $group->_id) ?>">Kick</a>
 				</td>
 				<?php endif; ?> 
 			</tr>
@@ -69,3 +63,25 @@
 		</table>
 	</div>
 </div>
+
+<div class="spacer" style="height: 30px"></div>
+
+<?php if ($editable): ?>
+<div class="row1">
+	<div class="span1">
+		<h2>Add a user</h2>
+		<div class="material">
+			<form method="POST" action="<?= new URL('group', 'addUser', $group->_id); ?>" class="regular">
+				<input type="hidden" name="group" value="<?= $group->_id ?>">
+				<div class="field">
+					<label for="username">Name</label>
+					<input type="text" name="username" id="name" placeholder="Username...">
+				</div>
+				<div class="form-footer">
+					<input type="submit" value="Add">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<?php endif; ?>
