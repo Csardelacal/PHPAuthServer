@@ -7,6 +7,7 @@ abstract class BaseController extends Controller
 {
 	
 	protected $user = null;
+	protected $token = null;
 	protected $isAdmin = false;
 	
 	public function _onload() {
@@ -21,7 +22,8 @@ abstract class BaseController extends Controller
 		
 		#Export the user to the controllers that may need it.
 		$user = $u? db()->table('user')->get('_id', $u)->fetch() : $t->user;
-		$this->user = $user;
+		$this->user  = $user;
+		$this->token = $t;
 		
 		try {
 			#Check if the user is an administrator

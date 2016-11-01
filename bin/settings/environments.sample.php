@@ -1,6 +1,6 @@
 <?php
 
-$e = new spitfire\environment('dev');
+$e = new spitfire\core\Environment('dev');
 
 $e->set('db_user',         'root');
 $e->set('db_pass',         '');
@@ -9,7 +9,7 @@ $e->set('db_table_prefix', 'dev_');
 
 $e->set('email.transport', new \mail\MailGunTransport('', ''));
 
-$p = new spitfire\environment('dev');
+$p = new spitfire\core\Environment('dev');
 
 $p->set('db_user',         '');
 $p->set('db_pass',         '');
