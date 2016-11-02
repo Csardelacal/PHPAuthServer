@@ -55,7 +55,7 @@
 				<td><?= $member->role ?></td>
 				<?php if ($editable): ?> 
 				<td>
-					<a href="<?= new URL('group', 'remove', $member->_id, 'from', $group->_id) ?>">Kick</a>
+					<a href="<?= new URL('group', 'removeUser', $member->_id) ?>">Kick</a>
 				</td>
 				<?php endif; ?> 
 			</tr>

@@ -54,5 +54,55 @@ class GroupController extends BaseController
 		$this->view->set('editable', $writable);
 	}
 	
+	public function addUser($groupid = null, $userid = null) {
+		
+		if ($userid  === null) { $userid  = $_POST['username']; }
+		if ($groupid === null) { $groupid = $_POST['group']; }
+		
+		
+		#Get the user attached to that profile
+		$profile = db()->table('user')->get('_id', $userid)->fetch()? :
+				db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->
+						group()->addRestriction('expires', NULL, 'IS')->addRestriction('expires', time(), '>')->endGroup())->fetch();
+		
+		$group   = db()->table('group')->get('_id', $groupid)->fetch();
+		
+		#Find an appropriate role for the user
+		//TODO: Validate this data
+		$role = isset($_POST['role'])? $_POST['role'] : 'member';
+		
+		#Check if we have all the data we need to work with
+		if (!$profile) { throw new Exception('No user found', 404); }
+		if (!$group)   { throw new Exception('No group found', 404); }
+		
+		
+		#Add the user to the group
+		$membership = db()->table('user\group')->get('user', $profile)->addRestriction('group', $group)->fetch()? : db()->table('user\group')->newRecord();
+		$membership->user  = $profile;
+		$membership->group = $group;
+		$membership->role  = $role;
+		$membership->store();
+		
+		if ($this->request->getPath()->getFormat() === 'php') {
+			return $this->response->setBody('Redirecting...')->getHeaders()->redirect(new URL('group', 'detail', $groupid));
+		}
+	}
+	
+	public function removeUser($memberid) {
+		
+		
+		#Fetch the membership and destroy shortly afterwards
+		$membership = db()->table('user\group')->get('_id', $memberid)->fetch()? : null;
+		
+		if ($membership) {
+			$group = $membership->group;
+			$membership->delete();
+		}
+		
+		if ($this->request->getPath()->getFormat() === 'php') {
+			return $this->response->setBody('Redirecting...')->getHeaders()->redirect($group? new URL('group', 'detail', $group->_id) : new URL());
+		}
+	}
+	
 }
 
