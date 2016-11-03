@@ -1,7 +1,8 @@
 .DS_Store
-/nbproject/private/
+/nbproject/
 bin/settings/environments.php
 bin/usr/sessions/
 bin/usr/uploads/
 assets/img/*_app.png
 assets/css/*.css.map
+node_modules/

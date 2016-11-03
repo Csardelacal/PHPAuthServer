@@ -29,7 +29,7 @@
 
 <div class="row5 material">
 	<div class="span4">
-		<div><strong>App logo</strong></div>
+		<div><strong>Server logo</strong></div>
 		<p>
 			The logo above the login and registration boxes. Not to be confused with
 			the individual application logos that are shown when authorizing an app.

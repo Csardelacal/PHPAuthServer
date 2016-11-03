@@ -78,6 +78,8 @@ class UserModel extends spitfire\Model
 	 * 
 	 * @param string $password
 	 * @throws PrivateException
+	 *
+	 * @return self
 	 */
 	public function setPassword($password) {
 		/*
