@@ -7,6 +7,7 @@
 		
 	</div>
 	<div class="span3">
+		<form method="POST" action="<?= $continue ?>">
 		<h1>Access <?= $token->app->name ?>?</h1>
 		
 		<div class="material">
@@ -22,10 +23,14 @@
 				log in process - your account details won't be shared
 			</p>
 			
+			<p>
+				<input type="checkbox" name="authorize" checked> Authorize <?= $token->app->name ?> permanently
+			</p>
+			
 			<p style="text-align: center">
 				<a href="<?= $cancelURL ?>">Cancel</a>
 				<span style="display: inline-block; width: 20px"></span>
-				<a href="<?= $continue?>" class="button">Continue</a>
+				<input type="submit" value="Continue" class="button">
 			</p>
 		</div>
 	</div>

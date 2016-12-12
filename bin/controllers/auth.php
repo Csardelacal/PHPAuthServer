@@ -33,10 +33,12 @@ class AuthController extends BaseController
 		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : new URL('auth', 'invalidReturn');
 		$failureURL = isset($_GET['cancelurl'])? $_GET['cancelurl'] : $successURL;
 		
+		$token      = db()->table('token')->get('token', $tokenid)->fetch();
 		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
 		$session    = Session::getInstance();
 		
-		$token      = db()->table('token')->get('token', $tokenid)->fetch();
+		#If the user already automatically grants the application in, then we continue
+		if (db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
 		
 		#No token, no access
 		if (!$token) { throw new PublicException('No token', 404); }
@@ -48,7 +50,20 @@ class AuthController extends BaseController
 		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(new URL('user', 'login', Array('returnto' => (string)URL::current()))); }
 		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
 		
-		if ($grant === true)      { 
+		/*
+		 * If the user allowed the token to exist and granted the application access,
+		 * then we record the user's setting whether he wishes to be automatically
+		 * logged in next time.
+		 */
+		if ($grant === true) { 
+			
+			if (isset($_POST['authorize']) && !db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch()) {
+				$authorization = db()->table('user\authorizedapp')->newRecord();
+				$authorization->user = $token->user;
+				$authorization->app  = $token->app;
+				$authorization->store();
+			}
+			
 			$token->user = $this->user;
 			$token->store();
 			
@@ -71,6 +86,21 @@ class AuthController extends BaseController
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			
 		}
+	}
+	
+	/**
+	 * This endpoint allows an application to test whether a certain app exists 
+	 * with an appID and appSec combination. Please note that the endpoint will 
+	 * not reveal whether an application exists and the appSec is wrong.
+	 */
+	public function app() {
+		
+		$appId  = isset($_GET['appId']) ? $_GET['appId']  : null;
+		$appSec = isset($_GET['appSec'])? $_GET['appSec'] : null;
+		
+		$app = db()->table('authapp')->get('appID', $appId)->addRestriction('appSecret', $appSec)->fetch();
+		
+		$this->view->set('app', $app);
 	}
 	
 }
