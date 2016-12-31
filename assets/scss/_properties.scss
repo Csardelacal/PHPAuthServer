@@ -8,6 +8,10 @@
 {
 	
 	display: block;
+
+	> * {
+		vertical-align: top;
+	}
 	
 	.property-name {
 		display: inline-block;
