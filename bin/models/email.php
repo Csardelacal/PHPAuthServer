@@ -29,10 +29,11 @@ use spitfire\storage\database\Schema;
 class EmailModel extends Model
 {
 	
+	const SUBJECT_LENGTH = 50;
 	
 	public function definitions(Schema $schema) {
 		$schema->to        = new StringField(50);
-		$schema->subject   = new StringField(50);
+		$schema->subject   = new StringField(self::SUBJECT_LENGTH);
 		$schema->body      = new TextField();
 		$schema->scheduled = new IntegerField(true);
 		$schema->delivered = new IntegerField(true);
@@ -43,7 +44,7 @@ class EmailModel extends Model
 		
 		$model = db()->table('email')->newRecord();
 		$model->to = $to;
-		$model->subject = $subject;
+		$model->subject = Strings::ellipsis($subject, self::SUBJECT_LENGTH);
 		$model->body = $body;
 		$model->scheduled = $scheduled;
 		$model->delivered = null;

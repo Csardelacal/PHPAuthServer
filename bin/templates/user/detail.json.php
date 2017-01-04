@@ -46,7 +46,16 @@ $data['avatar']['128']   = (string)new absoluteURL('image', 'user', $profile->_i
 $data['attributes'] = Array();
 foreach ($attributes as $attribute) {
 	$attrValue = db()->table('user\attribute')->get('user', $profile)->addRestriction('attr', $attribute)->fetch();
-	$data['attributes'][$attribute->_id] = $attrValue? $attrValue->value : null;
+	
+	#In the event of a file being provided it requires special treatment.
+	if ($attribute->datatype === 'file') { 
+		$file = new attribute\io\FileToJson($attrValue); 
+		$data['attributes'][$attribute->_id] = $file->getRaw();
+	} 
+	#Otherwise we just output it as usual
+	else {
+		$data['attributes'][$attribute->_id] = $attrValue? $attrValue->value : null;
+	}
 }
 
 echo json_encode(Array('payload' => $data));

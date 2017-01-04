@@ -77,7 +77,7 @@
 		<div class="padded" style="padding-top: 5px; padding-bottom: 5px;">
 			<div class="editable-property"><!--
 				--><div class="property-name"><?= $attribute->name ?></div><!--
-				--><div class="property-value"><?= $attrValue? __($attrValue->value) : '<em>Undefined</em>' ?></div><!--
+				--><div class="property-value"><?= $attrValue? __($attrValue->value, 45) : '<em>Undefined</em>' ?></div><!--
 				--><div class="edit-link"><a href="<?= new URL('edit', 'attribute', $attribute->_id) ?>">Edit</a></div><!--
 			--></div>
 		</div>

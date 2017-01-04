@@ -31,6 +31,7 @@ class AttributeModel extends Model
 		$schema->required = new BooleanField();
 		
 		$schema->datatype = new EnumField('string', 'text', 'int', 'boolean', 'file');
+		$schema->validate = new ChildrenField('attribute\validator', 'attribute');
 		
 		$schema->readable = new EnumField('public', 'groups', 'related', 'me', 'nem');
 		$schema->writable = new EnumField('public', 'groups', 'related', 'me', 'nem');

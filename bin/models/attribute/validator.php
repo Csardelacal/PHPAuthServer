@@ -1,5 +1,8 @@
 <?php namespace attribute;
 
+use Reference;
+use StringField;
+use TextField;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
@@ -12,9 +15,9 @@ use spitfire\storage\database\Schema;
 class ValidatorModel extends Model
 {
 	public function definitions(Schema $schema) {
-		$schema->attribute = new \Reference('attribute');
-		$schema->validator = new \StringField(100);
-		$schema->settings  = new \TextField();
+		$schema->attribute = new Reference('attribute');
+		$schema->validator = new StringField(100);
+		$schema->settings  = new TextField();
 	}
 
 }

@@ -98,4 +98,42 @@ class ImageController extends Controller
 		
 	}
 	
+	public function attribute($attribute, $id, $width = 700, $height = null) {
+		$user  = db()->table('user')->get('_id', $id)->fetch();
+		$attr  = db()->table('user\attribute')->get('user', $user)->addRestriction('attr__id', $attribute)->fetch();
+		
+		if (!$user || !$attr) {
+			throw new spitfire\exceptions\PublicException('Invalid user / attribute id');
+		}
+		
+		$file = $attr->value;
+		
+		/*
+		 * Define the filename of the target, we store the thumbs for the objects
+		 * inside the same directory they get stored to.
+		 */
+		$prvw = rtrim(dirname($file), '\/') . DIRECTORY_SEPARATOR . $width . '_' . ($height? : 'auto') . '_' . basename($file);
+		
+		if (!file_exists($prvw) && file_exists($file)) {
+			$img = new \spitfire\io\Image($file);
+			$img->fitInto($width, $height);
+			$img->store($prvw);
+		} elseif (!file_exists($file)) {
+			//Fallback if the attribute was either not set or not an image the system
+			//can preview
+			$file = './assets/img/user.png';
+		}
+		
+		$this->response->getHeaders()->set('Content-type', 'image/png');
+		$this->response->getHeaders()->set('Cache-Control', 'no-transform,public,max-age=3600');
+		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
+		
+		if (ob_get_length() !== 0) {
+			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
+		}
+		
+		return $this->response->setBody(file_get_contents($prvw));
+		
+	}
+	
 }

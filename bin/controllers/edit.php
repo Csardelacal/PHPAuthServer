@@ -160,12 +160,29 @@ class EditController extends BaseController
 			$v = validate();
 			if ($attribute->required) { $v->addRule(new EmptyValidationRule('Value cannot be empty')); }
 			
-			$value = _def($_POST['value'], '');
+			/*
+			 * Depending on the data type that we're receiving we need to handle
+			 * the data differently. Since by spec, HTML files and checkboxes are
+			 * transmitted differently we need to account for those separately
+			 */
+			if ($attribute->datatype === 'file') { 
+				$value = isset($_POST['value']) && $_POST['value'] instanceof Upload? $_POST['value'] : null; 
+			}
+			elseif ($attribute->datatype === 'boolean') { $value = isset($_POST['value'])? 1 : 0; }
+			else { $value = _def($_POST['value'], ''); }
+			
+			$validators = db()->table('attribute\validator')->get('attribute', $attribute)->fetchAll();
+			foreach ($validators as $dbValidator) {
+				$vname = $dbValidator->validator;
+				$rule  = new $vname();
+				$rule->load($dbValidator->settings);
+				$v->addRule($rule);
+			}
 			
 			#Validate the new value
 			validate($v->setValue($value));
 			
-			$attributeValue->value = $value;
+			$attributeValue->value = $value instanceof Upload? $value->store() : $value;
 			$attributeValue->store();
 			
 			return $this->response->getHeaders()->redirect(new URL());
