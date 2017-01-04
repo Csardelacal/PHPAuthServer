@@ -8,6 +8,8 @@ and open the template in the editor.
     Author     : cesaradelacalbretschneider
 */
 
+$disbled-darken-amount: 30;
+
 * {
 	box-sizing: border-box;
 }
@@ -45,7 +47,7 @@ h1 {
 }
 
 form.condensed {
-	margin:   20px 0;
+	//margin:   20px 0;
 	margin:   0 auto;
 	
 	.field {
@@ -96,9 +98,11 @@ form.condensed {
 		border     : solid 1px #529EBB;
 		border-top :              none;
 		font-family:        sans-serif;
-		
-		background-color:  #25A9F8;
-		color:                #FFF;
+
+		$bg: #25A9F8;
+		$color: #FFF;
+		background-color:      $bg;
+		color:              $color;
 		margin:                  0;
 		font-size:            20px;
 		width:                100%;
@@ -107,17 +111,25 @@ form.condensed {
 		
 		box-sizing: border-box;
 		
-		background-image: linear-gradient(0deg, #0571B1 0%, #25A9F8 6%);
+		background-image: linear-gradient(0deg, #0571B1 0%, $bg 6%);
+
+
+		&:disabled {
+			color: darken($color, $disbled-darken-amount);
+			background: darken($bg, $disbled-darken-amount) !important;
+			cursor: not-allowed;
+		}
 	}
 	
 	.message {
 		position: relative;
 		padding: 10px 10px;
 		font-size: 13px;
+		border-width: 0 1px;
+		border-style: solid;
 		
 		&.success {
-			border: solid 1px #3C7619;
-			border-style: none solid none solid;
+			border-color: #3C7619;
 			background: #84D950;
 			color: #3C7619;
 			
@@ -127,8 +139,7 @@ form.condensed {
 		}
 		
 		&.error {
-			border: solid 1px #590C0E;
-			border-style: none solid none solid;
+			border-color: #590C0E;
 			background: #F2B5B7;
 			color: #490C0E;
 			
@@ -172,6 +183,7 @@ form.condensed {
 		}
 		
 		input[type="submit"] {
+
 			transition: background-color .5s ease, background-size .5s ease;
 			background-size  : 0 0;
 			background-repeat: no-repeat;
@@ -250,16 +262,24 @@ form.regular {
 
 
 .button {
-	background: none repeat scroll 0 0 #3191f1;
+	$bg: #3191f1;
+	$boxshadow: #3167f1;
+	background: none repeat scroll 0 0 $bg;
 	border: none;
 	border-radius: 3px;
-	box-shadow: -2px -2px 1px #3167f1 inset;
+	box-shadow: -2px -2px 1px $boxshadow inset;
 	color: #ffffff;
 	font-weight: bold;
 	padding: .5em .7em;
 	cursor: pointer;
 	text-decoration: none;
 	display: inline-block;
+
+	&:disabled {
+		background-color: darken($bg, $disbled-darken-amount);
+		box-shadow: -2px -2px 1px darken($boxshadow, $disbled-darken-amount) inset;
+		cursor: not-allowed;
+	}
 }
 
 .countdown {
@@ -413,7 +433,7 @@ table {
 	background: #FEFEFE;
 	vertical-align: top;
 	text-align: right;
-	box-shadow: 0px  2px 2px #DDD;
+	box-shadow: 0 2px 2px #DDD;
 	border-bottom: solid 1px #CCC;
 	
 	z-index: 5;
@@ -508,7 +528,7 @@ footer {
 	padding: 20px 15px 15px;
 	
 	&.unpadded {
-		padding: 0px;
+		padding: 0;
 	}
 	
 	.padded {
@@ -548,6 +568,14 @@ footer {
 	&.big {
 		width:  128px;
 		height: 128px;
+	}
+
+	&.full-width {
+		max-width: 100%;
+	}
+
+	&.square {
+		border-radius: 10px;
 	}
 }
 

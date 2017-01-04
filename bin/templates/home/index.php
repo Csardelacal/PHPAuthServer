@@ -1,4 +1,4 @@
-
+<?php /** @var $user UserModel */ ?>
 <div class="spacer" style="height: 30px;"></div>
 
 <?php if (isset($_GET['message']) && $_GET['message'] === 'success') : ?>
@@ -64,7 +64,7 @@
 		<div class="padded" style="padding-top: 5px; padding-bottom: 5px;">
 			<div class="editable-property"><!--
 				--><div class="property-name">Avatar</div><!--
-				--><div class="property-value"></div><!--
+				--><div class="property-value"><img src="<?= new URL('image', 'user', $user->_id, 128) ?>" class="user-icon square big"></div><!--
 				--><div class="edit-link"><a href="<?= new URL('edit', 'avatar') ?>">Change</a></div><!--
 			--></div>
 		</div>
