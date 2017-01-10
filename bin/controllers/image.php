@@ -98,7 +98,7 @@ class ImageController extends Controller
 		
 	}
 	
-	public function attribute($attribute, $id, $width = 700, $height = null) {
+	public function attribute($attribute, $id, $width = 700, $height = 700) {
 		$user  = db()->table('user')->get('_id', $id)->fetch();
 		$attr  = db()->table('user\attribute')->get('user', $user)->addRestriction('attr__id', $attribute)->fetch();
 		

@@ -38,7 +38,7 @@ class AuthController extends BaseController
 		$session    = Session::getInstance();
 		
 		#If the user already automatically grants the application in, then we continue
-		if (db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
+		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
 		
 		#No token, no access
 		if (!$token) { throw new PublicException('No token', 404); }
@@ -59,7 +59,7 @@ class AuthController extends BaseController
 			
 			if (isset($_POST['authorize']) && !db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch()) {
 				$authorization = db()->table('user\authorizedapp')->newRecord();
-				$authorization->user = $token->user;
+				$authorization->user = $this->user;
 				$authorization->app  = $token->app;
 				$authorization->store();
 			}
