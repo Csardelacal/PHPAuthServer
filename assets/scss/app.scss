@@ -58,7 +58,8 @@ form.condensed {
 		display: none;
 	}
 	
-	input {
+	input,
+	textarea {
 		/*
 		 * These remove the annoyng styles from the iOS layout that will style
 		 * input for you.
@@ -69,7 +70,8 @@ form.condensed {
 	
 	input[type="email"], 
 	input[type="password"], 
-	input[type="text"] {
+	input[type="text"],
+	textarea {
 		border     :           none;
 		border-top :           none;
 		border-bottom :        none;
@@ -86,10 +88,20 @@ form.condensed {
 		background-image: linear-gradient(180deg, #DDD 1px, #FFF 1px);
 			
 	}
+	
+	/*
+    * Textareas do have specific styles, including smaller text to make them more
+    * useful for users typing in bigger segments of text
+	 */
+	textarea {
+		font-size: .9em;
+		height:    8em;
+	}
 		
 	.field:first-child input[type="email"], 
 	.field:first-child input[type="text"], 
-	.field:first-child input[type="password"] {
+	.field:first-child input[type="password"],
+	.field:first-child textarea {
 		border-top  : solid 1px #999;
 		background-image: linear-gradient(180deg, #ccc 0%, #fff 8%);
 	}

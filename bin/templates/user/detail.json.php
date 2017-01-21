@@ -41,6 +41,7 @@ $data['avatar']          = Array();
 $data['avatar']['32']    = (string)new absoluteURL('image', 'user', $profile->_id, 32);
 $data['avatar']['64']    = (string)new absoluteURL('image', 'user', $profile->_id, 64);
 $data['avatar']['128']   = (string)new absoluteURL('image', 'user', $profile->_id, 128);
+$data['avatar']['256']   = (string)new absoluteURL('image', 'user', $profile->_id, 256);
 
 #Get the properties
 $data['attributes'] = Array();

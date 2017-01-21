@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title><?= isset(${'page.title'}) && ${'page.title'}? ${'page.title'} : 'Account server' ?></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" type="text/css" href="<?= URL::asset('css/app.css') ?>">
 	</head>
 	<body>

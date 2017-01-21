@@ -11,6 +11,8 @@
 	</div>
 	<?php elseif ($attribute->datatype === 'boolean'): ?>
 	<!--Styled checkbox switch needs to go here -->
+	<?php elseif ($attribute->datatype === 'text'): ?>
+	<textarea name="value" placeholder="<?= $attribute->name ?>..."><?= htmlentities($value) ?></textarea>
 	<?php else: ?>
 	<input type="text" name="value" placeholder="<?= $attribute->name ?>" value="<?= $value ?>">
 	<?php endif; ?>
