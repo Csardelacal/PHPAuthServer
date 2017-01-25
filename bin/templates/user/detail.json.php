@@ -36,6 +36,9 @@ $data['verified'] = !!$profile->verified;
 $data['registered']      = date('r', $profile->created);
 $data['registered_unix'] = $profile->created;
 
+#If the account was disabled we do add the disabled flag
+$data['disabled']         = !!$profile->disabled;
+
 #Avatar
 $data['avatar']          = Array();
 $data['avatar']['32']    = (string)new absoluteURL('image', 'user', $profile->_id, 32);
