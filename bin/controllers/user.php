@@ -42,6 +42,7 @@ class UserController extends BaseController
 			 * and therefore requires quite a lot of attention
 			 */
 			$validatorUsername = validate()->addRule(new MinLengthValidationRule(4, 'Username must be more than 3 characters'));
+			$validatorUsername->addRule(new \spitfire\validation\MaxLengthValidationRule(20, 'Username must be shorter than 20 characters'));
 			$validatorUsername->addRule(new RegexValidationRule('/^[a-zA-z][a-zA-z0-9\-\_]+$/', 'Username must only contain characters, numbers, underscores and hyphens'));
 			$validatorEmail    = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email found'));
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
