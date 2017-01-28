@@ -45,6 +45,7 @@ class UserController extends BaseController
 			$validatorUsername->addRule(new \spitfire\validation\MaxLengthValidationRule(20, 'Username must be shorter than 20 characters'));
 			$validatorUsername->addRule(new RegexValidationRule('/^[a-zA-z][a-zA-z0-9\-\_]+$/', 'Username must only contain characters, numbers, underscores and hyphens'));
 			$validatorEmail    = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email found'));
+			$validatorEmail->addRule(new \spitfire\validation\MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
 			
 			validate(
