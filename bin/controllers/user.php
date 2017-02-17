@@ -23,7 +23,7 @@ class UserController extends BaseController
 	
 	public function register() {
 		
-		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 
+		if (isset($_GET['returnto'])) { 
 			$returnto = $_GET['returnto']; 
 		}
 		else {
