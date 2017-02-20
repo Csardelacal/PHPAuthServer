@@ -72,7 +72,7 @@ class ImageController extends Controller
 		 * Define the filename of the target, we store the thumbs for the objects
 		 * inside the same directory they get stored to.
 		 */
-		$file = rtrim(dirname($icon), '\/') . DIRECTORY_SEPARATOR . $size . '_' . basename($icon);
+		$file = rtrim(dirname($icon), '\/') . DIRECTORY_SEPARATOR . $size . '_' . pathinfo($icon, PATHINFO_FILENAME) . '.jpg';
 		
 		if(!in_array($size, self::$thumbSizes)) {
 			throw new spitfire\exceptions\PublicException('Invalid size', 1604272250);
@@ -81,12 +81,14 @@ class ImageController extends Controller
 		if (!file_exists($file) && file_exists($icon)) {
 			$img = new \spitfire\io\Image($icon);
 			$img->fitInto($size, $size);
-			$img->store($file);
+			$img->setBackground(255, 255, 255);
+			$img->setCompression(9);
+			$img->store($file, 'jpg');
 		} elseif (!file_exists($icon)) {
 			$file = './assets/img/user.png';
 		}
 		
-		$this->response->getHeaders()->set('Content-type', 'image/png');
+		$this->response->getHeaders()->set('Content-type', mime_content_type($file));
 		$this->response->getHeaders()->set('Cache-Control', 'no-transform,public,max-age=3600');
 		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
 		
@@ -130,7 +132,7 @@ class ImageController extends Controller
 			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
-		$this->response->getHeaders()->set('Content-type', 'image/png');
+		$this->response->getHeaders()->set('Content-type', mime_content_type($prvw));
 		$this->response->getHeaders()->set('Cache-Control', 'no-transform,public,max-age=3600');
 		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
 		
