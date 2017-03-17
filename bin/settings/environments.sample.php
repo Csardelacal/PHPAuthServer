@@ -18,4 +18,4 @@ $p->set('db_table_prefix', 'u_');
 
 $p->set('email.transport', new \mail\MailGunTransport('', ''));
 
-spitfire\core\Environment::set_active_environment($_SERVER['SERVER_NAME'] === 'localhost'? $e : $p);
+spitfire\core\Environment::set_active_environment($_SERVER['SERVER_NAME'] === 'localhost' || Strings::startsWith($_SERVER['SERVER_NAME'], '192.')? $e : $p);
