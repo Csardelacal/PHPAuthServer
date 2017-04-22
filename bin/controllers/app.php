@@ -51,7 +51,7 @@ class AppController extends BaseController
 			}
 			
 			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->store();
+				$app->icon = $_POST['icon']->validate()->store();
 			}
 			
 			do {
@@ -73,10 +73,11 @@ class AppController extends BaseController
 		if ($this->request->isPost()) {
 			
 			#The name of the application is, together with the icon, the only thing we can change
-			$app->name = $_POST['name'];
+			if (isset($_POST['name']))
+				$app->name = trim($_POST['name']);
 			
 			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->store();
+				$app->icon = $_POST['icon']->validate()->store();
 			}
 			
 			$app->store();

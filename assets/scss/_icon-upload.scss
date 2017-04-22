@@ -1,0 +1,51 @@
+$wrapSize: 128px;
+$loaderSize: 48px;
+$wrapBorderSize: 2px;
+#icon-upload-wrap {
+	position: relative;
+	width: $wrapSize;
+	height: $wrapSize;
+	border: $wrapBorderSize dashed rgba(black, .5);
+	border-radius: 10px;
+	background: url("/assets/img/upload.svg") no-repeat center center;
+	background-size: 64px 64px;
+
+	> input[type="file"] {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: inherit;
+		height: inherit;
+		opacity: 0;
+	}
+
+	&.uploading {
+		background: none;
+
+		&:before {
+			content: '';
+			display: block;
+			width: $loaderSize;
+			height: $loaderSize;
+			margin: ($wrapSize - $loaderSize)/2;
+			position: absolute;
+			top: 0;
+			left: 0;
+			border-radius: 50%;
+			border: 6px solid rgba(black, .3);
+			border-left-color: black;
+			box-sizing: border-box;
+			animation: spin .6s linear infinite;
+		}
+	}
+
+	&.uploaded {
+		background: no-repeat center center;
+		background-size: cover;
+	}
+}
+
+@keyframes spin {
+	from { transform: rotate(0deg) }
+	to { transform: rotate(360deg) }
+}

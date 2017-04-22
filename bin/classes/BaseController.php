@@ -5,7 +5,7 @@ use spitfire\io\session\Session;
 
 abstract class BaseController extends Controller
 {
-	
+	/** @var UserModel|null */
 	protected $user = null;
 	protected $token = null;
 	protected $isAdmin = false;

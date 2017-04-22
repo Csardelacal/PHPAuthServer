@@ -120,12 +120,8 @@ class EditController extends BaseController
 		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
 		
 		if ($this->request->isPost() && $_POST['upload'] instanceof Upload) {
-			#Read the email from Post
 			$upload = $_POST['upload'];
-			$image  = new Image($upload->store());
-			
-			#Store the new email and de-verify the account.
-			$this->user->picture = $upload->store();
+			$this->user->picture = $upload->validate()->store();
 			$this->user->store();
 			
 			return $this->response->getHeaders()->redirect(new URL());
@@ -182,7 +178,7 @@ class EditController extends BaseController
 			#Validate the new value
 			validate($v->setValue($value));
 			
-			$attributeValue->value = $value instanceof Upload? $value->store() : $value;
+			$attributeValue->value = $value instanceof Upload? $value->validate()->store() : $value;
 			$attributeValue->store();
 			
 			return $this->response->getHeaders()->redirect(new URL());

@@ -10,7 +10,7 @@
 <div class="spacer" style="height: 30px;"></div>
 
 <form method="post" class="condensed standalone" action="" enctype="multipart/form-data">
-	<input type="text"     name="username" placeholder="Username">
+	<input type="text"     name="username" placeholder="Username" autocomplete="off" spellcheck="false">
 	<input type="password" name="password" placeholder="Password">
 	<?php if (isset($message) && $message): ?> 
 	<div class="message error"><?= $message ?></div>

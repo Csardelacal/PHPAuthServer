@@ -26,7 +26,7 @@ class AdminController extends BaseController
 	public function logo() {
 		
 		if ($this->request->isPost() && isset($_POST['file']) && $_POST['file'] instanceof Upload) {
-			$location = $_POST['file']->store();
+			$location = $_POST['file']->validate()->store();
 			
 			$img = new spitfire\io\Image($location);
 			$img->resize(500);

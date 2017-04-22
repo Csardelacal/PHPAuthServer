@@ -32,6 +32,14 @@ body {
 	margin: 0 auto;
 }
 
+.hidden {
+	display: none !important;
+}
+:disabled, .disabled, [disabled] {
+	pointer-events: none;
+	opacity: .5;
+}
+
 a {
 	color: #25A9F8;
 	text-decoration: none;
@@ -42,8 +50,8 @@ a img {
 }
 
 h1 {
-	font-size:                     22px;
-	color:                         #222;
+	font-size: 22px;
+	color:     #222;
 }
 
 form.condensed {
@@ -272,14 +280,41 @@ form.regular {
 	}
 }
 
+.material-form {
+	input[type="text"], .fake-field, .fake-field-ph {
+		display: inline-block;
+		padding: 3px 6px;
+		max-width: 95%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.fake-field-ph {
+		border: 1px solid transparent;
+	}
+	input[type="text"], .fake-field {
+		border: 1px solid grey;
+		background: #fff;
+		font-size: 16px;
+		font-family: inherit;
+		vertical-align: baseline;
+	}
+	.fake-field {
+		user-select: all;
+	}
+}
+
+.no-selection {
+	user-select: none;
+}
 
 .button {
 	$bg: #3191f1;
 	$boxshadow: #3167f1;
-	background: none repeat scroll 0 0 $bg;
+	background: $bg;
+	box-shadow: -2px -2px 1px $boxshadow inset;
+
 	border: none;
 	border-radius: 3px;
-	box-shadow: -2px -2px 1px $boxshadow inset;
 	color: #ffffff;
 	font-weight: bold;
 	padding: .5em .7em;
@@ -292,12 +327,16 @@ form.regular {
 		box-shadow: -2px -2px 1px darken($boxshadow, $disbled-darken-amount) inset;
 		cursor: not-allowed;
 	}
-}
 
-.countdown {
-	font-size:   20px;
-	line-height: 20px;
-	text-align: right;
+	&.error {
+		background: adjust_hue($bg, 150);
+		box-shadow: -2px -2px 1px darken(adjust_hue($boxshadow, 160), 30) inset;
+	}
+
+	&.success {
+		background: darken(adjust_hue($bg, -80), 20);
+		box-shadow: -2px -2px 1px darken(adjust_hue($boxshadow, -90), 40) inset;
+	}
 }
 
 h1 {
@@ -328,21 +367,6 @@ blockquote {
 	font-size:                  .9em;
 }
 
-#bid-success {
-	padding: 20px 25px 10px;
-	margin: 0 auto;
-	box-sizing: border-box;
-	
-	.title {
-		font-weight: bold;
-		font-size: 1.4em;
-	}
-	
-	p {
-		color: #444;
-	}
-}
-
 table {
 	width: 100%;
 	border:    solid 1px #EEE;
@@ -370,67 +394,6 @@ table {
 	td, th {
 		margin: 0;
 		padding: 8px 20px;
-	}
-}
-
-#bids {
-	max-width: 350px;
-	padding: 10px 25px;
-	margin: 0 auto;
-	box-sizing: border-box;
-	
-	.bid {
-		padding: 10px 0;
-		
-		.name {
-			float: left;
-		}
-		
-		.price {
-			float: right;
-			font-weight: bold;
-		}
-		
-		&:after {
-			content: '';
-			display: table;
-			clear:    both;
-		}
-		
-		&:first-child {
-			font-size: 1.2em;
-		}
-	}
-}
-
-.auction-list {
-	
-	.auction {
-		border-bottom: solid 1px #DDD;
-		padding: 5px;
-		
-		a{
-			color: #25A9F8;
-			text-decoration: none;
-		}
-		
-		.status {
-			float: right;
-		}
-		
-		.edit {
-			display: none;
-		}
-		
-		&:last-child {
-			border-bottom: none;
-		}
-		
-		&:hover {
-			.edit {
-				display: inline-block;
-			}
-		}
 	}
 }
 
@@ -493,43 +456,6 @@ footer {
 	line-height: 20px;
 	font-size: 12px;
 	border-top: solid 1px #999;
-}
-
-.listing.grid {
-	
-	.sample {
-		display: inline-block;
-		position: relative;
-		box-sizing: border-box;
-		width: 30%;
-		margin: 0 1% 10px;
-		padding: 10px;
-		border: solid 1px #CCC;
-		border-radius: 3px;
-		
-		.remove {
-			position: absolute;
-			z-index: 5;
-			color: #900;
-			
-			height: 18px;
-			width:  18px;
-			line-height: 16px;
-			font-size:  16px;
-			text-align: center;
-			border: solid 1px #CCC;
-			border-radius: 50%;
-			background: #FFF;
-			
-			top: 5px;
-			right: 5px;
-		}
-		
-		img {
-			width: 100%;
-			height: auto;
-		}
-	}
 }
 
 .material {
@@ -627,3 +553,4 @@ footer {
 @import '_properties';
 @import '_messages';
 @import '_tabs';
+@import '_icon-upload';

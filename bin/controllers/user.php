@@ -23,7 +23,7 @@ class UserController extends BaseController
 	
 	public function register() {
 		
-		if (isset($_GET['returnto'])) { 
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) {
 			$returnto = $_GET['returnto']; 
 		}
 		else {
@@ -64,6 +64,8 @@ class UserController extends BaseController
 			/**
 			 * Once we validated the data, let's move onto the next step, store the 
 			 * data.
+			 *
+			 * @var $user UserModel
 			 */
 			$user = db()->table('user')->newRecord();
 			$user->email    = $_POST['email'];
