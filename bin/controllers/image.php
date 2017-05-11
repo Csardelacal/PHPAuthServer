@@ -11,6 +11,21 @@ class ImageController extends Controller
 
 	const DEFAULT_APP_ICON = BASEDIR . '/assets/img/app.png';
 	
+	public function hero() {
+		$file = SysSettingModel::getValue('page.logo');
+		
+		$responseHeaders = $this->response->getHeaders();
+		$responseHeaders->set('Content-type', mime_content_type($file));
+		$responseHeaders->set('Cache-Control', 'no-transform,public,max-age=3600');
+		$responseHeaders->set('Expires', date('r', time() + 3600));
+		
+		if (ob_get_length() !== 0) {
+			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
+		}
+		
+		return $this->response->setBody(file_get_contents($file));
+	}
+	
 	public function app($id, $size = 32) {
 		$app  = db()->table('authapp')->get('_id', $id)->fetch();
 		

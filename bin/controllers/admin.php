@@ -30,9 +30,9 @@ class AdminController extends BaseController
 			
 			$img = new spitfire\io\Image($location);
 			$img->resize(500);
-			$resized = $img->store('./assets/img/' . basename($location));
+			$resized = $img->store($location);
 			
-			SysSettingModel::setValue('page.logo', substr($resized, strlen('./assets/')));
+			SysSettingModel::setValue('page.logo', $resized);
 		}
 		
 		

@@ -1,8 +1,7 @@
 .DS_Store
 /nbproject/
 bin/settings/environments.php
-bin/usr/sessions/
-bin/usr/uploads/
+bin/usr/
 assets/img/*_app.png
 assets/css/*.css.map
 node_modules/
