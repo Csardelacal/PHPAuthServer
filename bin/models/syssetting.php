@@ -26,7 +26,7 @@ class SysSettingModel extends Model
 	}
 	
 	public static function setValue($key, $to) {
-		$record = db()->table('SysSetting')->getById($key)? : db()->table('SysSetting')->newRecord();
+		$record = db()->table('SysSetting')->get('key', $key)->fetch()? : db()->table('SysSetting')->newRecord();
 		$record->key       = $key;
 		$record->value     = $to;
 		$record->changedby = null;

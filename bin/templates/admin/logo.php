@@ -9,7 +9,7 @@
 
 <div class="row1 material">
 	<div class="span1">
-		<img src="<?= URL::asset(SysSettingModel::getValue('page.logo')) ?>">
+		<img src="<?= url('image', 'hero') ?>">
 	</div>
 </div>
 
