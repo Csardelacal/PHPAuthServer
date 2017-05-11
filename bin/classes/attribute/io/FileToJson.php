@@ -18,8 +18,8 @@ class FileToJson
 		
 		return Array(
 			'type'     => 'file',
-			'preview'  => (string) new \absoluteURL('image',    'attribute', $this->file->attr->_id, $this->file->user->_id),
-			'download' => (string) new \absoluteURL('download', 'attribute', $this->file->attr->_id, $this->file->user->_id)
+			'preview'  => (string) new \AbsoluteURL('image',    'attribute', $this->file->attr->_id, $this->file->user->_id),
+			'download' => (string) new \AbsoluteURL('download', 'attribute', $this->file->attr->_id, $this->file->user->_id)
 		);
 	}
 	

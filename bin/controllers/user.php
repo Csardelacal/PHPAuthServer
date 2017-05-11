@@ -211,7 +211,7 @@ class UserController extends BaseController
 				$token = TokenModel::create(null, 1800, false);
 				$token->user = $user;
 				$token->store();
-				$url   = new absoluteURL('user', 'recover', $token->token);
+				$url   = new AbsoluteURL('user', 'recover', $token->token);
 				EmailModel::queue($user->email, 'Recover your password', sprintf('Click here to recover your password: <a href="%s">%s</a>', $url, $url));
 			}
 			
@@ -240,7 +240,7 @@ class UserController extends BaseController
 			$token = TokenModel::create(null, 1800, false);
 			$token->user = $this->user;
 			$token->store();
-			$url   = new absoluteURL('user', 'activate', $token->token);
+			$url   = new AbsoluteURL('user', 'activate', $token->token);
 			EmailModel::queue($this->user->email, 'Activate your account', 
 					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url));
 		}

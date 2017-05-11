@@ -14,7 +14,7 @@
 		</p>
 		
 		<blockquote>
-			<pre><code><?= new absoluteURL('auth', 'oauth', $token->token) ?></code></pre>
+			<pre><code><?= new AbsoluteURL('auth', 'oauth', $token->token) ?></code></pre>
 		</blockquote>
 		
 		<p>
@@ -43,7 +43,7 @@
 					This is the URL where the user should be directed when he does not 
 					authenticate this token. If not provided, the user will be directed 
 					to the <code>returnurl</code> and application can then use 
-					<code><?= new absoluteURL('token', 'status', $token->token); ?></code>
+					<code><?= new AbsoluteURL('token', 'status', $token->token); ?></code>
 					endpoint to check the state.
 				</td>
 			</tr>
