@@ -3,7 +3,7 @@
 
 <div class="row1">
 	<div class="span1 login-logo">
-		<img src="<?= URL::asset(SysSettingModel::getValue('page.logo')) ?>">
+		<img src="<?= url('image', 'hero') ?>">
 	</div>
 </div>
 
