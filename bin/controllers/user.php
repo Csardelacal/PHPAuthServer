@@ -236,13 +236,16 @@ class UserController extends BaseController
 			$token->user->verified = 1;
 			$token->user->store();
 		}
-		else {
+		elseif($this->user || $token->user) {
 			$token = TokenModel::create(null, 1800, false);
-			$token->user = $this->user;
+			$token->user = $this->user? : $token->user;
 			$token->store();
 			$url   = new AbsoluteURL('user', 'activate', $token->token);
 			EmailModel::queue($this->user->email, 'Activate your account', 
 					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url));
+		}
+		else {
+			throw new PublicException('Not logged in', 403);
 		}
 		
 		#We need to redirect the user back to the home page

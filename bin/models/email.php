@@ -65,6 +65,12 @@ class EmailModel extends Model
 			return; #Everything delivered nicely
 		}
 		
+		if (!$email->to) {
+			$email->delivered = time();
+			$email->store();
+			throw new PrivateException("Email #{$email->_id} had no recipient", 1705250222);
+		}
+		
 		$transport->deliver($email);
 		
 		$email->delivered = time();
