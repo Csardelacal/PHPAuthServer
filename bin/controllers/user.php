@@ -119,7 +119,10 @@ class UserController extends BaseController
 			
 			$user = $query->fetch();
 			
-			if ($user && $user->checkPassword($_POST['password'])) {
+			if ($user && $user->disabled !== null) {
+				throw new PublicException('This account has been disabled permanently.', 401);
+			}
+			elseif ($user && $user->checkPassword($_POST['password'])) {
 				$session = Session::getInstance();
 				$session->lock($user->_id);
 				
