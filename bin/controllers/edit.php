@@ -43,8 +43,13 @@ class EditController extends BaseController
 			#Go on, now setting the old username as past
 			$old = $this->user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch();
 			
-			$dupquery->count();
+			#If a user accidentally attempts to use the same username as they 
+			#already are, we stop them from doing so.
+			if ($old->name === $new->name) {
+				throw new PublicException('Username is already ' . htmlspecialchars($username), 400);
+			}
 			
+			#Set the old username as expired in 3 months
 			$old->expires = time() + (90 * 24 * 3600);
 			$old->store();
 			
