@@ -10,6 +10,8 @@ and open the template in the editor.
 
 $disbled-darken-amount: 30;
 
+@import 'reset/_clearfix';
+
 * {
 	box-sizing: border-box;
 }
@@ -41,8 +43,12 @@ body {
 }
 
 a {
-	color: #25A9F8;
+	color: #555;
 	text-decoration: none;
+	
+	&:hover {
+		color: #333;
+	}
 }
 
 a img {
@@ -337,6 +343,11 @@ form.regular {
 		background: darken(adjust_hue($bg, -80), 20);
 		box-shadow: -2px -2px 1px darken(adjust_hue($boxshadow, -90), 40) inset;
 	}
+	
+	&.small {
+		padding: .35em .5em;
+		font-size: .8em;
+	}
 }
 
 h1 {
@@ -541,16 +552,26 @@ footer {
 
 @media all and (min-width: 960px) {
 	@import '_scaffolding';
+	
+	.mobile-only {
+		display: none;
+	}
 }
 
 @media all and (max-width: 960px) {
 	@import '_scaffolding_mobile';
+	
+	.desktop-only {
+		display: none;
+	}
 }
 
 
+@import '_navbar';
 @import '_admin';
 @import '_pagination';
 @import '_properties';
 @import '_messages';
 @import '_tabs';
 @import '_icon-upload';
+@import '_dials';

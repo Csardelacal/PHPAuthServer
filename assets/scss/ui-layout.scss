@@ -1,0 +1,151 @@
+body, html {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+body {
+	padding-bottom: 100px;
+	position: relative;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.topbar {
+	height: 50px;
+	line-height: 50px;
+	/*background:  #34ba39;*/
+	background: #F3F3F3;
+	color: #2a912e;
+	border-bottom: solid 2px #2a912e;
+	text-transform: uppercase;
+	padding: 0px 10px;
+}
+
+.contains-sidebar {
+	width: 25%;
+	float: left;
+	position: relative;
+	z-index: 99999;
+
+	&.collapsable {
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		overflow: hidden;
+		transition: .3s opacity .2s ease-in, width .2s ease-in;
+
+		&.collapsed {
+			width: 0%;
+			opacity : 0;
+			transition: opacity .2s ease-in, .3s width .2s ease-in;
+			
+			.sidebar {
+				left: -25%;
+				transition: left .2s ease-in;
+			}
+		}
+	}
+}
+
+.sidebar {
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	transition: .3s left .2s ease-in;
+	
+	.menu-title {
+		color: #2a912e;
+		padding: 10px;
+	}
+	
+	.menu-entry {
+		padding: 5px 10px;
+		font-size: .8em;
+		color: #666;
+	}
+
+	a {
+		color: inherit;
+		text-decoration: none;
+		
+		&:hover {
+			color: #333;
+		}
+	}
+}
+
+.sidebar:hover {
+	overflow: auto;
+}
+
+.content {
+	float: left;
+	width: 75%;
+}
+
+.toggle-button {
+	display: inline-block;
+	position: relative;
+	vertical-align: middle;
+	width : 20px;
+	height: 30px;
+	padding: 0px;
+	background: linear-gradient(0deg, transparent 6px, #FFF 6px, #FFF 9px, transparent 9px);
+}
+
+body > .toggle-button {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 10px 20px;
+}
+
+.toggle-button:before {
+	content:        '';
+	position: absolute;
+	left:          0px;
+	top:          13px;
+	height:        3px;
+	width:        100%;
+	background:   #FFF;
+}
+
+.toggle-button:after {
+	content:        '';
+	position: absolute;
+	left:          0px;
+	top:           5px;
+	height:        3px;
+	width:        100%;
+	background:   #FFF;
+}
+
+.toggle-button.hidden {
+	display: none;
+}
+
+.bottom {
+	background: #eee;
+	border-top: solid 1px #ccc;
+	padding: 20px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100px;
+}
+
+@media all and (min-width : 960px) {
+	.toggle-button-target {display: none;}
+}
+
+@media all and (max-width : 960px) {
+	.content { width: 100%; }
+	.sidebar { background: #FFF; left: 0;}
+	.contains-sidebar { background: rgba(0, 0, 0, 0.3); }
+}

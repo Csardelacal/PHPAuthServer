@@ -1,0 +1,75 @@
+
+
+.dials {
+	border-left: solid 1px #CCC;
+	font-size: .8em;
+	
+	ul {
+		margin: 2px;
+		padding-left: 10px;
+		list-style-type: none;
+	}
+	
+	a {
+		display: inline-block;
+		padding: 2px;
+	}
+	
+	a:hover {
+		background: #EEE;
+	}
+}
+
+@media all and (max-width: 960px) {
+	
+	.has-dials {
+		position: relative;
+	}
+	
+	.dial-toggle {
+		padding:  20px;
+		position: absolute;
+		top: 0;
+		right: 10px;
+
+		.dots,
+		.dots:before,
+		.dots:after {
+			position: absolute;
+			top:           0;
+			right:         0;
+			background:   #AAA;
+			width:         4px;
+			height:        4px;
+		}
+
+		.dots:before {
+			content:        '';
+			top:           7px;
+			right:         0;
+		}
+
+		.dots:after {
+			content:        '';
+			top:          14px;
+			right:         0;
+		}
+	}
+	
+	.dials {
+		border: solid 1px #CCC;
+		background: #FFF;
+		position: absolute;
+		top: 0;
+		right: 20px;
+		width: 200px !important;
+		display: none;
+		box-shadow: 0 0 3px #CCC;
+		
+		a{
+			padding: 5px 20px;
+			color: #555;
+			font-weight: bold;
+		}
+	}
+}
