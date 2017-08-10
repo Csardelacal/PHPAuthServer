@@ -28,6 +28,13 @@ class AuthController extends BaseController
 		$this->view->set('token', $token);
 	}
 	
+	/**
+	 * 
+	 * @param type $tokenid
+	 * @return type
+	 * @layout minimal.php
+	 * @throws PublicException
+	 */
 	public function oauth($tokenid) {
 		
 		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : new URL('auth', 'invalidReturn');
@@ -45,9 +52,9 @@ class AuthController extends BaseController
 		
 		$this->view->set('token',     $token);
 		$this->view->set('cancelURL', $failureURL);
-		$this->view->set('continue',  (string) new URL('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
+		$this->view->set('continue',  (string) url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
 		
-		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(new URL('user', 'login', Array('returnto' => (string)URL::current()))); }
+		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) spitfire\core\http\URL::current()))); }
 		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
 		
 		/*
@@ -62,6 +69,16 @@ class AuthController extends BaseController
 				$authorization->user = $this->user;
 				$authorization->app  = $token->app;
 				$authorization->store();
+			}
+			
+			/*
+			 * Retrieve the IP information from the client. This should allow the 
+			 * application to provide the user with data where they connected from.
+			 */
+			$ip = IP::makeLocation();
+			if ($ip) {
+				$token->country = $ip->country_code;
+				$token->city    = substr($ip->city, 0, 20);
 			}
 			
 			$token->user = $this->user;

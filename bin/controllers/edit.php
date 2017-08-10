@@ -2,11 +2,11 @@
 
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
-use spitfire\io\Image;
 use spitfire\io\Upload;
 use spitfire\validation\EmptyValidationRule;
 use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MinLengthValidationRule;
+use spitfire\validation\ValidationError;
 use spitfire\validation\ValidationException;
 
 class EditController extends BaseController
@@ -20,7 +20,9 @@ class EditController extends BaseController
 			
 			#Read the username if it was sent, check if it's valid
 			$username = _def($_POST['username'], '');
-			if (!preg_match('/^[a-zA-z][a-zA-z0-9\-\_]{2,19}$/', $username)) { throw new ValidationException('Invalid username', 400, Array('Username is invalid')); }
+			if (!preg_match('/^[a-zA-z][a-zA-z0-9\-\_]{2,19}$/', $username)) { 
+				throw new ValidationException('Invalid username', 400, Array(new ValidationError('Username is invalid', 'Usernames may not start with a number and contain only letters, numbers, hyphens and underscores'))); 
+			}
 			
 			#Check if the new username is taken
 			$dupquery = db()->table('username')->get('name', $username)
@@ -35,7 +37,7 @@ class EditController extends BaseController
 			 * that is not the current one.
 			 */
 			if ($taken && $taken->user->_id === $this->user->_id) {/*Do nothing*/}
-			elseif ($dupquery->count() !== 0) { throw new ValidationException('Username is taken', 400, Array('Username is taken')); }
+			elseif ($dupquery->count() !== 0) { throw new ValidationException('Username is taken', 400, Array(new ValidationError('Username is taken', 'Please select a different username'))); }
 			
 			#In case the user is moving back to a previous alias, we will let him do so
 			$new = $taken !== null? $taken : db()->table('username')->newRecord();
@@ -46,7 +48,7 @@ class EditController extends BaseController
 			#If a user accidentally attempts to use the same username as they 
 			#already are, we stop them from doing so.
 			if ($old->name === $new->name) {
-				throw new PublicException('Username is already ' . htmlspecialchars($username), 400);
+				throw new ValidationException('Username is already' . htmlspecialchars($username), 400, Array(new ValidationError('Pick a different username', 'To change your username enter a different one')));
 			}
 			
 			#Set the old username as expired in 3 months
@@ -109,7 +111,7 @@ class EditController extends BaseController
 			
 			#Check if the old password is correct
 			if (!$this->user->checkPassword($passOld)) {
-				throw new PublicException('Old password is incorrect');
+				throw new PublicException('Old password is incorrect', 401);
 			}
 			
 			#Store the new email and de-verify the account.
@@ -146,7 +148,14 @@ class EditController extends BaseController
 		
 		$attributeValue = db()->table('user\attribute')->get('user', $this->user)->addRestriction('attr', $attribute)->fetch();
 		
-		if ($this->request->isPost()) {
+		/*
+		 * Fetch the validators the system has for the value. This way we can check
+		 * the data submitted and can also inform the user of errors.
+		 */
+		$validators = db()->table('attribute\validator')->get('attribute', $attribute)->fetchAll();
+		
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
 			
 			/*
 			 * It may happen that this user never defined this attribute, in this 
@@ -172,7 +181,6 @@ class EditController extends BaseController
 			elseif ($attribute->datatype === 'boolean') { $value = isset($_POST['value'])? 1 : 0; }
 			else { $value = _def($_POST['value'], ''); }
 			
-			$validators = db()->table('attribute\validator')->get('attribute', $attribute)->fetchAll();
 			foreach ($validators as $dbValidator) {
 				$vname = $dbValidator->validator;
 				$rule  = new $vname();
@@ -188,6 +196,8 @@ class EditController extends BaseController
 			
 			return $this->response->getHeaders()->redirect(new URL());
 		}
+		catch (HTTPMethodException$e) { /* Do nothing, show the form normall */}
+		catch (ValidationException$e) { $this->view->set('errors', $e->getResult()); } 
 		
 		$this->view->set('attribute', $attribute);
 		$this->view->set('value', $attributeValue? $attributeValue->value : '');

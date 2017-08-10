@@ -41,10 +41,10 @@ $data['disabled']         = !!$profile->disabled;
 
 #Avatar
 $data['avatar']          = Array();
-$data['avatar']['32']    = (string)new AbsoluteURL('image', 'user', $profile->_id, 32);
-$data['avatar']['64']    = (string)new AbsoluteURL('image', 'user', $profile->_id, 64);
-$data['avatar']['128']   = (string)new AbsoluteURL('image', 'user', $profile->_id, 128);
-$data['avatar']['256']   = (string)new AbsoluteURL('image', 'user', $profile->_id, 256);
+$data['avatar']['32']    = (string)url('image', 'user', $profile->_id,  32)->absolute();
+$data['avatar']['64']    = (string)url('image', 'user', $profile->_id,  64)->absolute();
+$data['avatar']['128']   = (string)url('image', 'user', $profile->_id, 128)->absolute();
+$data['avatar']['256']   = (string)url('image', 'user', $profile->_id, 256)->absolute();
 
 #Get the properties
 $data['attributes'] = Array();

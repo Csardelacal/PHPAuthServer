@@ -48,18 +48,18 @@
 
 <div class="row6 fluid has-dials">
 	<div class="span5">
-		<div style="font-size: .85em; color: #555">
+		<div style="font-size: .75em; color: #555">
 			<?= $attribute->name ?>
 		</div>
 		
 		<?php $attrValue = $user->attributes->getQuery()->addRestriction('attr', $attribute)->fetch() ?>
 		
 		<div class="spacer" style="height: 5px"></div>
-		<div style="border-left: solid 2px #2a912e; padding: 15px; font-size: .8em; color: #333;">
+		<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
 			<div>
 				<?php if ($attribute->datatype === 'file'): ?>
 				<div style="text-align: center">
-					<img src="<?= url('image', 'attribute', $attribute->_id, $user->_id) ?>" style="max-width: 100%; max-height: 200px">
+					<img src="<?= url('image', 'attribute', $attribute->_id, $user->_id, ['nonce' => time()]) ?>" style="max-width: 100%; max-height: 200px">
 				</div>
 				<?php elseif ($attribute->datatype === 'text'): ?>
 				<div style="white-space: pre-wrap;"><?= $attrValue? __($attrValue->value, 200) : '<em>Undefined</em>' ?></div>
@@ -90,11 +90,14 @@
 </div>
 
 <?php foreach ($authorized as $app): ?>
+<?php $authapp = $app->app ?>
 <div class="spacer" style="height: 10px"></div>
 <div class="row6 fluid has-dials">
 	<div class="span5">
 		<img src="<?= url('image', 'app', $app->_id, 32) ?>" style="vertical-align: middle">
-		<span><?= $app->app->name ?></span>
+		
+		<?php if ($authapp->url): ?><a href="<?= $authapp->url ?>"><?= $authapp->name ?></a>
+		<?php else: ?><span><?= $authapp->name ?></span><?php endif; ?>
 	</div>
 	<div class="span1 dials">
 		<ul>
@@ -116,13 +119,19 @@
 <?php foreach ($sessions as $session): ?>
 <div class="spacer" style="height: 10px"></div>
 <div class="row6 fluid has-dials">
-	<div class="span5">
-		<img src="<?= url('image', 'app', $session->app->_id, 32) ?>" style="vertical-align: middle">
+	<div class="span3">
+		<img src="<?= url('image', 'app', $session->app->_id, 32) ?>" style="vertical-align: middle; height: 18px;">
 		<span><?= $session->app->name ?></span>
+	</div>
+	<div class="span2">
+		<?php if ($session->country): ?>
+		<img src="https://lipis.github.io/flag-icon-css/flags/4x3/<?= strtolower($session->country) ?>.svg" style="vertical-align: middle; height: 18px;">
+		<span><?= $session->city ?></span>
+		<?php endif; ?>
 	</div>
 	<div class="span1 dials">
 		<ul>
-			<li><a href="<?= url('token', 'end', $session->token) ?>">Remove</a></li>
+			<li><a href="<?= url('token', 'end', $session->token) ?>">End session</a></li>
 		</ul>
 	</div>
 </div>

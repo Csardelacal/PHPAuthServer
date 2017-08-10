@@ -16,4 +16,9 @@ class CronController extends Controller
 			flock($fh, LOCK_UN);
 		}
 	}
+	
+	public function testGeo() {
+		var_dump(IP::makeLocation());
+		die();
+	}
 }

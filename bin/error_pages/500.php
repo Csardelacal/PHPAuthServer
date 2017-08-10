@@ -75,7 +75,7 @@ use spitfire\core\Environment;
 			</div>
 		</div>
 
-		<?php if(Environment::get('debugging_mode')): ?>
+		<?php if(Environment::get('debug_mode')): ?>
 		<div class="errordescription wrapper">
 			<h2>Further error information <small>To hide this set debug_mode to false.</small></h2>
 			<p>The stacktrace displays the function calls made that led to the error. They are displayed in an inverted order to how they were called.</p>

@@ -22,15 +22,17 @@
 	</div>
 </div>
 
-<form method="POST" enctype="multipart/form-data">
+<div class="spacer" style="height: 40px"></div>
+
+<form class="regular" method="POST" enctype="multipart/form-data">
 	<!-- App Name -->
 	<div class="row5 fluid has-dials">
 		<div class="span4">
-			<div style="font-size: .85em; color: #555">
+			<div style="font-size: .75em; color: #555">
 				Name
 			</div>
 			
-			<div style="border-left: solid 2px #2a912e; padding: 15px; font-size: .8em; color: #333;">
+			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
 				<div class="property-value" id="name-container">
 					<span id="name-display" class="fake-field-ph"><?= __($app->name) ?></span>
 					<div class="edit-field hidden"><input type="text" name="name" id="name-input" disabled></div>
@@ -40,14 +42,38 @@
 		<div class="span1 dials">
 			<ul>
 				<li>
-					<a  href="#change" id="change-name">Change</a>
+					<a href="#change" id="change-name">Change</a>
 					<a href="#change" id="cancel-name" class="hidden cancel">Cancel</a>
 				</li>
 			</ul>
 		</div>
 	</div>
 	
-	<div class="spacer" style="height: 20px"></div>
+	<div class="separator large light"></div>
+	
+	<!-- App URL -->
+	<div class="row5 fluid has-dials">
+		<div class="span4">
+			<div style="font-size: .75em; color: #555">
+				Public URL (users can click this to be directed to the app)
+			</div>
+			
+			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
+				<div class="field">
+					<input type="text" name="url" value="<?= __($app->url) ?>">
+				</div>
+			</div>
+		</div>
+		<div class="span1 dials">
+			<ul>
+				<li>
+					<!-- No dials yet-->
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="separator large light"></div>
 	
 	<!-- App ID -->
 	<div class="row5 fluid has-dials">
@@ -56,7 +82,7 @@
 				App ID
 			</div>
 			
-			<div style="border-left: solid 2px #2a912e; padding: 15px; font-size: .8em; color: #333;">
+			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
 				<div class="property-value" id="id-container"><span class="fake-field"><?= __($app->appID) ?></span></div>
 			</div>
 		</div>
@@ -69,7 +95,7 @@
 		</div>
 	</div>
 	
-	<div class="spacer" style="height: 20px"></div>
+	<div class="separator large light"></div>
 	
 	<!-- App Secret -->
 	<div class="row5 fluid has-dials">
@@ -78,7 +104,7 @@
 				App Secret
 			</div>
 			
-			<div style="border-left: solid 2px #2a912e; padding: 15px; font-size: .8em; color: #333;">
+			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
 				<div class="property-value" id="secret-container" data-actual="<?= __($app->appSecret) ?>"><em class="fake-field-ph">Hidden</em></div>
 			</div>
 		</div>
@@ -90,7 +116,7 @@
 		</div>
 	</div>
 	
-	<div class="spacer" style="height: 20px"></div>
+	<div class="separator large light"></div>
 	
 	<!-- Icon -->
 	<div class="row5 fluid has-dials">
@@ -99,7 +125,7 @@
 				Icon
 			</div>
 			
-			<div style="border-left: solid 2px #2a912e; padding: 15px; font-size: .8em; color: #333;">
+			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
 				<div class="property-value">
 					<img src="<?= url('image','app', $app->_id, 128, ['nonce' => time()]) ?>" class="user-icon square big" id="icon-display">
 					<div class="edit-field hidden" id="icon-upload-wrap">

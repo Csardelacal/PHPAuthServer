@@ -168,14 +168,13 @@ class UserController extends BaseController
 			$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user));
 			
 			$groups = $groupquery->fetchAll();
-			if (isset($groups[0])) { $permissions[] = 'groups'; }
 		}
 		
 		#Check if the user is himself
-		if ($token && $token->user && $profile->_id === $token->user->_id) { $permissions = array_merge($permissions, Array('me', 'groups', 'related')); }
+		if ($token && $token->user && $profile->_id === $token->user->_id) { $permissions = array_merge($permissions, Array('me', 'members')); }
 		
 		#Check if the user is an administrator
-		if ($this->isAdmin) { $permissions = array_merge($permissions, Array('me', 'groups', 'related', 'nem')); }
+		if ($this->isAdmin) { $permissions = array_merge($permissions, Array('me', 'members', 'nem')); }
 		
 		#If permissions aren't empty, let the system filter those
 		if (!empty($permissions)) { $permissions = array_unique($permissions); }
@@ -243,7 +242,7 @@ class UserController extends BaseController
 			$token = TokenModel::create(null, 1800, false);
 			$token->user = $this->user? : $token->user;
 			$token->store();
-			$url   = new AbsoluteURL('user', 'activate', $token->token);
+			$url   = url('user', 'activate', $token->token)->absolute();
 			EmailModel::queue($this->user->email, 'Activate your account', 
 					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url));
 		}

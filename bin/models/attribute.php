@@ -15,8 +15,6 @@ use spitfire\storage\database\Schema;
  * There's the possibility of altering the bean's form with JS when the user selects
  * file as the desired data type which is the only one to require a different input.
  * 
- * @todo Introduce validation for these settings. This way the users could have
- * modify them while keeping the environment safe for your own apps.
  */
 class AttributeModel extends Model
 {
@@ -33,8 +31,8 @@ class AttributeModel extends Model
 		$schema->datatype = new EnumField('string', 'text', 'int', 'boolean', 'file');
 		$schema->validate = new ChildrenField('attribute\validator', 'attribute');
 		
-		$schema->readable = new EnumField('public', 'groups', 'related', 'me', 'nem');
-		$schema->writable = new EnumField('public', 'groups', 'related', 'me', 'nem');
+		$schema->readable = new EnumField('public', 'members', 'me', 'nem');
+		$schema->writable = new EnumField('public', 'members', 'me', 'nem');
 	}
 
 }

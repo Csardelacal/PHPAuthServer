@@ -2,6 +2,14 @@
 .separator {
 	border-top: solid 1px #CCC;
 	margin:     10px 0;
+	
+	&.large {
+		margin:  20px 0;
+	}
+	
+	&.light {
+		border-top: solid 1px #DDD;
+	}
 }
 
 .editable-property

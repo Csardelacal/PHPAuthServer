@@ -23,9 +23,6 @@ html {
 body {
 	margin: 0;
 	font-family: sans-serif;
-	padding-bottom: 100px;
-	min-height: 100%;
-	position: relative;
 	background-color: #F3F3F3;
 }
 
@@ -248,6 +245,7 @@ form.regular {
 
 		input[type=text],
 		input[type=email],
+		input[type=password],
 		textarea,
 		select {
 			width: 100%;
@@ -255,14 +253,11 @@ form.regular {
 			font-size: 1.05em;
 			background: #FFF;
 			border: solid 1px #EEE;
-			border-bottom: solid 2px #AAA;
 			box-sizing: border-box;
 			height: 2em;
-
-			transition: border-color .3s ease;
+			box-shadow: 0 0 1px rgba(0, 0, 0, .2);
 
 			&:focus {
-				border-bottom: solid 2px #3191F1;
 				outline: none;
 			}
 		}
@@ -408,13 +403,6 @@ table {
 	}
 }
 
-.error-message {
-	text-align: center;
-	display: block;
-	color: #666;
-	padding: 30px;
-}
-
 .menubar {
 	background: #FEFEFE;
 	vertical-align: top;
@@ -546,6 +534,30 @@ footer {
 	
 	img {
 		height: 15px;
+	}
+}
+
+.validation-errors
+{
+	color: #900;
+	list-style: none;
+	font-size: .9em;
+	margin: 10px 0;
+	padding: 0;
+	
+	li {
+		border-left: solid 2px #900;
+		padding-left: 10px;
+		margin-top: 8px;
+	}
+	
+	.error-message {
+		font-weight: bold;
+		display: block;
+	}
+	
+	.extended-message {
+		font-size: .9em;
 	}
 }
 

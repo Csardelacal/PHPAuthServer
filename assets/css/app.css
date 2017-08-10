@@ -22,9 +22,6 @@ html {
 body {
   margin: 0;
   font-family: sans-serif;
-  padding-bottom: 100px;
-  min-height: 100%;
-  position: relative;
   background-color: #F3F3F3; }
 
 .wrapper {
@@ -177,6 +174,7 @@ form.regular .field {
     width: 100%; }
   form.regular .field input[type=text],
   form.regular .field input[type=email],
+  form.regular .field input[type=password],
   form.regular .field textarea,
   form.regular .field select {
     width: 100%;
@@ -184,15 +182,14 @@ form.regular .field {
     font-size: 1.05em;
     background: #FFF;
     border: solid 1px #EEE;
-    border-bottom: solid 2px #AAA;
     box-sizing: border-box;
     height: 2em;
-    transition: border-color .3s ease; }
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2); }
     form.regular .field input[type=text]:focus,
     form.regular .field input[type=email]:focus,
+    form.regular .field input[type=password]:focus,
     form.regular .field textarea:focus,
     form.regular .field select:focus {
-      border-bottom: solid 2px #3191F1;
       outline: none; }
   form.regular .field textarea {
     height: 150px; }
@@ -292,12 +289,6 @@ table {
     margin: 0;
     padding: 8px 20px; }
 
-.error-message {
-  text-align: center;
-  display: block;
-  color: #666;
-  padding: 30px; }
-
 .menubar {
   background: #FEFEFE;
   vertical-align: top;
@@ -393,6 +384,22 @@ footer {
     opacity: 1; }
   .edit img {
     height: 15px; }
+
+.validation-errors {
+  color: #900;
+  list-style: none;
+  font-size: .9em;
+  margin: 10px 0;
+  padding: 0; }
+  .validation-errors li {
+    border-left: solid 2px #900;
+    padding-left: 10px;
+    margin-top: 8px; }
+  .validation-errors .error-message {
+    font-weight: bold;
+    display: block; }
+  .validation-errors .extended-message {
+    font-size: .9em; }
 
 @media all and (min-width: 960px) {
   /*
@@ -805,6 +812,10 @@ ul.pagination {
 .separator {
   border-top: solid 1px #CCC;
   margin: 10px 0; }
+  .separator.large {
+    margin: 20px 0; }
+  .separator.light {
+    border-top: solid 1px #DDD; }
 
 .editable-property {
   display: block; }
