@@ -246,6 +246,8 @@ form.regular input[type="submit"] {
   .button.small, form.regular input.small[type="submit"] {
     padding: .35em .5em;
     font-size: .8em; }
+  .button:hover, form.regular input[type="submit"]:hover {
+    color: #FFF; }
 
 h1 {
   color: #282828;
