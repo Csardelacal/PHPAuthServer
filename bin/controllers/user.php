@@ -53,7 +53,15 @@ class UserController extends BaseController
 					$validatorUsername->setValue(_def($_POST['username'], '')), 
 					$validatorPassword->setValue(_def($_POST['password'], '')));
 			
-			if (db()->table('username')->get('name', $_POST['username'])->addRestriction('expires', null, 'IS')->fetch()) {
+			$exists = db()->table('username')
+				->get('name', $_POST['username'])
+				->group()
+					->addRestriction('expires', null, 'IS')
+					->addRestriction('expires', time(), '>')
+				->endGroup()
+				->fetch();
+			
+			if ($exists) {
 				throw new ValidationException('Username is taken', 0, Array('Username is taken'));
 			}
 			
