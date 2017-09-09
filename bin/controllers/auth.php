@@ -19,9 +19,12 @@ class AuthController extends BaseController
 		if ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->addRestriction('expires', time(), '>')->fetch(); }
 		else          { $token = null; }
 		
+		#Check if the application grants generous TTLs
+		$generous = \spitfire\core\Environment::get('phpAuth.token.extraTTL');
+		
 		#If the token does auto-extend, do so now.
-		if ($token && $token->extends) {
-			$token->expires = time() + $token->ttl;
+		if ($token && $token->extends && $token->expires < (time() + $token->ttl) ) {
+			$token->expires = time() + ($generous? $token->ttl * 1.15 : $token->ttl);
 			$token->store();
 		}
 		

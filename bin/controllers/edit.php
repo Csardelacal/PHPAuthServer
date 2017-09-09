@@ -8,6 +8,7 @@ use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MinLengthValidationRule;
 use spitfire\validation\ValidationError;
 use spitfire\validation\ValidationException;
+use webhook\HookModel;
 
 class EditController extends BaseController
 {
@@ -59,6 +60,9 @@ class EditController extends BaseController
 			$new->name = $username;
 			$new->expires = null;
 			$new->store();
+			
+			#Notify the webhook about the change
+			HookModel::notify(HookModel::USER_UPDATED, $this->user);
 			
 			return $this->response->getHeaders()->redirect(new URL());
 		} 
@@ -193,6 +197,9 @@ class EditController extends BaseController
 			
 			$attributeValue->value = $value instanceof Upload? $value->validate()->store() : $value;
 			$attributeValue->store();
+			
+			#Notify the webhook about the change
+			HookModel::notify(HookModel::USER_UPDATED, $this->user);
 			
 			return $this->response->getHeaders()->redirect(new URL());
 		}

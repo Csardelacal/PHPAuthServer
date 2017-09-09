@@ -12,7 +12,7 @@ if ($token && $token->user) {
 	$data['user']['username'] = $token->user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name;
 	$data['user']['verified'] = $token->user->verified;
 	$data['user']['disabled'] = $token->user->disabled;
-	$data['user']['avatar']   = (string)new AbsoluteURL('image', 'user', $token->user->_id);
+	$data['user']['avatar']   = (string)url('image', 'user', $token->user->_id)->absolute();
 } else {
 	$data['authenticated'] = false;
 }

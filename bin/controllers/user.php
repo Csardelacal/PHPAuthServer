@@ -21,6 +21,13 @@ class UserController extends BaseController
 		
 	}
 	
+	/**
+	 * 
+	 * @layout minimal.php
+	 * @return type
+	 * @throws HTTPMethodException
+	 * @throws ValidationException
+	 */
 	public function register() {
 		
 		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) {
@@ -99,6 +106,12 @@ class UserController extends BaseController
 		$this->view->set('attributes', $attributes);
 	}
 	
+	/**
+	 * 
+	 * @layout minimal.php
+	 * @return type
+	 * @throws PublicException
+	 */
 	public function login() {
 		
 		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 

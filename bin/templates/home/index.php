@@ -89,19 +89,19 @@
 	Authorized apps
 </div>
 
-<?php foreach ($authorized as $app): ?>
-<?php $authapp = $app->app ?>
+<?php foreach ($authorized as $auth): ?>
+<?php $app = $auth->app ?>
 <div class="spacer" style="height: 10px"></div>
 <div class="row6 fluid has-dials">
 	<div class="span5">
-		<img src="<?= url('image', 'app', $app->_id, 32) ?>" style="vertical-align: middle">
+		<img src="<?= url('image', 'app', $app->_id, 32) ?>" style="vertical-align: middle;  height: 18px;">
 		
-		<?php if ($authapp->url): ?><a href="<?= $authapp->url ?>"><?= $authapp->name ?></a>
-		<?php else: ?><span><?= $authapp->name ?></span><?php endif; ?>
+		<?php if ($app->url): ?><a href="<?= $app->url ?>"><?= $app->name ?></a>
+		<?php else: ?><span><?= $app->name ?></span><?php endif; ?>
 	</div>
 	<div class="span1 dials">
 		<ul>
-			<li><a href="<?= url('app', 'deauthorize', $app->app->_id) ?>">Remove</a></li>
+			<li><a href="<?= url('app', 'deauthorize', $app->_id) ?>">Remove</a></li>
 		</ul>
 	</div>
 </div>
@@ -121,7 +121,8 @@
 <div class="row6 fluid has-dials">
 	<div class="span3">
 		<img src="<?= url('image', 'app', $session->app->_id, 32) ?>" style="vertical-align: middle; height: 18px;">
-		<span><?= $session->app->name ?></span>
+		<?php if ($session->app->url): ?><a href="<?= $session->app->url ?>"><?= $session->app->name ?></a>
+		<?php else: ?><span><?= $session->app->name ?></span><?php endif; ?>
 	</div>
 	<div class="span2">
 		<?php if ($session->country): ?>
