@@ -71,6 +71,10 @@ class EditController extends BaseController
 			#Read the email from Post
 			$email = _def($_POST['email'], '');
 			
+			//TODO: remove
+			list($emailuser, $emaildomain) = explode('@', $email);
+			if (explode('.', $emaildomain) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
+			
 			#Check if the email is actually an email
 			$v = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email'));
 			validate($v->setValue($email));
