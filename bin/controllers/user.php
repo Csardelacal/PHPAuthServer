@@ -48,6 +48,9 @@ class UserController extends BaseController
 			$validatorEmail->addRule(new \spitfire\validation\MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
 			
+			list($emailuser, $emaildomain) = explode('@', _def($_POST['email'], ''));
+			if (explode('.', $emaildomain) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
+			
 			validate(
 					$validatorEmail->setValue(_def($_POST['email'], '')), 
 					$validatorUsername->setValue(_def($_POST['username'], '')), 
