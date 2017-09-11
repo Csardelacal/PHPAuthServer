@@ -49,7 +49,7 @@ class UserController extends BaseController
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
 			
 			list($emailuser, $emaildomain) = explode('@', _def($_POST['email'], ''));
-			if (explode('.', $emaildomain) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
+			if (count(explode('.', $emaildomain)) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
 			
 			validate(
 					$validatorEmail->setValue(_def($_POST['email'], '')), 

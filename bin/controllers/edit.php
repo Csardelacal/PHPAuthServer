@@ -73,7 +73,7 @@ class EditController extends BaseController
 			
 			//TODO: remove
 			list($emailuser, $emaildomain) = explode('@', $email);
-			if (explode('.', $emaildomain) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
+			if (count(explode('.', $emaildomain)) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
 			
 			#Check if the email is actually an email
 			$v = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email'));
