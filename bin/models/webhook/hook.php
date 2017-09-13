@@ -8,6 +8,10 @@ use StringField;
 
 class HookModel extends Model
 {
+	const CREATED      = 0x1111;
+	const UPDATED      = 0x2222;
+	const DELETED      = 0x4444;
+	const MEMBER       = 0x8000;
 	
 	const USER         = 0x000F;
 	const USER_CREATED = 0x0001;
@@ -61,6 +65,21 @@ class HookModel extends Model
 		return $all->filter(function($e) use ($listen) {
 			return !!($e->listen & $listen);
 		});
+	}
+	
+	public function mask2Array() {
+		
+		if ($this->listen & HookModel::USER)  { $payload = ['type' => 'user']; }
+		if ($this->listen & HookModel::TOKEN) { $payload = ['type' => 'token']; }
+		if ($this->listen & HookModel::APP)   { $payload = ['type' => 'app']; }
+		if ($this->listen & HookModel::GROUP) { $payload = ['type' => 'group']; }
+		
+		if ($this->listen & HookModel::CREATED) { $payload['action'] = 'created'; }
+		if ($this->listen & HookModel::UPDATED) { $payload['action'] = 'modified'; }
+		if ($this->listen & HookModel::DELETED) { $payload['action'] = 'deleted'; }
+		if ($this->listen & HookModel::MEMBER)  { $payload['action'] = 'member'; }
+		
+		return $payload;
 	}
 
 }

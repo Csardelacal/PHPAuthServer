@@ -1,33 +1,45 @@
 <?php namespace webhook;
 
+use Exception;
 use IntegerField;
 use Reference;
+use Request;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
+use StringField;
+use TextField;
+use function db;
 
 class CallModel extends Model
 {
 	
 	public function definitions(Schema $schema) {
-		$schema->hook   = new Reference('webhook\hook');
-		$schema->target = new \StringField(25);
-		$schema->called = new IntegerField(true);
+		$schema->hook     = new Reference('webhook\hook');
+		$schema->target   = new StringField(25);
+		$schema->called   = new IntegerField(true);
+		$schema->response = new TextField();
+		$schema->tried    = new IntegerField();
 	}
 	
 	public static function run() {
 		$next = db()->table('webhook\call')->get('called', null, 'IS')->fetch();
 		$url  = $next->hook->url;
 		
-		if ($next->hook->listen & HookModel::USER)  { $payload = ['type' => 'user']; }
-		if ($next->hook->listen & HookModel::TOKEN) { $payload = ['type' => 'token']; }
-		
+		$payload = $next->hook->mask2Array();
 		$payload['id'] = $next->target;
 		
-		$request = new \Request($url);
-		$request->send($payload);
+		$request = new Request($url);
 		
-		$next->called = time();
-		$next->store();
+		try {
+			$next->response = $request->send($payload);
+			$next->called   = time();
+			$next->store();
+		} 
+		catch (Exception$e) {
+			$next->tried    = $next->tried + 1;
+			$next->called   = $next->tried > 3? time() : null;
+			$next->store();
+		}
 	}
 
 }

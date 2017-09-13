@@ -7,7 +7,7 @@
 	</div>
 	<?php if ($editable): ?>
 	<div class="span1" style="text-align: right; padding-top: 10px;">
-		<a href="<?= new URL('group', 'delete', $group->_id) ?>">Delete Group</a>
+		<a href="<?= url('group', 'delete', $group->_id) ?>">Delete Group</a>
 	</div>
 	<?php endif; ?>
 </div>
@@ -55,7 +55,7 @@
 				<td><?= $member->role ?></td>
 				<?php if ($editable): ?> 
 				<td>
-					<a href="<?= new URL('group', 'removeUser', $member->_id) ?>">Kick</a>
+					<a href="<?= url('group', 'removeUser', $member->_id) ?>">Kick</a>
 				</td>
 				<?php endif; ?> 
 			</tr>

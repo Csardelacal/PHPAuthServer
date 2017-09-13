@@ -150,4 +150,50 @@
 	</div>
 </form>
 
+<div class="spacer" style="height: 60px"></div>
+
+
+<div class="topbar sticky">
+	<div class="row5 fluid">
+		<div class="span4">
+			<span class="toggle-button-target" style="background: #2a912e; padding: 12px; margin: 0 10px 0 -10px; vertical-align: middle"></span>
+			Webhooks
+		</div>
+		<div class="span1 desktop-only" style="text-align: right">
+			<a class="button" style="font-size:.7em; line-height: 1.6em; display: inline-block" href="<?= url('webhook', 'attach', $app->_id) ?>">Add webhook</a>
+		</div>
+	</div>
+</div>
+
+<div class="spacer" style="height: 20px"></div>
+
+<?php $webhooks = db()->table('webhook\hook')->get('app', $app)->fetchAll(); ?>
+<?php foreach ($webhooks as $webhook): ?>
+<div class="row5 fluid has-dials">
+	<div class="span1">
+		<div style="font-size: .85em; color: #555"><?= implode('::', $webhook->mask2Array()) ?></div>
+	</div>
+	<div class="span3">
+		<div style="font-size: .85em; color: #555"><?= $webhook->name ?> (<?= $webhook->url ?>)</div>
+	</div>
+	<div class="span1 dials">
+		<ul>
+			<li><a href="<?= url('webhook', 'edit', $webhook->_id) ?>">Edit</a></li>
+			<li><a href="<?= url('webhook', 'history', $webhook->_id) ?>">Queue</a></li>
+		</ul>
+	</div>
+</div>
+	
+<div class="separator large light"></div>
+<?php endforeach; ?>
+
+<?php if ($webhooks->isEmpty()): ?>
+<div style="padding: 50px; text-align: center; font-style: italic; color: #666">
+	No webhooks defined
+</div>
+<?php endif; ?>
+
+
+<div class="spacer" style="height: 50px"></div>
+
 <script src="<?= spitfire\core\http\URL::asset('js/app-detail.min.js')?>"></script>
