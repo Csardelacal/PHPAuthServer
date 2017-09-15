@@ -180,6 +180,7 @@
 		<ul>
 			<li><a href="<?= url('webhook', 'edit', $webhook->_id) ?>">Edit</a></li>
 			<li><a href="<?= url('webhook', 'history', $webhook->_id) ?>">Queue</a></li>
+			<li><a href="<?= url('webhook', 'delete', $webhook->_id) ?>">Remove</a></li>
 		</ul>
 	</div>
 </div>

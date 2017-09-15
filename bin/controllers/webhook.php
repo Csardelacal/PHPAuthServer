@@ -21,25 +21,29 @@ class WebhookController extends BaseController
 			#If the request was posted, then the user can store the hook
 			if (!$this->request->isPost()) { throw new HTTPMethodException('Needs to be posted', 1709131431); }
 			
+			#Read the variables.
+			$type   = (int)$_POST['type'];
+			$action = (int)$_POST['action'];
+			
 			#Validate the hook
 			$validators = [];
 			$validators['url']    = validate($_POST['url'])->asURL('URL needs to be valid');
 			
-			$validators['type']   = validate($_POST['type'])->addRule(new ClosureValidationRule(function ($v) {
+			$validators['type']   = validate($type)->addRule(new ClosureValidationRule(function ($v) {
 				return array_reduce(
 					[HookModel::APP & $v, HookModel::USER & $v, HookModel::TOKEN & $v, HookModel::GROUP & $v], 
 					function ($e, $p) { return $e? $p + 1 : $p; }, 0 
 				) === 1? false : 'Type error';
 			}));
 			
-			$validators['action']  = validate($_POST['action'])->addRule(new ClosureValidationRule(function ($v) {
+			$validators['action']  = validate($action)->addRule(new ClosureValidationRule(function ($v) {
 				return array_reduce(
 					[HookModel::CREATED & $v, HookModel::UPDATED & $v, HookModel::DELETED & $v, HookModel::MEMBER & $v], 
 					function ($e, $p) { return $e? $p + 1 : $p; }, 0 
 				) === 1? false : 'Type error';
 			}));
 			
-			$validators['listen'] = validate($_POST['type'] * $_POST['action'])->addRule(new ClosureValidationRule(function ($v) {
+			$validators['listen'] = validate($type & $action)->addRule(new ClosureValidationRule(function ($v) {
 				return (!($v & HookModel::MEMBER) || $v & HookModel::APP)? false : 'Type error';
 			}));
 			
@@ -48,6 +52,7 @@ class WebhookController extends BaseController
 			#Store the hook
 			$hook = db()->table('webhook\hook')->newRecord();
 			$hook->app = $app;
+			$hook->name   = _def($_POST['name'], '');
 			$hook->listen = $validators['listen']->getValue();
 			$hook->url    = $validators['url']->getValue();
 			$hook->store();

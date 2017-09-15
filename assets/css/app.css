@@ -967,5 +967,36 @@ Contains the code needed to create a tabbed area to ease filtered navigation.
       padding: 5px 20px;
       color: #555;
       font-weight: bold; } }
+.styled-select {
+  text-align: left;
+  background: none;
+  border: none;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: inline-block;
+  box-sizing: border-box;
+  border: solid 1px #CCC;
+  border-radius: 3px;
+  background: #F8F8F8;
+  background-repeat: no-repeat;
+  background-position: right 3px center;
+  background-size: 15px 15px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MUYyOTM3NjU0ODJBMTFFNkJCQ0VBNkJGMjRDOUE2ODgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MUYyOTM3NjY0ODJBMTFFNkJCQ0VBNkJGMjRDOUE2ODgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoxRjI5Mzc2MzQ4MkExMUU2QkJDRUE2QkYyNEM5QTY4OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoxRjI5Mzc2NDQ4MkExMUU2QkJDRUE2QkYyNEM5QTY4OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PiVf3ucAAAFnSURBVHja7Ji9CsIwEMfbwzfSt3DokwhOguDqKnTtKrhKQcEH8AF8AFfBqVOhUCg1gQhV8nXJpTrk4Iba3PnrNXf5a9r3ffLPlkbACBgBkYBlWf4UKMuyj+sJcf6pR+yT+eP7QxXgifl8xMJ1zGcyQFAELJm3IwLumd9kN1SAd+a7keBq5hvVTdAEbmUlD2Da7wHDk60Cw3GwXLcADAkOzK8BAXkBGh9AbgvRZdR2FQVIfAF5dxUBANc2i8AyGe+yihDOeuvYAla6UYC0BtN8gEhcqIYp0nLM+MIAdqJhfMfKFhMAITrPsJfrkIDv2VU7xN3EmZuEBkS/Jp95Co6vaicEha0dXU8kV8BWSDLbtc5nOnhs+LNw6mqTAdoI28pxv5IBmoTtxrHjyQB1gpNEZFAAqoTtmkKmUQDK1AlvngtFYirA4SDGjCCjUf5wH+65+z8CJoSaMRhgRQ0Y/36LgBHQYC8BBgCdj3B0L5oNGwAAAABJRU5ErkJggg=="); }
+  .styled-select select {
+    text-align: inherit;
+    background: none;
+    border: none;
+    width: 100%;
+    width: calc(100% + 20px);
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 3px 40px 3px 5px;
+    outline: none; }
+  .styled-select option {
+    padding: 3px;
+    border: none; }
 
 /*# sourceMappingURL=app.css.map */

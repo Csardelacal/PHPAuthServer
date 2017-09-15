@@ -7,8 +7,8 @@
 <div class="spacer" style="height: 25px"></div>
 
 <p style="font-size: .8em; color: #555">
-	Enter your new username below to change it. Your old username will be kept
-	as an alias for 3 months before it expires.
+	Webhooks allow applications to request being informed when there are changes
+	to a certain piece of data inside your authentication server.
 </p>
 
 <?php if (isset($messages) && !empty($messages)): ?>
@@ -33,11 +33,50 @@
 	<div class="row1 fluid">
 		<div class="span1">
 			<div style="font-size: .75em; color: #555">
-				Select a new username
+				Select data type and action to be reported.
 			</div>
 			
+			<div class="" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
+				<div class="row2 fluid">
+					<div class="span1">
+						<span class="styled-select">
+							<select name="type">
+								<option value="<?= \webhook\HookModel::USER ?>">User</option>
+								<option value="<?= \webhook\HookModel::TOKEN ?>">Token</option>
+								<option value="<?= \webhook\HookModel::APP ?>">App</option>
+								<option value="<?= \webhook\HookModel::GROUP ?>">Group</option>
+							</select>
+						</span>
+					</div>
+					<div class="span1">
+						<span class="styled-select">
+							<select name="action">
+								<option value="<?= \webhook\HookModel::CREATED ?>">Created</option>
+								<option value="<?= \webhook\HookModel::UPDATED ?>">Updated</option>
+								<option value="<?= \webhook\HookModel::DELETED ?>">Deleted</option>
+								<option value="<?= \webhook\HookModel::MEMBER ?>">Member change</option>
+							</select>
+						</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="spacer" style="height: 20px"></div>
+			
+			<div style="font-size: .75em; color: #555">
+				<strong>Name</strong> [optional]
+			</div>
 			<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<input type="text" name="username" placeholder="Your new username" value="<?= __(_def($_POST['username'], '')) ?>">
+				<input type="text" name="name" placeholder="Name...">
+			</div>
+			
+			<div class="spacer" style="height: 20px"></div>
+			
+			<div style="font-size: .75em; color: #555">
+				<strong>URL</strong>
+			</div>
+			<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
+				<input type="text" name="url" placeholder="URL...">
 			</div>
 		</div>
 	</div>
