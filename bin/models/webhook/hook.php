@@ -45,7 +45,11 @@ class HookModel extends Model
 	public static function notify($change, $target) {
 		$all = db()->table('webhook\hook')->getAll()->fetchAll();
 		
-		$all->each(function ($e) use ($change, $target) {
+		/**/if ($target instanceof \TokenModel) { $id = $target->token; }
+		elseif ($target instanceof Model)       { $id = $target->_id; }
+		else                                    { $id = $target; }
+		
+		$all->each(function ($e) use ($change, $id) {
 			/*
 			 * If the hook is not listening for this change, why bother?
 			 */
@@ -53,7 +57,7 @@ class HookModel extends Model
 			
 			$call = db()->table('webhook\call')->newRecord();
 			$call->hook   = $e;
-			$call->target = $target->_id;
+			$call->target = $id;
 			$call->called = null;
 			$call->store();
 		});

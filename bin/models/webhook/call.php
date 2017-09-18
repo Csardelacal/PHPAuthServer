@@ -15,7 +15,7 @@ class CallModel extends Model
 	
 	public function definitions(Schema $schema) {
 		$schema->hook     = new Reference('webhook\hook');
-		$schema->target   = new StringField(25);
+		$schema->target   = new StringField(60);
 		$schema->called   = new IntegerField(true);
 		$schema->response = new TextField();
 		$schema->tried    = new IntegerField();
