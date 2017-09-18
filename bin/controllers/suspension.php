@@ -46,6 +46,13 @@ class SuspensionController extends AppController
 		$ban->notes  = _def($_POST['notes'], '');
 		$ban->store();
 		
+		#Notify applications that this token was nerfed
+		$tokens = db()->table('token')->get('user', $user)->addRestriction('expires', '>', time())->fetchAll();
+		
+		foreach ($tokens as $token) {
+			webhook\HookModel::notify(webhook\HookModel::TOKEN_UPDATED, $token);
+		}
+		
 		$this->response->getHeaders()->redirect(url('user', 'detail', $user->_id));
 		
 	}

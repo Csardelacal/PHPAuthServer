@@ -19,6 +19,9 @@ class AuthController extends BaseController
 		if ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->addRestriction('expires', time(), '>')->fetch(); }
 		else          { $token = null; }
 		
+		#Check if the user has been either banned or suspended
+		$suspension = db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch();
+		
 		#Check if the application grants generous TTLs
 		$generous = \spitfire\core\Environment::get('phpAuth.token.extraTTL');
 		
@@ -29,6 +32,7 @@ class AuthController extends BaseController
 		}
 		
 		$this->view->set('token', $token);
+		$this->view->set('suspension', $suspension);
 	}
 	
 	/**

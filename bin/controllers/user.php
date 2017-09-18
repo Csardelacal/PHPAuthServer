@@ -195,9 +195,14 @@ class UserController extends BaseController
 		#Get the public attributes
 		$attributes = db()->table('attribute')->get('readable', $permissions)->fetchAll();
 		
+		#Get the currently active moderative issue
+		#Check if the user has been either banned or suspended
+		$suspension = db()->table('user\suspension')->get('user', $profile)->addRestriction('expires', time(), '>')->fetch();
+		
 		$this->view->set('profile', $profile);
 		$this->view->set('permissions', $permissions);
 		$this->view->set('attributes', $attributes);
+		$this->view->set('suspension', $suspension);
 	}
 	
 	public function recover($tokenid = null) {

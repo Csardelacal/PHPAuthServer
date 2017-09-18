@@ -122,7 +122,10 @@ class EditController extends BaseController
 			$this->user->setPassword($passNew);
 			$this->user->store();
 			
-			return $this->response->getHeaders()->redirect(new URL());
+			#Notify the webhook about the change
+			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			
+			return $this->response->getHeaders()->redirect(url());
 		}
 	}
 	
@@ -135,7 +138,10 @@ class EditController extends BaseController
 			$this->user->picture = $upload->validate()->store();
 			$this->user->store();
 			
-			return $this->response->getHeaders()->redirect(new URL());
+			#Notify the webhook about the change
+			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			
+			return $this->response->getHeaders()->redirect(url());
 		}
 	}
 	
@@ -201,7 +207,7 @@ class EditController extends BaseController
 			#Notify the webhook about the change
 			HookModel::notify(HookModel::USER_UPDATED, $this->user);
 			
-			return $this->response->getHeaders()->redirect(new URL());
+			return $this->response->getHeaders()->redirect(url());
 		}
 		catch (HTTPMethodException$e) { /* Do nothing, show the form normall */}
 		catch (ValidationException$e) { $this->view->set('errors', $e->getResult()); } 
