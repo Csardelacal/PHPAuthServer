@@ -44,7 +44,7 @@
 		</p>
 
 		<p style="text-align: right">
-			<a class="button success" href="<?= url('admin', 'logo') ?>">Edit logo</a>
+			<a class="button success" href="<?= url('admin', 'logo') ?>">Edit hero</a>
 		</p>
 	</div>
 </div>

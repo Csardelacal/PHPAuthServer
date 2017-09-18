@@ -55,12 +55,23 @@ class UserController extends BaseController
 			$validatorEmail->addRule(new \spitfire\validation\MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
 			
+			list($emailuser, $emaildomain) = explode('@', _def($_POST['email'], ''));
+			if (count(explode('.', $emaildomain)) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
+			
 			validate(
 					$validatorEmail->setValue(_def($_POST['email'], '')), 
 					$validatorUsername->setValue(_def($_POST['username'], '')), 
 					$validatorPassword->setValue(_def($_POST['password'], '')));
 			
-			if (db()->table('username')->get('name', $_POST['username'])->addRestriction('expires', null, 'IS')->fetch()) {
+			$exists = db()->table('username')
+				->get('name', $_POST['username'])
+				->group()
+					->addRestriction('expires', null, 'IS')
+					->addRestriction('expires', time(), '>')
+				->endGroup()
+				->fetch();
+			
+			if ($exists) {
 				throw new ValidationException('Username is taken', 0, Array('Username is taken'));
 			}
 			

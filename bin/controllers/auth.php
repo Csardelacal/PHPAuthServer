@@ -51,6 +51,9 @@ class AuthController extends BaseController
 		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
 		$session    = Session::getInstance();
 		
+		#Check whether the user was disabled
+		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }
+		
 		#If the user already automatically grants the application in, then we continue
 		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
 		
