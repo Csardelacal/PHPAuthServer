@@ -14,6 +14,7 @@ class UserModel extends spitfire\Model
 		$schema->created   = new IntegerField();
 		$schema->picture   = new FileField();
 		
+		$schema->modified  = new IntegerField();
 		$schema->disabled  = new IntegerField(); #Timestamp the user was disabled
 		
 		$schema->usernames = new ChildrenField('username', 'user');
@@ -40,6 +41,10 @@ class UserModel extends spitfire\Model
 		}
 		
 		return parent::insert();
+	}
+	
+	public function onbeforesave() {
+		$this->modified = time();
 	}
 	
 	public function checkPassword($password) {

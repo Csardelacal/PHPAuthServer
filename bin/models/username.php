@@ -8,5 +8,9 @@ class UsernameModel extends spitfire\Model
 		$schema->name    = new StringField(20);
 		$schema->expires = new IntegerField();
 	}
+	
+	public function __toString() {
+		return $this->name;
+	}
 
 }

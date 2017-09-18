@@ -21,6 +21,13 @@ class UserController extends BaseController
 		
 	}
 	
+	/**
+	 * 
+	 * @layout minimal.php
+	 * @return type
+	 * @throws HTTPMethodException
+	 * @throws ValidationException
+	 */
 	public function register() {
 		
 		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) {
@@ -110,6 +117,12 @@ class UserController extends BaseController
 		$this->view->set('attributes', $attributes);
 	}
 	
+	/**
+	 * 
+	 * @layout minimal.php
+	 * @return type
+	 * @throws PublicException
+	 */
 	public function login() {
 		
 		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 
@@ -179,14 +192,13 @@ class UserController extends BaseController
 			$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user));
 			
 			$groups = $groupquery->fetchAll();
-			if (isset($groups[0])) { $permissions[] = 'groups'; }
 		}
 		
 		#Check if the user is himself
-		if ($token && $token->user && $profile->_id === $token->user->_id) { $permissions = array_merge($permissions, Array('me', 'groups', 'related')); }
+		if ($token && $token->user && $profile->_id === $token->user->_id) { $permissions = array_merge($permissions, Array('me', 'members')); }
 		
 		#Check if the user is an administrator
-		if ($this->isAdmin) { $permissions = array_merge($permissions, Array('me', 'groups', 'related', 'nem')); }
+		if ($this->isAdmin) { $permissions = array_merge($permissions, Array('me', 'members', 'nem')); }
 		
 		#If permissions aren't empty, let the system filter those
 		if (!empty($permissions)) { $permissions = array_unique($permissions); }
@@ -194,9 +206,14 @@ class UserController extends BaseController
 		#Get the public attributes
 		$attributes = db()->table('attribute')->get('readable', $permissions)->fetchAll();
 		
+		#Get the currently active moderative issue
+		#Check if the user has been either banned or suspended
+		$suspension = db()->table('user\suspension')->get('user', $profile)->addRestriction('expires', time(), '>')->fetch();
+		
 		$this->view->set('profile', $profile);
 		$this->view->set('permissions', $permissions);
 		$this->view->set('attributes', $attributes);
+		$this->view->set('suspension', $suspension);
 	}
 	
 	public function recover($tokenid = null) {
@@ -254,7 +271,7 @@ class UserController extends BaseController
 			$token = TokenModel::create(null, 1800, false);
 			$token->user = $this->user? : $token->user;
 			$token->store();
-			$url   = new AbsoluteURL('user', 'activate', $token->token);
+			$url   = url('user', 'activate', $token->token)->absolute();
 			EmailModel::queue($this->user->email, 'Activate your account', 
 					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url));
 		}

@@ -7,7 +7,7 @@ $wrapBorderSize: 2px;
 	height: $wrapSize;
 	border: $wrapBorderSize dashed rgba(black, .5);
 	border-radius: 10px;
-	background: url("/assets/img/upload.svg") no-repeat center center;
+	background: url("../img/upload.svg") no-repeat center center;
 	background-size: 64px 64px;
 
 	> input[type="file"] {

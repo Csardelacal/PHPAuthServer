@@ -7,6 +7,12 @@ and open the template in the editor.
     Created on : 02-jun-2015, 21:46:57
     Author     : cesaradelacalbretschneider
 */
+.navbar::after {
+  content: '';
+  display: table;
+  height: 1px;
+  clear: both; }
+
 * {
   box-sizing: border-box; }
 
@@ -16,9 +22,6 @@ html {
 body {
   margin: 0;
   font-family: sans-serif;
-  padding-bottom: 100px;
-  min-height: 100%;
-  position: relative;
   background-color: #F3F3F3; }
 
 .wrapper {
@@ -33,8 +36,10 @@ body {
   opacity: .5; }
 
 a {
-  color: #25A9F8;
+  color: #555;
   text-decoration: none; }
+  a:hover {
+    color: #333; }
 
 a img {
   border: none; }
@@ -169,6 +174,7 @@ form.regular .field {
     width: 100%; }
   form.regular .field input[type=text],
   form.regular .field input[type=email],
+  form.regular .field input[type=password],
   form.regular .field textarea,
   form.regular .field select {
     width: 100%;
@@ -176,15 +182,14 @@ form.regular .field {
     font-size: 1.05em;
     background: #FFF;
     border: solid 1px #EEE;
-    border-bottom: solid 2px #AAA;
     box-sizing: border-box;
     height: 2em;
-    transition: border-color .3s ease; }
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2); }
     form.regular .field input[type=text]:focus,
     form.regular .field input[type=email]:focus,
+    form.regular .field input[type=password]:focus,
     form.regular .field textarea:focus,
     form.regular .field select:focus {
-      border-bottom: solid 2px #3191F1;
       outline: none; }
   form.regular .field textarea {
     height: 150px; }
@@ -238,6 +243,11 @@ form.regular input[type="submit"] {
   .button.success, form.regular input.success[type="submit"] {
     background: #0cb027;
     box-shadow: -2px -2px 1px #055116 inset; }
+  .button.small, form.regular input.small[type="submit"] {
+    padding: .35em .5em;
+    font-size: .8em; }
+  .button:hover, form.regular input[type="submit"]:hover {
+    color: #FFF; }
 
 h1 {
   color: #282828;
@@ -280,12 +290,6 @@ table {
   table td, table th {
     margin: 0;
     padding: 8px 20px; }
-
-.error-message {
-  text-align: center;
-  display: block;
-  color: #666;
-  padding: 30px; }
 
 .menubar {
   background: #FEFEFE;
@@ -382,6 +386,22 @@ footer {
     opacity: 1; }
   .edit img {
     height: 15px; }
+
+.validation-errors {
+  color: #900;
+  list-style: none;
+  font-size: .9em;
+  margin: 10px 0;
+  padding: 0; }
+  .validation-errors li {
+    border-left: solid 2px #900;
+    padding-left: 10px;
+    margin-top: 8px; }
+  .validation-errors .error-message {
+    font-weight: bold;
+    display: block; }
+  .validation-errors .extended-message {
+    font-size: .9em; }
 
 @media all and (min-width: 960px) {
   /*
@@ -520,7 +540,10 @@ footer {
     width: 67.91667%; }
 
   div.row10 > div.span9 {
-    width: 87.91667%; } }
+    width: 87.91667%; }
+
+  .mobile-only {
+    display: none; } }
 @media all and (max-width: 960px) {
   /*
   This are the functions (mixins) used to generate the basic scaffolding for our
@@ -690,7 +713,62 @@ footer {
   div.row10 > div.span9 {
     width: 95.83333%; }
   div.row10 > div.span10 {
-    width: 95.83333%; } }
+    width: 95.83333%; }
+
+  .desktop-only {
+    display: none; } }
+.navbar {
+  padding: 8px;
+  text-align: center; }
+  .navbar::after {
+    display: none; }
+  .navbar .logo {
+    display: block;
+    width: 100%;
+    float: none;
+    font-size: 1.05em;
+    margin-bottom: 10px !important; }
+    .navbar .logo, .navbar .logo ~ :not(.desktop-only) {
+      padding: 0 4px !important;
+      height: initial !important; }
+    .navbar .logo ~ :not(.desktop-only) {
+      font-size: .9em; }
+
+.navbar {
+  background: #FEFEFE;
+  vertical-align: top;
+  text-align: right;
+  box-shadow: 0 2px 2px #DDD;
+  border-bottom: 1px solid #CCC;
+  z-index: 5; }
+  .navbar > * {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-right: 0 !important;
+    line-height: 25px; }
+  .navbar a {
+    text-decoration: none;
+    color: #333; }
+    .navbar a:hover {
+      text-shadow: 0 0 4px #DDD; }
+  .navbar .logo {
+    display: inline-block;
+    float: left;
+    border: none; }
+    .navbar .logo > * {
+      display: inline-block;
+      vertical-align: middle; }
+    .navbar .logo img {
+      height: 25px;
+      width: 21.57107px;
+      margin-right: 5px; }
+
+@media all and (max-width: 960px) {
+  .navbar {
+    padding: 4px; }
+    .navbar a {
+      font-size: .9em;
+      padding: 4px; } }
 .admin-navigation {
   background: #222;
   color: #FFF;
@@ -736,6 +814,10 @@ ul.pagination {
 .separator {
   border-top: solid 1px #CCC;
   margin: 10px 0; }
+  .separator.large {
+    margin: 20px 0; }
+  .separator.light {
+    border-top: solid 1px #DDD; }
 
 .editable-property {
   display: block; }
@@ -798,7 +880,7 @@ Contains the code needed to create a tabbed area to ease filtered navigation.
   height: 128px;
   border: 2px dashed rgba(0, 0, 0, 0.5);
   border-radius: 10px;
-  background: url("/assets/img/upload.svg") no-repeat center center;
+  background: url("../img/upload.svg") no-repeat center center;
   background-size: 64px 64px; }
   #icon-upload-wrap > input[type="file"] {
     position: absolute;
@@ -832,5 +914,89 @@ Contains the code needed to create a tabbed area to ease filtered navigation.
     transform: rotate(0deg); }
   to {
     transform: rotate(360deg); } }
+.dials {
+  border-left: solid 1px #CCC;
+  font-size: .8em; }
+  .dials ul {
+    margin: 2px;
+    padding-left: 10px;
+    list-style-type: none; }
+  .dials a {
+    display: inline-block;
+    padding: 2px; }
+  .dials a:hover {
+    background: #EEE; }
+
+@media all and (max-width: 960px) {
+  .has-dials {
+    position: relative; }
+
+  .dial-toggle {
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    right: 10px; }
+    .dial-toggle .dots,
+    .dial-toggle .dots:before,
+    .dial-toggle .dots:after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #AAA;
+      width: 4px;
+      height: 4px; }
+    .dial-toggle .dots:before {
+      content: '';
+      top: 7px;
+      right: 0; }
+    .dial-toggle .dots:after {
+      content: '';
+      top: 14px;
+      right: 0; }
+
+  .dials {
+    border: solid 1px #CCC;
+    background: #FFF;
+    position: absolute;
+    top: 0;
+    right: 20px;
+    width: 200px !important;
+    display: none;
+    box-shadow: 0 0 3px #CCC; }
+    .dials a {
+      padding: 5px 20px;
+      color: #555;
+      font-weight: bold; } }
+.styled-select {
+  text-align: left;
+  background: none;
+  border: none;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: inline-block;
+  box-sizing: border-box;
+  border: solid 1px #CCC;
+  border-radius: 3px;
+  background: #F8F8F8;
+  background-repeat: no-repeat;
+  background-position: right 3px center;
+  background-size: 15px 15px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MUYyOTM3NjU0ODJBMTFFNkJCQ0VBNkJGMjRDOUE2ODgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MUYyOTM3NjY0ODJBMTFFNkJCQ0VBNkJGMjRDOUE2ODgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoxRjI5Mzc2MzQ4MkExMUU2QkJDRUE2QkYyNEM5QTY4OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoxRjI5Mzc2NDQ4MkExMUU2QkJDRUE2QkYyNEM5QTY4OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PiVf3ucAAAFnSURBVHja7Ji9CsIwEMfbwzfSt3DokwhOguDqKnTtKrhKQcEH8AF8AFfBqVOhUCg1gQhV8nXJpTrk4Iba3PnrNXf5a9r3ffLPlkbACBgBkYBlWf4UKMuyj+sJcf6pR+yT+eP7QxXgifl8xMJ1zGcyQFAELJm3IwLumd9kN1SAd+a7keBq5hvVTdAEbmUlD2Da7wHDk60Cw3GwXLcADAkOzK8BAXkBGh9AbgvRZdR2FQVIfAF5dxUBANc2i8AyGe+yihDOeuvYAla6UYC0BtN8gEhcqIYp0nLM+MIAdqJhfMfKFhMAITrPsJfrkIDv2VU7xN3EmZuEBkS/Jp95Co6vaicEha0dXU8kV8BWSDLbtc5nOnhs+LNw6mqTAdoI28pxv5IBmoTtxrHjyQB1gpNEZFAAqoTtmkKmUQDK1AlvngtFYirA4SDGjCCjUf5wH+65+z8CJoSaMRhgRQ0Y/36LgBHQYC8BBgCdj3B0L5oNGwAAAABJRU5ErkJggg=="); }
+  .styled-select select {
+    text-align: inherit;
+    background: none;
+    border: none;
+    width: 100%;
+    width: calc(100% + 20px);
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 3px 40px 3px 5px;
+    outline: none; }
+  .styled-select option {
+    padding: 3px;
+    border: none; }
 
 /*# sourceMappingURL=app.css.map */

@@ -42,9 +42,9 @@ class AttributeController extends BaseController
 	
 	public function edit($id) {
 		
-		$record = db()->table('attribute')->getTable()->getById($id);
+		$record = db()->table('attribute')->getById($id);
 		
-		$bean = db()->table('attribute')->getTable()->getBean();
+		$bean = db()->table('attribute')->getBean();
 		$bean->setDBRecord($record);
 		
 		if (!$record) { throw new \spitfire\exceptions\PublicException('Not found', 404); }

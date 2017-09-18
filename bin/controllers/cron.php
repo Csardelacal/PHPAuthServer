@@ -16,7 +16,15 @@ class CronController extends Controller
 			#Send emails to the users
 			EmailModel::deliver();
 			
+			#Call the expecting hooks
+			\webhook\CallModel::run();
+			
 			flock($fh, LOCK_UN);
 		}
+	}
+	
+	public function testGeo() {
+		var_dump(IP::makeLocation());
+		die();
 	}
 }

@@ -12,7 +12,14 @@ class AuthAppModel extends spitfire\Model
 		$schema->appSecret = new StringField(50);
 		
 		$schema->name   = new StringField(20);
+		$schema->url    = new StringField(100);
 		$schema->icon   = new FileField();
+		
+		/*
+		 * The webhook allows the App developer to provide a URL that will be called
+		 * when a user modifies it's data.
+		 */
+		$schema->webhook= new StringField(100);
 		
 		$schema->appID->setUnique(true);
 	}

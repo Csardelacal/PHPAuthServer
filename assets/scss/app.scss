@@ -10,6 +10,8 @@ and open the template in the editor.
 
 $disbled-darken-amount: 30;
 
+@import 'reset/_clearfix';
+
 * {
 	box-sizing: border-box;
 }
@@ -21,9 +23,6 @@ html {
 body {
 	margin: 0;
 	font-family: sans-serif;
-	padding-bottom: 100px;
-	min-height: 100%;
-	position: relative;
 	background-color: #F3F3F3;
 }
 
@@ -41,8 +40,12 @@ body {
 }
 
 a {
-	color: #25A9F8;
+	color: #555;
 	text-decoration: none;
+	
+	&:hover {
+		color: #333;
+	}
 }
 
 a img {
@@ -242,6 +245,7 @@ form.regular {
 
 		input[type=text],
 		input[type=email],
+		input[type=password],
 		textarea,
 		select {
 			width: 100%;
@@ -249,14 +253,11 @@ form.regular {
 			font-size: 1.05em;
 			background: #FFF;
 			border: solid 1px #EEE;
-			border-bottom: solid 2px #AAA;
 			box-sizing: border-box;
 			height: 2em;
-
-			transition: border-color .3s ease;
+			box-shadow: 0 0 1px rgba(0, 0, 0, .2);
 
 			&:focus {
-				border-bottom: solid 2px #3191F1;
 				outline: none;
 			}
 		}
@@ -337,6 +338,15 @@ form.regular {
 		background: darken(adjust_hue($bg, -80), 20);
 		box-shadow: -2px -2px 1px darken(adjust_hue($boxshadow, -90), 40) inset;
 	}
+	
+	&.small {
+		padding: .35em .5em;
+		font-size: .8em;
+	}
+	
+	&:hover {
+		color: #FFF;
+	}
 }
 
 h1 {
@@ -395,13 +405,6 @@ table {
 		margin: 0;
 		padding: 8px 20px;
 	}
-}
-
-.error-message {
-	text-align: center;
-	display: block;
-	color: #666;
-	padding: 30px;
 }
 
 .menubar {
@@ -538,19 +541,54 @@ footer {
 	}
 }
 
+.validation-errors
+{
+	color: #900;
+	list-style: none;
+	font-size: .9em;
+	margin: 10px 0;
+	padding: 0;
+	
+	li {
+		border-left: solid 2px #900;
+		padding-left: 10px;
+		margin-top: 8px;
+	}
+	
+	.error-message {
+		font-weight: bold;
+		display: block;
+	}
+	
+	.extended-message {
+		font-size: .9em;
+	}
+}
+
 
 @media all and (min-width: 960px) {
 	@import '_scaffolding';
+	
+	.mobile-only {
+		display: none;
+	}
 }
 
 @media all and (max-width: 960px) {
 	@import '_scaffolding_mobile';
+	
+	.desktop-only {
+		display: none;
+	}
 }
 
 
+@import '_navbar';
 @import '_admin';
 @import '_pagination';
 @import '_properties';
 @import '_messages';
 @import '_tabs';
 @import '_icon-upload';
+@import '_dials';
+@import '_styledSelect.scss';

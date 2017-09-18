@@ -1,0 +1,85 @@
+
+
+.navbar {
+	padding: 8px ;
+	text-align: center;
+
+	&::after {
+		display: none;
+	}
+
+	.logo {
+		display: block;
+		width: 100%;
+		float: none;
+		font-size: 1.05em;
+		margin-bottom: 10px !important;
+
+		&, ~ :not(.desktop-only) {
+			padding: 0 4px !important;
+			height: initial !important;
+		}
+
+		~ :not(.desktop-only) {
+			font-size: .9em;
+		}
+	}
+}
+
+.navbar {
+	background: #FEFEFE;
+	vertical-align: top;
+	text-align: right;
+	box-shadow: 0 2px 2px #DDD;
+	border-bottom: 1px solid #CCC;
+	
+	z-index: 5;
+
+	@extend %clearfix;
+
+	> * {
+		display: inline-block;
+		padding: 10px 15px;
+		margin-right: 0 !important;
+		line-height: 25px;
+	}
+
+	a {
+		text-decoration: none;
+		color: #333;
+
+		&:hover { text-shadow: 0 0 4px #DDD }
+	}
+	
+	.logo {
+		display: inline-block;
+		float: left;
+		border: none;
+
+		> * {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		img {
+			$imgw: 1730px;
+			$imgh: 2005px;
+			$imgratio: $imgw/$imgh;
+			$target_height: 25px;
+			height: $target_height;
+			width: $target_height * $imgratio;
+			margin-right: 5px;
+		}
+	}
+}
+
+@media all and (max-width: 960px) {
+	.navbar {
+		padding: 4px;
+		
+		a {
+			font-size: .9em;
+			padding: 4px;
+		}
+	}
+}

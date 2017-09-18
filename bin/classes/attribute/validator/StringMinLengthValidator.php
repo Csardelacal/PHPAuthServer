@@ -20,7 +20,7 @@ class StringMinLengthValidator implements AttributeValidatorInterface
 	}
 
 	public function test($value) {
-		return is_string($value) && strlen($value) > $this->settings;
+		return is_string($value) && strlen($value) > $this->settings? false : new \spitfire\validation\ValidationError($this->getErrorMsg(), $this->getDescription());
 	}
 
 	public function validates() {
@@ -28,7 +28,7 @@ class StringMinLengthValidator implements AttributeValidatorInterface
 	}
 
 	public function getErrorMsg() {
-		return "String too short, must be longer than {$this->settings} characters";
+		return "String too short";
 	}
 
 	public function getDescription() {

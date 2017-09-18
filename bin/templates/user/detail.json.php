@@ -37,14 +37,15 @@ $data['registered']      = date('r', $profile->created);
 $data['registered_unix'] = $profile->created;
 
 #If the account was disabled we do add the disabled flag
-$data['disabled']         = !!$profile->disabled;
+$data['disabled']  = $profile->disabled || ($suspension && $suspension->preventsLogin);
+$data['suspended'] = ($suspension && !$suspension->preventsLogin);
 
 #Avatar
 $data['avatar']          = Array();
-$data['avatar']['32']    = (string)new AbsoluteURL('image', 'user', $profile->_id, 32);
-$data['avatar']['64']    = (string)new AbsoluteURL('image', 'user', $profile->_id, 64);
-$data['avatar']['128']   = (string)new AbsoluteURL('image', 'user', $profile->_id, 128);
-$data['avatar']['256']   = (string)new AbsoluteURL('image', 'user', $profile->_id, 256);
+$data['avatar']['32']    = (string)url('image', 'user', $profile->_id,  32, ['t' => $profile->modified])->absolute();
+$data['avatar']['64']    = (string)url('image', 'user', $profile->_id,  64, ['t' => $profile->modified])->absolute();
+$data['avatar']['128']   = (string)url('image', 'user', $profile->_id, 128, ['t' => $profile->modified])->absolute();
+$data['avatar']['256']   = (string)url('image', 'user', $profile->_id, 256, ['t' => $profile->modified])->absolute();
 
 #Get the properties
 $data['attributes'] = Array();

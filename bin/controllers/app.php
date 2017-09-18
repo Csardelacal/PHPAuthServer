@@ -72,9 +72,15 @@ class AppController extends BaseController
 		
 		if ($this->request->isPost()) {
 			
-			#The name of the application is, together with the icon, the only thing we can change
-			if (isset($_POST['name']))
+			#The name of the application
+			if (isset($_POST['name'])) {
 				$app->name = trim($_POST['name']);
+			}
+			
+			#The URL users can use to access the app
+			if (isset($_POST['url'])) {
+				$app->url = trim($_POST['url']);
+			}
 			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->validate()->store();
@@ -96,7 +102,22 @@ class AppController extends BaseController
 			return;
 		}
 		
-		$this->view->set('confirm', new URL('app', 'delete', $appID, Array('confirm' => 'true')));
+		$this->view->set('confirm', url('app', 'delete', $appID, Array('confirm' => 'true')));
+	}
+	
+	/**
+	 * 
+	 * @template none
+	 * @layout none
+	 * @param type $appID
+	 */
+	public function deauthorize($appID) {
+		$app  = db()->table('authapp')->get('_id', $appID)->fetch();
+		$auth = db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $app)->fetch();
+		
+		if ($auth) { $auth->delete(); }
+		
+		$this->response->getHeaders()->redirect(url());
 	}
 	
 }

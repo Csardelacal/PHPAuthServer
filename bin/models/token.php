@@ -13,6 +13,9 @@ class TokenModel extends spitfire\Model
 		$schema->ttl     = new IntegerField();
 		$schema->extends = new BooleanField();
 		
+		$schema->country = new StringField(02);
+		$schema->city    = new StringField(20);
+		
 		$schema->token->setUnique(true);
 		
 	}

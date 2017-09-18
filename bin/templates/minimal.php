@@ -3,7 +3,7 @@
 	<head>
 		<title><?= isset(${'page.title'}) && ${'page.title'}? ${'page.title'} : 'Account server' ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/app.css') ?>">
+		<link rel="stylesheet" type="text/css" href="<?= URL::asset('css/app.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/ui-layout.css') ?>">
 		
 		<script>
@@ -37,29 +37,7 @@
 		<div class="spacer" style="height: 30px"></div>
 		
 		<div style="max-width: 960px; margin: 0 auto; min-height: 100%;">
-			<div class="contains-sidebar">
-				<div class="sidebar">
-					<div class="topbar" style="color: #999; padding-left: 10px"> Account</div>
-					<div class="spacer" style="height: 10px;"></div>
-					
-					<div class="menu-entry"><a href="<?= url() ?>"                  >Edit profile</a></div>
-					<div class="menu-entry"><a href="<?= url('edit', 'password') ?>">Change password</a></div>
-					<div class="menu-entry"><a href="<?= url('edit', 'avatar') ?>"  >Upload avatar</a></div>
-					
-					<?php if(isset($userIsAdmin) && $userIsAdmin): ?> 
-					<div class="spacer" style="height: 30px"></div>
-					<div class="menu-title">Administration</div>
-					<div class="menu-entry"><a href="<?= url('group') ?>" >Groups</a></div>
-					<div class="menu-entry"><a href="<?= url('admin') ?>">System settings</a></div>
-					<div class="menu-entry"><a href="<?= url('app') ?>"  >App administration</a></div>
-					<div class="menu-entry"><a href="<?= url('email') ?>">Email</a></div>
-					<?php endif; ?> 
-				</div>
-			</div>
-			
-			<div class="content">
-				<?= $content_for_layout ?>
-			</div>
+			<?= $content_for_layout ?>
 			
 			<div style="clear: both; display: table"></div>
 		</div>

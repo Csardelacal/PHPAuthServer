@@ -19,15 +19,29 @@ class AuthController extends BaseController
 		if ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->addRestriction('expires', time(), '>')->fetch(); }
 		else          { $token = null; }
 		
+		#Check if the user has been either banned or suspended
+		$suspension = db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch();
+		
+		#Check if the application grants generous TTLs
+		$generous = \spitfire\core\Environment::get('phpAuth.token.extraTTL');
+		
 		#If the token does auto-extend, do so now.
-		if ($token && $token->extends) {
-			$token->expires = time() + $token->ttl;
+		if ($token && $token->extends && $token->expires < (time() + $token->ttl) ) {
+			$token->expires = time() + ($generous? $token->ttl * 1.15 : $token->ttl);
 			$token->store();
 		}
 		
 		$this->view->set('token', $token);
+		$this->view->set('suspension', $suspension);
 	}
 	
+	/**
+	 * 
+	 * @param type $tokenid
+	 * @return type
+	 * @layout minimal.php
+	 * @throws PublicException
+	 */
 	public function oauth($tokenid) {
 		
 		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : new URL('auth', 'invalidReturn');
@@ -48,9 +62,9 @@ class AuthController extends BaseController
 		
 		$this->view->set('token',     $token);
 		$this->view->set('cancelURL', $failureURL);
-		$this->view->set('continue',  (string) new URL('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
+		$this->view->set('continue',  (string) url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
 		
-		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(new URL('user', 'login', Array('returnto' => (string)URL::current()))); }
+		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) spitfire\core\http\URL::current()))); }
 		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
 		
 		/*
@@ -65,6 +79,16 @@ class AuthController extends BaseController
 				$authorization->user = $this->user;
 				$authorization->app  = $token->app;
 				$authorization->store();
+			}
+			
+			/*
+			 * Retrieve the IP information from the client. This should allow the 
+			 * application to provide the user with data where they connected from.
+			 */
+			$ip = IP::makeLocation();
+			if ($ip) {
+				$token->country = $ip->country_code;
+				$token->city    = substr($ip->city, 0, 20);
 			}
 			
 			$token->user = $this->user;
