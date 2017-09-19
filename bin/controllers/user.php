@@ -129,7 +129,7 @@ class UserController extends BaseController
 			$returnto = $_GET['returnto']; 
 		}
 		else {
-			$returnto = (string)new URL();
+			$returnto = (string)url();
 		}
 					
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -142,6 +142,11 @@ class UserController extends BaseController
 					->endGroup();
 			
 			$user = $query->fetch();
+			
+			#Check whether the user was banned
+			$banned     = $user? db()->table('user\suspension')->get('user', $user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->fetch() : false;
+			if ($banned) { throw new PublicException('Your account was banned, login was disabled.' . $banned->reason, 401); }
+			
 			
 			if ($user && $user->disabled !== null) {
 				throw new PublicException('This account has been disabled permanently.', 401);

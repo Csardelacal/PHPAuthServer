@@ -44,12 +44,16 @@ class AuthController extends BaseController
 	 */
 	public function oauth($tokenid) {
 		
-		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : new URL('auth', 'invalidReturn');
+		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : url('auth', 'invalidReturn');
 		$failureURL = isset($_GET['cancelurl'])? $_GET['cancelurl'] : $successURL;
 		
 		$token      = db()->table('token')->get('token', $tokenid)->fetch();
 		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
 		$session    = Session::getInstance();
+		
+		#Check whether the user was banned
+		$banned     = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->fetch();
+		if ($banned) { throw new PublicException('Your account was banned, login was disabled', 401); }
 		
 		#Check whether the user was disabled
 		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }

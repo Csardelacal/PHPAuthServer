@@ -107,6 +107,11 @@ class UserModel extends spitfire\Model
 		return $this;
 	}
 	
+	public function isSuspended() {
+		$suspensions = db()->table('user\suspension')->get('user', $this)->addRestriction('expires', time(), '>')->fetch();
+		return $suspensions;
+	}
+	
 	public function __toString() {
 		
 		$q = db()->table('username')->get('user__id', $this->_id);

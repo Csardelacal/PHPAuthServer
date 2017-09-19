@@ -16,6 +16,10 @@ class EditController extends BaseController
 	public function username() {
 		if (!$this->user) { throw new PublicException('You need to be logged in', 401); }
 		
+		if (null != $s = $this->user->isSuspended()) {
+			throw new PublicException('Account has been limited. Reason given: ' . $s->reason);
+		}
+		
 		try {
 			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
 			
@@ -72,6 +76,10 @@ class EditController extends BaseController
 	
 	public function email() {
 		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
+		
+		if (null != $s = $this->user->isSuspended()) {
+			throw new PublicException('Account has been limited. Reason given: ' . $s->reason);
+		}
 		
 		if ($this->request->isPost()) {
 			#Read the email from Post
