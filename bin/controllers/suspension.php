@@ -1,5 +1,9 @@
 <?php
 
+use spitfire\exceptions\PrivateException;
+use spitfire\exceptions\PublicException;
+use webhook\HookModel;
+
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -14,14 +18,14 @@ class SuspensionController extends AppController
 		parent::_onload();
 		
 		if (!$this->isAdmin) { 
-			throw new \spitfire\exceptions\PrivateException('You cannot acces this section without being an admin', 403); 
+			throw new PrivateException('You cannot acces this section without being an admin', 403); 
 		}
 	}
 	
 	public function create($userid) {
 		
 		$user = db()->table('user')->get('_id', $userid)->fetch();
-		if (!$user) { throw new \spitfire\exceptions\PublicException('No user found', 404); }
+		if (!$user) { throw new PublicException('No user found', 404); }
 		
 		switch(_def($_POST['duration'], '0h')) {
 			case '6h': $duration =   6 *  3600; break;
@@ -47,10 +51,10 @@ class SuspensionController extends AppController
 		$ban->store();
 		
 		#Notify applications that this token was nerfed
-		$tokens = db()->table('token')->get('user', $user)->addRestriction('expires', '>', time())->fetchAll();
+		$tokens = db()->table('token')->get('user', $user)->addRestriction('expires', time(), '>')->fetchAll();
 		
 		foreach ($tokens as $token) {
-			webhook\HookModel::notify(webhook\HookModel::TOKEN_UPDATED, $token);
+			HookModel::notify(HookModel::TOKEN_UPDATED, $token);
 		}
 		
 		$this->response->getHeaders()->redirect(url('user', 'detail', $user->_id));

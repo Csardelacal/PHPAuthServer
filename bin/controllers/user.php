@@ -216,6 +216,13 @@ class UserController extends BaseController
 		$this->view->set('suspension', $suspension);
 	}
 	
+	
+	/**
+	 * 
+	 * @layout minimal.php
+	 * @return type
+	 * @throws PublicException
+	 */
 	public function recover($tokenid = null) {
 		
 		$token = $tokenid? db()->table('token')->get('token', $tokenid)->fetch() : null;
@@ -280,7 +287,7 @@ class UserController extends BaseController
 		}
 		
 		#We need to redirect the user back to the home page
-		$this->response->getHeaders()->redirect(new URL(Array('message' => 'success')));
+		$this->response->getHeaders()->redirect(url(Array('message' => 'success')));
 	}
 	
 }
