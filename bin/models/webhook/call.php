@@ -23,6 +23,9 @@ class CallModel extends Model
 	
 	public static function run() {
 		$next = db()->table('webhook\call')->get('called', null, 'IS')->fetch();
+		
+		if (!$next) { return; } //Everything is fine
+		
 		$url  = $next->hook->url;
 		
 		$payload = $next->hook->mask2Array();
