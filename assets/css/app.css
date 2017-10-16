@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -717,6 +718,62 @@ footer {
 
   .desktop-only {
     display: none; } }
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2017, 11:59:43 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2017, 11:59:49 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2017, 11:58:05 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+input[type=checkbox].styled {
+  display: none; }
+  input[type=checkbox].styled + span.toggle {
+    display: inline-block;
+    position: relative;
+    width: 2em;
+    height: .7em;
+    background-color: #DDD;
+    border-radius: 5px;
+    vertical-align: middle;
+    margin: 0 .3em;
+    transition: background-color .3s linear; }
+    input[type=checkbox].styled + span.toggle:before {
+      display: block;
+      position: absolute;
+      top: -.15em;
+      left: 0;
+      height: .9em;
+      width: .9em;
+      border-radius: 50%;
+      background: #FFF;
+      border: solid 1px #777;
+      content: '';
+      transition: left .3s ease; }
+  input[type=checkbox].styled:checked + span.toggle {
+    background-color: #a1d49d; }
+    input[type=checkbox].styled:checked + span.toggle:before {
+      left: 60%; }
+
 .navbar {
   padding: 8px;
   text-align: center; }

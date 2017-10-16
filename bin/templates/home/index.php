@@ -63,6 +63,8 @@
 				</div>
 				<?php elseif ($attribute->datatype === 'text'): ?>
 				<div style="white-space: pre-wrap;"><?= $attrValue? __($attrValue->value, 200) : '<em>Undefined</em>' ?></div>
+				<?php elseif ($attribute->datatype === 'boolean'): ?>
+				<div style="white-space: pre-wrap;"><?= $attrValue->value? 'Yes' : 'No' ?></div>
 				<?php else: ?>
 				<div><?= $attrValue? __($attrValue->value, 45) : '<em>Undefined</em>' ?></div>
 				<?php endif; ?>

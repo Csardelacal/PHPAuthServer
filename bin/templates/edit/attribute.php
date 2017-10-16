@@ -39,6 +39,7 @@
 	</div>
 	<?php elseif ($attribute->datatype === 'boolean'): ?>
 	<!--Styled checkbox switch needs to go here -->
+	<input type="checkbox" name="value" <?= _def($_POST['value'], $value)? 'checked' : '' ?> id="switch"><label for="switch"><?= $attribute->name ?></label>
 	<?php elseif ($attribute->datatype === 'text'): ?>
 	<div class="row1 fluid">
 		<div class="span1">
