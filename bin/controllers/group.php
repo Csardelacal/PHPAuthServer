@@ -27,7 +27,7 @@ class GroupController extends BaseController
 	public function detail($id) {
 		//if (!$this->user) { throw new PublicException('Members only', 401); }
 		
-		$group    = db()->table('group')->get('_id', $id)->fetch();
+		$group    = db()->table('group')->get(is_numeric($id)? '_id' : 'name', $id)->fetch();
 		$writable = !!$group->members->getQuery()->addRestriction('user', $this->user)->addRestriction('role', Array('admin', 'owner'))->fetch();
 		
 		if (!$group) {

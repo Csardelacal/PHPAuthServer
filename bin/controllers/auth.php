@@ -104,34 +104,84 @@ class AuthController extends BaseController
 	}
 	
 	/**
-	 * As opposed to the OAuth endpoint, the xauth endpoint allows a machine to
-	 * log in a user by using their credentials.
+	 * Allows third party applications to test whether a certain application 
+	 * exists within PHPAS. It expects the application to provide a series of 
+	 * _GET parameters that need to be properly provided for it to return a 
+	 * positive match.
 	 * 
-	 * The use of tokens is still enforced. Some installations may have this 
-	 * endpoint disabled to force OAuth.
+	 * * Application id
+	 * * A signature that authorizes the application.
 	 * 
-	 * @param string $token
-	 */
-	public function xauth($token) {
-		
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			
-		}
-	}
-	
-	/**
-	 * This endpoint allows an application to test whether a certain app exists 
-	 * with an appID and appSec combination. Please note that the endpoint will 
-	 * not reveal whether an application exists and the appSec is wrong.
+	 * The signature is composed of the application's id, the target application's
+	 * id, a random salt and a hash composed of these and the application's secret.
+	 * 
+	 * The signature should therefore prevent the application from forging requests
+	 * on behalf of third parties.
+	 * 
+	 * @todo For legacy purposes, this will accept an app id and secret combo 
+	 * which is no longer supported and will be removed in future versions.
 	 */
 	public function app() {
 		
-		$appId  = isset($_GET['appId']) ? $_GET['appId']  : null;
-		$appSec = isset($_GET['appSec'])? $_GET['appSec'] : null;
+		if (isset($_GET['token'])) {
+			$token = db()->table('token')->get('token', $_GET['token'])->fetch();
+			if ($token->expires < time()) { throw new PublicException('Invalid token', 400); }
+		}
+		else {
+			$token = null;
+		}
 		
-		$app = db()->table('authapp')->get('appID', $appId)->addRestriction('appSecret', $appSec)->fetch();
+		if (isset($_GET['appSec'])) {
+			$appId  = isset($_GET['appId']) ? $_GET['appId']  : null;
+			$appSec = isset($_GET['appSec'])? $_GET['appSec'] : null;
 		
-		$this->view->set('app', $app);
+			$app = db()->table('authapp')->get('appID', $appId)->addRestriction('appSecret', $appSec)->fetch();
+			$this->view->set('authenticated', !!$app);
+		}
+		else {
+			$signature = explode(':', isset($_GET['signature'])? $_GET['signature'] : '');
+			$context   = isset($_GET['context'])? $_GET['context'] : null;
+			
+			switch(count($signature)) {
+				case 4:
+					list($algo, $src, $salt, $hash) = $signature;
+					$remote = null;
+					break;
+				case 5:
+					list($algo, $src, $target, $salt, $hash) = $signature;
+					$remote = db()->table('authapp')->get('appID', $target)->fetch();
+					
+					if(!$remote) { throw new PublicException('No remote found', 404); }
+					break;
+				default:
+					throw new PublicException('Invalid signature', 400);
+			}
+			
+			$app = db()->table('authapp')->get('appID', $src)->fetch();
+			
+			/*
+			 * Reconstruct the original signature with the data we have about the 
+			 * source application to verify whether the apps are the same, and
+			 * should therefore be granted access.
+			 */
+			switch(strtolower($algo)) {
+				case 'sha512':
+					$calculated = hash('sha512', implode('.', array_filter([$app->appID, $remote? $remote->appID : null, $app->appSecret, $salt])));
+					break;
+				default:
+					throw new PublicException('Invalid algorithm', 400);
+			}
+			
+			if ($hash !== $calculated) {
+				throw new PublicException('Invalid signature', 403);
+			}
+			
+			$this->view->set('authenticated', !!$app);
+			$this->view->set('remote', $remote);
+			$this->view->set('grant', $remote? $app->canAccess($remote, $token? $token->user : null, $context) : null);
+			$this->view->set('context', $remote && $context? $remote->getContext($context) : null);
+		}
+		
 	}
 	
 }

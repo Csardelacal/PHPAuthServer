@@ -34,7 +34,7 @@ class UserController extends BaseController
 			$returnto = $_GET['returnto']; 
 		}
 		else {
-			$returnto = (string)new URL();
+			$returnto = (string)url();
 		}
 		
 		$query = db()->table('attribute')->get('writable', Array('public', 'groups', 'related', 'me'));
@@ -56,7 +56,16 @@ class UserController extends BaseController
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
 			
 			list($emailuser, $emaildomain) = explode('@', _def($_POST['email'], ''));
-			if (count(explode('.', $emaildomain)) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
+			if(email\DomainModel::check($emaildomain)) {
+				$r = db()->table('email\domain')->newRecord();
+				$r->host = $emaildomain;
+				$r->whitelisted = 0;
+				$r->type = email\DomainModel::TYPE_DOMAIN;
+				$r->subdomains = false;
+				$r->reason = '[AUTOMATED] Spam filter rule detected';
+				$r->expires = null;
+				$r->store();
+			}
 			
 			validate(
 					$validatorEmail->setValue(_def($_POST['email'], '')), 
