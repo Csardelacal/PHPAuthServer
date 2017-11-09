@@ -45,7 +45,7 @@ class AuthAppModel extends spitfire\Model
 		$q->group()->addRestriction('expires', null, 'IS')->addRestriction('expires', time(), '<');
 		$p = $q->fetch();
 		
-		return $p? $p->state : connection\AuthModel::STATE_PENDING;
+		return $p? (int)$p->state : connection\AuthModel::STATE_PENDING;
 	}
 	
 	public function getContext($context) {
@@ -53,8 +53,8 @@ class AuthAppModel extends spitfire\Model
 		$q  = $db->table('connection\context')->getAll();
 		
 		$q->addRestriction('app', $this);
-		$q->addRestriction('context', $context);
-		$q->addRestriction('expires', time(), '>');
+		$q->addRestriction('ctx', $context);
+		$q->group()->addRestriction('expires', time(), '>')->addRestriction('expires', null, 'IS');
 		
 		return $q->fetch();
 	}

@@ -67,7 +67,7 @@ class ImageController extends Controller
 		$responseHeaders->set('Expires', date('r', time() + 3600));
 		
 		if (ob_get_length() !== 0) {
-			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
+			throw new PrivateException('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
 		return $this->response->setBody(file_get_contents($file));

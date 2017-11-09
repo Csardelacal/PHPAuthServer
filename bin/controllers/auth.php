@@ -1,5 +1,8 @@
 <?php
 
+use connection\AuthModel;
+use spitfire\core\Environment;
+use spitfire\core\http\URL;
 use spitfire\exceptions\PublicException;
 use spitfire\io\session\Session;
 
@@ -23,7 +26,7 @@ class AuthController extends BaseController
 		$suspension = db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch();
 		
 		#Check if the application grants generous TTLs
-		$generous = \spitfire\core\Environment::get('phpAuth.token.extraTTL');
+		$generous = Environment::get('phpAuth.token.extraTTL');
 		
 		#If the token does auto-extend, do so now.
 		if ($token && $token->extends && $token->expires < (time() + $token->ttl) ) {
@@ -68,7 +71,7 @@ class AuthController extends BaseController
 		$this->view->set('cancelURL', $failureURL);
 		$this->view->set('continue',  (string) url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
 		
-		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) spitfire\core\http\URL::current()))); }
+		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); }
 		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
 		
 		/*
@@ -177,10 +180,95 @@ class AuthController extends BaseController
 			}
 			
 			$this->view->set('authenticated', !!$app);
+			$this->view->set('src', $app);
 			$this->view->set('remote', $remote);
 			$this->view->set('grant', $remote? $app->canAccess($remote, $token? $token->user : null, $context) : null);
 			$this->view->set('context', $remote && $context? $remote->getContext($context) : null);
 		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param boolean $confirm
+	 * @return type
+	 * @throws PublicException
+	 * @layout minimal.php
+	 */
+	public function connect($confirm = null) {
+		if (!isset($_GET['signature'])) { throw new PublicException('Invalid signature', 400); }
+		
+		$signature = explode(':', $_GET['signature']);
+		if (count($signature) != 6) { throw new PublicException('Malformed signature', 400); }
+		
+		list($algo, $srcId, $targetId, $context, $salt, $hash) = $signature;
+		
+		/**
+		 * @var AuthAppModel The source application (the application requesting data)
+		 */
+		$src = db()->table('authapp')->get('appID', $srcId)->fetch();
+		$tgt = db()->table('authapp')->get('appID', $targetId)->fetch();
+		$ctx = $tgt->getContext($context);
+		
+		switch(strtolower($algo)) {
+			case 'sha512':
+				$calculated = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $context, $salt]));
+				break;
+			
+			default:
+				throw new PublicException('Invalid algorithm', 400);
+		}
+		
+		if ($calculated !== $hash) {
+			throw new PublicException('Hash failure', 403);
+		}
+		
+		$granted = $src->canAccess($tgt, $this->user, $ctx->ctx);
+		
+		if ($confirm) {
+			$pieces = explode(':', $confirm);
+			list($expires, $csalt, $csum) = $pieces;
+			
+			if ($csum !== hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $csalt, $expires])) || $expires < time()) {
+				throw new PublicException('Invalid confirmation hash', 403);
+			}
+			
+			$confirm = true;
+		}
+		
+		if ($granted === AuthModel::STATE_DENIED) {
+			throw new PublicException('Application was already denied access', 400);
+		}
+		
+		if ($granted === AuthModel::STATE_AUTHORIZED || $confirm ) {
+			
+			$connection = db()->table('connection\auth')
+				->get('source', $src)
+				->addRestriction('target', $tgt)
+				->addRestriction('user', $this->user)
+				->addRestriction('context', $context? : null, $context? '=' : 'IS')
+				->addRestriction('expires', time(), '<')->fetch();
+			
+			if (!$connection) {
+				$connection = db()->table('connection\auth')->newRecord();
+				$connection->target  = $tgt;
+				$connection->source  = $src;
+				$connection->user    = $this->user;
+				$connection->context = $context;
+				$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
+				$connection->store();
+			}
+			
+			if (isset($_GET['returnto'])) {
+				return $this->response->setBody('Redirectiong...')->getHeaders()->redirect($_GET['returnto']);
+			}
+		}
+		
+		
+		$this->view->set('src', $src);
+		$this->view->set('tgt', $tgt);
+		$this->view->set('ctx', $ctx);
+		$this->view->set('signature', $_GET['signature']);
 		
 	}
 	
