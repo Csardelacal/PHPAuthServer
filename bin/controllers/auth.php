@@ -255,20 +255,27 @@ class AuthController extends BaseController
 				$connection->source  = $src;
 				$connection->user    = $this->user;
 				$connection->context = $context;
+				$connection->state   = AuthModel::STATE_AUTHORIZED;
 				$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
 				$connection->store();
 			}
 			
 			if (isset($_GET['returnto'])) {
-				return $this->response->setBody('Redirectiong...')->getHeaders()->redirect($_GET['returnto']);
+				return $this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']);
 			}
 		}
 		
+		#Make the confirmation signature
+		$confirmSalt = trim(str_replace(['/', '+', '='], '-', base64_encode(random_bytes(25))), '-');
+		$confirmExpires = time() + 300;
+		$confirmHash = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $confirmSalt, $confirmExpires]));
+		$confirmSignature = implode(':', [$confirmExpires, $confirmSalt, $confirmHash]);
 		
 		$this->view->set('src', $src);
 		$this->view->set('tgt', $tgt);
 		$this->view->set('ctx', $ctx);
 		$this->view->set('signature', $_GET['signature']);
+		$this->view->set('confirm', $confirmSignature);
 		
 	}
 	

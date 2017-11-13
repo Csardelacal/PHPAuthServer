@@ -23,8 +23,4 @@ class CronController extends Controller
 		}
 	}
 	
-	public function testGeo() {
-		var_dump(IP::makeLocation());
-		die();
-	}
 }

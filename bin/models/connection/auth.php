@@ -50,5 +50,9 @@ class AuthModel extends Model
 		$schema->created = new IntegerField(true);
 		$schema->expires = new IntegerField(true);
 	}
+	
+	public function onbeforesave() {
+		if (!$this->created) { $this->created = time(); }
+	}
 
 }

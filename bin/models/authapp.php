@@ -42,7 +42,7 @@ class AuthAppModel extends spitfire\Model
 			$q->addRestriction('user', null, 'IS');
 		}
 		
-		$q->group()->addRestriction('expires', null, 'IS')->addRestriction('expires', time(), '<');
+		$q->group()->addRestriction('expires', null, 'IS')->addRestriction('expires', time(), '>');
 		$p = $q->fetch();
 		
 		return $p? (int)$p->state : connection\AuthModel::STATE_PENDING;

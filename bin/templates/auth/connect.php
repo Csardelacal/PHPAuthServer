@@ -50,5 +50,11 @@
 				</div>
 			</div>
 		</div>
+		
+		<div class="spacer" style="height: 20px;"></div>
+		
+		<div style="text-align: right">
+			<a class="button" href="<?= url('auth', 'connect', $confirm, $_GET->getRaw()) ?>">Allow connection</a>
+		</div>
 	</div>
 </div>
