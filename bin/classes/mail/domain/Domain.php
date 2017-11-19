@@ -55,7 +55,7 @@ class Domain
 		 */
 		if(!$this->isTLD()) {
 			$ips = $this->getIpAddresses($host);
-			if ($this->reader->isBlacklisted($ips, 'ip')) { return true; }
+			if ($this->reader->isBlacklisted($ips, ReaderInterface::TYPE_IP)) { return true; }
 		}
 		
 		if ($this->reader->isBlacklisted($host)) {
@@ -82,23 +82,23 @@ class Domain
 	}
 	
 	public function getIpAddresses($hostname) {
-		if(!getmxrr($host, $mxhosts)) { return true; }
+		if(!getmxrr($hostname, $mxhosts)) { return true; }
 		return collect($mxhosts)->each(function ($e) { return base64encode(inet_pton(gethostbyname($e))); });
 	}
 	
 	public function ban($subdomains, $reason) {
-		$this->writer->addEntry(implode('.', $this->pieces), 'blacklist', 'host', $subdomains, $reason);
+		$this->writer->addEntry(implode('.', $this->pieces), 'blacklist', ReaderInterface::TYPE_HOSTNAME, $subdomains, $reason);
 		
 		$this->getIpAddresses(implode('.', $this->pieces))->each(function ($e) use ($reason) {
-			$this->writer->addEntry($e, 'blacklist', 'ip', null, $reason);
+			$this->writer->addEntry($e, 'blacklist', ReaderInterface::TYPE_IP, null, $reason);
 		});
 	}
 	
 	public function whitelist($subdomains, $reason) {
-		$this->writer->addEntry(implode('.', $this->pieces), 'whitelist', 'host', $subdomains, $reason);
+		$this->writer->addEntry(implode('.', $this->pieces), 'whitelist', ReaderInterface::TYPE_HOSTNAME, $subdomains, $reason);
 		
 		$this->getIpAddresses(implode('.', $this->pieces))->each(function ($e) use ($reason) {
-			$this->writer->addEntry($e, 'whitelist', 'ip', null, $reason);
+			$this->writer->addEntry($e, 'whitelist', ReaderInterface::TYPE_IP, null, $reason);
 		});
 	}
 

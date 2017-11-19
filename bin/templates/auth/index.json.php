@@ -15,6 +15,9 @@ if ($token && $token->user) {
 	$data['user']['suspended'] = ($suspension && !$suspension->preventsLogin);
 	$data['user']['avatar']    = (string)url('image', 'user', $token->user->_id)->absolute();
 	
+	$data['app']               = Array();
+	$data['app']['id']         = $token->app->appID;
+	
 	$data['groups']            = Array();
 	
 	foreach ($token->user->memberof as $group) {
