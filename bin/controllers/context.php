@@ -31,8 +31,59 @@ class ContextController extends BaseController
 		
 	}
 	
-	public function create($appid) {
+	public function create() {
 		
+		$signature = explode(':', isset($_GET['signature'])? $_GET['signature'] : '');
+		$context   = isset($_GET['context'])? $_GET['context'] : null;
+
+		switch(count($signature)) {
+			case 4:
+				list($algo, $src, $salt, $hash) = $signature;
+				$remote = null;
+				break;
+			case 5:
+				list($algo, $src, $target, $salt, $hash) = $signature;
+				$remote = db()->table('authapp')->get('appID', $target)->fetch();
+
+				if(!$remote) { throw new PublicException('No remote found', 404); }
+				break;
+			default:
+				throw new PublicException('Invalid signature', 400);
+		}
+
+		$app = db()->table('authapp')->get('appID', $src)->fetch();
+
+		/*
+		 * Reconstruct the original signature with the data we have about the 
+		 * source application to verify whether the apps are the same, and
+		 * should therefore be granted access.
+		 */
+		switch(strtolower($algo)) {
+			case 'sha512':
+				$calculated = hash('sha512', implode('.', array_filter([$app->appID, $remote? $remote->appID : null, $app->appSecret, $salt])));
+				break;
+			default:
+				throw new PublicException('Invalid algorithm', 400);
+		}
+
+		if ($hash !== $calculated) {
+			throw new PublicException('Invalid signature', 403);
+		}
+		
+		if ($remote) {
+			throw new \spitfire\exceptions\PublicException('Applications cannot create remote contexts', 400);
+		}
+		
+		/*@var $record \connection\ContextModel*/
+		$record = db()->table('connection\context')->newRecord();
+		$record->ctx     = $context;
+		$record->app     = $app;
+		$record->title   = _def($_POST['name'], 'Unnamed context');
+		$record->descr   = _def($_POST['description'], 'Missing description');
+		$record->expires = _def($_POST['expires'], 86400 * 90) + time();
+		$record->store();
+		
+		$this->view->set('result', $record);
 	}
 	
 	public function edit($appid, $ctx) {

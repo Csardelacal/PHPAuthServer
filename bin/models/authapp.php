@@ -25,6 +25,13 @@ class AuthAppModel extends spitfire\Model
 	}
 	
 	public function canAccess($app, $user = null, $context = null) {
+		
+		if (is_array($context)) {
+			return collect($context)->reduce(function ($p, $e) use ($app, $user) {
+				return min($p, $this->canAccess($app, $user, $e));
+			}, 2);
+		}
+		
 		$db = $this->getTable()->getDb();
 		$q  = $db->table('connection\auth')->getAll();
 		
@@ -49,6 +56,10 @@ class AuthAppModel extends spitfire\Model
 	}
 	
 	public function getContext($context) {
+		if (is_array($context) || $context instanceof spitfire\io\Get) {
+			return collect($context instanceof spitfire\io\Get? $context->getRaw() : $context)->each(function ($e) { return $this->getContext($e); });
+		}
+		
 		$db = $this->getTable()->getDb();
 		$q  = $db->table('connection\context')->getAll();
 		
@@ -56,7 +67,10 @@ class AuthAppModel extends spitfire\Model
 		$q->addRestriction('ctx', $context);
 		$q->group()->addRestriction('expires', time(), '>')->addRestriction('expires', null, 'IS');
 		
-		return $q->fetch();
+		$r = $q->fetch();
+		
+		return $r? new \auth\Context(true, $r->ctx, $r->app->appID, $r->title, $r->descr, $r->expires) :
+			new \auth\Context(false, $context, $this->appID, null, null, null);
 	}
 
 	public function __toString() {

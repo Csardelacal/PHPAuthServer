@@ -182,6 +182,7 @@ class AuthController extends BaseController
 			$this->view->set('authenticated', !!$app);
 			$this->view->set('src', $app);
 			$this->view->set('remote', $remote);
+			$this->view->set('token', $token);
 			$this->view->set('grant', $remote? $app->canAccess($remote, $token? $token->user : null, $context) : null);
 			$this->view->set('context', $remote && $context? $remote->getContext($context) : null);
 		}
@@ -199,9 +200,10 @@ class AuthController extends BaseController
 		if (!isset($_GET['signature'])) { throw new PublicException('Invalid signature', 400); }
 		
 		$signature = explode(':', $_GET['signature']);
-		if (count($signature) != 6) { throw new PublicException('Malformed signature', 400); }
+		if (count($signature) != 5) { throw new PublicException('Malformed signature', 400); }
 		
-		list($algo, $srcId, $targetId, $context, $salt, $hash) = $signature;
+		list($algo, $srcId, $targetId, $salt, $hash) = $signature;
+		$context = isset($_GET['context'])? $_GET['context'] : null;
 		
 		/**
 		 * @var AuthAppModel The source application (the application requesting data)
@@ -212,7 +214,7 @@ class AuthController extends BaseController
 		
 		switch(strtolower($algo)) {
 			case 'sha512':
-				$calculated = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $context, $salt]));
+				$calculated = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $salt]));
 				break;
 			
 			default:
@@ -223,7 +225,7 @@ class AuthController extends BaseController
 			throw new PublicException('Hash failure', 403);
 		}
 		
-		$granted = $src->canAccess($tgt, $this->user, $ctx->ctx);
+		$granted = $src->canAccess($tgt, $this->user, $ctx->each(function ($e) { return $e->ctx; })->toArray());
 		
 		if ($confirm) {
 			$pieces = explode(':', $confirm);
@@ -242,22 +244,28 @@ class AuthController extends BaseController
 		
 		if ($granted === AuthModel::STATE_AUTHORIZED || $confirm ) {
 			
-			$connection = db()->table('connection\auth')
-				->get('source', $src)
-				->addRestriction('target', $tgt)
-				->addRestriction('user', $this->user)
-				->addRestriction('context', $context? : null, $context? '=' : 'IS')
-				->addRestriction('expires', time(), '<')->fetch();
+			if ($ctx->isEmpty()) {
+				$ctx = [null];
+			}
 			
-			if (!$connection) {
-				$connection = db()->table('connection\auth')->newRecord();
-				$connection->target  = $tgt;
-				$connection->source  = $src;
-				$connection->user    = $this->user;
-				$connection->context = $context;
-				$connection->state   = AuthModel::STATE_AUTHORIZED;
-				$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
-				$connection->store();
+			foreach ($ctx as $c) {
+				$connection = db()->table('connection\auth')
+					->get('source', $src)
+					->addRestriction('target', $tgt)
+					->addRestriction('user', $this->user)
+					->addRestriction('context', $c? $c->getId() : null, $c? '=' : 'IS')
+					->addRestriction('expires', time(), '<')->fetch();
+
+				if (!$connection) {
+					$connection = db()->table('connection\auth')->newRecord();
+					$connection->target  = $tgt;
+					$connection->source  = $src;
+					$connection->user    = $this->user;
+					$connection->context = $c? $c->getId() : null;
+					$connection->state   = AuthModel::STATE_AUTHORIZED;
+					$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
+					$connection->store();
+				}
 			}
 			
 			if (isset($_GET['returnto'])) {

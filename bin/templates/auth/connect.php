@@ -24,7 +24,7 @@
 					<strong><?= __($src->name) ?></strong> requested permission to access data contained in 
 					<strong><?= __($tgt->name) ?></strong>. 
 
-					<?php if ($ctx): ?>
+					<?php if (!$ctx->isEmpty()): ?>
 					Please confirm that you wish to allow these applications to exchange the following data:
 					<?php else: ?>
 					Please confirm that you wish to allow these applications to exchange data.
@@ -34,11 +34,13 @@
 
 			<?php if ($ctx): ?>
 			<div class="spacer" style="height: 10px"></div>
-
+			
 			<div class="row1 fluid" style="background: #707070; box-shadow: 0px 1px 2px #444 inset; padding: 15px; font-size: .8em; border: solid 1px #444; border-left: none; border-right: none; color: #FFF;">
-				<div><strong style="font-size: 1.2em"><?= __($ctx->title) ?></strong></div>
+				<?php  foreach ($ctx as $c): ?>
+				<div><strong style="font-size: 1.2em"><?= __($c->getName()) ?></strong></div>
 				<div class="spacer" style="height: 10px"></div>
-				<div><?= __($ctx->descr) ?></div>
+				<div><?= __($c->getDescription()) ?></div>
+				<?php endforeach; ?>
 			</div>
 			<?php endif; ?>
 			
