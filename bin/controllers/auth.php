@@ -200,21 +200,21 @@ class AuthController extends BaseController
 		if (!isset($_GET['signature'])) { throw new PublicException('Invalid signature', 400); }
 		
 		$signature = explode(':', $_GET['signature']);
-		if (count($signature) != 5) { throw new PublicException('Malformed signature', 400); }
+		if (count($signature) != 6) { throw new PublicException('Malformed signature', 400); }
 		
-		list($algo, $srcId, $targetId, $salt, $hash) = $signature;
-		$context = isset($_GET['context'])? $_GET['context'] : null;
+		list($algo, $srcId, $targetId, $contextstr, $salt, $hash) = $signature;
+		$context = explode(',', $contextstr);
 		
 		/**
 		 * @var AuthAppModel The source application (the application requesting data)
 		 */
 		$src = db()->table('authapp')->get('appID', $srcId)->fetch();
 		$tgt = db()->table('authapp')->get('appID', $targetId)->fetch();
-		$ctx = $tgt->getContext($context);
+		$ctx = $src->getContext($context);
 		
 		switch(strtolower($algo)) {
 			case 'sha512':
-				$calculated = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $salt]));
+				$calculated = hash('sha512', implode('.', [$src->appID, $tgt->appID, $src->appSecret, $contextstr, $salt]));
 				break;
 			
 			default:
@@ -225,13 +225,13 @@ class AuthController extends BaseController
 			throw new PublicException('Hash failure', 403);
 		}
 		
-		$granted = $src->canAccess($tgt, $this->user, $ctx->each(function ($e) { return $e->ctx; })->toArray());
+		$granted = $tgt->canAccess($tgt, $this->user, $ctx->each(function ($e) { return $e->ctx; })->toArray());
 		
 		if ($confirm) {
 			$pieces = explode(':', $confirm);
 			list($expires, $csalt, $csum) = $pieces;
 			
-			if ($csum !== hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $csalt, $expires])) || $expires < time()) {
+			if ($csum !== hash('sha512', implode('.', [$src->appID, $tgt->appID, $src->appSecret, $csalt, $expires])) || $expires < time()) {
 				throw new PublicException('Invalid confirmation hash', 403);
 			}
 			
@@ -250,16 +250,16 @@ class AuthController extends BaseController
 			
 			foreach ($ctx as $c) {
 				$connection = db()->table('connection\auth')
-					->get('source', $src)
-					->addRestriction('target', $tgt)
+					->get('source', $tgt)
+					->addRestriction('target', $src)
 					->addRestriction('user', $this->user)
 					->addRestriction('context', $c? $c->getId() : null, $c? '=' : 'IS')
-					->addRestriction('expires', time(), '<')->fetch();
-
+					->addRestriction('expires', time(), '>')->fetch();
+				
 				if (!$connection) {
 					$connection = db()->table('connection\auth')->newRecord();
-					$connection->target  = $tgt;
-					$connection->source  = $src;
+					$connection->target  = $src; //Source and target are swapped in this request.
+					$connection->source  = $tgt; //This is rather confusing, but the request is issued by the target - making it the source
 					$connection->user    = $this->user;
 					$connection->context = $c? $c->getId() : null;
 					$connection->state   = AuthModel::STATE_AUTHORIZED;
@@ -276,12 +276,13 @@ class AuthController extends BaseController
 		#Make the confirmation signature
 		$confirmSalt = trim(str_replace(['/', '+', '='], '-', base64_encode(random_bytes(25))), '-');
 		$confirmExpires = time() + 300;
-		$confirmHash = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $confirmSalt, $confirmExpires]));
+		$confirmHash = hash('sha512', implode('.', [$src->appID, $tgt->appID, $src->appSecret, $confirmSalt, $confirmExpires]));
 		$confirmSignature = implode(':', [$confirmExpires, $confirmSalt, $confirmHash]);
 		
 		$this->view->set('src', $src);
 		$this->view->set('tgt', $tgt);
 		$this->view->set('ctx', $ctx);
+		$this->view->set('ctxstr', $contextstr);
 		$this->view->set('signature', $_GET['signature']);
 		$this->view->set('confirm', $confirmSignature);
 		

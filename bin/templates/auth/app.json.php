@@ -29,7 +29,7 @@ if ($context) {
 elseif ($remote) {
 	$payload['context'] = [
 		'undefined' => true,
-		'id'        => isset($_GET['context'])? $_GET['context'] : null
+		'id'        => null
 	];
 }
 
@@ -38,12 +38,11 @@ elseif ($remote) {
  */
 if ((int)$grant === 0 && $src && $remote) {
 	$salt     = str_replace(['+', '/'], '', base64_encode(random_bytes(30)));
-	$hash     = hash('sha512', implode('.', [$src->appID, $remote->appID, $remote->appSecret, $salt]));
+	$hash     = hash('sha512', implode('.', [$src->appID, $remote->appID, $remote->appSecret, $ctxstr, $salt]));
 	$returnto = isset($_GET['returnto']) && filter_var($_GET['returnto'], FILTER_VALIDATE_URL)? $_GET['returnto'] : null;
-	$redirect = url('auth', 'connect', ['signature' => implode(':', ['sha512', $src->appID, $remote->appID, $salt, $hash]), 'returnto' => $returnto])->absolute();
+	$redirect = url('auth', 'connect', ['signature' => implode(':', ['sha512', $src->appID, $remote->appID, $ctxstr, $salt, $hash]), 'token' => $token->token, 'returnto' => $returnto])->absolute();
 	$payload['redirect'] = strval($redirect);
 }
 
 $payload['token']    = $token->token;
-$payload['messages'] = spitfire()->getMessages();
 echo json_encode($payload);
