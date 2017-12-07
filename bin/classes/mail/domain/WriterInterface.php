@@ -17,8 +17,9 @@ interface WriterInterface
 	 * @param string $host
 	 * @param int    $list
 	 * @param int    $type
+	 * @param int    $subdomains
 	 * @param string $reason
 	 */
-	function addEntry($host, $list, $type, $reason);
+	function addEntry($host, $list, $type, $subdomains, $reason);
 }
 

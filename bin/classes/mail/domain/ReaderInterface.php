@@ -16,8 +16,8 @@ interface ReaderInterface
 	/**
 	 * 
 	 */
-	const LIST_BLACKLIST = 0x00;
-	const LIST_WHITELIST = 0x01;
+	const LIST_BLACKLIST = 'blacklist';
+	const LIST_WHITELIST = 'whitelist';
 	
 	/**
 	 * Returns whether a host was found in the blacklist. Please note that the

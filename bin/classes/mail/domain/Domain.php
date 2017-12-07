@@ -1,5 +1,13 @@
 <?php namespace mail\domain;
 
+/**
+ * 
+ * 
+ * @todo This class should be split into several sub-classes. 
+ * - One for domain data
+ * - One for a list entry
+ * - One for the hypervisor / dispatcher
+ */
 class Domain
 {
 	
@@ -12,7 +20,10 @@ class Domain
 	 *
 	 * @var string[]
 	 */
-	public static $tld = ['org', 'co', 'uk', 'com', 'ca', 'au', 'es', 'de', 'ly', 'ie', 'fr', 'us', 'biz', 'tk'];
+	public static $tld = [
+		'org', 'co', 'uk', 'com', 'ca', 'au', 'es', 'de', 'ly', 'ie', 'fr', 'us', 
+		'biz', 'tk', 'br'
+	];
 	
 	
 	/**
@@ -87,18 +98,29 @@ class Domain
 	}
 	
 	public function ban($subdomains, $reason) {
-		$this->writer->addEntry(implode('.', $this->pieces), 'blacklist', ReaderInterface::TYPE_HOSTNAME, $subdomains, $reason);
+		$this->writer->addEntry(implode('.', $this->pieces), ReaderInterface::LIST_BLACKLIST, ReaderInterface::TYPE_HOSTNAME, $subdomains, $reason);
 		
 		$this->getIpAddresses(implode('.', $this->pieces))->each(function ($e) use ($reason) {
-			$this->writer->addEntry($e, 'blacklist', ReaderInterface::TYPE_IP, null, $reason);
+			$this->writer->addEntry($e, ReaderInterface::LIST_BLACKLIST, ReaderInterface::TYPE_IP, null, $reason);
 		});
 	}
 	
 	public function whitelist($subdomains, $reason) {
-		$this->writer->addEntry(implode('.', $this->pieces), 'whitelist', ReaderInterface::TYPE_HOSTNAME, $subdomains, $reason);
+		$this->writer->addEntry(implode('.', $this->pieces), ReaderInterface::LIST_WHITELIST, ReaderInterface::TYPE_HOSTNAME, $subdomains, $reason);
 		
 		$this->getIpAddresses(implode('.', $this->pieces))->each(function ($e) use ($reason) {
-			$this->writer->addEntry($e, 'whitelist', ReaderInterface::TYPE_IP, null, $reason);
+			$this->writer->addEntry($e, ReaderInterface::LIST_WHITELIST, ReaderInterface::TYPE_IP, null, $reason);
+		});
+	}
+	
+	public function crontab() {
+		$domains = $this->reader->getDomainsRefreshedBefore(time());
+		
+		$domains->each(function (Domain$e) {
+			$list = $e->isBanned()? ReaderInterface::LIST_BLACKLIST : ReaderInterface::LIST_WHITELIST;
+			$e->getIpAddresses(function ($s) use ($list) {
+				$this->writer->addEntry($s, $list, ReaderInterface::TYPE_IP, null, 'Refresh performed by crontab');
+			});
 		});
 	}
 
