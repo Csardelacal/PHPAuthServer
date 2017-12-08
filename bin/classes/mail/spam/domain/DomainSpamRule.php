@@ -35,15 +35,8 @@ class DomainSpamRule implements SpamRuleInterface
 	 */
 	private $reader;
 	
-	/**
-	 *
-	 * @var WriterInterface 
-	 */
-	private $writer;
-	
-	public function __construct(ReaderInterface $reader, WriterInterface $writer) {
+	public function __construct(StorageInterface $reader) {
 		$this->reader = $reader;
-		$this->writer = $writer;
 	}
 	
 	public function test($emailAddress) {
@@ -72,7 +65,7 @@ class DomainSpamRule implements SpamRuleInterface
 		 * return a negative result for this server.
 		 */
 		$ipban = IP::mx($domain)->reduce(function ($p, $e) { return $p || $this->reader->isBlacklisted($e); }, false);
-		if ($ipban) { return true; }
+		if ($ipban) { return $this->reader->report($domain) || true; }
 		
 		/*
 		 * Check if the domain itself is blacklisted, and if this is not the case,
@@ -85,33 +78,6 @@ class DomainSpamRule implements SpamRuleInterface
 		else {
 			return $this->test($domain->getParent());
 		}
-	}
-	
-	public function ban(Domain$domain, $subdomains, $reason) {
-		$this->writer->addEntry($domain, ReaderInterface::LIST_BLACKLIST, $subdomains, $reason);
-		
-		$this->getIpAddresses(implode('.', $this->pieces))->each(function ($e) use ($reason) {
-			$this->writer->addEntry($e, ReaderInterface::LIST_BLACKLIST, null, $reason);
-		});
-	}
-	
-	public function whitelist($subdomains, $reason) {
-		$this->writer->addEntry(implode('.', $this->pieces), ReaderInterface::LIST_WHITELIST, ReaderInterface::TYPE_HOSTNAME, $subdomains, $reason);
-		
-		$this->getIpAddresses(implode('.', $this->pieces))->each(function ($e) use ($reason) {
-			$this->writer->addEntry($e, ReaderInterface::LIST_WHITELIST, ReaderInterface::TYPE_IP, null, $reason);
-		});
-	}
-	
-	public function crontab() {
-		$domains = $this->reader->getDomainsRefreshedBefore(time());
-		
-		$domains->each(function (Domain$e) {
-			$list = $e->isBanned()? ReaderInterface::LIST_BLACKLIST : ReaderInterface::LIST_WHITELIST;
-			$e->getIpAddresses(function ($s) use ($list) {
-				$this->writer->addEntry($s, $list, ReaderInterface::TYPE_IP, null, 'Refresh performed by crontab');
-			});
-		});
 	}
 
 }

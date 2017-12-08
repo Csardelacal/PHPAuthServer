@@ -1,7 +1,11 @@
 <?php namespace mail\spam\domain\implementation;
 
-use mail\domain\ReaderInterface;
-use mail\domain\WriterInterface;
+use InvalidArgumentException;
+use mail\spam\domain\Domain;
+use mail\spam\domain\IP;
+use mail\spam\domain\StorageInterface;
+use spitfire\storage\database\DB;
+use function db;
 
 /* 
  * The MIT License
@@ -27,39 +31,47 @@ use mail\domain\WriterInterface;
  * THE SOFTWARE.
  */
 
-class SpitfireWriter implements WriterInterface
+class SpitfireReader implements StorageInterface
 {
 	
+	/**
+	 *
+	 * @var DB
+	 */
 	private $db;
 	
-	/**
-	 * 
-	 * @param type $db
-	 */
-	public function __construct($db) {
+	public function __construct(DB $db) {
 		$this->db = $db;
 	}
 	
 	/**
 	 * 
-	 * @param string $host
-	 * @param int    $list
-	 * @param int    $type
-	 * @param int    $subdomains
-	 * @param string $reason
+	 * @param type $host
+	 * @throws InvalidArgumentException
+	 * @return type
 	 */
-	public function addEntry($host, $list, $type, $subdomains, $reason) {
+	public function isBlacklisted($host) {
 		
-		$record = $this->db->table('email\domain')->newRecord();
-		$record->type = $type & ReaderInterface::TYPE_IP? ReaderInterface::TYPE_IP : ReaderInterface::TYPE_HOSTNAME;
-		$record->host = $host;
-		$record->list = $list;
-		$record->subdomains = $subdomains;
-		$record->reason  = $reason;
-		$record->expires = time() + 86400 * 90;
-		$record->store();
+		if ($host instanceof IP) {
+			$host = $host->getBase64();
+			$type = StorageInterface::TYPE_IP;
+		}
+		elseif ($host instanceof Domain) {
+			$host = $host->getHostname();
+			$type = StorageInterface::TYPE_HOSTNAME;
+		}
+		else {
+			throw new InvalidArgumentException();
+		}
 		
-		return true;
+		$record = db()->table('email\domain')
+			->get('host', $host )
+			->addRestriction('type', $type)
+			->addRestriction('list', StorageInterface::LIST_BLACKLIST)
+			->addRestriction('expires', time(), '>')
+			->fetch();
+		
+		return !!$record;
 	}
 
 }

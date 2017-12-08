@@ -32,6 +32,14 @@ class IP
 		$this->ip = $ip;
 	}
 	
+	public function getIP() {
+		return $this->ip;
+	}
+	
+	public function getBase64() {
+		return base64_encode(inet_pton($this->ip));
+	}
+	
 	public static function mx($hostname) {
 		if ($hostname instanceof Domain) {
 			$hostname = $hostname->getHostname();
