@@ -1,6 +1,4 @@
-<?php namespace mail\domain\implementation;
-
-use mail\domain\ReaderInterface;
+<?php namespace mail\spam;
 
 /* 
  * The MIT License
@@ -26,50 +24,13 @@ use mail\domain\ReaderInterface;
  * THE SOFTWARE.
  */
 
-class SpitfireReader implements ReaderInterface
+interface SpamRuleInterface
 {
 	
 	/**
-	 *
-	 * @var \spitfire\storage\database\DB
-	 */
-	private $db;
-	
-	public function __construct(\spitfire\storage\database\DB $db) {
-		$this->db = $db;
-	}
-	
-	/**
 	 * 
-	 * @param type $timestamp
+	 * @param string $emailAddress
 	 */
-	public function getDomainsRefreshedBefore($timestamp) {
-		$records = db()->table('email\domain')
-			->get('expires', $timestamp, '<')
-			->addRestriction('type', ReaderInterface::TYPE_HOSTNAME)
-			->setResultsPerPage(4)
-			->fetchAll();
-		
-		return $records->each(function ($e) {
-			return new \mail\domain\Domain($e->host, $this, new SpitfireWriter($this->db));
-		});
-	}
+	public function test($emailAddress);
 	
-	/**
-	 * 
-	 * @param type $host
-	 * @param type $type
-	 * @return type
-	 */
-	public function isBlacklisted($host, $type = ReaderInterface::TYPE_HOSTNAME) {
-		
-		$record = db()->table('email\domain')
-			->get('host', $host)
-			->addRestriction('type', $type)
-			->addRestriction('expires', time(), '>')
-			->fetch();
-		
-		return !!$record;
-	}
-
 }

@@ -1,4 +1,4 @@
-<?php namespace mail\domain;
+<?php namespace mail\spam\domain;
 
 interface ReaderInterface
 {

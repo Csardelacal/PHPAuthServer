@@ -1,7 +1,4 @@
-<?php namespace mail\domain\implementation;
-
-use mail\domain\ReaderInterface;
-use mail\domain\WriterInterface;
+<?php namespace mail\spam\domain;
 
 /* 
  * The MIT License
@@ -27,39 +24,36 @@ use mail\domain\WriterInterface;
  * THE SOFTWARE.
  */
 
-class SpitfireWriter implements WriterInterface
+class TLD
 {
 	
-	private $db;
 	
 	/**
+	 * An array of TLD. These allow the application to detect when the only part 
+	 * left of the domain name is a TLD.
 	 * 
-	 * @param type $db
+	 * This is due to how PHPAS parses domains. It will try to chain up to the 
+	 * TLD whether the domain is acceptable.
+	 *
+	 * @var string[]
 	 */
-	public function __construct($db) {
-		$this->db = $db;
-	}
+	public static $tld = [
+		'org', 'co', 'uk', 'com', 'ca', 'au', 'es', 'de', 'ly', 'ie', 'fr', 'us', 
+		'biz', 'tk', 'br'
+	];
 	
 	/**
+	 * Some TLD are 
 	 * 
-	 * @param string $host
-	 * @param int    $list
-	 * @param int    $type
-	 * @param int    $subdomains
-	 * @param string $reason
+	 * @param Domain $domain The domain to be tested
+	 * @return boolean
 	 */
-	public function addEntry($host, $list, $type, $subdomains, $reason) {
+	public static function isTLD(Domain $domain) {
 		
-		$record = $this->db->table('email\domain')->newRecord();
-		$record->type = $type & ReaderInterface::TYPE_IP? ReaderInterface::TYPE_IP : ReaderInterface::TYPE_HOSTNAME;
-		$record->host = $host;
-		$record->list = $list;
-		$record->subdomains = $subdomains;
-		$record->reason  = $reason;
-		$record->expires = time() + 86400 * 90;
-		$record->store();
+		$pieces = collect($domain->getPieces());
 		
-		return true;
+		return $pieces->count() < 3 && $pieces->reduce(function ($e, $p) { 
+			return $p && strlen($e) <= 3 && in_array($e, self::$tld);
+		}, true);
 	}
-
 }
