@@ -1,9 +1,13 @@
 <?php
 
+use email\DomainModel;
+use mail\spam\domain\SpamDomainValidationRule;
+use mail\spam\domain\implementation\SpamDomainModelReader;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\session\Session;
 use spitfire\validation\FilterValidationRule;
+use spitfire\validation\MaxLengthValidationRule;
 use spitfire\validation\MinLengthValidationRule;
 use spitfire\validation\RegexValidationRule;
 use spitfire\validation\ValidationException;
@@ -49,23 +53,12 @@ class UserController extends BaseController
 			 * and therefore requires quite a lot of attention
 			 */
 			$validatorUsername = validate()->addRule(new MinLengthValidationRule(4, 'Username must be more than 3 characters'));
-			$validatorUsername->addRule(new \spitfire\validation\MaxLengthValidationRule(20, 'Username must be shorter than 20 characters'));
+			$validatorUsername->addRule(new MaxLengthValidationRule(20, 'Username must be shorter than 20 characters'));
 			$validatorUsername->addRule(new RegexValidationRule('/^[a-zA-z][a-zA-z0-9\-\_]+$/', 'Username must only contain characters, numbers, underscores and hyphens'));
 			$validatorEmail    = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email found'));
-			$validatorEmail->addRule(new \spitfire\validation\MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
+			$validatorEmail->addRule(new MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
+			$validatorEmail->addRule(new SpamDomainValidationRule(new SpamDomainModelReader(db())));
 			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
-			
-			list($emailuser, $emaildomain) = explode('@', _def($_POST['email'], ''));
-			if(email\DomainModel::check($emaildomain)) {
-				$r = db()->table('email\domain')->newRecord();
-				$r->host = $emaildomain;
-				$r->whitelisted = 0;
-				$r->type = email\DomainModel::TYPE_DOMAIN;
-				$r->subdomains = false;
-				$r->reason = '[AUTOMATED] Spam filter rule detected';
-				$r->expires = null;
-				$r->store();
-			}
 			
 			validate(
 					$validatorEmail->setValue(_def($_POST['email'], '')), 

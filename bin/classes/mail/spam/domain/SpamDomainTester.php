@@ -1,7 +1,5 @@
 <?php namespace mail\spam\domain;
 
-use mail\spam\SpamRuleInterface;
-
 /* 
  * The MIT License
  *
@@ -26,7 +24,7 @@ use mail\spam\SpamRuleInterface;
  * THE SOFTWARE.
  */
 
-class DomainSpamRule implements SpamRuleInterface
+class SpamDomainTester
 {
 	
 	/**
@@ -39,18 +37,12 @@ class DomainSpamRule implements SpamRuleInterface
 		$this->reader = $reader;
 	}
 	
-	public function test($emailAddress) {
-		/*
-		 * This is a recursive function, when a domain does not match the rules,
-		 * the parent domain is tested.
-		 */
-		if ($emailAddress instanceof Domain) {
-			$domain = $emailAddress;
-		} 
-		else {
-			$pieces = explode('@', $emailAddress);
-			$domain = new Domain(array_pop($pieces));
-		}
+	/**
+	 * 
+	 * @param Domain $domain
+	 * @return boolean True if the domain is blocked, false if the domain is accepted
+	 */
+	public function check(Domain$domain) {
 		
 		/*
 		 * If we got to the point of being only left with a TLD we cannot verify
@@ -64,20 +56,18 @@ class DomainSpamRule implements SpamRuleInterface
 		 * If one or more of the IP addresses that process this host's MX, then we
 		 * return a negative result for this server.
 		 */
-		$ipban = IP::mx($domain)->reduce(function ($p, $e) { return $p || $this->reader->isBlacklisted($e); }, false);
-		if ($ipban) { return $this->reader->report($domain) || true; }
+		$ipban = IP::mx($domain)->reduce(function ($p, $e) { 
+			return !$this->reader->isWhitelisted($e) && ($p || $this->reader->isBlacklisted($e)); 
+		}, false);
 		
 		/*
 		 * Check if the domain itself is blacklisted, and if this is not the case,
 		 * then we check if the parent domain can be used to determine whether the
 		 * domain is or not blacklisted.
 		 */
-		if ($this->reader->isBlacklisted($domain)) {
-			return true;
-		} 
-		else {
-			return $this->test($domain->getParent());
-		}
+		return 
+			!$this->reader->isWhitelisted() &&
+			($ipban || $this->reader->isBlacklisted($domain) || $this->test($domain->getParent()));
 	}
 
 }

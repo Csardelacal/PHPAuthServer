@@ -22,7 +22,14 @@ interface StorageInterface
 	 * system provides the IPs as base 64 encoded strings to make it easy to store.
 	 * 
 	 * @param string $host
-	 * @param int    $type
 	 */
-	function isBlacklisted($host, $type = StorageInterface::TYPE_HOSTNAME);
+	function isBlacklisted($host);
+	
+	/**
+	 * Returns whether a host was found in the blacklist. Please note that the
+	 * system provides the IPs as base 64 encoded strings to make it easy to store.
+	 * 
+	 * @param string $host
+	 */
+	function isWhitelisted($host);
 }

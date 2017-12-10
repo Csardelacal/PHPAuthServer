@@ -1,4 +1,7 @@
-<?php namespace mail\spam;
+<?php namespace mail\spam\domain;
+
+use spitfire\validation\ValidationError;
+use spitfire\validation\ValidationRule;
 
 /* 
  * The MIT License
@@ -24,13 +27,40 @@
  * THE SOFTWARE.
  */
 
-interface SpamRuleInterface
+class SpamDomainValidationRule implements ValidationRule
 {
 	
 	/**
-	 * 
-	 * @param string $emailAddress
+	 *
+	 * @var SpamDomainTester 
 	 */
-	public function test($emailAddress);
+	private $tester;
 	
+	public function __construct(StorageInterface $reader) {
+		$this->tester = new SpamDomainTester($reader);
+	}
+	
+	/**
+	 * 
+	 * {@inheritdoc}
+	 */
+	public function test($value) {
+		$domain = new Domain($value);
+		
+		if ($this->tester->check($domain)) {
+			
+			/*
+			 * If the domain is found in our spam report system we will return a 
+			 * new Validation error for the domain. The application can then 
+			 * appropriately pretty print the errors for the input.
+			 */
+			return new ValidationError(
+				'Domain rejected', 
+				'This domain was reported as a source for email spam and is blocked'
+			);
+		}
+		
+		return true;
+	}
+
 }

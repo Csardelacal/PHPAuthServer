@@ -31,7 +31,7 @@ use function db;
  * THE SOFTWARE.
  */
 
-class SpitfireReader implements StorageInterface
+class SpamDomainModelReader implements StorageInterface
 {
 	
 	/**
@@ -68,6 +68,36 @@ class SpitfireReader implements StorageInterface
 			->get('host', $host )
 			->addRestriction('type', $type)
 			->addRestriction('list', StorageInterface::LIST_BLACKLIST)
+			->addRestriction('expires', time(), '>')
+			->fetch();
+		
+		return !!$record;
+	}
+	
+	/**
+	 * 
+	 * @param type $host
+	 * @throws InvalidArgumentException
+	 * @return type
+	 */
+	public function isWhitelisted($host) {
+		
+		if ($host instanceof IP) {
+			$host = $host->getBase64();
+			$type = StorageInterface::TYPE_IP;
+		}
+		elseif ($host instanceof Domain) {
+			$host = $host->getHostname();
+			$type = StorageInterface::TYPE_HOSTNAME;
+		}
+		else {
+			throw new InvalidArgumentException();
+		}
+		
+		$record = db()->table('email\domain')
+			->get('host', $host )
+			->addRestriction('type', $type)
+			->addRestriction('list', StorageInterface::LIST_WHITELIST)
 			->addRestriction('expires', time(), '>')
 			->fetch();
 		
