@@ -45,6 +45,12 @@ class SpamDomainValidationRule implements ValidationRule
 	 * {@inheritdoc}
 	 */
 	public function test($value) {
+		
+		if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+			$pieces = explode('@', $value);
+			$value  = array_pop($pieces);
+		}
+		
 		$domain = new Domain($value);
 		
 		if ($this->tester->check($domain)) {
@@ -60,7 +66,7 @@ class SpamDomainValidationRule implements ValidationRule
 			);
 		}
 		
-		return true;
+		return false;
 	}
 
 }

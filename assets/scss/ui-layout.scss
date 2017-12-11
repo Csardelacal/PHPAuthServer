@@ -64,6 +64,16 @@ body {
 		font-size: .8em;
 		color: #666;
 	}
+		
+	.indented {
+		border-left: solid 1px #2a912e;
+		margin-left: 10px;
+		margin-bottom: 5px;
+		
+		.menu-entry {
+			padding: 3px 10px;
+		}
+	}
 
 	a {
 		color: inherit;

@@ -39,7 +39,7 @@ class TLD
 	 */
 	public static $tld = [
 		'org', 'co', 'uk', 'com', 'ca', 'au', 'es', 'de', 'ly', 'ie', 'fr', 'us', 
-		'biz', 'tk', 'br'
+		'biz', 'tk', 'br', 'cat', 'cn', 'bv', 'bw', 'by', 'zm', 'zw', 'be', 'yt'
 	];
 	
 	/**
@@ -52,7 +52,16 @@ class TLD
 		
 		$pieces = collect($domain->getPieces());
 		
-		return $pieces->count() < 3 && $pieces->reduce(function ($e, $p) { 
+		/*
+		 * If there's only one piece left (this system assumes that if a system
+		 * is inside a intranet and hostnames are like "server1", this system will
+		 * assume that it's a TLD and just accept it)
+		 */
+		if ($pieces->count() === 1) {
+			return true;
+		}
+		
+		return $pieces->count() < 3 && $pieces->reduce(function ($p, $e) { 
 			return $p && strlen($e) <= 3 && in_array($e, self::$tld);
 		}, true);
 	}

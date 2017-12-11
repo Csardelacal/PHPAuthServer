@@ -1,11 +1,9 @@
 <?php namespace email;
 
-use BooleanField;
 use IntegerField;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 use StringField;
-use function collect;
 
 /**
  * The domain block model allows the application maintainer to add domains to a 
@@ -27,24 +25,8 @@ class DomainModel extends Model
 	public function definitions(Schema $schema) {
 		$schema->type        = new IntegerField(true);
 		$schema->host        = new StringField(50);
-		$schema->subdomains  = new BooleanField();
 		$schema->list        = new StringField(15);
 		$schema->reason      = new StringField(250);
-		$schema->expires     = new IntegerField(true);
-	}
-	
-	/**
-	 * Check whether a domain has been blocked by an administrator.
-	 * 
-	 * @param string $host
-	 * @return boolean
-	 */
-	public static function check($host) {
-		$reader = new \mail\domain\implementation\SpitfireReader($this->getTable()->getDb());
-		$writer = new \mail\domain\implementation\SpitfireWriter($this->getTable()->getDb());
-		
-		$domain = new \mail\domain\Domain($host, $reader, $writer);
-		return $domain->isBanned();
 	}
 
 }

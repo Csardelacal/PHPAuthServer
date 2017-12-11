@@ -61,14 +61,13 @@ class SpamDomainModelReader implements StorageInterface
 			$type = StorageInterface::TYPE_HOSTNAME;
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException('Expected IP or domain, got: ' . ($host === null? 'null' : get_class($host)));
 		}
 		
 		$record = db()->table('email\domain')
 			->get('host', $host )
 			->addRestriction('type', $type)
 			->addRestriction('list', StorageInterface::LIST_BLACKLIST)
-			->addRestriction('expires', time(), '>')
 			->fetch();
 		
 		return !!$record;
@@ -91,14 +90,13 @@ class SpamDomainModelReader implements StorageInterface
 			$type = StorageInterface::TYPE_HOSTNAME;
 		}
 		else {
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException('Expected IP or domain, got: ' . ($host === null? 'null' : get_class($host)));
 		}
 		
 		$record = db()->table('email\domain')
 			->get('host', $host )
 			->addRestriction('type', $type)
 			->addRestriction('list', StorageInterface::LIST_WHITELIST)
-			->addRestriction('expires', time(), '>')
 			->fetch();
 		
 		return !!$record;

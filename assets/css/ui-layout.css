@@ -49,6 +49,12 @@ body {
     padding: 5px 10px;
     font-size: .8em;
     color: #666; }
+  .sidebar .indented {
+    border-left: solid 1px #2a912e;
+    margin-left: 10px;
+    margin-bottom: 5px; }
+    .sidebar .indented .menu-entry {
+      padding: 3px 10px; }
   .sidebar a {
     color: inherit;
     text-decoration: none; }

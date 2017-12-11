@@ -51,8 +51,19 @@
 					<div class="menu-title">Administration</div>
 					<div class="menu-entry"><a href="<?= url('group') ?>" >Groups</a></div>
 					<div class="menu-entry"><a href="<?= url('admin') ?>">System settings</a></div>
+					
+					<!--APPLICATIONS-->
 					<div class="menu-entry"><a href="<?= url('app') ?>"  >App administration</a></div>
+					<div class="indented">
+						<div class="menu-entry"><a href="<?= url('context') ?>">Contexts</a></div>
+						<div class="menu-entry"><a href="<?= url('connect') ?>">Connections</a></div>
+					</div>
+					
+					<!-- EMAIL -->
 					<div class="menu-entry"><a href="<?= url('email') ?>">Email</a></div>
+					<div class="indented">
+						<div class="menu-entry"><a href="<?= url('email', 'domain') ?>">Domains</a></div>
+					</div>
 					<?php endif; ?> 
 				</div>
 			</div>

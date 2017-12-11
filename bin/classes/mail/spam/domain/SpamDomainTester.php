@@ -29,7 +29,7 @@ class SpamDomainTester
 	
 	/**
 	 *
-	 * @var ReaderInterface 
+	 * @var StorageInterface
 	 */
 	private $reader;
 	
@@ -42,22 +42,41 @@ class SpamDomainTester
 	 * @param Domain $domain
 	 * @return boolean True if the domain is blocked, false if the domain is accepted
 	 */
-	public function check(Domain$domain) {
+	public function check(Domain$domain, $nxdomainfail = true) {
 		
 		/*
-		 * If we got to the point of being only left with a TLD we cannot verify
-		 * whether the DNS records for it exist.
+		 * If we got to the top of the resolution, we will stop. This is a recursive
+		 * function, and this is the exit condition.
 		 */
-		if(TLD::isTLD($domain) || empty($domain->getPieces())) {
-			return false;
+		if(empty($domain->getPieces())) {
+			return true;
 		}
 		
 		/*
 		 * If one or more of the IP addresses that process this host's MX, then we
 		 * return a negative result for this server.
 		 */
-		$ipban = IP::mx($domain)->reduce(function ($p, $e) { 
-			return !$this->reader->isWhitelisted($e) && ($p || $this->reader->isBlacklisted($e)); 
+		$mx = IP::mx($domain);
+		$ipban = !$mx? $nxdomainfail : $mx->reduce(function ($p, IP$e) { 
+			do {
+				/*
+				 * If the IP was whitelisted, then we return false. It is implied that 
+				 * the IP can be safely operated.
+				 */
+				if ($this->reader->isWhitelisted($e)) { return false; }
+
+				/*
+				 * Check whether the IP itself was blacklisted.
+				 */
+				if ($p || $this->reader->isBlacklisted($e)) { return true; }
+			} 
+			while ($e = $e->getParentSubnet());
+			
+			/*
+			 * We default to the domain being okay if the application was unable to
+			 * find any indication that the IP for the email server is being blocked.
+			 */
+			return false;
 		}, false);
 		
 		/*
@@ -66,8 +85,8 @@ class SpamDomainTester
 		 * domain is or not blacklisted.
 		 */
 		return 
-			!$this->reader->isWhitelisted() &&
-			($ipban || $this->reader->isBlacklisted($domain) || $this->test($domain->getParent()));
+			!$this->reader->isWhitelisted($domain) &&
+			($ipban || $this->reader->isBlacklisted($domain) || $this->check($domain->getParent(), false));
 	}
 
 }
