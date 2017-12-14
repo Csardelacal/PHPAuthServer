@@ -150,7 +150,7 @@
 	</div>
 </form>
 
-<div class="spacer" style="height: 60px"></div>
+<div class="spacer" style="height: 100px"></div>
 
 
 <div class="topbar sticky">
@@ -191,6 +191,46 @@
 <?php if ($webhooks->isEmpty()): ?>
 <div style="padding: 50px; text-align: center; font-style: italic; color: #666">
 	No webhooks defined
+</div>
+<?php endif; ?>
+
+
+<!-- Go on about the contexts defined by this application-->
+<div class="spacer" style="height: 50px"></div>
+
+<div class="topbar sticky">
+	<div class="row5 fluid">
+		<div class="span5">
+			<span class="toggle-button-target" style="background: #2a912e; padding: 12px; margin: 0 10px 0 -10px; vertical-align: middle"></span>
+			Contexts
+		</div>
+	</div>
+</div>
+
+<div class="spacer" style="height: 20px"></div>
+
+<?php $contexts = db()->table('connection\context')->get('app', $app)->addRestriction('expires', time(), '>')->fetchAll(); ?>
+<?php foreach ($contexts as $context): ?>
+<div class="row5 fluid has-dials">
+	<div class="span4">
+		<div style="font-size: .85em; color: #000"><?= __($context->title) ?></div>
+		<div style="font-size: .75em; color: #555"><?= __($context->descr, 200) ?></div>
+	</div>
+	<div class="span1 dials">
+		<ul>
+			<li><a href="<?= url('context', 'edit', $app->_id, $context->ctx) ?>">Edit</a></li>
+			<li><a href="<?= url('context', 'revoke', $app->_id, $context->ctx) ?>">Revoke</a></li>
+			<li><a href="<?= url('context', 'granted', $app->_id, $context->ctx) ?>">Applications</a></li>
+		</ul>
+	</div>
+</div>
+	
+<div class="separator large light"></div>
+<?php endforeach; ?>
+
+<?php if ($contexts->isEmpty()): ?>
+<div style="padding: 50px; text-align: center; font-style: italic; color: #666">
+	This application has defined no contexts
 </div>
 <?php endif; ?>
 

@@ -128,7 +128,7 @@ class AuthController extends BaseController
 		
 		if (isset($_GET['token'])) {
 			$token = db()->table('token')->get('token', $_GET['token'])->fetch();
-			if ($token->expires < time()) { throw new PublicException('Invalid token', 400); }
+			if ($token->expires < time()) { throw new PublicException('Invalid token: ' . __($_GET['token']), 400); }
 		}
 		else {
 			$token = null;

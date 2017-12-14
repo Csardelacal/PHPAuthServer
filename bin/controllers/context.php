@@ -1,5 +1,8 @@
 <?php
 
+use connection\ContextModel;
+use spitfire\exceptions\PublicException;
+
 /* 
  * The MIT License
  *
@@ -32,49 +35,44 @@ class ContextController extends BaseController
 	}
 	
 	public function create() {
-		
-		$signature = explode(':', isset($_GET['signature'])? $_GET['signature'] : '');
-		$context   = isset($_GET['context'])? $_GET['context'] : null;
-
-		switch(count($signature)) {
-			case 4:
-				list($algo, $src, $salt, $hash) = $signature;
-				$remote = null;
-				break;
-			case 5:
-				list($algo, $src, $target, $salt, $hash) = $signature;
-				$remote = db()->table('authapp')->get('appID', $target)->fetch();
-
-				if(!$remote) { throw new PublicException('No remote found', 404); }
-				break;
-			default:
-				throw new PublicException('Invalid signature', 400);
-		}
-
-		$app = db()->table('authapp')->get('appID', $src)->fetch();
-
 		/*
-		 * Reconstruct the original signature with the data we have about the 
-		 * source application to verify whether the apps are the same, and
-		 * should therefore be granted access.
+		 * Get the signature and the context that the application is pretending 
+		 * to create.
 		 */
-		switch(strtolower($algo)) {
-			case 'sha512':
-				$calculated = hash('sha512', implode('.', array_filter([$app->appID, $remote? $remote->appID : null, $app->appSecret, $salt])));
-				break;
-			default:
-				throw new PublicException('Invalid algorithm', 400);
+		$signature = isset($_GET['signature'])? $_GET['signature'] : '';
+		$context   = isset($_GET['context'])? $_GET['context'] : null;
+		
+		/*
+		 * Extract the appropriate information from the signature. Signatures often
+		 * contain more data than necessary.
+		 */
+		list($algo, $src, $target, $ignore, $salt, $hash) = Signature::extract($signature);
+		
+		/*
+		 * Get the application's secret. This will help us verify whether the 
+		 * application is actually itself.
+		 */
+		$app = db()->table('authapp')->get('appID', $src)->fetch();
+		$calculated = new Signature($algo, $src, $app->appSecret);
+		
+		/*
+		 * Signatures can define a target. Target enriched signatures are rejected,
+		 * since they are transmitted to third parties to authenticate the app
+		 * against those third parties.
+		 */
+		if ($target) {
+			throw new PublicException('This endpoint does not accept targets', 400);
 		}
-
-		if ($hash !== $calculated) {
+		
+		/*
+		 * Check the signature to ensure that the application is identifying itself
+		 * properly.
+		 */
+		if (!$calculated->salt($salt)->verify($hash)) {
 			throw new PublicException('Invalid signature', 403);
 		}
 		
-		if ($remote) {
-			throw new \spitfire\exceptions\PublicException('Applications cannot create remote contexts', 400);
-		}
-		
-		/*@var $record \connection\ContextModel*/
+		/*@var $record ContextModel*/
 		$record = db()->table('connection\context')->newRecord();
 		$record->ctx     = $context;
 		$record->app     = $app;
