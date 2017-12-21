@@ -23,6 +23,7 @@ class AttributeModel extends Model
 		
 		$schema->_id      = new StringField( 20);
 		$schema->_id->setPrimary(true);
+		$schema->index($schema->_id)->setPrimary(true);
 		
 		$schema->name     = new StringField( 50);
 		$schema->default  = new StringField(200);
