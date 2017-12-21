@@ -49,7 +49,7 @@ class SpamDomainTester
 		 * function, and this is the exit condition.
 		 */
 		if(empty($domain->getPieces())) {
-			return true;
+			return false;
 		}
 		
 		/*
