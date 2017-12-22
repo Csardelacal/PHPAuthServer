@@ -16,6 +16,7 @@ class SysSettingModel extends Model
 		$schema->changed   = new IntegerField();
 		
 		$schema->key->setPrimary(true);
+		$schema->index($schema->key)->setPrimary(true);
 	}
 	
 	public static function getValue($for) {
