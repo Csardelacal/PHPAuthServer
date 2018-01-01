@@ -59,7 +59,7 @@ class Signature
 		 */
 		switch(strtolower($this->algo)) {
 			case 'sha512':
-				$calculated = hash('sha512', implode('.', array_filter($components)));
+				$calculated = hash('sha512', implode('.', array_filter($components, function ($e) { return $e !== null; })));
 				break;
 			default:
 				throw new \Exception('Invalid algorithm', 400);

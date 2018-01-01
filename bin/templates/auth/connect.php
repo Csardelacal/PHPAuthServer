@@ -9,9 +9,9 @@
 			<div class="span1"></div>
 			<div class="span3">
 				<div class="row3 fluid desktop-only">
-					<div class="span1"><img src="<?= url('image', 'app', $tgt->_id, 256) ?>" style="width: 100%; border-radius: 3px; border: solid 2px #FFF;"></div>
-					<div class="span1" style="text-align: center; line-height: 90px;"><img src="<?= spitfire\core\http\URL::asset('img/link.png') ?>" style="width: 50%; vertical-align: middle"></div>
 					<div class="span1"><img src="<?= url('image', 'app', $src->_id, 256) ?>" style="width: 100%; border-radius: 3px; border: solid 2px #FFF;"></div>
+					<div class="span1" style="text-align: center; line-height: 90px;"><img src="<?= spitfire\core\http\URL::asset('img/link.png') ?>" style="width: 50%; vertical-align: middle"></div>
+					<div class="span1"><img src="<?= url('image', 'app', $tgt->_id, 256) ?>" style="width: 100%; border-radius: 3px; border: solid 2px #FFF;"></div>
 				</div>
 			</div>
 		</div>
@@ -21,8 +21,8 @@
 		<div class="material unpadded">
 			<div class="padded">
 				<div class="row1 fluid" style="font-size: .8em;">
-					<strong><?= __($tgt->name) ?></strong> requested permission to access data contained in 
-					<strong><?= __($src->name) ?></strong>. 
+					<strong><?= __($src->name) ?></strong> requested permission to access data contained in 
+					<strong><?= __($tgt->name) ?></strong>. 
 
 					<?php if (!$ctx->isEmpty()): ?>
 					Please confirm that you wish to allow these applications to exchange the following data:
