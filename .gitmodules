@@ -1,3 +1,4 @@
 [submodule "spitfire"]
 	path = spitfire
 	url = https://github.com/Csardelacal/SpitfireEngine
+	branch = develop
