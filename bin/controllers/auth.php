@@ -145,23 +145,23 @@ class AuthController extends BaseController
 			$signature = isset($_GET['signature'])? $_GET['signature'] : '';
 			$context   = isset($_GET['context'])?   $_GET['context']   : null;
 			
-			list($algo, $src, $target, $ign, $salt, $hash) = Signature::extract($signature);
+			$extracted = \signature\Signature::extract($signature);
 			
-			if ($target) {
-				$remote = db()->table('authapp')->get('appID', $target)->fetch();
+			if ($extracted->getTarget()) {
+				$remote = db()->table('authapp')->get('appID', $extracted->getTarget())->fetch();
 				if(!$remote) { throw new PublicException('No remote found', 404); }
 			}
 			
-			$app = db()->table('authapp')->get('appID', $src)->fetch();
+			$app = db()->table('authapp')->get('appID', $extracted->getSrc())->fetch();
 			
 			/*
 			 * Reconstruct the original signature with the data we have about the 
 			 * source application to verify whether the apps are the same, and
 			 * should therefore be granted access.
 			 */
-			$check = new Signature($algo, $app->appID, $target, $app->appSecret, $salt);
+			$check = new \signature\Signature($extracted->getAlgo(), $app->appID, $app->appSecret, $extracted->getTarget(), null, $extracted->getSalt());
 			
-			if (!$check->verify($hash)) {
+			if (!$check->getHash()->verify($extracted->getHash())) {
 				throw new PublicException('Invalid signature', 403);
 			}
 			

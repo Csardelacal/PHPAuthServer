@@ -1,4 +1,7 @@
-<?php
+<?php namespace signature;
+
+use spitfire\exceptions\PrivateException;
+use spitfire\exceptions\PublicException;
 
 /* 
  * The MIT License
@@ -40,76 +43,96 @@
 class Signature
 {
 	
-	/**
-	 * This constant indicates the usage of SHA512 as hashing algorhythm. As of
-	 * 2018 this algo is sufficient for the application.
-	 * 
-	 * @link https://en.wikipedia.org/wiki/SHA-2
-	 */
-	const ALGO_SHA512  = 'sha512';
+	const SEPARATOR_SIGNATURE = ':';
+	const SEPARATOR_CONTEXT = ',';
 	
-	/**
-	 * This constant points to the default algorhythm. This constant is updated 
-	 * as the algo is changed.
-	 */
-	const ALGO_DEFAULT = self::ALGO_SHA512;
-	
-	/**
-	 * Name of the algorhythm to be used to hash the signature.
-	 *
-	 * @var string
-	 */
 	private $algo;
 	
-	private $components;
+	private $src;
+	
+	private $secret;
+	
+	private $target;
+	
+	private $context;
 	
 	private $salt;
 	
 	/**
-	 * 
-	 * @param type $algo
-	 * @param type $_
+	 *
+	 * @var Checksum
 	 */
-	public function __construct($algo, $_) {
-		$this->components = func_get_args();
-		$this->algo       = array_shift($this->components);
-	}
-	
-	public function salt($salt = null) {
-		$this->salt = $salt;
-		return $this;
-	}
-	
-	public function hash() {
-		$components   = $this->components;
-		$components[] = $this->salt;
-		
-		/*
-		 * Reconstruct the original signature with the data we have about the 
-		 * source application to verify whether the apps are the same, and
-		 * should therefore be granted access.
-		 */
-		switch(strtolower($this->algo)) {
-			case 'sha512':
-				$calculated = hash('sha512', implode('.', array_filter($components, function ($e) { return $e !== null; })));
-				break;
-			default:
-				throw new \Exception('Invalid algorithm', 400);
-		}
-		
-		return $calculated;
-	}
+	private $hash;
 	
 	/**
 	 * 
-	 * 
-	 * @param string $hash
-	 * @return bool
+	 * @param string $algo
+	 * @param string $src
+	 * @param type $target
+	 * @param type $context
+	 * @param type $salt
+	 * @param Checksum $hash
 	 */
-	public function verify($hash) {
-		return $this->hash() === $hash;
+	public function __construct($algo, $src, $secret, $target, $context, $salt = null, Checksum$hash = null) {
+		$this->algo = $algo?: Hash::ALGO_DEFAULT;
+		$this->src = $src;
+		$this->secret = $secret;
+		$this->target = $target;
+		$this->context = $context;
+		$this->salt = $salt;
+		$this->hash = $hash instanceof Checksum || !$hash? $hash : new Checksum($hash);
 	}
 	
+	public function getAlgo() {
+		return $this->algo;
+	}
+	
+	public function getSrc() {
+		return $this->src;
+	}
+	
+	public function getTarget() {
+		return $this->target;
+	}
+	
+	public function getContext() {
+		return $this->context;
+	}
+	
+	public function getSalt() {
+		
+		if (!$this->salt) {
+			$this->salt = substr(base64_encode(random_bytes(50)), 0, 50);
+		}
+		
+		return $this->salt;
+	}
+	
+	public function getHash() {
+		
+		if (!$this->hash && !$this->secret) {
+			throw new PrivateException('Incomplete signature. Cannot be hashed', 1802082113);
+		}
+		
+		if (!$this->hash) {
+			$hash = new Hash($this->algo, $this->src, $this->target, $this->secret, implode(self::SEPARATOR_CONTEXT, $this->context), $this->getSalt());
+			$this->hash = $hash->verifier();
+		}
+		
+		return $this->hash;
+	}
+	
+	public function salt($salt) {
+		$this->salt = $salt;
+		$this->hash = null;
+		return $this;
+	}
+	
+	public function setHash(Checksum$hash) {
+		$this->hash = $hash;
+		return $this;
+	}
+		
 	/**
 	 * Splits up a signature sent from a remote server and extracts the data 
 	 * provided by it. The system can then use the hash to compare it to a existing
@@ -119,11 +142,11 @@ class Signature
 	 * [algo, src, target, context, salt, hash]
 	 * 
 	 * @param string $from
-	 * @return string[]
+	 * @return Signature
 	 * @throws PublicException
 	 */
 	public static function extract($from) {
-		$signature = explode(':', $from);
+		$signature = explode(self::SEPARATOR_SIGNATURE, $from);
 		$context   = [];
 		
 		switch(count($signature)) {
@@ -136,13 +159,24 @@ class Signature
 				break;
 			case 6:
 				list($algo, $src, $target, $contextstr, $salt, $hash) = $signature;
-				$context = explode(',', $contextstr);
+				$context = explode(self::SEPARATOR_CONTEXT, $contextstr);
 				break;
 			default:
 				throw new PublicException('Invalid signature', 400);
 		}
 		
-		return [$algo, $src, $target, $context, $salt, $hash];
+		return new self($algo, $src, null, $target, $context, $salt, new Checksum($algo, $hash));
+	}
+	
+	/**
+	 * 
+	 * @param string $src
+	 * @param string $target
+	 * @param string $context
+	 * @return Signature
+	 */
+	public static function make($src, $secret, $target = null, $context = null) {
+		return new Signature(Hash::ALGO_DEFAULT, $src, $secret, $target, $context);
 	}
 	
 }

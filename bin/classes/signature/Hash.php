@@ -1,4 +1,4 @@
-<?php
+<?php namespace signature;
 
 /* 
  * The MIT License
@@ -37,7 +37,7 @@
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  * @todo Technically this class should be named <code>Hash</code>
  */
-class Signature
+class Hash
 {
 	
 	/**
@@ -63,8 +63,6 @@ class Signature
 	
 	private $components;
 	
-	private $salt;
-	
 	/**
 	 * 
 	 * @param type $algo
@@ -75,14 +73,12 @@ class Signature
 		$this->algo       = array_shift($this->components);
 	}
 	
-	public function salt($salt = null) {
-		$this->salt = $salt;
-		return $this;
+	public function getAlgo() {
+		return $this->algo;
 	}
 	
 	public function hash() {
 		$components   = $this->components;
-		$components[] = $this->salt;
 		
 		/*
 		 * Reconstruct the original signature with the data we have about the 
@@ -91,7 +87,7 @@ class Signature
 		 */
 		switch(strtolower($this->algo)) {
 			case 'sha512':
-				$calculated = hash('sha512', implode('.', array_filter($components, function ($e) { return $e !== null; })));
+				$calculated = hash('sha512', implode('.', array_filter($components)));
 				break;
 			default:
 				throw new \Exception('Invalid algorithm', 400);
@@ -100,49 +96,8 @@ class Signature
 		return $calculated;
 	}
 	
-	/**
-	 * 
-	 * 
-	 * @param string $hash
-	 * @return bool
-	 */
-	public function verify($hash) {
-		return $this->hash() === $hash;
-	}
-	
-	/**
-	 * Splits up a signature sent from a remote server and extracts the data 
-	 * provided by it. The system can then use the hash to compare it to a existing
-	 * dataset.
-	 * 
-	 * The returning array from this function is always
-	 * [algo, src, target, context, salt, hash]
-	 * 
-	 * @param string $from
-	 * @return string[]
-	 * @throws PublicException
-	 */
-	public static function extract($from) {
-		$signature = explode(':', $from);
-		$context   = [];
-		
-		switch(count($signature)) {
-			case 4:
-				list($algo, $src, $salt, $hash) = $signature;
-				$target = null;
-				break;
-			case 5:
-				list($algo, $src, $target, $salt, $hash) = $signature;
-				break;
-			case 6:
-				list($algo, $src, $target, $contextstr, $salt, $hash) = $signature;
-				$context = explode(',', $contextstr);
-				break;
-			default:
-				throw new PublicException('Invalid signature', 400);
-		}
-		
-		return [$algo, $src, $target, $context, $salt, $hash];
+	public function verifier() {
+		return new Checksum($this->algo, $this->hash());
 	}
 	
 }
