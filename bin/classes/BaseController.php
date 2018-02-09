@@ -31,12 +31,14 @@ abstract class BaseController extends Controller
 			$isAdmin      = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
 		}
 		catch (PrivateException$e) {
+			$admingroupid = null;
 			$isAdmin      = false;
 		}
 		
 		$this->isAdmin = $isAdmin;
 		$this->view->set('authUser', $this->user);
 		$this->view->set('userIsAdmin', $isAdmin);
+		$this->view->set('administrativeGroup', $admingroupid);
 	}
 	
 }

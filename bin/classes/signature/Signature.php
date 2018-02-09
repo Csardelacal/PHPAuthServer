@@ -62,7 +62,7 @@ class Signature
 	 *
 	 * @var Checksum
 	 */
-	private $hash;
+	private $checksum;
 	
 	/**
 	 * 
@@ -80,7 +80,7 @@ class Signature
 		$this->target = $target;
 		$this->context = $context;
 		$this->salt = $salt;
-		$this->hash = $hash instanceof Checksum || !$hash? $hash : new Checksum($hash);
+		$this->checksum = $hash instanceof Checksum || !$hash? $hash : new Checksum($this->algo, $hash);
 	}
 	
 	public function getAlgo() {
@@ -110,26 +110,26 @@ class Signature
 	
 	public function getHash() {
 		
-		if (!$this->hash && !$this->secret) {
+		if (!$this->checksum && !$this->secret) {
 			throw new PrivateException('Incomplete signature. Cannot be hashed', 1802082113);
 		}
 		
-		if (!$this->hash) {
+		if (!$this->checksum) {
 			$hash = new Hash($this->algo, $this->src, $this->target, $this->secret, implode(self::SEPARATOR_CONTEXT, $this->context), $this->getSalt());
-			$this->hash = $hash->verifier();
+			$this->checksum = $hash->hash();
 		}
 		
-		return $this->hash;
+		return $this->checksum;
 	}
 	
 	public function salt($salt) {
 		$this->salt = $salt;
-		$this->hash = null;
+		$this->checksum = null;
 		return $this;
 	}
 	
 	public function setHash(Checksum$hash) {
-		$this->hash = $hash;
+		$this->checksum = $hash;
 		return $this;
 	}
 		
@@ -169,6 +169,8 @@ class Signature
 	}
 	
 	/**
+	 * Creates a new signature. This method will use the default hashing mechanism
+	 * and generate a valid signature that the system can use.
 	 * 
 	 * @param string $src
 	 * @param string $target

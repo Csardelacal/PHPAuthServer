@@ -1,6 +1,7 @@
 <?php
 
 use connection\AuthModel;
+use signature\Signature;
 use spitfire\core\Environment;
 use spitfire\core\http\URL;
 use spitfire\exceptions\PublicException;
@@ -134,9 +135,13 @@ class AuthController extends BaseController
 			$token = null;
 		}
 		
-		if (isset($_GET['appSec'])) {
-			$appId  = isset($_GET['appId']) ? $_GET['appId']  : null;
-			$appSec = isset($_GET['appSec'])? $_GET['appSec'] : null;
+		if (isset($_GET['appSec'])) { //TODO: Remove
+			/*
+			 * This section is soon gonna get phased out to prevent the Application
+			 * secret from being sent around between servers.
+			 */
+			$appId  = $_GET['appId'];
+			$appSec = $_GET['appSec'];
 		
 			$app = db()->table('authapp')->get('appID', $appId)->addRestriction('appSecret', $appSec)->fetch();
 			$this->view->set('authenticated', !!$app);
@@ -145,7 +150,7 @@ class AuthController extends BaseController
 			$signature = isset($_GET['signature'])? $_GET['signature'] : '';
 			$context   = isset($_GET['context'])?   $_GET['context']   : null;
 			
-			$extracted = \signature\Signature::extract($signature);
+			$extracted = Signature::extract($signature);
 			
 			if ($extracted->getTarget()) {
 				$remote = db()->table('authapp')->get('appID', $extracted->getTarget())->fetch();
@@ -159,7 +164,7 @@ class AuthController extends BaseController
 			 * source application to verify whether the apps are the same, and
 			 * should therefore be granted access.
 			 */
-			$check = new \signature\Signature($extracted->getAlgo(), $app->appID, $app->appSecret, $extracted->getTarget(), null, $extracted->getSalt());
+			$check = new Signature($extracted->getAlgo(), $app->appID, $app->appSecret, $extracted->getTarget(), null, $extracted->getSalt());
 			
 			if (!$check->getHash()->verify($extracted->getHash())) {
 				throw new PublicException('Invalid signature', 403);

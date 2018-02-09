@@ -1,5 +1,7 @@
 <?php namespace signature;
 
+use Exception;
+
 /* 
  * The MIT License
  *
@@ -41,7 +43,7 @@ class Hash
 {
 	
 	/**
-	 * This constant indicates the usage of SHA512 as hashing algorhythm. As of
+	 * This constant indicates the usage of SHA512 as hashing algorithm. As of
 	 * 2018 this algo is sufficient for the application.
 	 * 
 	 * @link https://en.wikipedia.org/wiki/SHA-2
@@ -49,34 +51,67 @@ class Hash
 	const ALGO_SHA512  = 'sha512';
 	
 	/**
-	 * This constant points to the default algorhythm. This constant is updated 
+	 * This constant points to the default algorithm. This constant is updated 
 	 * as the algo is changed.
 	 */
 	const ALGO_DEFAULT = self::ALGO_SHA512;
 	
 	/**
-	 * Name of the algorhythm to be used to hash the signature.
+	 * The separator used to separate the components before running the hashing 
+	 * function. This should make the debugging simpler and prevent collisions
+	 * when using short data.
+	 * 
+	 * For example, when hashing (1, 11) and (11, 1) you could have a collision
+	 * if no separator is provided since both options would hash(111), this would
+	 * make it rather easy to vector an attack against the system.
+	 */
+	const SEPARATOR = '.';
+	
+	/**
+	 * Name of the algorithm to be used to hash the signature.
 	 *
 	 * @var string
 	 */
 	private $algo;
 	
+	/**
+	 * PHPAS usually hashes several pieces of data as part of a signature. Instead
+	 * of providing this object with a pre-concatenated string, we use an array -
+	 * which is concatenated before being hashed.
+	 *
+	 * @var string[]
+	 */
 	private $components;
 	
 	/**
+	 * Creates a new hash. The first parameter is the algorithm to be used to 
+	 * generate the hash and the next parameters are used to generate the hash.
 	 * 
-	 * @param type $algo
-	 * @param type $_
+	 * @param string $algo
+	 * @param string $_
 	 */
 	public function __construct($algo, $_) {
 		$this->components = func_get_args();
 		$this->algo       = array_shift($this->components);
 	}
 	
+	/**
+	 * Returns the identifier for the algorithm used to generate the hash.
+	 * 
+	 * @return string
+	 */
 	public function getAlgo() {
 		return $this->algo;
 	}
 	
+	/**
+	 * Generates a checksum and returns it. Please note that this method does not
+	 * cache it's result. So running it several times may result in costly 
+	 * operations.
+	 * 
+	 * @return Checksum
+	 * @throws Exception
+	 */
 	public function hash() {
 		$components   = $this->components;
 		
@@ -87,17 +122,13 @@ class Hash
 		 */
 		switch(strtolower($this->algo)) {
 			case 'sha512':
-				$calculated = hash('sha512', implode('.', array_filter($components)));
+				$calculated = hash('sha512', implode(self::SEPARATOR, array_filter($components)));
 				break;
 			default:
-				throw new \Exception('Invalid algorithm', 400);
+				throw new Exception('Invalid algorithm', 400);
 		}
 		
-		return $calculated;
-	}
-	
-	public function verifier() {
-		return new Checksum($this->algo, $this->hash());
+		return new Checksum($this->algo, $calculated);
 	}
 	
 }

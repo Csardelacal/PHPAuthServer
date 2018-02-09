@@ -10,10 +10,11 @@ foreach ($group->members as $member) {
 }
 
 $payload = Array(
-	'id'      => $group->_id,
-	'name'    => $group->name,
-	'public'  => $group->public,
-	'members' => $members
+	'id'       => $group->_id,
+	'name'     => $group->name,
+	'public'   => $group->public,
+	'members'  => $members,
+	'sysadmin' => SysSettingModel::getValue('admin.group') == $group->_id
 );
 
 echo json_encode(Array(

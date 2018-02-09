@@ -28,7 +28,7 @@ use spitfire\exceptions\PrivateException;
 
 /**
  * When a hash is executed, it should return a checksum. This is a combination
- * of the computed hash and the algorhythm used to compute said hash.
+ * of the computed hash and the algorithm used to compute said hash.
  * 
  * The algo is usually not very important, since the low collission rate will 
  * usually prevent two hashes from being equal if they were generated with 
@@ -43,7 +43,7 @@ class Checksum
 	
 	/**
 	 * The procedure used to calculate the checksum. Please note that if the 
-	 * algorhythms missmatch, the application will throw an exception.
+	 * algorithms missmatch, the application will throw an exception.
 	 *
 	 * @var string
 	 */
@@ -58,6 +58,8 @@ class Checksum
 	private $hash;
 	
 	/**
+	 * Creates a new checksum result. You need to provide the algorithm, and the
+	 * resulting hash.
 	 * 
 	 * @param string $algo
 	 * @param string $hash
@@ -67,10 +69,21 @@ class Checksum
 		$this->hash = $hash;
 	}
 	
+	/**
+	 * Returns the name of the algorithm used to generate the hash.
+	 * 
+	 * @return string
+	 */
 	public function getAlgo() {
 		return $this->algo;
 	}
 	
+	/**
+	 * Returns the hash generated. Please note that the Checksum is no longer 
+	 * aware of the original string and therefore cannot recalculate the hash.
+	 * 
+	 * @return string
+	 */
 	public function hash() {
 		return $this->hash;
 	}
@@ -92,7 +105,7 @@ class Checksum
 		 * algos to compare a checksum.
 		 */
 		if($this->algo !== $hash->getAlgo()) {
-			throw new PrivateException('Algorhythm missmatch', 1802072349);
+			throw new PrivateException('Algorithm missmatch', 1802072349);
 		}
 		
 		return $this->hash === $hash->hash();
