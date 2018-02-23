@@ -166,7 +166,7 @@ class AuthController extends BaseController
 			 */
 			$check = new Signature($extracted->getAlgo(), $app->appID, $app->appSecret, $extracted->getTarget(), null, $extracted->getSalt());
 			
-			if (!$check->getHash()->verify($extracted->getHash())) {
+			if (!$check->checksum()->verify($extracted->checksum())) {
 				throw new PublicException('Invalid signature', 403);
 			}
 			

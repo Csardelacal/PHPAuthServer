@@ -44,6 +44,11 @@ class Signature
 {
 	
 	const SEPARATOR_SIGNATURE = ':';
+	
+	/**
+	 * A signature may contain several contexts. Since this data is an Array-type
+	 * kind of data, we need a separator for it to work in a string environment.
+	 */
 	const SEPARATOR_CONTEXT = ',';
 	
 	private $algo;
@@ -68,9 +73,9 @@ class Signature
 	 * 
 	 * @param string $algo
 	 * @param string $src
-	 * @param type $target
-	 * @param type $context
-	 * @param type $salt
+	 * @param string $target
+	 * @param string $context
+	 * @param string $salt
 	 * @param Checksum $hash
 	 */
 	public function __construct($algo, $src, $secret, $target, $context, $salt = null, Checksum$hash = null) {
@@ -108,12 +113,29 @@ class Signature
 		return $this->salt;
 	}
 	
-	public function getHash() {
+	/**
+	 * Calculates the checksum needed to verify the signature while keeping the 
+	 * secret hidden from curious eyes.
+	 * 
+	 * @return Checksum
+	 * @throws PrivateException
+	 */
+	public function checksum() {
 		
+		/**
+		 * In the event of the signature missing either the secret or the pre-calculated
+		 * checksum (this is the case for signatures that were sent from remote
+		 * sources) we will be unable to generate a proper sum and need to stop 
+		 * the execution.
+		 */
 		if (!$this->checksum && !$this->secret) {
 			throw new PrivateException('Incomplete signature. Cannot be hashed', 1802082113);
 		}
 		
+		/**
+		 * If the system has no pre-calculated checksum we will create a hash to 
+		 * calculate the checksum.
+		 */
 		if (!$this->checksum) {
 			$hash = new Hash($this->algo, $this->src, $this->target, $this->secret, implode(self::SEPARATOR_CONTEXT, $this->context), $this->getSalt());
 			$this->checksum = $hash->hash();
@@ -137,9 +159,6 @@ class Signature
 	 * Splits up a signature sent from a remote server and extracts the data 
 	 * provided by it. The system can then use the hash to compare it to a existing
 	 * dataset.
-	 * 
-	 * The returning array from this function is always
-	 * [algo, src, target, context, salt, hash]
 	 * 
 	 * @param string $from
 	 * @return Signature
