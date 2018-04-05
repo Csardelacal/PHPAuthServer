@@ -38,11 +38,18 @@ use spitfire\exceptions\PublicException;
  * recycled.
  * 
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
- * @todo Technically this class should be named <code>Hash</code>
  */
 class Signature
 {
 	
+	/**
+	 * A signature hosts several pieces of information (depending on the request,
+	 * 4 to 6 elements) and therefore needs a separator that also needs to not
+	 * appear within the data.
+	 * 
+	 * Since the information is only made up of alphanumeric characters (a-z,0-9)
+	 * we can ensure that the data can be separated by colons.
+	 */
 	const SEPARATOR_SIGNATURE = ':';
 	
 	/**
@@ -51,32 +58,89 @@ class Signature
 	 */
 	const SEPARATOR_CONTEXT = ',';
 	
+	/**
+	 * Indicates the hashing algorithm used to generate the hash for the signature,
+	 * this should be strong enough to prevent a user from generating random 
+	 * collissions.
+	 *
+	 * @var string
+	 */
 	private $algo;
 	
+	/**
+	 * The source application. This is the application signing the request, therefore,
+	 * the secret used to generate the signature will ALWAYS be the one for this
+	 * application.
+	 *
+	 * @var string
+	 */
 	private $src;
 	
+	/**
+	 * The source's secret. This is generated during creation of the application
+	 * and should never be transmitted.
+	 *
+	 * @var string
+	 */
 	private $secret;
 	
+	/**
+	 * The App ID of the application that the request is meant for. This is used
+	 * to query the server for public application data, like it's public URL or 
+	 * name - therefore allowing the app to present some basic data to the user
+	 * about the remote application before connecting.
+	 * 
+	 * When this is sent in a request without the appropriate context, it is used 
+	 * to authenticate the source against the target application. This way, the 
+	 * target app can add context as a _GET parameter and check whether the 
+	 * given contexts have been granted to the source application.
+	 * 
+	 * This is not sufficient for context granting though. When a context is to be
+	 * granted, the roles are reversed. The granting app becomes the source, and
+	 * the grantee becomes the target.
+	 *
+	 * @var string
+	 */
 	private $target;
 	
+	/**
+	 * Contexts are used in cross application communication to grant certain 
+	 * privileges. When an application wishes to exchange data, it will request
+	 * access to certain parts of the remote application by requesting access to
+	 * specific contexts.
+	 *
+	 * @var string
+	 */
 	private $context;
 	
+	/**
+	 * The salt is a random string attached to every signature, which makes it 
+	 * hard for an attacker to forge a request. The salt is mandatory and mustn't
+	 * be empty for a request to be valid.
+	 *
+	 * @var string
+	 */
 	private $salt;
 	
 	/**
+	 * This is the final, calculated checksum for this signature. A checksum object
+	 * will contain the combination of algo and result of the sum operation.
+	 * 
+	 * If the value of the checksum is null, it has not yet been calculated.
 	 *
-	 * @var Checksum
+	 * @var Checksum|null
 	 */
 	private $checksum;
 	
 	/**
 	 * 
-	 * @param string $algo
+	 * @param string|null $algo
 	 * @param string $src
+	 * @param string|null $secret
 	 * @param string $target
 	 * @param string $context
-	 * @param string $salt
-	 * @param Checksum $hash
+	 * @param string|null $salt
+	 * @param Checksum|null $hash
 	 */
 	public function __construct($algo, $src, $secret, $target, $context, $salt = null, Checksum$hash = null) {
 		$this->algo = $algo?: Hash::ALGO_DEFAULT;
@@ -160,6 +224,7 @@ class Signature
 	 * provided by it. The system can then use the hash to compare it to a existing
 	 * dataset.
 	 * 
+	 * @todo This should be moved to a helper. Not static.
 	 * @param string $from
 	 * @return Signature
 	 * @throws PublicException
@@ -191,6 +256,7 @@ class Signature
 	 * Creates a new signature. This method will use the default hashing mechanism
 	 * and generate a valid signature that the system can use.
 	 * 
+	 * @todo This should be moved to a helper. Not static.
 	 * @param string $src
 	 * @param string $target
 	 * @param string $context
