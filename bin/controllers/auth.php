@@ -24,7 +24,7 @@ class AuthController extends BaseController
 		else          { $token = null; }
 		
 		#Check if the user has been either banned or suspended
-		$suspension = db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch();
+		$suspension = $token? db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch() : null;
 		
 		#Check if the application grants generous TTLs
 		$generous = Environment::get('phpAuth.token.extraTTL');
