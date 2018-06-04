@@ -21,9 +21,8 @@ class AppController extends BaseController
 	public function index() {
 		
 		$query = db()->table('authapp')->getAll();
-		$pag   = new Pagination($query, 'app');
+		$pag   = new \spitfire\storage\database\pagination\Paginator($query);
 		
-		$this->view->set('query',      $query);
 		$this->view->set('pagination', $pag);
 		
 	}
@@ -83,7 +82,7 @@ class AppController extends BaseController
 			}
 			
 			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->validate()->store();
+				$app->icon = $_POST['icon']->store();
 			}
 			
 			$app->store();

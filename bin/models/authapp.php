@@ -1,13 +1,19 @@
 <?php
 
+use auth\Context;
+use connection\AuthModel;
+use spitfire\io\Get;
+use spitfire\Model;
+use spitfire\storage\database\Schema;
+
 /**
  * 
  * @todo Add ownership to the apps. So a certain user can administrate his own apps
  */
-class AuthAppModel extends spitfire\Model
+class AuthAppModel extends Model
 {
 	
-	public function definitions(\spitfire\storage\database\Schema $schema) {
+	public function definitions(Schema $schema) {
 		$schema->appID  = new StringField(20);
 		$schema->appSecret = new StringField(50);
 		
@@ -52,12 +58,12 @@ class AuthAppModel extends spitfire\Model
 		$q->group()->addRestriction('expires', null, 'IS')->addRestriction('expires', time(), '>');
 		$p = $q->fetch();
 		
-		return $p? (int)$p->state : connection\AuthModel::STATE_PENDING;
+		return $p? (int)$p->state : ($user? $this->canAccess($app, null, $context) : AuthModel::STATE_PENDING);
 	}
 	
 	public function getContext($context) {
-		if (is_array($context) || $context instanceof spitfire\io\Get) {
-			return collect($context instanceof spitfire\io\Get? $context->getRaw() : $context)->each(function ($e) { return $this->getContext($e); });
+		if (is_array($context) || $context instanceof Get) {
+			return collect($context instanceof Get? $context->getRaw() : $context)->each(function ($e) { return $this->getContext($e); });
 		}
 		
 		$db = $this->getTable()->getDb();
@@ -69,8 +75,8 @@ class AuthAppModel extends spitfire\Model
 		
 		$r = $q->fetch();
 		
-		return $r? new \auth\Context(true, $r->ctx, $r->app->appID, $r->title, $r->descr, $r->expires) :
-			new \auth\Context(false, $context, $this->appID, null, null, null);
+		return $r? new Context(true, $r->ctx, $r->app->appID, $r->title, $r->descr, $r->expires) :
+			new Context(false, $context, $this->appID, null, null, null);
 	}
 
 	public function __toString() {

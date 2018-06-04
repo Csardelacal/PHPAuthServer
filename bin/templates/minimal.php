@@ -37,7 +37,7 @@
 		<div class="spacer" style="height: 30px"></div>
 		
 		<div style="max-width: 960px; margin: 0 auto; min-height: 100%;">
-			<?= $content_for_layout ?>
+			<?= $this->content() ?>
 			
 			<div style="clear: both; display: table"></div>
 		</div>

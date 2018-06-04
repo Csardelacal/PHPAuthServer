@@ -1,6 +1,8 @@
 <?php
 
+use app\AuthLock;
 use connection\AuthModel;
+use mail\spam\domain\IP;
 use signature\Signature;
 use spitfire\core\Environment;
 use spitfire\core\http\URL;
@@ -93,7 +95,7 @@ class AuthController extends BaseController
 			 * Retrieve the IP information from the client. This should allow the 
 			 * application to provide the user with data where they connected from.
 			 */
-			$ip = IP::makeLocation();
+			$ip = \IP::makeLocation();
 			if ($ip) {
 				$token->country = $ip->country_code;
 				$token->city    = substr($ip->city, 0, 20);
@@ -127,13 +129,10 @@ class AuthController extends BaseController
 	 */
 	public function app() {
 		
-		if (isset($_GET['token'])) {
-			$token = db()->table('token')->get('token', $_GET['token'])->fetch();
-			if ($token->expires < time()) { throw new PublicException('Invalid token: ' . __($_GET['token']), 400); }
+		if ($this->token && $this->token->expires < time()) { 
+			throw new PublicException('Invalid token: ' . __($_GET['token']), 400); 
 		}
-		else {
-			$token = null;
-		}
+		
 		
 		if (isset($_GET['appSec'])) { //TODO: Remove
 			/*
@@ -150,7 +149,7 @@ class AuthController extends BaseController
 			$signature = isset($_GET['signature'])? $_GET['signature'] : '';
 			$context   = isset($_GET['context'])?   $_GET['context']   : null;
 			
-			$extracted = Signature::extract($signature);
+			$extracted = $this->signature->extract($signature);
 			
 			if ($extracted->getTarget()) {
 				$remote = db()->table('authapp')->get('appID', $extracted->getTarget())->fetch();
@@ -170,11 +169,26 @@ class AuthController extends BaseController
 				throw new PublicException('Invalid signature', 403);
 			}
 			
+			/*
+			 * This endpoint requires signatures to be unexpired. The server issuing
+			 * the signature can freely decide how long they want the signature to
+			 * be valid.
+			 * 
+			 * It is unlikely that the system could be man-in-the-middle attacked,
+			 * but it is possible that a signature may leak during a server error
+			 * or due to human error. In this case, an expiry of 5 minutes gives 
+			 * most servers ample time to process the request but an attacker will
+			 * have a hard time forging an attack that will be effective.
+			 */
+			if ($extracted->isExpired()) {
+				throw new PublicException('Signature is expired. Please renew.', 403);
+			}
+			
 			$this->view->set('authenticated', !!$app);
 			$this->view->set('src', $app);
 			$this->view->set('remote', $remote);
-			$this->view->set('token', $token);
-			$this->view->set('grant', $remote? $app->canAccess($remote, $token? $token->user : null, $context) : null);
+			$this->view->set('token', $this->token);
+			$this->view->set('grant', $remote? $app->canAccess($remote, $this->token? $this->token->user : null, $context) : null);
 			$this->view->set('context', $remote && $context? $remote->getContext($context) : null);
 		}
 		
@@ -182,77 +196,101 @@ class AuthController extends BaseController
 	
 	/**
 	 * 
+	 * @validate GET#signature (required)
 	 * @param boolean $confirm
-	 * @return type
 	 * @throws PublicException
 	 * @layout minimal.php
 	 */
 	public function connect($confirm = null) {
-		if (!isset($_GET['signature'])) { throw new PublicException('Invalid signature', 400); }
 		
-		$signature = explode(':', $_GET['signature']);
-		if (count($signature) != 6) { throw new PublicException('Malformed signature', 400); }
+		#Make the confirmation signature
+		$xsrf = new spitfire\io\XSSToken();
 		
-		list($algo, $srcId, $targetId, $contextstr, $salt, $hash) = $signature;
-		$context = explode(',', $contextstr);
-		
-		/**
-		 * @var AuthAppModel The source application (the application requesting data)
+		/*
+		 * First and foremost, this cannot be executed from the token context, this
+		 * means that the user requesting this needs to be a user who is logged in
+		 * via session instead of an application acting on behalf of a user.
 		 */
-		$src = db()->table('authapp')->get('appID', $srcId)->fetch();
-		$tgt = db()->table('authapp')->get('appID', $targetId)->fetch();
-		$ctx = $tgt->getContext($context);
+		if ($this->token) {
+			throw new PublicException('This method cannot be called from token context', 400);
+		}
 		
-		switch(strtolower($algo)) {
-			case 'sha512':
-				$calculated = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $contextstr, $salt]));
-				break;
+		if (!isset($_GET['signature'])) {
+			throw new PublicException('Invalid signature', 400); 
+		}
+		
+		/*
+		 * Extract all the signatures the system received. The idea is to provide 
+		 * one signature per context piece needed. While this requires the system
+		 * to provide several signatures, it also makes it way more flexible for 
+		 * the receiving application to select which permissions it wishes to request.
+		 */
+		$signatures = collect($_GET['signature'])->each(function ($e) { 
+			list($signature, $src, $tgt) = $this->signature->verify($e);
 			
-			default:
-				throw new PublicException('Invalid algorithm', 400);
+			/*
+			 * Check if the application was already granted access This may report that
+			 * the target was already blocked by the system from accessing data
+			 * on the source application.
+			 */
+			$lock = new AuthLock($src, $this->user, $e->getContext()[0]);
+			$granted = $lock->unlock($tgt);
+			
+			/*
+			 * If the target was already denied access, either by the user or by policy,
+			 * then we throw an exception and prevent the user from continuing.
+			 */
+			if ($granted === AuthModel::STATE_DENIED) {
+				throw new PublicException('Application was already denied access', 400);
+			}
+			
+			/*
+			 * If the target was already approved access, either by the user or by 
+			 * policy, then we skip asking for permission to this context.
+			 */
+			if ($granted === AuthModel::STATE_AUTHORIZED) {
+				return null;
+			}
+			
+			return $signature;
+		});
+		
+		$src = db()->table('authapp')->get('appID', $signatures->rewind()->getSrc())->first(true);
+		$tgt = db()->table('authapp')->get('appID', $signatures->rewind()->getTarget())->first(true);
+		
+		$singlesource = $signatures->reduce(function ($c, Signature$e) use($src, $tgt) { 
+			return $c && $e->getTarget() === $tgt && $e->getSrc() === $src; 
+		}, true);
+		
+		if (!$singlesource) {
+			throw new PublicException('All signatures must belong to a single source', 401);
 		}
 		
-		if ($calculated !== $hash) {
-			throw new PublicException('Hash failure', 403);
-		}
-		
-		$granted = $tgt->canAccess($tgt, $this->user, $ctx->each(function ($e) { return $e->ctx; })->toArray());
-		
+		/*
+		 * If the user is already confirming the application request, we check whether
+		 * the signature they used to do so is valid. This is generally to protect
+		 * the user from any illegitimate requests to provide data by XSFS.
+		 */
 		if ($confirm) {
-			$pieces = explode(':', $confirm);
-			list($expires, $csalt, $csum) = $pieces;
 			
-			if ($csum !== hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $csalt, $expires])) || $expires < time()) {
+			if (!$xsrf->verify($confirm)) {
 				throw new PublicException('Invalid confirmation hash', 403);
 			}
 			
-			$confirm = true;
-		}
-		
-		if ($granted === AuthModel::STATE_DENIED) {
-			throw new PublicException('Application was already denied access', 400);
-		}
-		
-		if ($granted === AuthModel::STATE_AUTHORIZED || $confirm ) {
-			
-			if ($ctx->isEmpty()) {
-				$ctx = [null];
-			}
-			
-			foreach ($ctx as $c) {
+			foreach ($signatures as $c) {
 				$connection = db()->table('connection\auth')
 					->get('source', $src)
-					->addRestriction('target', $tgt)
-					->addRestriction('user', $this->user)
-					->addRestriction('context', $c? $c->getId() : null, $c? '=' : 'IS')
-					->addRestriction('expires', time(), '>')->fetch();
+					->where('target', $tgt)
+					->where('user', $this->user)
+					->where('context', $c->getContext()[0])
+					->where('expires', '>', time())->first();
 				
 				if (!$connection) {
 					$connection = db()->table('connection\auth')->newRecord();
 					$connection->target  = $tgt;
 					$connection->source  = $src;
 					$connection->user    = $this->user;
-					$connection->context = $c? $c->getId() : null;
+					$connection->context = $c->getContext()[0];
 					$connection->state   = AuthModel::STATE_AUTHORIZED;
 					$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
 					$connection->store();
@@ -264,18 +302,10 @@ class AuthController extends BaseController
 			}
 		}
 		
-		#Make the confirmation signature
-		$confirmSalt = trim(str_replace(['/', '+', '='], '-', base64_encode(random_bytes(25))), '-');
-		$confirmExpires = time() + 300;
-		$confirmHash = hash('sha512', implode('.', [$src->appID, $tgt->appID, $tgt->appSecret, $confirmSalt, $confirmExpires]));
-		$confirmSignature = implode(':', [$confirmExpires, $confirmSalt, $confirmHash]);
-		
 		$this->view->set('src', $src);
 		$this->view->set('tgt', $tgt);
-		$this->view->set('ctx', $ctx);
-		$this->view->set('ctxstr', $contextstr);
-		$this->view->set('signature', $_GET['signature']);
-		$this->view->set('confirm', $confirmSignature);
+		$this->view->set('signatures', $signatures);
+		$this->view->set('confirm', $xsrf->getValue());
 		
 	}
 	

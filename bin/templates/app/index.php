@@ -11,7 +11,7 @@
 
 <div class="row1">
 	<div class="span1" style="text-align: right">
-		<a class="button" href="<?= new URL('app', 'create') ?>">Create App</a>
+		<a class="button" href="<?= url('app', 'create') ?>">Create App</a>
 	</div>
 </div>
 
@@ -26,13 +26,13 @@
 					<th></th>
 				</tr>
 			</thead>
-			<?php foreach ($query->fetchAll() as $app): ?>
+			<?php foreach ($pagination->records() as $app): ?>
 			<tr>
 				<td>
-					<img src="<?= new URL('image', 'app', $app->_id) ?>" style="vertical-align: middle;">
+					<img src="<?= url('image', 'app', $app->_id) ?>" style="vertical-align: middle;">
 					<?=  $app->name ?>
 				</td>
-				<td><a href="<?= new URL('app', 'detail', $app->_id) ?>">Details</a></td>
+				<td><a href="<?= url('app', 'detail', $app->_id) ?>">Details</a></td>
 			</tr>
 			<?php endforeach; ?>
 		</table>

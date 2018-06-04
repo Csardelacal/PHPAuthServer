@@ -10,7 +10,7 @@
 		
 		<div class="separator"></div>
 		
-		<a class="button" style="float: right" href="<?= new URL('attribute', 'validator', 'add', $bean->getRecord()->_id) ?>">Add validator</a>
+		<a class="button" style="float: right" href="<?= url('attribute', 'validator', 'add', $bean->getRecord()->_id) ?>">Add validator</a>
 		<h2>Validators</h2>
 		<?php $validators = $bean->getRecord()->validate->toArray(); ?>
 		<?php foreach ($validators as $validator): ?>

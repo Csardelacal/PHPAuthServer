@@ -8,22 +8,13 @@ and open the template in the editor.
     Created on : 02-jun-2015, 21:46:57
     Author     : cesaradelacalbretschneider
 */
-.navbar::after {
-  content: '';
-  display: table;
-  height: 1px;
-  clear: both; }
-
 * {
   box-sizing: border-box; }
-
-html {
-  height: 100%; }
 
 body {
   margin: 0;
   font-family: sans-serif;
-  background-color: #F3F3F3; }
+  background-color: #FFF; }
 
 .wrapper {
   max-width: 500px;
@@ -323,17 +314,13 @@ table {
   border-radius: 3px; }
 
 footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
   background: #FFF;
   color: #555;
   text-align: center;
-  padding: 20px;
+  padding: 5px;
   line-height: 20px;
   font-size: 12px;
-  border-top: solid 1px #999; }
+  border-top: solid 1px #CCC; }
 
 .material {
   background: #FFF;
@@ -368,6 +355,9 @@ footer {
   .user-icon.big {
     width: 128px;
     height: 128px; }
+  .user-icon.huge {
+    width: 256px;
+    height: 256px; }
   .user-icon.full-width {
     max-width: 100%; }
   .user-icon.square {
@@ -404,320 +394,311 @@ footer {
   .validation-errors .extended-message {
     font-size: .9em; }
 
+.heading.topbar {
+  display: block;
+  padding: 10px 5px;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 19px;
+  color: #2a912e;
+  border-bottom: solid 1px #2a912e; }
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 20.04.2018, 16:35:00
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 20.04.2018, 14:51:25
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/**
+ * This function creates fractions. It takes two parameters (the current row's fragmentation
+ * and the most fragmented row's) and calculates the different percentual widths.
+ * 
+ * For the parameters 3 and 10 it will create the following
+ * - %span-fr-1-3 -> 33% width
+ * - %span-fr-2-6 -> @extends %span-fr-1-3
+ * - %span-fr-3-9 -> @extends %span-fr-1-3
+ * - %span-fr-2-3 -> 66% width
+ * - %span-fr-4-6 -> @extends %span-fr-2-3
+ * - %span-fr-8-9 -> @extends %span-fr-2-3
+ * [...]
+ */
+.span {
+  display: inline-block;
+  vertical-align: top;
+  overflow-x: hidden;
+  margin-left: 1.0416666667%;
+  min-height: 1px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding: 3px;
+  width: 97.9166666667%; }
+
+div.row {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box; }
+  div.row:after {
+    content: "";
+    clear: both;
+    display: table;
+    width: 100%; }
+  div.row.fluid {
+    width: 100%;
+    max-width: 100%; }
+
+/*
+This are the functions (mixins) used to generate the basic scaffolding for our
+website. Due to the inverted functionality of the grid we rewrote big parts to 
+make them more usable.
+*/
+/*!
+    Created on : Oct 26, 2013, 7:18:16 PM
+    Author     : cesar
+*/
+.span.m1,
+.span.m2,
+.span.m3,
+.span.m4,
+.span.m5 {
+  margin-left: 1.0416666667%; }
+  .span.m1:first-child,
+  .span.m2:first-child,
+  .span.m3:first-child,
+  .span.m4:first-child,
+  .span.m5:first-child {
+    margin-left: 1.0416666667%; }
+
+.row.s2 > .s2, .row.s3 > .s3, .row.s4 > .s4, .row.s5 > .s5, .row.s6 > .s6, .row.s7 > .s7, .row.s8 > .s8, .row.s9 > .s9, .row.s10 > .s10, .row.s1 > .s1 {
+  width: 97.9166666667%; }
+
+.row.s4 > .s2, .row.s6 > .s3, .row.s8 > .s4, .row.s10 > .s5, .row.s2 > .s1 {
+  width: 47.9166666667%; }
+
+.row.s6 > .s2, .row.s9 > .s3, .row.s3 > .s1 {
+  width: 31.25%; }
+
+.row.s6 > .s4, .row.s9 > .s6, .row.s3 > .s2 {
+  width: 64.5833333333%; }
+
+.row.s8 > .s2, .row.s4 > .s1 {
+  width: 22.9166666667%; }
+
+.row.s8 > .s6, .row.s4 > .s3 {
+  width: 72.9166666667%; }
+
+.row.s10 > .s2, .row.s5 > .s1 {
+  width: 17.9166666667%; }
+
+.row.s10 > .s4, .row.s5 > .s2 {
+  width: 37.9166666667%; }
+
+.row.s10 > .s6, .row.s5 > .s3 {
+  width: 57.9166666667%; }
+
+.row.s10 > .s8, .row.s5 > .s4 {
+  width: 77.9166666667%; }
+
+.row.s6 > .s1 {
+  width: 14.5833333333%; }
+
+.row.s6 > .s5 {
+  width: 81.25%; }
+
+.row.s7 > .s1 {
+  width: 12.2023809524%; }
+
+.row.s7 > .s2 {
+  width: 26.4880952381%; }
+
+.row.s7 > .s3 {
+  width: 40.7738095238%; }
+
+.row.s7 > .s4 {
+  width: 55.0595238095%; }
+
+.row.s7 > .s5 {
+  width: 69.3452380952%; }
+
+.row.s7 > .s6 {
+  width: 83.630952381%; }
+
+.row.s8 > .s1 {
+  width: 10.4166666667%; }
+
+.row.s8 > .s3 {
+  width: 35.4166666667%; }
+
+.row.s8 > .s5 {
+  width: 60.4166666667%; }
+
+.row.s8 > .s7 {
+  width: 85.4166666667%; }
+
+.row.s9 > .s1 {
+  width: 9.0277777778%; }
+
+.row.s9 > .s2 {
+  width: 20.1388888889%; }
+
+.row.s9 > .s4 {
+  width: 42.3611111111%; }
+
+.row.s9 > .s5 {
+  width: 53.4722222222%; }
+
+.row.s9 > .s7 {
+  width: 75.6944444444%; }
+
+.row.s9 > .s8 {
+  width: 86.8055555556%; }
+
+.row.s10 > .s1 {
+  width: 7.9166666667%; }
+
+.row.s10 > .s3 {
+  width: 27.9166666667%; }
+
+.row.s10 > .s7 {
+  width: 67.9166666667%; }
+
+.row.s10 > .s9 {
+  width: 87.9166666667%; }
+
 @media all and (min-width: 960px) {
+  .mobile-only {
+    display: none; }
+
   /*
   This are the functions (mixins) used to generate the basic scaffolding for our
   website. Due to the inverted functionality of the grid we rewrote big parts to 
   make them more usable.
   */
-  /* 
+  /*!
       Created on : Oct 26, 2013, 7:18:16 PM
       Author     : cesar
   */
-  div[class^="span"] {
-    float: left;
-    margin-left: 2.08333%;
-    min-height: 1px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box; }
-    div[class^="span"]:first-child {
-      margin-left: 1.04167%; }
+  div.row {
+    width: 100%;
+    max-width: 71em; }
 
-  div[class^="row"] {
-    display: block;
-    margin: 0 auto;
-    width: 960px; }
-    div[class^="row"]:after {
-      content: "";
-      display: table;
-      clear: both; }
-    div[class^="row"].fluid {
-      width: 100%; }
+  .span {
+    margin-left: 1.0416666667%; }
+    .span:first-child {
+      margin-left: 1.0416666667%; }
 
-  /**
-   * This function creates fractions. It takes two parameters (the current row's fragmentation
-   * and the most fragmented row's) and calculates the different percentual widths.
-   * 
-   * For the parameters 3 and 10 it will create the following
-   * - %span-fr-1-3 -> 33% width
-   * - %span-fr-2-6 -> @extends %span-fr-1-3
-   * - %span-fr-3-9 -> @extends %span-fr-1-3
-   * - %span-fr-2-3 -> 66% width
-   * - %span-fr-4-6 -> @extends %span-fr-2-3
-   * - %span-fr-8-9 -> @extends %span-fr-2-3
-   * [...]
-   */
-  div.row2 > div.span2, div.row3 > div.span3, div.row4 > div.span4, div.row5 > div.span5, div.row6 > div.span6, div.row7 > div.span7, div.row8 > div.span8, div.row9 > div.span9, div.row10 > div.span10, div.row1 > div.span1, div.row1 > div.span {
-    width: 97.91667%; }
+  .row.l2 > .l2, .row.l3 > .l3, .row.l4 > .l4, .row.l5 > .l5, .row.l6 > .l6, .row.l7 > .l7, .row.l8 > .l8, .row.l9 > .l9, .row.l10 > .l10, .row.l1 > .l1 {
+    width: 97.9166666667%; }
 
-  div.row4 > div.span2, div.row6 > div.span3, div.row8 > div.span4, div.row10 > div.span5, div.row2 > div.span1, div.row2 > div.span {
-    width: 47.91667%; }
+  .row.l4 > .l2, .row.l6 > .l3, .row.l8 > .l4, .row.l10 > .l5, .row.l2 > .l1 {
+    width: 47.9166666667%; }
 
-  div.row6 > div.span2, div.row9 > div.span3, div.row3 > div.span1, div.row3 > div.span {
+  .row.l6 > .l2, .row.l9 > .l3, .row.l3 > .l1 {
     width: 31.25%; }
 
-  div.row6 > div.span4, div.row9 > div.span6, div.row3 > div.span2 {
-    width: 64.58333%; }
+  .row.l6 > .l4, .row.l9 > .l6, .row.l3 > .l2 {
+    width: 64.5833333333%; }
 
-  div.row8 > div.span2, div.row4 > div.span1, div.row4 > div.span {
-    width: 22.91667%; }
+  .row.l8 > .l2, .row.l4 > .l1 {
+    width: 22.9166666667%; }
 
-  div.row8 > div.span6, div.row4 > div.span3 {
-    width: 72.91667%; }
+  .row.l8 > .l6, .row.l4 > .l3 {
+    width: 72.9166666667%; }
 
-  div.row10 > div.span2, div.row5 > div.span1, div.row5 > div.span {
-    width: 17.91667%; }
+  .row.l10 > .l2, .row.l5 > .l1 {
+    width: 17.9166666667%; }
 
-  div.row10 > div.span4, div.row5 > div.span2 {
-    width: 37.91667%; }
+  .row.l10 > .l4, .row.l5 > .l2 {
+    width: 37.9166666667%; }
 
-  div.row10 > div.span6, div.row5 > div.span3 {
-    width: 57.91667%; }
+  .row.l10 > .l6, .row.l5 > .l3 {
+    width: 57.9166666667%; }
 
-  div.row10 > div.span8, div.row5 > div.span4 {
-    width: 77.91667%; }
+  .row.l10 > .l8, .row.l5 > .l4 {
+    width: 77.9166666667%; }
 
-  div.row6 > div.span1, div.row6 > div.span {
-    width: 14.58333%; }
+  .row.l6 > .l1 {
+    width: 14.5833333333%; }
 
-  div.row6 > div.span5 {
+  .row.l6 > .l5 {
     width: 81.25%; }
 
-  div.row7 > div.span1, div.row7 > div.span {
-    width: 12.20238%; }
+  .row.l7 > .l1 {
+    width: 12.2023809524%; }
 
-  div.row7 > div.span2 {
-    width: 26.4881%; }
+  .row.l7 > .l2 {
+    width: 26.4880952381%; }
 
-  div.row7 > div.span3 {
-    width: 40.77381%; }
+  .row.l7 > .l3 {
+    width: 40.7738095238%; }
 
-  div.row7 > div.span4 {
-    width: 55.05952%; }
+  .row.l7 > .l4 {
+    width: 55.0595238095%; }
 
-  div.row7 > div.span5 {
-    width: 69.34524%; }
+  .row.l7 > .l5 {
+    width: 69.3452380952%; }
 
-  div.row7 > div.span6 {
-    width: 83.63095%; }
+  .row.l7 > .l6 {
+    width: 83.630952381%; }
 
-  div.row8 > div.span1, div.row8 > div.span {
-    width: 10.41667%; }
+  .row.l8 > .l1 {
+    width: 10.4166666667%; }
 
-  div.row8 > div.span3 {
-    width: 35.41667%; }
+  .row.l8 > .l3 {
+    width: 35.4166666667%; }
 
-  div.row8 > div.span5 {
-    width: 60.41667%; }
+  .row.l8 > .l5 {
+    width: 60.4166666667%; }
 
-  div.row8 > div.span7 {
-    width: 85.41667%; }
+  .row.l8 > .l7 {
+    width: 85.4166666667%; }
 
-  div.row9 > div.span1, div.row9 > div.span {
-    width: 9.02778%; }
+  .row.l9 > .l1 {
+    width: 9.0277777778%; }
 
-  div.row9 > div.span2 {
-    width: 20.13889%; }
+  .row.l9 > .l2 {
+    width: 20.1388888889%; }
 
-  div.row9 > div.span4 {
-    width: 42.36111%; }
+  .row.l9 > .l4 {
+    width: 42.3611111111%; }
 
-  div.row9 > div.span5 {
-    width: 53.47222%; }
+  .row.l9 > .l5 {
+    width: 53.4722222222%; }
 
-  div.row9 > div.span7 {
-    width: 75.69444%; }
+  .row.l9 > .l7 {
+    width: 75.6944444444%; }
 
-  div.row9 > div.span8 {
-    width: 86.80556%; }
+  .row.l9 > .l8 {
+    width: 86.8055555556%; }
 
-  div.row10 > div.span1, div.row10 > div.span {
-    width: 7.91667%; }
+  .row.l10 > .l1 {
+    width: 7.9166666667%; }
 
-  div.row10 > div.span3 {
-    width: 27.91667%; }
+  .row.l10 > .l3 {
+    width: 27.9166666667%; }
 
-  div.row10 > div.span7 {
-    width: 67.91667%; }
+  .row.l10 > .l7 {
+    width: 67.9166666667%; }
 
-  div.row10 > div.span9 {
-    width: 87.91667%; }
-
-  .mobile-only {
-    display: none; } }
+  .row.l10 > .l9 {
+    width: 87.9166666667%; } }
 @media all and (max-width: 960px) {
-  /*
-  This are the functions (mixins) used to generate the basic scaffolding for our
-  website. Due to the inverted functionality of the grid we rewrote big parts to 
-  make them more usable.
-  */
-  /* 
-      Created on : Oct 26, 2013, 7:18:16 PM
-      Author     : cesar
-  */
-  div[class^="span"] {
-    float: left;
-    margin-left: 1.04167%;
-    min-height: 1px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    padding: 3px; }
-    div[class^="span"] img {
-      max-width: 100%; }
-
-  div.row, div.row1, div.row2, div.row3, div.row4, div.row5, div.row6, div.row7, div.row8, div.row9, div.row10 {
-    display: block;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box; }
-    div.row:after, div.row1:after, div.row2:after, div.row3:after, div.row4:after, div.row5:after, div.row6:after, div.row7:after, div.row8:after, div.row9:after, div.row10:after {
-      content: "";
-      display: table;
-      clear: both; }
-
-  div.row1 > div.span1 {
-    width: 95.83333%; }
-  div.row1 > div.span {
-    width: 95.83333%; }
-
-  div.row2 > div.span1 {
-    width: 95.83333%; }
-  div.row2 > div.span {
-    width: 95.83333%; }
-  div.row2 > div.span2 {
-    width: 95.83333%; }
-
-  div.row3 > div.span1 {
-    width: 95.83333%; }
-  div.row3 > div.span {
-    width: 95.83333%; }
-  div.row3 > div.span2 {
-    width: 95.83333%; }
-  div.row3 > div.span3 {
-    width: 95.83333%; }
-
-  div.row4 > div.span1 {
-    width: 95.83333%; }
-  div.row4 > div.span {
-    width: 95.83333%; }
-  div.row4 > div.span2 {
-    width: 95.83333%; }
-  div.row4 > div.span3 {
-    width: 95.83333%; }
-  div.row4 > div.span4 {
-    width: 95.83333%; }
-
-  div.row5 > div.span1 {
-    width: 95.83333%; }
-  div.row5 > div.span {
-    width: 95.83333%; }
-  div.row5 > div.span2 {
-    width: 95.83333%; }
-  div.row5 > div.span3 {
-    width: 95.83333%; }
-  div.row5 > div.span4 {
-    width: 95.83333%; }
-  div.row5 > div.span5 {
-    width: 95.83333%; }
-
-  div.row6 > div.span1 {
-    width: 95.83333%; }
-  div.row6 > div.span {
-    width: 95.83333%; }
-  div.row6 > div.span2 {
-    width: 95.83333%; }
-  div.row6 > div.span3 {
-    width: 95.83333%; }
-  div.row6 > div.span4 {
-    width: 95.83333%; }
-  div.row6 > div.span5 {
-    width: 95.83333%; }
-  div.row6 > div.span6 {
-    width: 95.83333%; }
-
-  div.row7 > div.span1 {
-    width: 95.83333%; }
-  div.row7 > div.span {
-    width: 95.83333%; }
-  div.row7 > div.span2 {
-    width: 95.83333%; }
-  div.row7 > div.span3 {
-    width: 95.83333%; }
-  div.row7 > div.span4 {
-    width: 95.83333%; }
-  div.row7 > div.span5 {
-    width: 95.83333%; }
-  div.row7 > div.span6 {
-    width: 95.83333%; }
-  div.row7 > div.span7 {
-    width: 95.83333%; }
-
-  div.row8 > div.span1 {
-    width: 95.83333%; }
-  div.row8 > div.span {
-    width: 95.83333%; }
-  div.row8 > div.span2 {
-    width: 95.83333%; }
-  div.row8 > div.span3 {
-    width: 95.83333%; }
-  div.row8 > div.span4 {
-    width: 95.83333%; }
-  div.row8 > div.span5 {
-    width: 95.83333%; }
-  div.row8 > div.span6 {
-    width: 95.83333%; }
-  div.row8 > div.span7 {
-    width: 95.83333%; }
-  div.row8 > div.span8 {
-    width: 95.83333%; }
-
-  div.row9 > div.span1 {
-    width: 95.83333%; }
-  div.row9 > div.span {
-    width: 95.83333%; }
-  div.row9 > div.span2 {
-    width: 95.83333%; }
-  div.row9 > div.span3 {
-    width: 95.83333%; }
-  div.row9 > div.span4 {
-    width: 95.83333%; }
-  div.row9 > div.span5 {
-    width: 95.83333%; }
-  div.row9 > div.span6 {
-    width: 95.83333%; }
-  div.row9 > div.span7 {
-    width: 95.83333%; }
-  div.row9 > div.span8 {
-    width: 95.83333%; }
-  div.row9 > div.span9 {
-    width: 95.83333%; }
-
-  div.row10 > div.span1 {
-    width: 95.83333%; }
-  div.row10 > div.span {
-    width: 95.83333%; }
-  div.row10 > div.span2 {
-    width: 95.83333%; }
-  div.row10 > div.span3 {
-    width: 95.83333%; }
-  div.row10 > div.span4 {
-    width: 95.83333%; }
-  div.row10 > div.span5 {
-    width: 95.83333%; }
-  div.row10 > div.span6 {
-    width: 95.83333%; }
-  div.row10 > div.span7 {
-    width: 95.83333%; }
-  div.row10 > div.span8 {
-    width: 95.83333%; }
-  div.row10 > div.span9 {
-    width: 95.83333%; }
-  div.row10 > div.span10 {
-    width: 95.83333%; }
-
   .desktop-only {
-    display: none; } }
+    display: none !important; } }
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -775,57 +756,34 @@ input[type=checkbox].styled {
       left: 60%; }
 
 .navbar {
-  padding: 8px;
-  text-align: center; }
-  .navbar::after {
-    display: none; }
-  .navbar .logo {
-    display: block;
-    width: 100%;
-    float: none;
-    font-size: 1.05em;
-    margin-bottom: 10px !important; }
-    .navbar .logo, .navbar .logo ~ :not(.desktop-only) {
-      padding: 0 4px !important;
-      height: initial !important; }
-    .navbar .logo ~ :not(.desktop-only) {
-      font-size: .9em; }
-
-.navbar {
-  background: #FEFEFE;
-  vertical-align: top;
-  text-align: right;
+  background: #EEE;
   box-shadow: 0 2px 2px #DDD;
   border-bottom: 1px solid #CCC;
+  display: table;
+  width: 100%;
   z-index: 5; }
-  .navbar > * {
-    display: inline-block;
-    padding: 10px 15px;
-    margin-right: 0 !important;
-    line-height: 25px; }
+  .navbar .left,
+  .navbar .right {
+    display: table-cell;
+    padding: 15px 10px; }
+  .navbar .right {
+    text-align: right; }
   .navbar a {
     text-decoration: none;
-    color: #333; }
-    .navbar a:hover {
-      text-shadow: 0 0 4px #DDD; }
+    color: #444;
+    font-weight: bold;
+    display: inline-block;
+    padding: 0 10px; }
   .navbar .logo {
     display: inline-block;
     float: left;
     border: none; }
     .navbar .logo > * {
-      display: inline-block;
       vertical-align: middle; }
     .navbar .logo img {
-      height: 25px;
-      width: 21.57107px;
+      height: 20px;
       margin-right: 5px; }
 
-@media all and (max-width: 960px) {
-  .navbar {
-    padding: 4px; }
-    .navbar a {
-      font-size: .9em;
-      padding: 4px; } }
 .admin-navigation {
   background: #222;
   color: #FFF;

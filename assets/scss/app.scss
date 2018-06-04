@@ -16,14 +16,10 @@ $disbled-darken-amount: 30;
 	box-sizing: border-box;
 }
 
-html {
-	height: 100%;
-}
-
 body {
 	margin: 0;
 	font-family: sans-serif;
-	background-color: #F3F3F3;
+	background-color: #FFF;
 }
 
 .wrapper {
@@ -447,18 +443,13 @@ table {
 }
 
 footer {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	
 	background: #FFF;
 	color: #555;
 	text-align: center;
-	padding: 20px;
+	padding: 5px;
 	line-height: 20px;
 	font-size: 12px;
-	border-top: solid 1px #999;
+	border-top: solid 1px #CCC;
 }
 
 .material {
@@ -509,6 +500,11 @@ footer {
 	&.big {
 		width:  128px;
 		height: 128px;
+	}
+	
+	&.huge {
+		width:  256px;
+		height: 256px;
 	}
 
 	&.full-width {
@@ -565,27 +561,22 @@ footer {
 	}
 }
 
-
-@media all and (min-width: 960px) {
-	@import '_scaffolding';
-	
-	.mobile-only {
-		display: none;
-	}
-}
-
-@media all and (max-width: 960px) {
-	@import '_scaffolding_mobile';
-	
-	.desktop-only {
-		display: none;
-	}
+.heading.topbar {
+	display: block;
+	padding: 10px 5px;
+	color: #FFF;
+	font-weight: bold;
+	font-size: 19px;
+	color: #2a912e;
+	border-bottom: solid 1px #2a912e;
 }
 
 
+@import '_vars.scss';
+@import 'scaffolding/_scaffolding.scss';
 @import 'ui/_ui.scss';
 @import '_navbar';
-@import '_admin';
+@import '_admin.scss';
 @import '_pagination';
 @import '_properties';
 @import '_messages';

@@ -14,9 +14,10 @@ class AttributeController extends BaseController
 	public function index() {
 		
 		$query = db()->table('attribute')->getAll();
+		$pagination = new \spitfire\storage\database\pagination\Paginator($query);
 		
-		$this->view->set('pagination', new Pagination($query));
-		$this->view->set('attributes', $query->fetchAll());
+		$this->view->set('pagination', $pagination);
+		$this->view->set('attributes', $pagination->records());
 		
 	}
 	

@@ -1,6 +1,8 @@
 <?php
 
-use spitfire\core\Environment;
+use spitfire\io\stp\SimpleStackTracePrinter;
+
+$stp = isset($exception)? new SimpleStackTracePrinter($exception) : null;
 
 ?><!DOCTYPE html>
 <html>
@@ -62,6 +64,10 @@ use spitfire\core\Environment;
 				max-height: 300px;
 				overflow: auto;
 			}
+			
+			<?php if ($stp) : ?>
+			<?php echo $stp->makeCSS(); ?>
+			<?php endif; ?>
 		</style>
 	</head>
 	<body>
@@ -70,16 +76,25 @@ use spitfire\core\Environment;
 		</div>
 		<div class="errormsg">
 			<div class="wrapper">
-				<h1>500: Server error</h1>
-			<p><?=$message?></p>
+				<h1><?= $code ?>: <?= $message ?></h1>
+				<p><?=$message?></p>
 			</div>
 		</div>
 
-		<?php if(Environment::get('debug_mode')): ?>
+		<?php if($stp): ?>
 		<div class="errordescription wrapper">
 			<h2>Further error information <small>To hide this set debug_mode to false.</small></h2>
 			<p>The stacktrace displays the function calls made that led to the error. They are displayed in an inverted order to how they were called.</p>
-			<pre><?=$moreInfo?></pre>
+			
+			<?= $stp ?>
+			
+			<?php ini_set('display_errors', true); ?>
+			<?php $previous = $exception->getPrevious(); ?>
+			<?php while ($previous) : ?>
+			<?php $printer  = new SimpleStackTracePrinter($previous); ?>
+			<?php echo $printer; ?>
+			<?php $previous = $previous->getPrevious(); ?>
+			<?php endwhile; ?>
 			
 			<?php
 				$messages = spitfire()->getMessages();
