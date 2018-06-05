@@ -8,13 +8,9 @@ use webhook\HookModel;
 class WebhookController extends BaseController
 {
 	
-	public function attach($appid) {
+	public function attach(AuthAppModel$app) {
 		#Check the user's privileges
 		if (!$this->isAdmin) { throw new PublicException('Requires authorization', 403); }
-		
-		#Check whether the app exists
-		$app = db()->table('authapp')->get('_id', $appid)->fetch();
-		if (!$app) { throw new PublicException('No such app found', 404); }
 		
 		try {
 			
@@ -67,18 +63,25 @@ class WebhookController extends BaseController
 		}
 	}
 	
-	public function edit($hookid) {
+	/**
+	 * 
+	 * @validate >> POST#url(string url required) AND POST#type(number)
+	 * 
+	 * @param type $hookid
+	 * @return type
+	 * @throws PublicException
+	 * @throws HTTPMethodException
+	 */
+	public function edit(HookModel$hook) {
 		#Check the user's privileges
 		if (!$this->isAdmin) { throw new PublicException('Requires authorization', 403); }
 		
-		#Check whether the app exists
-		$hook = db()->table('webhook\hook')->get('_id', $hookid)->fetch();
-		if (!$hook) { throw new PublicException('No such webhook found', 404); }
 		
 		try {
 			
 			#If the request was posted, then the user can store the hook
 			if (!$this->request->isPost()) { throw new HTTPMethodException('Needs to be posted', 1709131431); }
+			if (!current_context()->validation->isEmpty()) { throw new ValidationException('Validation failed', 0, current_context()->validation->toArray()); }
 			
 			#Read the variables.
 			$type   = (int)$_POST['type'];

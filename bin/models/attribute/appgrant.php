@@ -1,11 +1,7 @@
-<?php
+<?php namespace attribute;
 
-use spitfire\mvc\middleware\standard\CacheDurationMiddleware;
-use spitfire\mvc\middleware\standard\LayoutMiddleware;
-use spitfire\mvc\middleware\standard\ModelMiddleware;
-use spitfire\mvc\middleware\standard\RequestMethodMiddleware;
-use spitfire\mvc\middleware\standard\TemplateMiddleware;
-use spitfire\mvc\middleware\standard\ValidationMiddleware;
+use spitfire\Model;
+use spitfire\storage\database\Schema;
 
 /* 
  * The MIT License
@@ -31,9 +27,29 @@ use spitfire\mvc\middleware\standard\ValidationMiddleware;
  * THE SOFTWARE.
  */
 
-current_context()->middleware->register(new CacheDurationMiddleware());
-current_context()->middleware->register(new LayoutMiddleware());
-current_context()->middleware->register(new TemplateMiddleware());
-current_context()->middleware->register(new RequestMethodMiddleware());
-current_context()->middleware->register(new ModelMiddleware(db()));
-current_context()->middleware->register(new ValidationMiddleware());
+class AppGrantModel extends Model
+{
+	
+	const GRANT_PENDING = 0x00;
+	const GRANT_DENIED  = 0x01;
+	const GRANT_READ    = 0x10;
+	const GRANT_WRITE   = 0x20;
+	const GRANT_RW      = 0x30;
+	
+	/**
+	 * 
+	 * @param Schema $schema
+	 */
+	public function definitions(Schema$schema) {
+		$schema->attribute = new \Reference(\AttributeModel::class);
+		$schema->app       = new \Reference(\AuthAppModel::class);
+		$schema->user      = new \Reference(\UserModel::class);
+		$schema->grant     = new \IntegerField(true);
+		
+		
+		$schema->index($schema->attribute, $schema->app, $schema->user)->unique();
+		$schema->index($schema->attribute, $schema->app);
+		$schema->index($schema->attribute, $schema->user);
+	}
+
+}

@@ -112,7 +112,7 @@ class AppController extends BaseController
 	 */
 	public function deauthorize($appID) {
 		$app  = db()->table('authapp')->get('_id', $appID)->fetch();
-		$auth = db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $app)->fetch();
+		$auth = db()->table('user\authorizedapp')->get('user', $this->user)->where('app', $app)->first(true);
 		
 		if ($auth) { $auth->delete(); }
 		

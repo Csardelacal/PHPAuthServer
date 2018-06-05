@@ -47,44 +47,46 @@
 				<div class="spacer mobile-only" style="height: 30px;"></div>
 				
 				<div class="span l3 s1">
-					<?php $attributes = db()->table('attribute')->get('writable', Array('me', 'groups', 'public'))->fetchAll(); ?>
-					<?php foreach ($attributes as $attribute): ?>
+					
+					<div class="material">
+						<?php $attributes = db()->table('attribute')->get('writable', Array('me', 'groups', 'public'))->fetchAll(); ?>
+						<?php foreach ($attributes as $attribute): ?>
+						<div class="row l6 fluid has-dials">
+							<div class="span l5">
+								<div style="font-size: .75em; color: #555">
+									<?= $attribute->name ?>
+								</div>
 
-					<div class="row l6 fluid has-dials">
-						<div class="span5">
-							<div style="font-size: .75em; color: #555">
-								<?= $attribute->name ?>
-							</div>
+								<?php $attrValue = $user->attributes->getQuery()->addRestriction('attr', $attribute)->fetch() ?>
 
-							<?php $attrValue = $user->attributes->getQuery()->addRestriction('attr', $attribute)->fetch() ?>
-
-							<div class="spacer" style="height: 5px"></div>
-							<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-								<div>
-									<?php if ($attribute->datatype === 'file'): ?>
-									<div style="text-align: center">
-										<img src="<?= url('image', 'attribute', $attribute->_id, $user->_id, ['nonce' => time()]) ?>" style="max-width: 100%; max-height: 200px">
+								<div class="spacer" style="height: 5px"></div>
+								<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
+									<div>
+										<?php if ($attribute->datatype === 'file'): ?>
+										<div style="text-align: center">
+											<img src="<?= url('image', 'attribute', $attribute->_id, $user->_id, ['nonce' => time()]) ?>" style="max-width: 100%; max-height: 200px">
+										</div>
+										<?php elseif ($attribute->datatype === 'text'): ?>
+										<div style="white-space: pre-wrap;"><?= $attrValue? __($attrValue->value, 200) : '<em>Undefined</em>' ?></div>
+										<?php elseif ($attribute->datatype === 'boolean'): ?>
+										<div style="white-space: pre-wrap;"><?= $attrValue->value? 'Yes' : 'No' ?></div>
+										<?php else: ?>
+										<div><?= $attrValue? __($attrValue->value, 45) : '<em>Undefined</em>' ?></div>
+										<?php endif; ?>
 									</div>
-									<?php elseif ($attribute->datatype === 'text'): ?>
-									<div style="white-space: pre-wrap;"><?= $attrValue? __($attrValue->value, 200) : '<em>Undefined</em>' ?></div>
-									<?php elseif ($attribute->datatype === 'boolean'): ?>
-									<div style="white-space: pre-wrap;"><?= $attrValue->value? 'Yes' : 'No' ?></div>
-									<?php else: ?>
-									<div><?= $attrValue? __($attrValue->value, 45) : '<em>Undefined</em>' ?></div>
-									<?php endif; ?>
 								</div>
 							</div>
+							<div class="span l1 dials">
+								<ul>
+									<li><a href="<?= url('edit', 'attribute', $attribute->_id) ?>">Edit</a></li>
+								</ul>
+							</div>
 						</div>
-						<div class="span1 dials">
-							<ul>
-								<li><a href="<?= url('edit', 'attribute', $attribute->_id) ?>">Edit</a></li>
-							</ul>
-						</div>
+						<?php endforeach; ?>
 					</div>
 				</div>
 			</div>
 			<div class="spacer" style="height: 30px;"></div>
-			<?php endforeach; ?>
 
 			<!-- 
 				List the user's authorized apps. This way they can see what applications they
@@ -99,14 +101,14 @@
 			<?php foreach ($authorized as $auth): ?>
 			<?php $app = $auth->app ?>
 			<div class="spacer" style="height: 10px"></div>
-			<div class="row6 fluid has-dials">
-				<div class="span5">
+			<div class="row l6 fluid has-dials">
+				<div class="span l5">
 					<img src="<?= url('image', 'app', $app->_id, 32) ?>" style="vertical-align: middle;  height: 18px;">
 
 					<?php if ($app->url): ?><a href="<?= $app->url ?>"><?= $app->name ?></a>
 					<?php else: ?><span><?= $app->name ?></span><?php endif; ?>
 				</div>
-				<div class="span1 dials">
+				<div class="span l1 dials">
 					<ul>
 						<li><a href="<?= url('app', 'deauthorize', $app->_id) ?>">Remove</a></li>
 					</ul>

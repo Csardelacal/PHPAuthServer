@@ -14,7 +14,7 @@ and open the template in the editor.
 body {
   margin: 0;
   font-family: sans-serif;
-  background-color: #FFF; }
+  background-color: #FAFAFA; }
 
 .wrapper {
   max-width: 500px;
@@ -157,7 +157,6 @@ form.condensed {
 
 form.regular .field {
   display: block;
-  margin-bottom: 15px;
   box-sizing: border-box; }
   form.regular .field label {
     display: block;
@@ -175,8 +174,13 @@ form.regular .field {
     background: #FFF;
     border: solid 1px #EEE;
     box-sizing: border-box;
-    height: 2em;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2); }
+    height: 2em; }
+    form.regular .field input[type=text] .borderless,
+    form.regular .field input[type=email] .borderless,
+    form.regular .field input[type=password] .borderless,
+    form.regular .field textarea .borderless,
+    form.regular .field select .borderless {
+      border: none; }
     form.regular .field input[type=text]:focus,
     form.regular .field input[type=email]:focus,
     form.regular .field input[type=password]:focus,
@@ -252,6 +256,10 @@ h2 {
 p {
   color: #555;
   line-height: 1.6em; }
+  p.unpadded {
+    margin: 0; }
+  p.small {
+    font-size: .8em; }
 
 small {
   color: #777; }
@@ -332,6 +340,14 @@ footer {
     padding: 0; }
   .material .padded {
     padding: 20px 15px 15px; }
+  .material .inset {
+    color: #FFF;
+    background: #777;
+    box-shadow: inset 1px 1px 2px #555; }
+    .material .inset p, .material .inset a {
+      color: #FFF; }
+    .material .inset:last-child {
+      border-radius: 0 0 2px 2px; }
 
 .login-logo {
   text-align: center; }
@@ -394,14 +410,15 @@ footer {
   .validation-errors .extended-message {
     font-size: .9em; }
 
-.heading.topbar {
+.heading {
   display: block;
   padding: 10px 5px;
   color: #FFF;
   font-weight: bold;
   font-size: 19px;
   color: #2a912e;
-  border-bottom: solid 1px #2a912e; }
+  border-bottom: solid 1px #2a912e;
+  background: #FAFAFA; }
 
 /*
 To change this license header, choose License Headers in Project Properties.
@@ -731,19 +748,19 @@ input[type=checkbox].styled {
   input[type=checkbox].styled + span.toggle {
     display: inline-block;
     position: relative;
-    width: 2em;
-    height: .7em;
+    width: 1.5em;
+    height: .5em;
     background-color: #DDD;
     border-radius: 5px;
-    vertical-align: middle;
-    margin: 0 .3em;
+    vertical-align: .11em;
+    margin: 0 .4em;
     transition: background-color .3s linear; }
     input[type=checkbox].styled + span.toggle:before {
       display: block;
       position: absolute;
-      top: -.15em;
+      top: -.20em;
       left: 0;
-      height: .9em;
+      height: .85em;
       width: .9em;
       border-radius: 50%;
       background: #FFF;
@@ -753,7 +770,7 @@ input[type=checkbox].styled {
   input[type=checkbox].styled:checked + span.toggle {
     background-color: #a1d49d; }
     input[type=checkbox].styled:checked + span.toggle:before {
-      left: 60%; }
+      left: 50%; }
 
 .navbar {
   background: #EEE;

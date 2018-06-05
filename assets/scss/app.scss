@@ -19,7 +19,7 @@ $disbled-darken-amount: 30;
 body {
 	margin: 0;
 	font-family: sans-serif;
-	background-color: #FFF;
+	background-color: #FAFAFA;
 }
 
 .wrapper {
@@ -228,7 +228,6 @@ form.regular {
 	
 	.field {
 		display: block;
-		margin-bottom: 15px;
 		box-sizing: border-box;
 		
 	
@@ -251,7 +250,10 @@ form.regular {
 			border: solid 1px #EEE;
 			box-sizing: border-box;
 			height: 2em;
-			box-shadow: 0 0 1px rgba(0, 0, 0, .2);
+			
+			.borderless {
+				border: none;
+			}
 
 			&:focus {
 				outline: none;
@@ -358,6 +360,14 @@ h2 {
 p {
 	color: #555;
 	line-height: 1.6em;
+	
+	&.unpadded {
+		margin: 0;
+	}
+	
+	&.small {
+		font-size: .8em;
+	}
 }
 
 small {
@@ -466,6 +476,20 @@ footer {
 	.padded {
 		padding: 20px 15px 15px;
 	}
+	
+	.inset {
+		color: #FFF;
+		background: #777;
+		box-shadow: inset 1px 1px 2px #555;
+		
+		p, a {
+			color: #FFF;
+		}
+		
+		&:last-child {
+			border-radius: 0 0 2px 2px;
+		}
+	}
 }
 
 .login-logo {
@@ -561,7 +585,7 @@ footer {
 	}
 }
 
-.heading.topbar {
+.heading {
 	display: block;
 	padding: 10px 5px;
 	color: #FFF;
@@ -569,6 +593,7 @@ footer {
 	font-size: 19px;
 	color: #2a912e;
 	border-bottom: solid 1px #2a912e;
+	background: #FAFAFA;
 }
 
 

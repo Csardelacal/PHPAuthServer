@@ -14,21 +14,21 @@ input[type=checkbox].styled {
 	+ span.toggle {
 		display:      inline-block;
 		position:         relative;
-		width:                 2em;
-		height:               .7em;
+		width:               1.5em;
+		height:               .5em;
 		background-color:     #DDD;
 		border-radius:         5px;
-		vertical-align:     middle;
-		margin:             0 .3em;
+		vertical-align:      .11em;
+		margin:             0 .4em;
 		
 		transition: background-color .3s linear;
 		
 		&:before {
 			display: block;
 			position: absolute;
-			top: -.15em;
+			top: -.20em;
 			left: 0;
-			height: .9em;
+			height: .85em;
 			width: .9em;
 			border-radius: 50%;
 			background: #FFF;
@@ -43,7 +43,7 @@ input[type=checkbox].styled {
 		background-color: #a1d49d;
 		
 		&:before {
-			left: 60%;
+			left: 50%;
 		}
 	}
 }

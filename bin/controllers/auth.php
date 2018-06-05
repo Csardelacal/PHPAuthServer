@@ -22,8 +22,9 @@ class AuthController extends BaseController
 	 * @param string $tokenid
 	 */
 	public function index($tokenid = null) {
-		if ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->addRestriction('expires', time(), '>')->fetch(); }
-		else          { $token = null; }
+		if ($this->token) { $token = $this->token; }
+		elseif ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->where('expires', '>', time())->first(); }
+		else              { $token = null; }
 		
 		#Check if the user has been either banned or suspended
 		$suspension = $token? db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch() : null;

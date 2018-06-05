@@ -224,6 +224,11 @@ class EditController extends BaseController
 		catch (HTTPMethodException$e) { /* Do nothing, show the form normall */}
 		catch (ValidationException$e) { $this->view->set('errors', $e->getResult()); } 
 		
+		$lock = new \app\AttributeLock($attribute, $this->user);
+		$grants = db()->table('authapp')->getAll()->all()
+			->filter(function ($e) use ($lock) { return $lock->unlock($e) || $lock->unlock($e, \app\AttributeLock::MODE_W); });
+		
+		$this->view->set('apps', $grants);
 		$this->view->set('attribute', $attribute);
 		$this->view->set('value', $attributeValue? $attributeValue->value : '');
 	}
