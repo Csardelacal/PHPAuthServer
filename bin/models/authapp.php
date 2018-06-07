@@ -22,10 +22,20 @@ class AuthAppModel extends Model
 		$schema->icon   = new FileField();
 		
 		/*
-		 * The webhook allows the App developer to provide a URL that will be called
-		 * when a user modifies it's data.
+		 * System applications do not need to request permissions to access data,
+		 * nor will the user be able to block them. In return, sys apps are only
+		 * able to create tokens for administrative users.
 		 */
-		$schema->webhook= new StringField(100);
+		$schema->system = new BooleanField();
+		$schema->system->setNullable(false);
+		
+		/*
+		 * Indicates whether this application should be placed in the app drawer.
+		 * This allows applications (including PHPAS) to quickly render navigation
+		 * to provide users with the option to jump between apps.
+		 */
+		$schema->drawer = new BooleanField();
+		$schema->drawer->setNullable(false);
 		
 		$schema->appID->setUnique(true);
 	}

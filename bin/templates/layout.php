@@ -34,6 +34,7 @@
 					<div class="menu-entry"><a href="<?= url('edit', 'email')    ?>">Change email address</a></div>
 					<div class="menu-entry"><a href="<?= url('edit', 'password') ?>">Change password</a></div>
 					<div class="menu-entry"><a href="<?= url('edit', 'avatar') ?>"  >Upload avatar</a></div>
+					<div class="menu-entry"><a href="<?= url('permissions') ?>"     >Application permissions</a></div>
 					
 					<?php if(isset($userIsAdmin) && $userIsAdmin): ?> 
 					<div class="spacer" style="height: 30px"></div>
@@ -47,6 +48,7 @@
 					<div class="indented">
 						<div class="menu-entry"><a href="<?= url('context') ?>">Contexts</a></div>
 						<div class="menu-entry"><a href="<?= url('connect') ?>">Connections</a></div>
+						<div class="menu-entry"><a href="<?= url('grant')   ?>">Grants</a></div>
 					</div>
 					
 					<!-- EMAIL -->

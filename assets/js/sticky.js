@@ -60,6 +60,7 @@
 					html.style[position] = '0';
 					html.style.height    = c.getBoundaries().getH() + 'px';
 					html.style.width     = c.getBoundaries().getW() + 'px';
+					html.style.zIndex    = 5;
 					html.style.background = ctx.getBackground();
 				}
 				

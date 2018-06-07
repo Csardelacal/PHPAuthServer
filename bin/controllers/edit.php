@@ -225,7 +225,7 @@ class EditController extends BaseController
 		catch (ValidationException$e) { $this->view->set('errors', $e->getResult()); } 
 		
 		$lock = new \app\AttributeLock($attribute, $this->user);
-		$grants = db()->table('authapp')->getAll()->all()
+		$grants = db()->table('authapp')->get('system', false)->all()
 			->filter(function ($e) use ($lock) { return $lock->unlock($e) || $lock->unlock($e, \app\AttributeLock::MODE_W); });
 		
 		$this->view->set('apps', $grants);

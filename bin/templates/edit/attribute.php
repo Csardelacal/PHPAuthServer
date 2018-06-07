@@ -41,19 +41,15 @@
 				</div>
 				<?php elseif ($attribute->datatype === 'text'): ?>
 				<div class="field">
-					<textarea name="value" placeholder="<?= $attribute->name ?>..." style="border: none"><?= __(_def($_POST['value'], $value)) ?></textarea>
+					<textarea class="borderless" name="value" placeholder="<?= $attribute->name ?>..."><?= __(_def($_POST['value'], $value)) ?></textarea>
 				</div>
 				<?php else: ?>
-				<div class="row1 fluid">
-					<div class="span1">
-						<div style="font-size: .75em; color: #555">
-							Set your <?= $attribute->name ?>
-						</div>
-
-						<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-							<input type="text" name="value" placeholder="<?= $attribute->name ?>" value="<?= __(_def($_POST['value'], $value)) ?>">
-						</div>
+				<div class="padded">
+					<div class="spacer" style="height: 20px"></div>
+					<div class="field">
+						<input type="text" name="value" placeholder="<?= $attribute->name ?>" value="<?= __(_def($_POST['value'], $value)) ?>">
 					</div>
+					<div class="spacer" style="height: 20px"></div>
 				</div>
 				<?php endif; ?>
 				
@@ -106,6 +102,10 @@
 			<div><img src="<?= url('image', 'app', $app->_id, 32); ?>" style="width: 16px; vertical-align: middle" > <?= $app->name ?></div>
 			<div class="spacer" style="height: 5px"></div>
 			<?php endforeach; ?>
+			
+			<?php if ($apps->isEmpty()): ?>
+			<p class="small">No applications are be able to access this information.</p>
+			<?php endif; ?>
 		</div>
 	</div>
 </form>

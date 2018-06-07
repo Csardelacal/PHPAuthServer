@@ -1,5 +1,6 @@
 body {
-  position: relative; }
+  position: relative;
+  overflow-x: hidden; }
 
 * {
   box-sizing: border-box;

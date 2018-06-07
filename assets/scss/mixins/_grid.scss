@@ -21,46 +21,23 @@ and open the template in the editor.
 	@return 1;
 }
 
-@mixin column_spans($prefix, $row_width) {
-	
-	@for $i from 1 through $row_width {
-		
-		>.#{$prefix}#{$i} {
-			$parent: '%#{$prefix}span-fr-#{$i}-#{$row_width}';
-			@extend #{$parent};
-		}
-		
-	}
-	
-}
 
-/**
- * This function creates fractions. It takes two parameters (the current row's fragmentation
- * and the most fragmented row's) and calculates the different percentual widths.
- * 
- * For the parameters 3 and 10 it will create the following
- * - %span-fr-1-3 -> 33% width
- * - %span-fr-2-6 -> @extends %span-fr-1-3
- * - %span-fr-3-9 -> @extends %span-fr-1-3
- * - %span-fr-2-3 -> 66% width
- * - %span-fr-4-6 -> @extends %span-fr-2-3
- * - %span-fr-8-9 -> @extends %span-fr-2-3
- * [...]
- */
 @mixin create-fraction($prefix, $row_size, $max_size) {
 	
 	@for $j from 1 through $row_size {
 
 		@if (highest_divisor($j, $row_size) == 1) {
 			
-			%#{$prefix}span-fr-#{$j}-#{$row_size} {
+			._f#{$prefix}#{$row_size}-#{$prefix}#{$j}, 
+			.row.#{$prefix}#{$row_size}>.span.#{$prefix}#{$j} {
 				width: $j * 100% / $row_size - $spacer_width;
 			}
 			
 			$factor : 2;
+			
 			@while ($factor * $row_size) <= $max_size {
-				%#{$prefix}span-fr-#{$j * $factor}-#{$row_size * $factor} {
-					$parent: '%#{$prefix}span-fr-#{$j}-#{$row_size}';
+				.row.#{$prefix}#{$row_size * $factor}>.span.#{$prefix}#{$j * $factor} {
+					$parent: '._f#{$prefix}#{$row_size}-#{$prefix}#{$j}';
 					@extend #{$parent};
 				}
 				$factor: $factor + 1;
@@ -74,11 +51,5 @@ and open the template in the editor.
 	
 	@for $i from 1 through $max_column_count {
 		@include create-fraction($prefix, $i, $max_column_count)
-	}
-
-	@for $i from 1 through $max_column_count {
-		.row.#{$prefix}#{$i}{
-			@include column_spans($prefix, $i);
-		}
 	}
 }

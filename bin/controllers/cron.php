@@ -9,6 +9,7 @@ class CronController extends Controller
 	 */
 	public function index() {
 		
+		return;
 		$lock = 'bin/usr/.cron.lock';
 		$fh = fopen($lock, file_exists($lock)? 'r' : 'w+');
 		

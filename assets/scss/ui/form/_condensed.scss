@@ -1,0 +1,208 @@
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/* 
+    Created on : Jun 6, 2018, 5:21:03 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+
+
+form.condensed {
+	margin:   0 auto;
+	
+	.field {
+		margin: 0;
+	}
+	
+	label {
+		display: none;
+	}
+	
+	input,
+	textarea {
+		/*
+		 * These remove the annoyng styles from the iOS layout that will style
+		 * input for you.
+		 */
+		-webkit-appearance: none;
+		-moz-appearance:    none;
+	}
+	
+	input[type="email"], 
+	input[type="password"], 
+	input[type="text"],
+	textarea {
+		border     :           none;
+		border-top :           none;
+		border-bottom :        none;
+		border-radius:            0;
+		
+		margin:            0;
+		font-size:      17px;
+		width:          100%;
+		padding:        10px;
+		
+		box-sizing: border-box;
+		
+		/*Make the splitter lines. We don't use border to avoid them invading the border */
+		background-image: linear-gradient(180deg, #DDD 1px, #FFF 1px);
+			
+	}
+	
+	/*
+    * Textareas do have specific styles, including smaller text to make them more
+    * useful for users typing in bigger segments of text
+	 */
+	textarea {
+		font-size: .9em;
+		height:    8em;
+	}
+		
+	.field:first-child input[type="email"], 
+	.field:first-child input[type="text"], 
+	.field:first-child input[type="password"],
+	.field:first-child textarea {
+		border-top  : solid 1px #999;
+		background-image: linear-gradient(180deg, #ccc 0%, #fff 8%);
+	}
+	
+	input[type="submit"] {
+		border     : solid 1px #529EBB;
+		border-top :              none;
+		font-family:        sans-serif;
+
+		$bg: #25A9F8;
+		$color: #FFF;
+		background-color:      $bg;
+		color:              $color;
+		margin:                  0;
+		font-size:            20px;
+		width:                100%;
+		padding:              10px;
+		cursor:            pointer;
+		
+		box-sizing: border-box;
+		
+		background-image: linear-gradient(0deg, #0571B1 0%, $bg 6%);
+
+
+		&:disabled {
+			color: darken($color, $disbled-darken-amount);
+			background: darken($bg, $disbled-darken-amount) !important;
+			cursor: not-allowed;
+		}
+	}
+	
+	.message {
+		position: relative;
+		padding: 10px 10px;
+		font-size: 13px;
+		border-width: 0 1px;
+		border-style: solid;
+		
+		&.success {
+			border-color: #3C7619;
+			background: #84D950;
+			color: #3C7619;
+			
+			&:after {
+				border-color: transparent transparent #84D950 transparent;
+			}
+		}
+		
+		&.info {
+			border-color: #CCC;
+			background: #EEE;
+			color: #555;
+			
+			&:after {
+				border-color: transparent transparent #EEE transparent;
+			}
+		}
+		
+		&.error {
+			border-color: #590C0E;
+			background: #F2B5B7;
+			color: #490C0E;
+			
+			&:after {
+				border-color: transparent transparent #F2B5B7 transparent;
+			}
+		}
+		
+		&:after {
+			position: absolute;
+			bottom:       100%;
+			right:        20px;
+			display:     block;
+			width:           0;
+			height:          0;
+			content:        '';
+			
+			border-style: none solid solid solid;
+			border-color: transparent transparent #CCC transparent;
+			border-width: 7px;
+		}
+	}
+	
+	.description {
+		background: #FFF;
+		padding:    10px;
+		color:      #333;
+		font-size: 13px;
+	}
+	
+	&.standalone {
+		max-width: 350px;
+		border-radius: 4px;
+		overflow: hidden;
+		box-shadow: 0 0 5px rgba(0, 0, 0, .7);
+		
+		input:first-child,
+		input:last-child {
+			background-image: none;
+			border-top: none;
+		}
+		
+		input[type="submit"] {
+
+			transition: background-color .5s ease, background-size .5s ease;
+			background-size  : 0 0;
+			background-repeat: no-repeat;
+			background-position: 50% 50%;
+			
+			&:hover {
+				background-color:  #1599E8;
+			}
+			
+			&:active {
+				background-color: #35B9F8;
+			}
+		}
+		
+		.message {
+			border-left: none;
+			border-right: none;
+		}
+	}
+}

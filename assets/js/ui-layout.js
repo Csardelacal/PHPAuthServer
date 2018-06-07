@@ -49,6 +49,25 @@
 		  }, interval || 50);
 	  };
 	};
+	
+	var enableAnimation = function (set) {
+		/*
+		 * During startup of our animation, we do want the browser to not animate the
+		 * components... This would just cause unnecessary load and the elements to be
+		 * shifted around like crazy.
+		 */
+		if (set === false) {
+			contentHTML.style.transition = 'none';
+			containerHTML.style.transition = 'none';
+			sidebarHTML.style.transition = 'none';
+			containerHTML.parentNode.style.whiteSpace = 'nowrap';
+		}
+		else {
+			contentHTML.style.transition = null; 
+			containerHTML.style.transition = null;
+			sidebarHTML.style.transition = null;
+		}
+	}
 	 
 	 /**
 	  * On Scroll, our sidebar is resized automatically to fill the screen within
@@ -88,9 +107,7 @@
 		
 	};
 
-	document.addEventListener('scroll', debounce(scrollListener, 25), false);
-
-	 var resizeListener  = function () {
+	var resizeListener  = function () {
 		//Reset the size for window width and height that we collected
 		wh  = window.innerHeight;
 		ww  = window.innerWidth;
@@ -100,16 +117,8 @@
 		 * components... This would just cause unnecessary load and the elements to be
 		 * shifted around like crazy.
 		 */
-		contentHTML.style.transition = 'none';
-		containerHTML.style.transition = 'none';
-		sidebarHTML.style.transition = 'none';
-		containerHTML.parentNode.style.whiteSpace = 'nowrap';
-
-		setTimeout(function () { 
-			contentHTML.style.transition = null; 
-			containerHTML.style.transition = null;
-			sidebarHTML.style.transition = null;
-		}, 0);
+		enableAnimation(false);
+		window.requestAnimationFrame? window.requestAnimationFrame(function() { enableAnimation(true); }) : setTimeout(function () { enableAnimation(true); }, 50);
 		
 		/**
 		 * We ping the scroll listener to redraw the the UI for it too.
@@ -129,8 +138,10 @@
 		}
 	 };
 	
+
+	document.addEventListener('scroll', debounce(scrollListener, 25), false);
 	window.addEventListener('resize', debounce(resizeListener), false);
-	resizeListener();
+	window.addEventListener('load', resizeListener, false);
 		
 	if (!containerHTML.classList.contains('floating')) {
 		containerHTML.classList.add('persistent');

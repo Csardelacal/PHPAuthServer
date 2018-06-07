@@ -2,7 +2,8 @@
 
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
-use spitfire\validation\EmptyValidationRule;
+use spitfire\storage\database\pagination\Paginator;
+use spitfire\validation\rules\EmptyValidationRule;
 use spitfire\validation\ValidationException;
 
 /**
@@ -31,8 +32,10 @@ class EmailController extends BaseController
 			$queue->setOrder('scheduled', 'DESC');
 		}
 		
-		$this->view->set('pagination', new Pagination($queue));
-		$this->view->set('records', $queue->fetchAll());
+		$pag = new Paginator($queue);
+		
+		$this->view->set('pagination', $pag);
+		$this->view->set('records', $pag->records());
 	}
 	
 	/**

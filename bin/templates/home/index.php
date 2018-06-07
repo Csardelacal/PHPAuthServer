@@ -15,17 +15,17 @@
 <div class="row l1 s1">
 	<div class="span l1 s1">
 		<div data-sticky-context>
-			<div class="heading topbar desktop-only" data-sticky>
+			<div class="heading topbar" data-sticky>
 				Edit your profile
 			</div>
 
-			<div class="spacer desktop-only" style="height: 30px"></div>
+			<div class="spacer" style="height: 30px"></div>
 			
-			<div class="row l4 s1 fluid">
-				<div class="span l1 s1" style="text-align: center">
+			<div class="row l4 m3 s1 fluid">
+				<div class="span l1 m1 s1" style="text-align: center">
 					<!--Avatar-->
 					<a href="<?= url('edit', 'avatar') ?>">
-						<img src="<?= url('image', 'user', $user->_id, 256) ?>" class="user-icon square full-width desktop-only">
+						<img src="<?= url('image', 'user', $user->_id, 256) ?>" class="user-icon square full-width not-mobile">
 						<img src="<?= url('image', 'user', $user->_id, 256) ?>" class="user-icon round big mobile-only">
 					</a>
 					
@@ -46,21 +46,21 @@
 				
 				<div class="spacer mobile-only" style="height: 30px;"></div>
 				
-				<div class="span l3 s1">
+				<div class="span l3 m2 s1">
 					
 					<div class="material">
-						<?php $attributes = db()->table('attribute')->get('writable', Array('me', 'groups', 'public'))->fetchAll(); ?>
+						<?php $attributes = db()->table('attribute')->get('writable', Array('me', 'public'))->fetchAll(); ?>
 						<?php foreach ($attributes as $attribute): ?>
-						<div class="row l6 fluid has-dials">
-							<div class="span l5">
+						<div class="row l6 s3 fluid has-dials">
+							<div class="span l1 s1">
 								<div style="font-size: .75em; color: #555">
 									<?= $attribute->name ?>
 								</div>
+							</div>
+							<div class="span l4 s2">
 
 								<?php $attrValue = $user->attributes->getQuery()->addRestriction('attr', $attribute)->fetch() ?>
-
-								<div class="spacer" style="height: 5px"></div>
-								<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
+								<div style="font-size: .85em; color: #333;">
 									<div>
 										<?php if ($attribute->datatype === 'file'): ?>
 										<div style="text-align: center">
@@ -69,7 +69,7 @@
 										<?php elseif ($attribute->datatype === 'text'): ?>
 										<div style="white-space: pre-wrap;"><?= $attrValue? __($attrValue->value, 200) : '<em>Undefined</em>' ?></div>
 										<?php elseif ($attribute->datatype === 'boolean'): ?>
-										<div style="white-space: pre-wrap;"><?= $attrValue->value? 'Yes' : 'No' ?></div>
+										<div><?= $attrValue->value? 'Yes' : 'No' ?></div>
 										<?php else: ?>
 										<div><?= $attrValue? __($attrValue->value, 45) : '<em>Undefined</em>' ?></div>
 										<?php endif; ?>
@@ -82,6 +82,7 @@
 								</ul>
 							</div>
 						</div>
+						<div class="spacer" style="height: 25px"></div>
 						<?php endforeach; ?>
 					</div>
 				</div>
@@ -100,7 +101,7 @@
 
 			<?php foreach ($authorized as $auth): ?>
 			<?php $app = $auth->app ?>
-			<div class="spacer" style="height: 10px"></div>
+			<div class="spacer" style="height: 15px"></div>
 			<div class="row l6 fluid has-dials">
 				<div class="span l5">
 					<img src="<?= url('image', 'app', $app->_id, 32) ?>" style="vertical-align: middle;  height: 18px;">
@@ -111,6 +112,7 @@
 				<div class="span l1 dials">
 					<ul>
 						<li><a href="<?= url('app', 'deauthorize', $app->_id) ?>">Remove</a></li>
+						<li><a href="<?= url('permissions', 'for', $app->_id) ?>">Permissions</a></li>
 					</ul>
 				</div>
 			</div>

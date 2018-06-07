@@ -1,6 +1,6 @@
-<?php
+<?php namespace cron;
 
-use spitfire\mvc\Director;
+use spitfire\exceptions\PrivateException;
 
 /* 
  * The MIT License
@@ -26,47 +26,39 @@ use spitfire\mvc\Director;
  * THE SOFTWARE.
  */
 
-class TestDirector extends Director
+class FlipFlop
 {
 	
-	/**
-	 * 
-	 * @param string $arg1
-	 * @param string $arg2
-	 * @return int
-	 */
-	public function test($arg1, $arg2) {
+	private $queue;
+	
+	public function __construct($filename) {
 		
-		$console = console();
-
-
-		$console->info('Processing...');
-		sleep(1);
-		$console->rewind()->success("Yeah! We made it")->ln();
-
-
-		$console->info('Processing again...');
-		sleep(1);
-		$console->rewind()->info('Continuing to process this very slow task...');
-		sleep(1);
-		$console->rewind()->error("Oops! DED!")->ln();
-
-		$progress = $console->progress('Downloading...');
-
-		for ($i = 0; $i < 10; $i++) {
-			$progress->progress($i/9);
-			sleep(1);
+		if (!function_exists('msg_get_queue')) {
+			throw new PrivateException('Flip-flop requires SystemV Semaphores to work', 1806061928);
 		}
-
-		$console->rewind()->success('File downloaded!')->ln();
-
-		$console->info('Checking the file\'s checksum...');
-		sleep(1);
-		$console->rewind()->error('Checksum missmatched!')->ln();
-
-		$console->success('Somewhat long success message that may get split by the terminal because it is way too long')->ln();
 		
-		return 1;
+		if (!file_exists($filename)) {
+			fclose(fopen($filename, 'w'));
+		}
+		
+		$this->queue = msg_get_queue(ftok($filename, 1));
+	}
+	
+	public function notify() {
+		$type = 0;
+		$message = '';
+		
+		msg_receive($this->queue, 0, $type, 4096, $message, true, MSG_IPC_NOWAIT);
+		msg_send($this->queue, 1, time());
+	}
+	
+	public function wait() {
+		$type = 0;
+		$message = '';
+		
+		$success = msg_receive($this->queue, 0, $type, 4096, $message, true);
+		
+		return $success? $message : false;
 	}
 	
 }

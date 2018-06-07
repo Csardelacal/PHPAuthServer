@@ -53,16 +53,49 @@ div.row {
 
 @import '_scaffolding_mobile';
 
+@media all and (max-width: $MobileBreakpoint) and (min-width: 480px){
+	.desktop-only {
+		display: none !important;
+	}
+	
+	.mobile-only {
+		display: none;
+	}
+	
+	.not-tablet {
+		display: none;
+	}
+	
+	@import '_scaffolding_tablet.scss';
+}
+
 @media all and (min-width: $MobileBreakpoint) {
 	.mobile-only {
 		display: none;
 	}
 	
+	.tablet-only {
+		display: none;
+	}
+	
+	.not-desktop {
+		display: none;
+	}
+	
+	
 	@import '_scaffolding_desktop.scss';
 }
 
-@media all and (max-width: $MobileBreakpoint) {
+@media all and (max-width: 480px) {
 	.desktop-only {
 		display: none !important;
+	}
+	
+	.tablet-only {
+		display: none;
+	}
+	
+	.not-mobile {
+		display: none;
 	}
 }

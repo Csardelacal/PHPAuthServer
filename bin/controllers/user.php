@@ -117,6 +117,7 @@ class UserController extends BaseController
 		
 		
 		$this->view->set('attributes', $attributes);
+		$this->view->set('returnto', $returnto);
 	}
 	
 	/**
@@ -230,9 +231,14 @@ class UserController extends BaseController
 	 * @return type
 	 * @throws PublicException
 	 */
-	public function recover($tokenid = null) {
+	public function recover(TokenModel$token = null) {
 		
-		$token = $tokenid? db()->table('token')->get('token', $tokenid)->fetch() : null;
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 
+			$returnto = $_GET['returnto']; 
+		}
+		else {
+			$returnto = (string)url();
+		}
 		
 		if ($token && $token->app !== null) {
 			throw new PublicException('Token level insufficient', 403);
@@ -241,7 +247,7 @@ class UserController extends BaseController
 		if ($token && $this->request->isPost() && $_POST['password'][0] === $_POST['password'][1] ) {
 			#Store the new password
 			$token->user->setPassword($_POST['password'][0])->store();
-			return $this->response->getHeaders()->redirect(new URL());
+			return $this->response->getHeaders()->redirect($returnto);
 		}
 		elseif ($token) { //The user clicked on the recovery email
 			#Let the user enter a new password
@@ -256,7 +262,7 @@ class UserController extends BaseController
 				$token = TokenModel::create(null, 1800, false);
 				$token->user = $user;
 				$token->store();
-				$url   = new AbsoluteURL('user', 'recover', $token->token);
+				$url   = url('user', 'recover', $token->token, ['returnto' => $returnto])->absolute();
 				EmailModel::queue($user->email, 'Recover your password', sprintf('Click here to recover your password: <a href="%s">%s</a>', $url, $url));
 			}
 			
@@ -267,6 +273,8 @@ class UserController extends BaseController
 			#Show instructions to recover your password
 			$this->view->set('action', 'emailform');
 		}
+		
+		$this->view->set('returnto', $returnto);
 	}
 	
 	public function activate($tokenid = null) {
