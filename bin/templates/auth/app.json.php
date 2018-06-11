@@ -1,5 +1,8 @@
 <?php
 
+$errors = ob_get_clean();
+ob_start();
+
 $payload = Array(
 	 'authenticated' => $authenticated,
 	 'grant'         => $grant,
@@ -11,6 +14,10 @@ if ($remote) {
 		'id'   => $remote->appID,
 		'name' => $remote->name
 	];
+}
+
+if (!empty($errors) && \spitfire\core\Environment::get('debug_mode')) {
+	$payload['errors'] = $errors;
 }
 
 if ($context) {

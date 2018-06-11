@@ -59,5 +59,3 @@
 		</div>
 	</div>
 </form>
-
-<div class="spacer" style="height: 250px"></div>

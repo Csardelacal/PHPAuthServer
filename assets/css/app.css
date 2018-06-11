@@ -125,7 +125,9 @@ form.regular input[type="submit"] {
     box-shadow: -2px -2px 1px #055116 inset; }
   .button.small, form.regular input.small[type="submit"] {
     padding: .35em .5em;
-    font-size: .8em; }
+    font-size: .78em; }
+  .button.secondary, form.regular input.secondary[type="submit"] {
+    color: #777; }
   .button:hover, form.regular input[type="submit"]:hover {
     color: #FFF; }
 
@@ -143,10 +145,11 @@ p {
   p.unpadded {
     margin: 0; }
   p.small {
-    font-size: .8em; }
-
-small {
-  color: #777; }
+    font-size: .78em; }
+  p.secondary {
+    color: #777; }
+    p.secondary a {
+      color: #333; }
 
 blockquote {
   margin-left: 0;
@@ -158,19 +161,26 @@ blockquote {
 
 table {
   width: 100%;
-  border: solid 1px #EEE;
   border-radius: 3px;
   border-collapse: collapse;
   font-size: .85em; }
   table thead tr {
-    background: #E4E4E4; }
+    box-shadow: 1px 1px 2px #CCC; }
+    table thead tr th {
+      border-bottom: solid 1px #AAA;
+      background: #888;
+      color: #FFF; }
+      table thead tr th:first-child {
+        border-radius: 2px 0px 0 0; }
+      table thead tr th:last-child {
+        border-radius: 0px 2px 0 0; }
   table tr {
     background: #FFF;
-    border-top: solid 1px #DDD; }
+    border-top: solid 1px #EEE; }
   table tr:first-child {
     border-top: none; }
   table tr:nth-child(2n) {
-    background: #F5F5F5; }
+    background: #FAFAFA; }
   table td, table th {
     margin: 0;
     padding: 8px 20px; }
@@ -238,45 +248,44 @@ footer {
   .login-logo img {
     max-width: 500px; }
 
-.user-icon {
-  border-radius: 50%;
-  display: inline-block;
-  vertical-align: middle;
-  border: solid 2px #FFF; }
-  .user-icon.extra-small {
-    width: 24px;
-    height: 24px; }
-  .user-icon.small {
-    width: 32px;
-    height: 32px; }
-  .user-icon.medium {
-    width: 64px;
-    height: 64px; }
-  .user-icon.big {
-    width: 128px;
-    height: 128px; }
-  .user-icon.huge {
-    width: 256px;
-    height: 256px; }
-  .user-icon.full-width {
-    max-width: 100%; }
-  .user-icon.square {
-    border-radius: 10px; }
+.extra-small.user-icon, .extra-small.app-icon {
+  width: 24px;
+  height: 24px; }
+.small.user-icon, .small.app-icon {
+  width: 32px;
+  height: 32px; }
+.medium.user-icon, .medium.app-icon {
+  width: 64px;
+  height: 64px; }
+.big.user-icon, .big.app-icon {
+  width: 128px;
+  height: 128px; }
+.huge.user-icon, .huge.app-icon {
+  width: 256px;
+  height: 256px; }
+.full-width.user-icon, .full-width.app-icon {
+  max-width: 100%; }
 
 .user-name {
   vertical-align: middle;
   display: inline-block;
   font-size: 1.2em;
-  color: #333; }
+  color: #333;
+  text-decoration: none; }
 
-.edit {
+.user-icon {
+  border-radius: 50%;
   display: inline-block;
-  margin-left: 5px;
-  opacity: .7; }
-  .edit:hover {
-    opacity: 1; }
-  .edit img {
-    height: 15px; }
+  vertical-align: middle;
+  border: solid 2px #FFF; }
+  .user-icon.square {
+    border-radius: 10px; }
+
+.app-icon {
+  border-radius: 3px;
+  border-radius: 3px;
+  box-shadow: 0 0 2px #CCC;
+  vertical-align: middle; }
 
 .validation-errors {
   color: #900;
@@ -1292,7 +1301,8 @@ Contains the code needed to create a tabbed area to ease filtered navigation.
     list-style-type: none; }
   .dials a {
     display: inline-block;
-    padding: 2px; }
+    padding: 2px;
+    text-decoration: none; }
   .dials a:hover {
     background: #EEE; }
 
