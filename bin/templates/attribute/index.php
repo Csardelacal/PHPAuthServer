@@ -11,7 +11,7 @@
 
 <div class="row1">
 	<div class="span1" style="text-align: right">
-		<a class="button" href="<?= new URL('attribute', 'create') ?>">Create Attribute</a>
+		<a class="button" href="<?= url('attribute', 'create') ?>">Create Attribute</a>
 	</div>
 </div>
 
@@ -29,7 +29,7 @@
 			<?php foreach($attributes as $attr): ?>
 			<tr>
 				<td><?= $attr->name ?><?= $attr->required? ' (Required)' : '' ?></td>
-				<td><a href="<?= new URL('attribute', 'edit', $attr->_id) ?>">Edit</a></td>
+				<td><a href="<?= url('attribute', 'edit', $attr->_id) ?>">Edit</a></td>
 			</tr>
 			<?php endforeach; ?>
 		</table>

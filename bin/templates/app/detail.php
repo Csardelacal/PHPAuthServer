@@ -209,7 +209,7 @@
 
 <div class="spacer" style="height: 20px"></div>
 
-<?php $contexts = db()->table('connection\context')->get('app', $app)->addRestriction('expires', time(), '>')->fetchAll(); ?>
+<?php $contexts = db()->table('connection\context')->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup()->fetchAll(); ?>
 <?php foreach ($contexts as $context): ?>
 <div class="row5 fluid has-dials">
 	<div class="span4">

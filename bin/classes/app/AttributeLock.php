@@ -31,8 +31,10 @@ use UserModel;
 class AttributeLock
 {
 	
+	const MODE_N = 0x00;
 	const MODE_R = 0x10;
 	const MODE_W = 0x20;
+	const MODE_RW = 0x30;
 	
 	/**
 	 *
@@ -56,12 +58,12 @@ class AttributeLock
 		
 		$q->group()->where('user', $this->user)->where('user', null);
 		
-		return $q->all()->reduce(function ($c, $i) use ($mode) { 
+		return !!$q->all()->reduce(function ($carry, $i) use ($mode) { 
 			/*
 			 * The user setting will override any previously set state. App based 
-			 * rules will override the standard PENDING setting
+			 * rules will override the standard setting
 			 */
-			return $c === null || $i->user? $i->grant & $mode : $c;
+			return $carry === null || $i->user? $i->grant & $mode : $carry;
 		}, null)? : $this->def($mode);
 	}
 	

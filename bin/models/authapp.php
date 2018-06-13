@@ -42,12 +42,6 @@ class AuthAppModel extends Model
 	
 	public function canAccess($app, $user = null, $context = null) {
 		
-		if (is_array($context)) {
-			return collect($context)->reduce(function ($p, $e) use ($app, $user) {
-				return min($p, $this->canAccess($app, $user, $e));
-			}, 2);
-		}
-		
 		$db = $this->getTable()->getDb();
 		$q  = $db->table('connection\auth')->getAll();
 		
@@ -72,8 +66,8 @@ class AuthAppModel extends Model
 	}
 	
 	public function getContext($context) {
-		if (is_array($context) || $context instanceof Get) {
-			return collect($context instanceof Get? $context->getRaw() : $context)->each(function ($e) { return $this->getContext($e); });
+		if (!is_string($context)) {
+			throw new InvalidArgumentException('Context must be string', 1806130942);
 		}
 		
 		$db = $this->getTable()->getDb();

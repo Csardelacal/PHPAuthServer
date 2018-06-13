@@ -36,8 +36,63 @@ a img {
   border: none; }
 
 h1 {
-  font-size: 22px;
-  color: #222; }
+  font-size: 20px;
+  color: #2a912e;
+  font-weight: normal;
+  background: #FAFAFA; }
+  h1.unpadded {
+    margin: 0;
+    padding: 0; }
+
+h2 {
+  color: #353535;
+  font-size: 18px; }
+
+p {
+  color: #555;
+  line-height: 1.6em; }
+  p.unpadded {
+    margin: 0; }
+  p.small {
+    font-size: .78em; }
+  p.secondary {
+    color: #777; }
+    p.secondary a {
+      color: #333; }
+
+blockquote {
+  margin-left: 0;
+  padding: 15px 5px 15px 15px;
+  border-left: solid 3px #AAA;
+  background: #F9F9F9;
+  color: #555;
+  font-size: .9em; }
+
+table {
+  width: 100%;
+  border-radius: 3px;
+  border-collapse: collapse;
+  font-size: .85em; }
+  table thead tr {
+    box-shadow: 1px 1px 2px #CCC; }
+    table thead tr th {
+      border-bottom: solid 1px #AAA;
+      background: #888;
+      color: #FFF; }
+      table thead tr th:first-child {
+        border-radius: 2px 0px 0 0; }
+      table thead tr th:last-child {
+        border-radius: 0px 2px 0 0; }
+  table tr {
+    background: #FFF;
+    border-top: solid 1px #EEE; }
+  table tr:first-child {
+    border-top: none; }
+  table tr:nth-child(2n) {
+    background: #FAFAFA; }
+  table td, table th {
+    margin: 0;
+    padding: 8px 20px; }
 
 form.regular .field {
   display: block;
@@ -130,60 +185,6 @@ form.regular input[type="submit"] {
     color: #777; }
   .button:hover, form.regular input[type="submit"]:hover {
     color: #FFF; }
-
-h1 {
-  color: #282828;
-  margin: 3px 0; }
-
-h2 {
-  color: #353535;
-  font-size: 18px; }
-
-p {
-  color: #555;
-  line-height: 1.6em; }
-  p.unpadded {
-    margin: 0; }
-  p.small {
-    font-size: .78em; }
-  p.secondary {
-    color: #777; }
-    p.secondary a {
-      color: #333; }
-
-blockquote {
-  margin-left: 0;
-  padding: 15px 5px 15px 15px;
-  border-left: solid 3px #AAA;
-  background: #F9F9F9;
-  color: #555;
-  font-size: .9em; }
-
-table {
-  width: 100%;
-  border-radius: 3px;
-  border-collapse: collapse;
-  font-size: .85em; }
-  table thead tr {
-    box-shadow: 1px 1px 2px #CCC; }
-    table thead tr th {
-      border-bottom: solid 1px #AAA;
-      background: #888;
-      color: #FFF; }
-      table thead tr th:first-child {
-        border-radius: 2px 0px 0 0; }
-      table thead tr th:last-child {
-        border-radius: 0px 2px 0 0; }
-  table tr {
-    background: #FFF;
-    border-top: solid 1px #EEE; }
-  table tr:first-child {
-    border-top: none; }
-  table tr:nth-child(2n) {
-    background: #FAFAFA; }
-  table td, table th {
-    margin: 0;
-    padding: 8px 20px; }
 
 .menubar {
   background: #FEFEFE;
@@ -281,11 +282,20 @@ footer {
   .user-icon.square {
     border-radius: 10px; }
 
+.app-name {
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 1.2em;
+  color: #333;
+  text-decoration: none; }
+
 .app-icon {
   border-radius: 3px;
   border-radius: 3px;
   box-shadow: 0 0 2px #CCC;
   vertical-align: middle; }
+  .app-icon + .app-name {
+    margin-left: .4em; }
 
 .validation-errors {
   color: #900;
@@ -844,6 +854,157 @@ and open the template in the editor.
     Created on : Oct 10, 2017, 11:59:43 AM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : 21.03.2018, 15:18:50
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.has-dropdown {
+  position: relative; }
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: -20px;
+  width: 100%;
+  min-width: 300px;
+  margin-top: 20px;
+  background: #FFF;
+  border: solid 1px #CCC;
+  border-radius: 3px;
+  padding: 5px;
+  z-index: 99999999999;
+  padding: 10px; }
+  .dropdown:before, .dropdown:after {
+    content: '';
+    height: 10px;
+    width: 10px;
+    display: block;
+    position: absolute;
+    bottom: 100%; }
+  .dropdown:before {
+    left: 20px;
+    background-image: linear-gradient(-225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px); }
+  .dropdown:after {
+    left: 30px;
+    background-image: linear-gradient(225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px); }
+  .dropdown.right-bound {
+    right: -20px;
+    left: auto; }
+    .dropdown.right-bound:before {
+      left: auto;
+      right: 30px; }
+    .dropdown.right-bound:after {
+      left: auto;
+      right: 20px; }
+  .dropdown.unpadded {
+    padding: 0; }
+  .dropdown .padded {
+    padding: 5px; }
+
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : 21.03.2018, 14:52:40
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.app-switcher.toggle {
+  vertical-align: middle;
+  background-color: #777;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background-image: linear-gradient(0deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px), linear-gradient(90deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px); }
+
+.app-drawer {
+  text-align: left; }
+  .app-drawer .app-entry {
+    padding: 10px;
+    border-radius: 3px;
+    border: solid 1px transparent;
+    background-color: transparent;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    transition: border .15s ease-in, background-color .15s ease-in; }
+    .app-drawer .app-entry:hover {
+      background-color: #EAEAEA;
+      border: solid 1px #BBB;
+      box-shadow: 1px 1px 3px #DDD inset; }
+  .app-drawer .app-icon-drawer {
+    margin: 0 auto;
+    width: 90%;
+    height: auto;
+    display: block; }
+  .app-drawer .app-name-drawer {
+    text-align: center;
+    display: block;
+    font-size: .75em;
+    color: #777;
+    margin-top: .4em;
+    line-height: 1.2em;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  .app-drawer .footer {
+    background: #DDD;
+    text-align: center;
+    display: block;
+    padding: 10px 15px;
+    color: #888;
+    font-weight: bold;
+    font-size: .8em;
+    background-image: linear-gradient(180deg, #CCC 0px, transparent 3px); }
+    .app-drawer .footer:hover {
+      color: #777;
+      background-color: #CCC; }
+
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates

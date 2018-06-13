@@ -1,7 +1,9 @@
 <?php
 
 use connection\ContextModel;
+use signature\Signature;
 use spitfire\exceptions\PublicException;
+use spitfire\storage\database\pagination\Paginator;
 
 /* 
  * The MIT License
@@ -30,52 +32,36 @@ use spitfire\exceptions\PublicException;
 class ContextController extends BaseController
 {
 	
-	public function index($appid) {
+	public function index(AuthAppModel$app = null) {
+		if ($app === null) {
+			$app = $this->authapp;
+		}
 		
+		if ($app === null) {
+			throw new PublicException('No application found');
+		}
+		
+		$query = db()->table('connection\context')->get('app', $app)->where('expires', '>', time());
+		$pagination = new Paginator($query);
+		
+		$this->view->set('records', $pagination->records());
+		$this->view->set('pag', $pagination);
 	}
 	
 	public function create() {
 		/*
-		 * Get the signature and the context that the application is pretending 
-		 * to create.
+		 * Get the context that the application is pretending to create.
 		 */
-		$signature = isset($_GET['signature'])? $_GET['signature'] : '';
 		$context   = isset($_GET['context'])? $_GET['context'] : null;
 		
-		/*
-		 * Extract the appropriate information from the signature. Signatures often
-		 * contain more data than necessary.
-		 */
-		list($algo, $src, $target, $ignore, $salt, $hash) = Signature::extract($signature);
-		
-		/*
-		 * Get the application's secret. This will help us verify whether the 
-		 * application is actually itself.
-		 */
-		$app = db()->table('authapp')->get('appID', $src)->fetch();
-		$calculated = new Signature($algo, $src, $app->appSecret);
-		
-		/*
-		 * Signatures can define a target. Target enriched signatures are rejected,
-		 * since they are transmitted to third parties to authenticate the app
-		 * against those third parties.
-		 */
-		if ($target) {
-			throw new PublicException('This endpoint does not accept targets', 400);
-		}
-		
-		/*
-		 * Check the signature to ensure that the application is identifying itself
-		 * properly.
-		 */
-		if (!$calculated->salt($salt)->verify($hash)) {
-			throw new PublicException('Invalid signature', 403);
+		if (!$this->authapp && !$this->isAdmin) {
+			throw new PublicException('Application or administrative authentication required for this endpoint', 401);
 		}
 		
 		/*@var $record ContextModel*/
 		$record = db()->table('connection\context')->newRecord();
 		$record->ctx     = $context;
-		$record->app     = $app;
+		$record->app     = $this->authapp;
 		$record->title   = _def($_POST['name'], 'Unnamed context');
 		$record->descr   = _def($_POST['description'], 'Missing description');
 		$record->expires = _def($_POST['expires'], 86400 * 90) + time();

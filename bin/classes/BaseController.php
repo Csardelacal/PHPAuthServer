@@ -10,6 +10,13 @@ abstract class BaseController extends Controller
 	protected $token = null;
 	protected $isAdmin = false;
 	
+	/**
+	 *
+	 * @var \signature\Helper
+	 */
+	protected $signature;
+	protected $authapp;
+	
 	public function _onload() {
 		
 		#Get the user session, if no session is given - we skip all of the processing
@@ -18,25 +25,39 @@ abstract class BaseController extends Controller
 		$u = $s->getUser();
 		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
 		
-		if (!$u && !$t) { return; }
+		if ($u || $t) { 
 		
-		#Export the user to the controllers that may need it.
-		$user = $u? db()->table('user')->get('_id', $u)->fetch() : $t->user;
-		$this->user  = $user;
-		$this->token = $t;
-		
-		try {
-			#Check if the user is an administrator
-			$admingroupid = SysSettingModel::getValue('admin.group');
-			$isAdmin      = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
+			#Export the user to the controllers that may need it.
+			$user = $u? db()->table('user')->get('_id', $u)->fetch() : $t->user;
+			$this->user  = $user;
+			$this->token = $t;
+
+			try {
+				#Check if the user is an administrator
+				$admingroupid = SysSettingModel::getValue('admin.group');
+				$isAdmin      = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
+			}
+			catch (PrivateException$e) {
+				$admingroupid = null;
+				$isAdmin      = false;
+			}
 		}
-		catch (PrivateException$e) {
-			$admingroupid = null;
-			$isAdmin      = false;
+		
+		$this->signature = new \signature\Helper(db());
+		
+		if (isset($_GET['signature']) && is_string($_GET['signature'])) {
+			list($signature, $src, $target) = $this->signature->verify();
+			
+			if ($target) {
+				throw new PublicException('_GET[signature] must not have remotes', 401);
+			}
+			
+			$this->authapp = $src;
 		}
 		
 		$this->isAdmin = $isAdmin;
 		$this->view->set('authUser', $this->user);
+		$this->view->set('authApp',  $this->app);
 		$this->view->set('userIsAdmin', $isAdmin);
 		$this->view->set('administrativeGroup', $admingroupid);
 	}

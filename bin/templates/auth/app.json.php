@@ -22,10 +22,10 @@ if (!empty($errors) && \spitfire\core\Environment::get('debug_mode')) {
 
 if ($context) {
 	$collect = $context instanceof spitfire\core\Collection? $context : collect($context);
-	$payload['context'] = $collect->each(function (\auth\Context$c) use ($src, $remote, $token) { 
+	$payload['context'] = $collect->each(function (\auth\Context$c) use ($grant) { 
 		return [
 			'undefined'   => !$c->getDefined(),
-			'granted'     => $src->canAccess($remote, $token->user, $c->getId()),
+			'granted'     => $grant[$c->getId()],
 			'id'          => $c->getId(),
 			'name'        => $c->getName(),
 			'description' => $c->getDescription(),
@@ -34,10 +34,7 @@ if ($context) {
 	})->toArray();
 } 
 elseif ($remote) {
-	$payload['context'] = [
-		'undefined' => true,
-		'id'        => null
-	];
+	$payload['context'] = [];
 }
 
 $payload['token']    = $token->token;

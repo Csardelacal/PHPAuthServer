@@ -1,6 +1,5 @@
 
 body {
-	position: relative;
 	overflow-x: hidden;
 }
 
@@ -16,7 +15,6 @@ body {
 	left: 0;
 	height: 100%;
 	width:  100%;
-	transition: left .2s ease-in;
 	
 	.menu-title {
 		color: #2a912e;
@@ -84,7 +82,6 @@ body {
 	vertical-align: top;
 	position: relative;
 	z-index: 99999;
-	transition: .2s opacity .3s ease-in, .2s width .3s ease-in;
 	overflow-x: hidden;
 
 
@@ -98,7 +95,6 @@ body {
 	display: inline-block;
 	width: 100%;
 	vertical-align: top;
-	transition: .2s width .3s ease-in;
 	white-space: normal;
 	
 	/* 12.03.2018
@@ -121,7 +117,6 @@ body {
 	position: fixed;
 	overflow: hidden;
 	opacity: 0;
-	transition: opacity .2s ease-in;
 	width: 100%;
 	opacity: 1;
 
@@ -139,5 +134,32 @@ body {
 			left: -240px;
 			box-shadow: none;
 		}
+	}
+}
+
+@media all and (max-width: 1160px) {
+	.contains-sidebar:not(.floating):not(.persistent) {
+		display: none;
+	}
+}
+
+@media all and (min-width: 1160px) {
+	.contains-sidebar:not(.floating):not(.persistent) {
+		display: inline-block;
+		width: 200px;
+		
+		&+.content {
+			width: calc(100% - 200px);
+		}
+		
+		.sidebar {
+			position: static;
+		}
+	}
+}
+
+@media handheld {
+	.sidebar {
+		overflow: auto;
 	}
 }

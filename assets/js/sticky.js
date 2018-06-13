@@ -23,6 +23,13 @@
  */
 
 
+/**
+ * 
+ * @todo This code is a major mess, but it seems to work reliably enough for now.
+ *       Needs refactoring.
+ * 
+ * @returns {undefined}
+ */
 (function () {
 	
 	"use strict";
@@ -47,21 +54,27 @@
 					if (html) {
 						html.style    = null;
 						wrapper.style = null;
+						
+						wrapper.style.display = 'inline-block';
+						wrapper.style.width   = '100%';
+						console.log(wrapper.style);
 					}
 					
 					wrapper = c.getHTML();
 					html = wrapper.firstChild;
 					
-					c.getHTML().style.display   = 'block';
-					c.getHTML().style.height    = c.getBoundaries().getH() + 'px';
-					c.getHTML().style.width     = c.getBoundaries().getW() + 'px';
+					c.getHTML().style.display = 'inline-block';
+					c.getHTML().style.height  = c.getBoundaries().getH() + 'px';
+					c.getHTML().style.width   = c.getBoundaries().getW() + 'px';
 					
 					html.style.position  = 'fixed';
+					html.style.display   = 'inline-block';
 					html.style[position] = '0';
 					html.style.height    = c.getBoundaries().getH() + 'px';
 					html.style.width     = c.getBoundaries().getW() + 'px';
 					html.style.zIndex    = 5;
 					html.style.background = ctx.getBackground();
+					
 				}
 				
 				if (position === 'top') {
@@ -81,8 +94,15 @@
 				}
 			}
 			else if (html){
+				/*
+				 * No new element is found, we can therefore replace the original styles
+				 * to the wrappers and unset them.
+				 */
 				html.style    = null;
 				wrapper.style = null;
+				
+				wrapper.style.display = 'inline-block';
+				wrapper.style.width   = '100%';
 				
 				child = undefined;
 				html  = undefined;
@@ -143,6 +163,11 @@
 	};
 	
 	var Element = function (original) {
+		/*
+		 * These lines prevent the system from collapsing the borders.
+		 */
+		original.style.display = 'inline-block';
+		original.style.width   = '100%';
 		
 		this.getBoundaries = debounce(function () { 
 			var box = original.getBoundingClientRect();

@@ -1,5 +1,6 @@
 <?php namespace app;
 
+use UserModel;
 use AuthAppModel;
 use connection\AuthModel;
 

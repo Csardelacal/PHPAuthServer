@@ -145,52 +145,42 @@ class AuthController extends BaseController
 		
 			$app = db()->table('authapp')->get('appID', $appId)->addRestriction('appSecret', $appSec)->fetch();
 			$this->view->set('authenticated', !!$app);
+			$this->view->set('grant', true);
 		}
 		else {
-			$signature = isset($_GET['signature'])? $_GET['signature'] : '';
-			$context   = isset($_GET['context'])?   $_GET['context']   : null;
+			$remote  = isset($_GET['remote'])? $this->signature->verify($_GET['remote']) : null;
+			$context = isset($_GET['context'])? $_GET->array('context') : null;
 			
-			$extracted = $this->signature->extract($signature);
-			
-			if ($extracted->getTarget()) {
-				$remote = db()->table('authapp')->get('appID', $extracted->getTarget())->fetch();
-				if(!$remote) { throw new PublicException('No remote found', 404); }
+			if ($remote) {
+				list($sig, $src, $tgt) = $remote;
+				
+				if (!$tgt || $tgt->appID != $this->authapp->appID) {
+					throw new PublicException('Invalid remote signature. Target did not authorize itself properly', 401);
+				}
+				
+				if ($sig->getContext()) {
+					throw new PublicException('Invalid signature. Context should be provided via _GET', 400);
+				}
+				
+				$contexts = [];
+				$grant    = ['_' => $tgt->canAccess($src, $this->token? $this->token->user : null)];
+				
+				foreach ($context as $ctx) {
+					$contexts[]  = $tgt->getContext($ctx);
+					$grant[$ctx] = $tgt->canAccess($src, $this->token? $this->token->user : null, $ctx);
+				}
+				
+				$this->view->set('context', $contexts);
+				$this->view->set('grant', $grant);
+			}
+			else {
+				$this->view->set('context', null);
 			}
 			
-			$app = db()->table('authapp')->get('appID', $extracted->getSrc())->fetch();
-			
-			/*
-			 * Reconstruct the original signature with the data we have about the 
-			 * source application to verify whether the apps are the same, and
-			 * should therefore be granted access.
-			 */
-			$check = new Signature($extracted->getAlgo(), $app->appID, $app->appSecret, $extracted->getTarget(), null, $extracted->getSalt());
-			
-			if (!$check->checksum()->verify($extracted->checksum())) {
-				throw new PublicException('Invalid signature', 403);
-			}
-			
-			/*
-			 * This endpoint requires signatures to be unexpired. The server issuing
-			 * the signature can freely decide how long they want the signature to
-			 * be valid.
-			 * 
-			 * It is unlikely that the system could be man-in-the-middle attacked,
-			 * but it is possible that a signature may leak during a server error
-			 * or due to human error. In this case, an expiry of 5 minutes gives 
-			 * most servers ample time to process the request but an attacker will
-			 * have a hard time forging an attack that will be effective.
-			 */
-			if ($extracted->isExpired()) {
-				throw new PublicException('Signature is expired. Please renew.', 403);
-			}
-			
-			$this->view->set('authenticated', !!$app);
-			$this->view->set('src', $app);
-			$this->view->set('remote', $remote);
+			$this->view->set('authenticated', !!$this->authapp);
+			$this->view->set('src', $this->authapp);
+			$this->view->set('remote', $src);
 			$this->view->set('token', $this->token);
-			$this->view->set('grant', $remote? $app->canAccess($remote, $this->token? $this->token->user : null, $context) : null);
-			$this->view->set('context', $remote && $context? $remote->getContext($context) : null);
 		}
 		
 	}
@@ -198,7 +188,7 @@ class AuthController extends BaseController
 	/**
 	 * 
 	 * @validate GET#signature (required)
-	 * @param boolean $confirm
+	 * @param string $confirm
 	 * @throws PublicException
 	 * @layout minimal.php
 	 */
@@ -226,7 +216,7 @@ class AuthController extends BaseController
 		 * to provide several signatures, it also makes it way more flexible for 
 		 * the receiving application to select which permissions it wishes to request.
 		 */
-		$signatures = collect($_GET['signature'])->each(function ($e) { 
+		$signatures = collect($_GET['signature']->getRaw())->each(function ($e) { 
 			list($signature, $src, $tgt) = $this->signature->verify($e);
 			
 			/*
@@ -234,7 +224,7 @@ class AuthController extends BaseController
 			 * the target was already blocked by the system from accessing data
 			 * on the source application.
 			 */
-			$lock = new AuthLock($src, $this->user, $e->getContext()[0]);
+			$lock = new AuthLock($src, $this->user, $signature->getContext()[0]);
 			$granted = $lock->unlock($tgt);
 			
 			/*
@@ -254,13 +244,13 @@ class AuthController extends BaseController
 			}
 			
 			return $signature;
-		});
+		})->filter();
 		
 		$src = db()->table('authapp')->get('appID', $signatures->rewind()->getSrc())->first(true);
 		$tgt = db()->table('authapp')->get('appID', $signatures->rewind()->getTarget())->first(true);
 		
 		$singlesource = $signatures->reduce(function ($c, Signature$e) use($src, $tgt) { 
-			return $c && $e->getTarget() === $tgt && $e->getSrc() === $src; 
+			return $c && $e->getTarget() === $tgt->appID && $e->getSrc() === $src->appID; 
 		}, true);
 		
 		if (!$singlesource) {
@@ -303,8 +293,14 @@ class AuthController extends BaseController
 			}
 		}
 		
-		$this->view->set('src', $src);
-		$this->view->set('tgt', $tgt);
+		$this->view->set('ctx', $signatures->each(function (Signature$e) {
+			return $e->getContext()[0];
+		})->each(function ($e) use ($src) {
+			return $e? $src->getContext($e) : null;
+		})->filter());
+		
+		$this->view->set('src', $tgt);
+		$this->view->set('tgt', $src);
 		$this->view->set('signatures', $signatures);
 		$this->view->set('confirm', $xsrf->getValue());
 		

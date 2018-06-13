@@ -1,5 +1,5 @@
 
-<div class="spacer" style="height: 50px"></div>
+<div class="spacer" style="height: 20px"></div>
 
 <?php if (isset($_GET['message']) && in_array($_GET['message'], array('success','deleted'))): ?>
 <div class="message success">
@@ -30,8 +30,8 @@
 				<?php foreach ($pagination->records() as $app): ?>
 				<tr>
 					<td>
-						<img src="<?= url('image', 'app', $app->_id) ?>" class="app-icon small">
-						<?=  $app->name ?>
+						<img src="<?= url('image', 'app', $app->_id) ?>" width="32" height="32" class="app-icon small">
+						<span class="app-name"><?=  $app->name ?></span>
 					</td>
 					<td><a href="<?= url('app', 'detail', $app->_id) ?>">Details</a></td>
 				</tr>

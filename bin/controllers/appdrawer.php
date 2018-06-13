@@ -24,9 +24,12 @@
  * THE SOFTWARE.
  */
 
-if (\spitfire\core\Environment::get('debug_mode')) {
-	echo json_encode(['error' => $code, 'msg' => $message, 'trace' => $exception->getTraceAsString(), 'debug' => spitfire()->getMessages()]);
-} 
-else {
-	echo json_encode(['error' => $code, 'msg' => $message]);
+class AppdrawerController extends BaseController
+{
+	
+	public function index() {
+		$apps = db()->table('authapp')->get('drawer', true)->all();
+		$this->view->set('apps', $apps);
+	}
+	
 }

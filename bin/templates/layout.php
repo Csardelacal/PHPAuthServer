@@ -11,6 +11,27 @@
 		</script>
 	</head>
 	<body>
+		<script>
+		/*
+		 * This little script prevents an annoying flickering effect when the layout
+		 * is being composited. Basically, since we layout part of the page with JS,
+		 * when the browser gets to the JS part it will discard everything it rendered
+		 * to this point and reflow.
+		 * 
+		 * Since the reflow MUST happen in order to render the layout, we can tell 
+		 * the browser to not render the layout at all. This will prevent the layout
+		 * from shift around before the user had the opportunity to click on it.
+		 * 
+		 * If, for some reason the layout was unable to start up within 500ms, we 
+		 * let the browser render the page. Risking that the browser may need to 
+		 * reflow once the layout is ready
+		 */
+		(function() {
+			document.body.style.display = 'none';
+			document.addEventListener('DOMContentLoaded', function () { document.body.style.display = null; }, false);
+			setTimeout(function () { document.body.style.display = null; }, 500);
+		}());
+		</script>
 		
 		<div class="navbar">
 			<div class="left">
@@ -19,7 +40,13 @@
 			</div>
 			<div class="right">
 				<?php if(isset($authUser)): ?>
-				<a href="<?= url('user', 'logout') ?>">Logout</a>
+				<div class="has-dropdown" style="display: inline-block">
+					<span class="app-switcher toggle" data-toggle="app-drawer"></span>
+					<div class="dropdown right-bound unpadded" data-dropdown="app-drawer">
+						<div class="app-drawer" id="app-drawer"></div>
+					</div>
+				</div>
+				<span class="h-spacer" style="display: inline-block; width: 20px;"></span>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -46,7 +73,6 @@
 					<!--APPLICATIONS-->
 					<div class="menu-entry"><a href="<?= url('app') ?>"  >App administration</a></div>
 					<div class="indented">
-						<div class="menu-entry"><a href="<?= url('context') ?>">Contexts</a></div>
 						<div class="menu-entry"><a href="<?= url('connect') ?>">Connections</a></div>
 						<div class="menu-entry"><a href="<?= url('grant')   ?>">Grants</a></div>
 					</div>
@@ -96,20 +122,34 @@
 		</footer>
 		
 		<script type="text/javascript">
-		(function () {
+		document.addEventListener('DOMContentLoaded', function () {
 			var ae = document.querySelector('.auto-extend');
 			var wh = window.innerheight || document.documentElement.clientHeight;
 			var dh = document.body.clientHeight;
 			
 			ae.style.minHeight = Math.max(ae.clientHeight + (wh - dh), 0) + 'px';
+		});
+		</script>
+		
+		<!--Import depend.js -->
+		<script src="<?= spitfire\core\http\URL::asset('js/depend.js') ?>" type="text/javascript"></script>
+		<script type="text/javascript">
+		(function () {
+			window.depend.setBaseURL('<?= \spitfire\SpitFire::baseUrl() . '/' . ASSET_DIRECTORY . '/js/' ?>');
+			
+			depend(['ui/dropdown'], function (dropdown) {
+				dropdown('.app-switcher');
+			});
 		}());
 		</script>
 		
 		<!--Cron scheduler-->
 		<script type="text/javascript" src="<?= url('cron') ?>" async="true"></script>
-		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui-layout.js') ?>" async="true"></script>
+		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui-layout.js') ?>"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/sticky.js') ?>"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/dials.js') ?>" async="true"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui/form/styledElements.js') ?>" async="true"></script>
+		
+		<script type="text/javascript" src="<?= url('appdrawer')->setExtension('js'); ?>"></script>
 	</body>
 </html>

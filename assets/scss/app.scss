@@ -48,8 +48,93 @@ a img {
 }
 
 h1 {
-	font-size: 22px;
-	color:     #222;
+	font-size: 20px;
+	color:  #2a912e;
+	font-weight: normal;
+	background: #FAFAFA;
+	
+	&.unpadded {
+		margin: 0;
+		padding: 0;
+	}
+}
+
+h2 {
+	color: #353535;
+	font-size: 18px;
+}
+
+p {
+	color: #555;
+	line-height: 1.6em;
+	
+	&.unpadded {
+		margin: 0;
+	}
+	
+	&.small {
+		font-size: .78em;
+	}
+	
+	&.secondary {
+		color: #777; 
+		
+		a {
+			color: #333;
+		}
+	}
+}
+
+blockquote {
+	margin-left :                  0;
+	padding:      15px 5px 15px 15px;
+	border-left :     solid 3px #AAA;
+	background:              #F9F9F9;
+	color:                      #555;
+	font-size:                  .9em;
+}
+
+table {
+	width: 100%;
+	border-radius:        3px;
+	border-collapse: collapse;
+	font-size:          .85em;
+	
+	thead tr {
+		box-shadow: 1px 1px 2px #CCC;
+		
+		th {
+			border-bottom: solid 1px #AAA;
+			background: #888;
+			color: #FFF;
+			
+			&:first-child {
+				border-radius: 2px 0px 0 0;
+			}
+			
+			&:last-child {
+				border-radius: 0px 2px 0 0;
+			}
+		}
+	}
+	
+	tr {
+		background: #FFF;
+		border-top: solid 1px #EEE;
+	}
+	
+	tr:first-child {
+		border-top: none;
+	}
+	
+	tr:nth-child(2n) {
+		background: #FAFAFA;
+	}
+	
+	td, th {
+		margin: 0;
+		padding: 8px 20px;
+	}
 }
 
 form.regular {
@@ -176,89 +261,6 @@ form.regular {
 	
 	&:hover {
 		color: #FFF;
-	}
-}
-
-h1 {
-	color: #282828;
-	margin: 3px 0;
-}
-
-h2 {
-	color: #353535;
-	font-size: 18px;
-}
-
-p {
-	color: #555;
-	line-height: 1.6em;
-	
-	&.unpadded {
-		margin: 0;
-	}
-	
-	&.small {
-		font-size: .78em;
-	}
-	
-	&.secondary {
-		color: #777; 
-		
-		a {
-			color: #333;
-		}
-	}
-}
-
-blockquote {
-	margin-left :                  0;
-	padding:      15px 5px 15px 15px;
-	border-left :     solid 3px #AAA;
-	background:              #F9F9F9;
-	color:                      #555;
-	font-size:                  .9em;
-}
-
-table {
-	width: 100%;
-	border-radius:        3px;
-	border-collapse: collapse;
-	font-size:          .85em;
-	
-	thead tr {
-		box-shadow: 1px 1px 2px #CCC;
-		
-		th {
-			border-bottom: solid 1px #AAA;
-			background: #888;
-			color: #FFF;
-			
-			&:first-child {
-				border-radius: 2px 0px 0 0;
-			}
-			
-			&:last-child {
-				border-radius: 0px 2px 0 0;
-			}
-		}
-	}
-	
-	tr {
-		background: #FFF;
-		border-top: solid 1px #EEE;
-	}
-	
-	tr:first-child {
-		border-top: none;
-	}
-	
-	tr:nth-child(2n) {
-		background: #FAFAFA;
-	}
-	
-	td, th {
-		margin: 0;
-		padding: 8px 20px;
 	}
 }
 
@@ -402,6 +404,14 @@ footer {
 	}
 }
 
+.app-name {
+	vertical-align: middle;
+	display: inline-block;
+	font-size: 1.2em;
+	color: #333;
+	text-decoration: none;
+}
+
 .app-icon {
 	border-radius: 3px;
 	border-radius: 3px;
@@ -409,6 +419,10 @@ footer {
 	vertical-align: middle;
 	
 	@extend %icon-sizing;
+	
+	&+.app-name {
+		margin-left: .4em;
+	}
 }
 
 .validation-errors

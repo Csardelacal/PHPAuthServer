@@ -1,4 +1,6 @@
-<?php
+<?php namespace cron;
+
+use spitfire\exceptions\PrivateException;
 
 /* 
  * The MIT License
@@ -24,9 +26,18 @@
  * THE SOFTWARE.
  */
 
-if (\spitfire\core\Environment::get('debug_mode')) {
-	echo json_encode(['error' => $code, 'msg' => $message, 'trace' => $exception->getTraceAsString(), 'debug' => spitfire()->getMessages()]);
-} 
-else {
-	echo json_encode(['error' => $code, 'msg' => $message]);
+class TimerFlipFlop
+{
+	public function __construct($filename) {
+	}
+	
+	public function notify() {
+		//Not applicable. This does not work here
+	}
+	
+	public function wait() {
+		sleep(30);
+		return true;
+	}
+	
 }

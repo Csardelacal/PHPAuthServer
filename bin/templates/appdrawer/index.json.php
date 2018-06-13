@@ -24,9 +24,17 @@
  * THE SOFTWARE.
  */
 
-if (\spitfire\core\Environment::get('debug_mode')) {
-	echo json_encode(['error' => $code, 'msg' => $message, 'trace' => $exception->getTraceAsString(), 'debug' => spitfire()->getMessages()]);
-} 
-else {
-	echo json_encode(['error' => $code, 'msg' => $message]);
+$payload = [];
+
+foreach ($apps as $app) {
+	$payload[] = [
+		'id' => $app->appID,
+		'name' => $app->name,
+		'url'  => $app->url,
+		'icon' => (string)url('image', 'app', $app->_id, 128)->absolute()
+	];
 }
+
+$json = json_encode($payload);
+
+echo isset($_GET['p'])? sprintf('%s(%s)', $_GET['p'], $json) : $json;

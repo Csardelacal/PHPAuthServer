@@ -46,7 +46,12 @@ class CronDirector extends Director
 		
 		console()->success('Acquired lock!')->ln();
 		
-		$flipflop = new cron\FlipFlop($file);
+		try {
+			$flipflop = new cron\FlipFlop($file);
+		} catch (Exception $ex) {
+			console()->error('SysV is not enabled, falling back to timed flip-flop')->ln();
+			$flipflop = new cron\TimerFlipFlop($file);
+		}
 		
 		while(($delivered = EmailModel::deliver()) || $flipflop->wait()) {
 			if ($delivered) {

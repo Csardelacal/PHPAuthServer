@@ -1,5 +1,7 @@
 <?php
 
+use spitfire\exceptions\PublicException;
+
 /* 
  * The MIT License
  *
@@ -28,12 +30,75 @@ class PermissionsController extends BaseController
 {
 	
 	public function index() {
-		die('index');
+		if (!$this->user) {
+			throw new PublicException('You must be logged in to perform this action', 403);
+		}
+		
+		if ($this->token) {
+			throw new PublicException('This action cannot be performed in token context', 403);
+		}
+		
+		$query = db()->table('authapp')->get('system', false);
+		$pag   = new \spitfire\storage\database\pagination\Paginator($query);
+		
+		$this->view->set('apps', $pag);
 	}
 	
-	public function test() {
-		var_dump(func_get_args());
-		die('test');
+	public function for(AuthAppModel$app) {
+		if (!$this->user) {
+			throw new PublicException('You must be logged in to perform this action', 403);
+		}
+		
+		if ($this->token) {
+			throw new PublicException('This action cannot be performed in token context', 403);
+		}
+		
+		$connections = db()->table('connection\auth')
+			->get('target', $app)
+			->group()->where('user', $this->user)->where('user', null)->endGroup()
+			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
+			->all();
+		
+		$attributes = db()->table('attribute')->getAll()->all();
+		
+		$this->view->set('app',  $app);
+		$this->view->set('attributes', $attributes);
+		$this->view->set('connections', $connections);
 	}
 	
+	/**
+	 * 
+	 * @validate GET#grant(required number)
+	 * @param AttributeModel $attribute
+	 * @param type $appId
+	 */
+	public function set(AttributeModel$attribute, $appId) {
+		$app  = db()->table('authapp')->get('appID', $appId)->first(true);
+		$xsrf = new spitfire\io\XSSToken();
+		
+		try {
+			$xsrf->verify($_GET['_XSRF']);
+			
+			$record = db()->table('attribute\appgrant')
+				->get('app', $app)
+				->where('user', $this->user)
+				->where('attribute', $attribute)
+				->first();
+			
+			if (!$record) {
+				$record = db()->table('attribute\appgrant')->newRecord();
+				$record->app = $app;
+				$record->user = $this->user;
+				$record->attribute = $attribute;
+			}
+			
+			$record->grant = $_GET['grant'];
+			$record->store();
+			
+			return $this->response->setBody('Redirect...')->getHeaders()->redirect($_GET['returnto']?? url());
+		}
+		catch (Exception$e) {
+			
+		}
+	}
 }
