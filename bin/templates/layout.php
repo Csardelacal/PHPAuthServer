@@ -143,8 +143,6 @@
 		}());
 		</script>
 		
-		<!--Cron scheduler-->
-		<script type="text/javascript" src="<?= url('cron') ?>" async="true"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui-layout.js') ?>"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/sticky.js') ?>"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/dials.js') ?>" async="true"></script>

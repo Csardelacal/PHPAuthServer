@@ -57,7 +57,24 @@ class PermissionsController extends BaseController
 			->get('target', $app)
 			->group()->where('user', $this->user)->where('user', null)->endGroup()
 			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
-			->all();
+			->all()
+			->groupBy( function ($e) {
+				return $e->app->_id . '_' . $e->context;
+			})
+			->each(function (\spitfire\core\Collection$c) {
+				return $c->reduce(function (connection\AuthModel$c, connection\AuthModel$e) {
+					if ($e->user && $e->final) { return $e; }
+					if ($c->user && $c->final) { return $c; }
+					if ($e->user && $e->state == 1) { return $e; }
+					if ($c->user && $c->state == 1) { return $c; }
+					if ($e->final) { return $e; }
+					if ($c->final) { return $c; }
+					if ($e->user ) { return $e; }
+					if ($c->user ) { return $c; }
+					return $e;
+				}, $c->rewind());
+			});
+		
 		
 		$attributes = db()->table('attribute')->getAll()->all();
 		

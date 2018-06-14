@@ -37,8 +37,12 @@ class ContextController extends BaseController
 			$app = $this->authapp;
 		}
 		
+		if ($this->authapp->_id !== $app->_id || !$this->isAdmin) {
+			throw new PublicException('No permissions to access this page', 403);
+		}
+		
 		if ($app === null) {
-			throw new PublicException('No application found');
+			throw new PublicException('No application found', 404);
 		}
 		
 		$query = db()->table('connection\context')->get('app', $app)->where('expires', '>', time());
@@ -76,6 +80,53 @@ class ContextController extends BaseController
 	
 	public function delete($appid, $ctx) {
 		
+	}
+	
+	public function deny(connection\AuthModel$auth) {
+		
+		if ($this->token || $this->authapp) {
+			throw new PublicException('Insufficient context', 403);
+		}
+		
+		if ($auth->user === null) {
+			//Do nothing, the previous context will be overriden
+		}
+		elseif ($auth->user->_id === $this->user->_id) {
+			$auth->expires = time();
+			$auth->store();
+		}
+		else {
+			throw new PublicException('No permissions to edit this context', 403);
+		}
+		
+		$record = db()->table('connection\auth')->newRecord();
+		$record->source = $auth->source;
+		$record->target = $auth->target;
+		$record->user   = $this->user;
+		$record->state  = connection\AuthModel::STATE_DENIED;
+		$record->context= $auth->context;
+		$record->expires= null;
+		$record->final  = false;
+		$record->store();
+		
+		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'for', $auth->target->_id));
+	}
+	
+	public function revoke(connection\AuthModel$auth) {
+		
+		if ($this->token || $this->authapp) {
+			throw new PublicException('Insufficient context', 403);
+		}
+		
+		if ($auth->user->_id === $this->user->_id) {
+			$auth->expires = time();
+			$auth->store();
+		}
+		else {
+			throw new PublicException('No permissions to edit this context', 403);
+		}
+		
+		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'for', $auth->target->_id));
 	}
 	
 }
