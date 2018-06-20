@@ -10,9 +10,9 @@
 				</div>
 				<div class="span l1 m1 dials">
 					<ul>
-						<li><a href="<?= url('context', 'edit', $app->_id, $context->ctx) ?>">Edit</a></li>
-						<li><a href="<?= url('context', 'revoke', $app->_id, $context->ctx) ?>">Revoke</a></li>
-						<li><a href="<?= url('context', 'granted', $app->_id, $context->ctx) ?>">Applications</a></li>
+						<li><a href="<?= url('context', 'edit', $context->_id) ?>">Edit</a></li>
+						<li><a href="<?= url('context', 'revoke', $context->_id) ?>">Revoke</a></li>
+						<li><a href="<?= url('context', 'granted', $context->_id) ?>">Applications</a></li>
 					</ul>
 				</div>
 			</div>

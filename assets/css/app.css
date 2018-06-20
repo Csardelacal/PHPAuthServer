@@ -133,8 +133,12 @@ form.regular .form-footer {
   padding-right: 10px;
   margin-top: 15px;
   text-align: right; }
+  form.regular .form-footer * {
+    vertical-align: middle; }
+  form.regular .form-footer a {
+    font-size: .8em; }
 form.regular input[type="submit"] {
-  margin-left: 5%;
+  margin-left: 15px;
   font-family: sans-serif; }
 
 .material-form input[type="text"], .material-form .fake-field, .material-form .fake-field-ph {
@@ -164,7 +168,7 @@ form.regular input[type="submit"] {
   border-radius: 3px;
   color: #ffffff;
   font-weight: bold;
-  padding: .5em .7em;
+  padding: .7em 1.2em;
   cursor: pointer;
   text-decoration: none;
   display: inline-block; }
@@ -1394,24 +1398,6 @@ ul.pagination {
     border-color: #8c1013;
     background: #F2B5B7;
     color: #490C0E; }
-
-/*
-Contains the code needed to create a tabbed area to ease filtered navigation.
-*/
-/* 
-    Created on : May 3, 2016, 11:55:02 AM
-    Author     : cesar
-*/
-.tabs {
-  border-bottom: solid 1px #999; }
-  .tabs.centered {
-    text-align: center; }
-  .tabs .tab {
-    color: #242424;
-    padding: 5px 15px;
-    display: inline-block; }
-    .tabs .tab.active {
-      border-bottom: solid 3px #333; }
 
 #icon-upload-wrap {
   position: relative;

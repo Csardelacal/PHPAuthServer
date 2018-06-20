@@ -2,12 +2,12 @@
 
 use app\AuthLock;
 use connection\AuthModel;
-use mail\spam\domain\IP;
 use signature\Signature;
 use spitfire\core\Environment;
 use spitfire\core\http\URL;
 use spitfire\exceptions\PublicException;
 use spitfire\io\session\Session;
+use spitfire\io\XSSToken;
 
 class AuthController extends BaseController
 {
@@ -163,7 +163,7 @@ class AuthController extends BaseController
 				}
 				
 				$contexts = [];
-				$grant    = ['_' => $tgt->canAccess($src, $this->token? $this->token->user : null)];
+				$grant    = [];
 				
 				foreach ($context as $ctx) {
 					$contexts[]  = $tgt->getContext($ctx);
@@ -187,7 +187,7 @@ class AuthController extends BaseController
 	
 	/**
 	 * 
-	 * @validate GET#signature (required)
+	 * @validate GET#signatures (required)
 	 * @param string $confirm
 	 * @throws PublicException
 	 * @layout minimal.php
@@ -195,7 +195,7 @@ class AuthController extends BaseController
 	public function connect($confirm = null) {
 		
 		#Make the confirmation signature
-		$xsrf = new spitfire\io\XSSToken();
+		$xsrf = new XSSToken();
 		
 		/*
 		 * First and foremost, this cannot be executed from the token context, this
@@ -206,7 +206,7 @@ class AuthController extends BaseController
 			throw new PublicException('This method cannot be called from token context', 400);
 		}
 		
-		if (!isset($_GET['signature'])) {
+		if (!isset($_GET['signatures'])) {
 			throw new PublicException('Invalid signature', 400); 
 		}
 		
@@ -216,7 +216,7 @@ class AuthController extends BaseController
 		 * to provide several signatures, it also makes it way more flexible for 
 		 * the receiving application to select which permissions it wishes to request.
 		 */
-		$signatures = collect($_GET['signature']->getRaw())->each(function ($e) { 
+		$signatures = collect($_GET['signatures']->array())->each(function ($e) { 
 			list($signature, $src, $tgt) = $this->signature->verify($e);
 			
 			/*
@@ -249,6 +249,12 @@ class AuthController extends BaseController
 		$src = db()->table('authapp')->get('appID', $signatures->rewind()->getSrc())->first(true);
 		$tgt = db()->table('authapp')->get('appID', $signatures->rewind()->getTarget())->first(true);
 		
+		/*
+		 * To prevent applications from sneaking in requests to permissions that 
+		 * do belong to third parties (by requesting seemingly innocuous requests
+		 * mixed with requests from potentially malicious software), the system
+		 * will verify that there is only a single source signing all the signatures.
+		 */
 		$singlesource = $signatures->reduce(function ($c, Signature$e) use($src, $tgt) { 
 			return $c && $e->getTarget() === $tgt->appID && $e->getSrc() === $src->appID; 
 		}, true);
@@ -260,7 +266,7 @@ class AuthController extends BaseController
 		/*
 		 * If the user is already confirming the application request, we check whether
 		 * the signature they used to do so is valid. This is generally to protect
-		 * the user from any illegitimate requests to provide data by XSFS.
+		 * the user from any illegitimate requests to provide data by XSRF.
 		 */
 		if ($confirm) {
 			
@@ -269,27 +275,23 @@ class AuthController extends BaseController
 			}
 			
 			foreach ($signatures as $c) {
-				$connection = db()->table('connection\auth')
-					->get('source', $src)
-					->where('target', $tgt)
-					->where('user', $this->user)
-					->where('context', $c->getContext()[0])
-					->where('expires', '>', time())->first();
-				
-				if (!$connection) {
-					$connection = db()->table('connection\auth')->newRecord();
-					$connection->target  = $tgt;
-					$connection->source  = $src;
-					$connection->user    = $this->user;
-					$connection->context = $c->getContext()[0];
-					$connection->state   = AuthModel::STATE_AUTHORIZED;
-					$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
-					$connection->store();
-				}
+				/*
+				 * Create the authorizations. There's no need to check whether the 
+				 * connection already exists, since it would have been filtered from
+				 * the signatures list at about line 242
+				 */
+				$connection = db()->table('connection\auth')->newRecord();
+				$connection->target  = $tgt;
+				$connection->source  = $src;
+				$connection->user    = $this->user;
+				$connection->context = $c->getContext()[0];
+				$connection->state   = AuthModel::STATE_AUTHORIZED;
+				$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
+				$connection->store();
 			}
 			
 			if (isset($_GET['returnto'])) {
-				return $this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']);
+				return $this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']?: url(/*Grant success page or w/e*/));
 			}
 		}
 		

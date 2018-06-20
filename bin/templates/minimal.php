@@ -12,14 +12,6 @@
 	</head>
 	<body>
 		
-		<div class="navbar">
-			<?php if(isset($authUser)): ?>
-			<a href="<?= url('') ?>"      >Account</a>
-			<a href="<?= url('token') ?>" >Sessions</a>
-			<a href="<?= url('user', 'logout') ?>">Logout</a>
-			<?php endif; ?>
-		</div>
-		
 		<div class="auto-extend">
 			<?php if (isset($authUser) && $authUser && !$authUser->verified): ?> 
 			<!-- 

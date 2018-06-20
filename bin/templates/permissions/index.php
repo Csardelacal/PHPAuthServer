@@ -45,7 +45,7 @@
 					<li><a href="<?=$app->url ?>">Open application</a></li>
 					<?php endif; ?> 
 					<?php if ($granted): ?> 
-					<li><a href="<?= url('app', 'deauthorize', $app->_id) ?>">Revoke connection</a>
+					<li><a href="<?= url('permissions', 'deauthorize', $app->_id) ?>">Revoke connection</a>
 					<?php endif; ?> 
 				</ul>
 			</div>

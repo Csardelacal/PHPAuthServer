@@ -37,5 +37,5 @@ elseif ($remote) {
 	$payload['context'] = [];
 }
 
-$payload['token']    = $token->token;
+$payload['token']    = $token? $token->token : null;
 echo json_encode($payload);

@@ -119,7 +119,13 @@
 		<div class="spacer" style="height: 20px"></div>
 		<?php endforeach; ?>
 		<?php if ($connections->isEmpty()): ?>
-		No connections
+		<div style="padding: 30px">
+			<p class="small secondary" style="text-align: center">
+				<strong>No connections.</strong>
+				This means that this application has no special access privileges to
+				data contained in other applications that refers to your account.
+			</p>
+		</div>
 		<?php endif; ?>
 		
 		<div class="spacer" style="height: 30px"></div>

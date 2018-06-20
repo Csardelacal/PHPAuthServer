@@ -183,11 +183,19 @@ form.regular {
 		padding-right: 10px;
 		margin-top:    15px;
 		text-align:   right;
+		
+		* {
+			vertical-align: middle;
+		}
+		
+		a {
+			font-size: .8em;
+		}
 	}
 	
 	input[type="submit"] {
 		@extend .button;
-		margin-left:                5%;
+		margin-left:              15px;
 		font-family:        sans-serif;
 	}
 }
@@ -229,7 +237,7 @@ form.regular {
 	border-radius: 3px;
 	color: #ffffff;
 	font-weight: bold;
-	padding: .5em .7em;
+	padding: .7em 1.2em;
 	cursor: pointer;
 	text-decoration: none;
 	display: inline-block;
@@ -469,7 +477,6 @@ footer {
 @import '_pagination';
 @import '_properties';
 @import '_messages';
-@import '_tabs';
 @import '_icon-upload';
 @import '_dials';
 @import '_styledSelect.scss';

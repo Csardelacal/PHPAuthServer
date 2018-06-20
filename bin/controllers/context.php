@@ -1,9 +1,11 @@
 <?php
 
+use connection\AuthModel;
 use connection\ContextModel;
-use signature\Signature;
 use spitfire\exceptions\PublicException;
 use spitfire\storage\database\pagination\Paginator;
+use spitfire\exceptions\HTTPMethodException;
+use spitfire\validation\ValidationException;
 
 /* 
  * The MIT License
@@ -37,7 +39,7 @@ class ContextController extends BaseController
 			$app = $this->authapp;
 		}
 		
-		if ($this->authapp->_id !== $app->_id || !$this->isAdmin) {
+		if ($this->authapp->_id !== $app->_id && !$this->isAdmin) {
 			throw new PublicException('No permissions to access this page', 403);
 		}
 		
@@ -50,6 +52,7 @@ class ContextController extends BaseController
 		
 		$this->view->set('records', $pagination->records());
 		$this->view->set('pag', $pagination);
+		$this->view->set('app', $app);
 	}
 	
 	public function create() {
@@ -74,15 +77,45 @@ class ContextController extends BaseController
 		$this->view->set('result', $record);
 	}
 	
-	public function edit($appid, $ctx) {
+	/**
+	 * 
+	 * @validate >> POST#title(string required length[3,30]) AND POST#description(string required)
+	 * @validate >> POST#ctx#Context(string required length[5, 50])
+	 * 
+	 * @param string $ctx
+	 * @throws PublicException
+	 */
+	public function edit(ContextModel$ctx) {
+		if (!($this->isAdmin || ($this->authapp && $this->authapp->appID === $ctx->app->appID))) {
+			throw new PublicException('You do not have enough access privileges', 403);
+		}
 		
+		if ($ctx !== null && $ctx->expires < time()) {
+			throw new PublicException('This context is expired', 404);
+		}
+		
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException('Not posted'); }
+			if (!$this->validation->isEmpty()) { throw new ValidationException('Validation failed', 1806181147, $this->validation->toArray()); }
+			
+			$ctx->title = $_POST['title'];
+			$ctx->descr = $_POST['description'];
+			$ctx->ctx   = $_POST['ctx'];
+			$ctx->store();
+			
+			return $this->response->setBody('Redirecting...')->getHeaders()->redirect(url('context', 'edit', $ctx->_id));
+		}
+		catch (spitfire\exceptions\HTTPMethodException$e) {
+			//Just show the form
+		}
+		catch (spitfire\validation\ValidationException$e) {
+			$this->view->set('messages', $e->getResult());
+		}
+		
+		$this->view->set('context', $ctx);
 	}
 	
-	public function delete($appid, $ctx) {
-		
-	}
-	
-	public function deny(connection\AuthModel$auth) {
+	public function deny(AuthModel$auth) {
 		
 		if ($this->token || $this->authapp) {
 			throw new PublicException('Insufficient context', 403);
@@ -103,7 +136,7 @@ class ContextController extends BaseController
 		$record->source = $auth->source;
 		$record->target = $auth->target;
 		$record->user   = $this->user;
-		$record->state  = connection\AuthModel::STATE_DENIED;
+		$record->state  = AuthModel::STATE_DENIED;
 		$record->context= $auth->context;
 		$record->expires= null;
 		$record->final  = false;
@@ -112,13 +145,13 @@ class ContextController extends BaseController
 		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'for', $auth->target->_id));
 	}
 	
-	public function revoke(connection\AuthModel$auth) {
+	public function revoke(AuthModel$auth) {
 		
 		if ($this->token || $this->authapp) {
 			throw new PublicException('Insufficient context', 403);
 		}
 		
-		if ($auth->user->_id === $this->user->_id) {
+		if ($this->isAdmin || $auth->user->_id === $this->user->_id) {
 			$auth->expires = time();
 			$auth->store();
 		}
@@ -127,6 +160,72 @@ class ContextController extends BaseController
 		}
 		
 		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'for', $auth->target->_id));
+	}
+	
+	public function destroy(ContextModel$ctx) {
+		
+		if (!$this->isAdmin && !$this->authapp->appID === $ctx->app->appID) {
+			throw new PublicException('Forbidden', 403);
+		}
+		
+		$ctx->expires = time();
+		$ctx->store();
+		
+		if (isset($_GET['returnto'])) {
+			return $this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']);
+		}
+	}
+	
+	public function granted(ContextModel$ctx) {
+		
+		if (!$this->isAdmin) {
+			throw new PublicException('Forbidden', 403);
+		}
+		
+		$grants = db()->table('connection\auth')
+			->get('source', $ctx->app)
+			->where('context', $ctx->ctx)
+			->where('user', null)
+			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
+			->all();
+			
+		$this->view->set('context', $ctx);
+		$this->view->set('grants', $grants);
+	}
+	
+	/**
+	 * 
+	 * @validate GET#app(required positive number) AND GET#grant(required positive number)
+	 * @param ContextModel $ctx
+	 */
+	public function grant(ContextModel$ctx) {
+		
+		if (!$this->isAdmin) {
+			throw new PublicException('Forbidden', 403);
+		}
+		
+		if ($_GET['grant'] == AuthModel::STATE_PENDING) {
+			throw new PublicException('Generalized grants cannot be set to pending. This is the default', 400);
+		}
+		
+		$grant = db()->table('connection\auth')
+			->get('source', $ctx->app)
+			->where('context', $ctx->ctx)
+			->where('target', db()->table('authapp')->get('_id', $_GET['app']))
+			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
+			->first()? : db()->table('connection\auth')->newRecord();
+		
+		$grant->source  = $ctx->app;
+		$grant->target  = db()->table('authapp')->get('_id', $_GET['app'])->first();
+		$grant->user    = null;
+		$grant->state   = $_GET['grant'];
+		$grant->context = $ctx->ctx;
+		$grant->expires = null;
+		$grant->final   = isset($_GET['final']) && $_GET['final'] !== '0';
+		$grant->store();
+		
+		return $this->response->setBody('Redirecting...')->getHeaders()->redirect(url('context', 'granted', $ctx->_id));
+		
 	}
 	
 }

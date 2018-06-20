@@ -44,7 +44,7 @@ class AttributeLock
 	
 	private $user;
 	
-	public function __construct(AttributeModel$scope, UserModel$user) {
+	public function __construct(AttributeModel$scope, UserModel$user = null) {
 		$this->scope   = $scope;
 		$this->user    = $user;
 	}
@@ -58,13 +58,15 @@ class AttributeLock
 		
 		$q->group()->where('user', $this->user)->where('user', null);
 		
-		return !!$q->all()->reduce(function ($carry, $i) use ($mode) { 
+		$grant = $q->all()->reduce(function ($carry, $i) use ($mode) { 
 			/*
 			 * The user setting will override any previously set state. App based 
 			 * rules will override the standard setting
 			 */
 			return $carry === null || $i->user? $i->grant & $mode : $carry;
-		}, null)? : $this->def($mode);
+		}, null);
+		
+		return $grant !== null? $grant : $this->def($mode);
 	}
 	
 	public function def($mode) {

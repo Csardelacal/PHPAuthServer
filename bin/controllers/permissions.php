@@ -85,22 +85,29 @@ class PermissionsController extends BaseController
 	
 	/**
 	 * 
-	 * @validate GET#grant(required number)
+	 * @validate GET#grant(required number in[0, 16, 32, 48])
 	 * @param AttributeModel $attribute
-	 * @param type $appId
+	 * @param int $appId
 	 */
 	public function set(AttributeModel$attribute, $appId) {
 		$app  = db()->table('authapp')->get('appID', $appId)->first(true);
 		$xsrf = new spitfire\io\XSSToken();
+		
+		if (isset($_GET['all']) && !$this->isAdmin) {
+			throw new PublicException('You must be an administrator to set generic rules', 403);
+		}
 		
 		try {
 			$xsrf->verify($_GET['_XSRF']);
 			
 			$record = db()->table('attribute\appgrant')
 				->get('app', $app)
-				->where('user', $this->user)
+				->where('user', isset($_GET['all'])? null : $this->user)
 				->where('attribute', $attribute)
 				->first();
+			
+			//TODO: Check if attribute is NEM. If it is, the user cannot grant permissions 
+			//beyond the generic for this app.
 			
 			if (!$record) {
 				$record = db()->table('attribute\appgrant')->newRecord();
@@ -117,5 +124,20 @@ class PermissionsController extends BaseController
 		catch (Exception$e) {
 			
 		}
+	}
+	
+	/**
+	 * 
+	 * @template none
+	 * @layout none
+	 * @param type $appID
+	 */
+	public function deauthorize($appID) {
+		$app  = db()->table('authapp')->get('_id', $appID)->fetch();
+		$auth = db()->table('user\authorizedapp')->get('user', $this->user)->where('app', $app)->first(true);
+		
+		if ($auth) { $auth->delete(); }
+		
+		$this->response->getHeaders()->redirect(url());
 	}
 }

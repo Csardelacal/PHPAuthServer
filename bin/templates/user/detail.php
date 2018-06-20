@@ -1,7 +1,7 @@
 
 <div class="topbar sticky">
 	<span class="toggle-button-target"  style="background: #2a912e; padding: 12px; margin: 0 10px 0 -10px; vertical-align: middle"></span>
-	Profile: <?= __($profile->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name) ?>
+	Profile: <?= __($user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name) ?>
 </div>
 
 <div class="spacer" style="height: 20px"></div>
@@ -14,7 +14,7 @@
 		</div>
 
 		<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-			<?= date('m/d/Y', $profile->created) ?>
+			<?= date('m/d/Y', $user->created) ?>
 		</div>
 	</div>
 </div>
@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-			<?php $aliases = $profile->usernames->getQuery()->addRestriction('expires', time(), '>')->fetchAll(); ?>
+			<?php $aliases = $user->usernames->getQuery()->addRestriction('expires', time(), '>')->fetchAll(); ?>
 			<?= $aliases->count()? $aliases->join('<br>') : '<i>None</i>'; ?>
 		</div>
 	</div>
@@ -44,7 +44,7 @@
 
 <div class="spacer" style="height: 20px"></div>
 
-<form class="regular" method="POST" action="<?= url('suspension', 'create', $profile->_id); ?>">
+<form class="regular" method="POST" action="<?= url('suspension', 'create', $user->_id); ?>">
 	<!--Reason for the suspension-->
 	<div class="row1 fluid">
 		<div class="span1">
@@ -101,7 +101,7 @@
 	Previous suspensions
 </div>
 
-<?php $suspensions = db()->table('user\suspension')->get('user', $profile)->setOrder('expires', 'DESC')->fetchAll(); ?>
+<?php $suspensions = db()->table('user\suspension')->get('user', $user)->setOrder('expires', 'DESC')->fetchAll(); ?>
 
 <?php foreach ($suspensions as $suspension): ?>
 	<div class="spacer" style="height: 20px"></div>

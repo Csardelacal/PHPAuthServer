@@ -1,5 +1,8 @@
 <?php
 
+use email\DomainModel;
+use mail\spam\domain\implementation\SpamDomainModelReader;
+use mail\spam\domain\IP;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\storage\database\pagination\Paginator;
@@ -118,5 +121,84 @@ class EmailController extends BaseController
 			//Do nothing, we'll serve it with get
 		}
 	} 
+	
+	public function detail(EmailModel$msg) {
+		
+		if (!$this->isAdmin) {
+			throw new PublicException('Unauthorized', 403);
+		}
+		
+		$this->view->set('msg', $msg);
+	}
+	
+	public function domain() {
+		
+		if (!$this->isAdmin) {
+			throw new PublicException('Unauthorized', 403);
+		}
+		
+		$q = db()->table('email\domain')->getAll();
+		
+		$p = new Paginator($q);
+		
+		$this->view->set('records', $p->records());
+		$this->view->set('pages', $p);
+	}
+	
+	/**
+	 * 
+	 * @validate >> POST#hostname(required string) AND POST#reason (required string)
+	 * @validate >> POST#list(required string in[white, black]) AND POST#type(required string in[IP, domain])
+	 * @param DomainModel $domain
+	 */
+	public function rule(DomainModel$domain = null) {
+		
+		if ($domain === null) {
+			$domain = db()->table('email\domain')->newRecord();
+		}
+		
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
+			if (!$this->validation->isEmpty()) { throw new ValidationException('', 0, $this->validation->toArray()); }
+			
+			if ($_POST['type'] === 'IP') {
+				$pieces = explode('/', $_POST['hostname']);
+				$ip   = array_shift($pieces);
+				$cidr = array_shift($pieces)? : 0;
+				
+				$t = new IP($ip, $cidr);
+				$hostname = $t->getBase64();
+				$type     = SpamDomainModelReader::TYPE_IP;
+			}
+			else {
+				$hostname = $_POST['hostname'];
+				$type     = SpamDomainModelReader::TYPE_HOSTNAME;
+			}
+			
+			if ($_POST['list'] === 'black') {
+				$list = SpamDomainModelReader::LIST_BLACKLIST;
+			}
+			else {
+				$list = SpamDomainModelReader::LIST_WHITELIST;
+			}
+			
+			$domain->type = $type;
+			$domain->host = $hostname;
+			$domain->list = $list;
+			$domain->reason = $_POST['reason'];
+			$domain->store();
+			
+			return $this->response->setBody('Redirecting...')->getHeaders()->redirect(url('email', 'rule', $domain->_id));
+		} 
+		catch (HTTPMethodException $ex) {
+			//Do nothing, just show the form
+		}
+		catch (ValidationException$e) {
+			var_dump($e->getResult());
+			die('here');
+		}
+		
+		$this->view->set('domain', $domain);
+	}
 	
 }

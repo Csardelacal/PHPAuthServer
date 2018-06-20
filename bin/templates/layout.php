@@ -66,20 +66,18 @@
 					<?php if(isset($userIsAdmin) && $userIsAdmin): ?> 
 					<div class="spacer" style="height: 30px"></div>
 					<div class="menu-title">Administration</div>
+					<div class="menu-entry"><a href="<?= url('user')  ?>">Users</a></div>
 					<div class="menu-entry"><a href="<?= url('group') ?>">Groups</a></div>
 					<div class="menu-entry"><a href="<?= url('admin') ?>">System settings</a></div>
 					<div class="menu-entry"><a href="<?= url('token') ?>">Active sessions</a></div>
 					
 					<!--APPLICATIONS-->
 					<div class="menu-entry"><a href="<?= url('app') ?>"  >App administration</a></div>
-					<div class="indented">
-						<div class="menu-entry"><a href="<?= url('connect') ?>">Connections</a></div>
-						<div class="menu-entry"><a href="<?= url('grant')   ?>">Grants</a></div>
-					</div>
 					
 					<!-- EMAIL -->
 					<div class="menu-entry"><a href="<?= url('email') ?>">Email</a></div>
 					<div class="indented">
+						<div class="menu-entry"><a href="<?= url('email', ['history' => 1]) ?>">History</a></div>
 						<div class="menu-entry"><a href="<?= url('email', 'domain') ?>">Domains</a></div>
 					</div>
 					<?php endif; ?> 

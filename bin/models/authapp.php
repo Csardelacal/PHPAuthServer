@@ -2,7 +2,6 @@
 
 use auth\Context;
 use connection\AuthModel;
-use spitfire\io\Get;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
@@ -40,17 +39,14 @@ class AuthAppModel extends Model
 		$schema->appID->setUnique(true);
 	}
 	
-	public function canAccess($app, $user = null, $context = null) {
+	public function canAccess($app, $user, $context) {
 		
 		$db = $this->getTable()->getDb();
 		$q  = $db->table('connection\auth')->getAll();
 		
 		$q->addRestriction('source', $this);
 		$q->addRestriction('target', $app);
-		
-		if ($context) {
-			$q->addRestriction('context', $context);
-		}
+		$q->addRestriction('context', $context);
 		
 		if ($user) {
 			$q->addRestriction('user', $user);
@@ -60,9 +56,21 @@ class AuthAppModel extends Model
 		}
 		
 		$q->group()->addRestriction('expires', null, 'IS')->addRestriction('expires', time(), '>');
-		$p = $q->fetch();
+		$result = $q->all();
 		
-		return $p? (int)$p->state : ($user? $this->canAccess($app, null, $context) : AuthModel::STATE_PENDING);
+		$_r = $result->reduce(function (AuthModel$c, AuthModel$e) {
+			if ($e->user && $e->final) { return $e; }
+			if ($c->user && $c->final) { return $c; }
+			if ($e->user && $e->state == AuthModel::STATE_DENIED) { return $e; }
+			if ($c->user && $c->state == AuthModel::STATE_DENIED) { return $c; }
+			if ($e->final) { return $e; }
+			if ($c->final) { return $c; }
+			if ($e->user ) { return $e; }
+			if ($c->user ) { return $c; }
+			return $e;
+		}, $result->rewind());
+			
+		return $_r? $_r->state : AuthModel::STATE_PENDING;
 	}
 	
 	public function getContext($context) {

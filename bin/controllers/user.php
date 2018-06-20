@@ -1,11 +1,12 @@
 <?php
 
-use email\DomainModel;
-use mail\spam\domain\SpamDomainValidationRule;
+use app\AttributeLock;
 use mail\spam\domain\implementation\SpamDomainModelReader;
+use mail\spam\domain\SpamDomainValidationRule;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\session\Session;
+use spitfire\storage\database\pagination\Paginator;
 use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MaxLengthValidationRule;
 use spitfire\validation\MinLengthValidationRule;
@@ -17,10 +18,14 @@ class UserController extends BaseController
 	
 	public function index() {
 		$query = db()->table('user')->get('disabled', null, 'IS');
-		$paginator = new Pagination($query);
+		$paginator = new Paginator($query);
+		
+		if (isset($_GET['q'])) {
+			$query->where('usernames', db()->table('username')->getAll()->where('name', 'LIKE', $_GET['q'] . '%'));
+		}
 		
 		$this->view->set('page.title', 'User list');
-		$this->view->set('users', $query->fetchAll());
+		$this->view->set('users', $paginator->records());
 		$this->view->set('pagination', $paginator);
 		
 	}
@@ -176,50 +181,42 @@ class UserController extends BaseController
 	
 	public function detail($userid) {
 		
-		if ($_GET['token']) { $token = db()->table('token')->get('token', $_GET['token'])->fetch(); }
-		else                { $token = null; }
-		
-		if ($token !== null && $token->expires !== null && $token->expires !== '' && $token->expires < time()) 
-			{ throw new PublicException('Your token is expired', 401); }
+		#Check whether the request is from either an admin account or an application
+		#All other profiles do have no access to this information
+		if (!$this->authapp && !$this->isAdmin) {
+			throw new PublicException('You have no privileges to access this data.', 403);
+		}
 		
 		#Get the affected profile
 		$profile = db()->table('user')->get('_id', $userid)->fetch()? :
 				db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->
-						group()->addRestriction('expires', NULL, 'IS')->addRestriction('expires', time(), '>')->endGroup())->fetch();
+						group()->addRestriction('expires', NULL, 'IS')->addRestriction('expires', time(), '>')->endGroup())->first();
 		
 		#If there was no profile. Throw an error
 		if (!$profile) { throw new PublicException('No user found', 404); }
 		
-		#Set the base permissions
-		$permissions = Array('public');
+		#Get the list of attributes
+		$attributes = db()->table('attribute')->getAll()->all();
+		$userAttr   = collect();
 		
-		#Check if the two users are in the same group
-		if ($token !== null && $token->user !== null) {
-			$groupquery = db()->table('group')->getAll();
-			$groupquery->addRestriction('members', db()->table('user\group')->get('user', $profile->getQuery()));
-			$groupquery->addRestriction('members', db()->table('user\group')->get('user', $token->user));
+		foreach ($attributes as $attr) {
+			$lock = new AttributeLock($attr, $profile);
 			
-			$groups = $groupquery->fetchAll();
+			/*
+			 * Depending on whether the user is an administrator or an app that can
+			 * unlock the attribute, we add the data to the list.
+			 */
+			if ($this->isAdmin || $lock->unlock($this->authapp)) {
+				$userAttr[$attr->_id] = db()->table('user\attribute')->get('user', $profile)->where('attr', $attr)->first();
+			}
 		}
-		
-		#Check if the user is himself
-		if ($token && $token->user && $profile->_id === $token->user->_id) { $permissions = array_merge($permissions, Array('me', 'members')); }
-		
-		#Check if the user is an administrator
-		if ($this->isAdmin) { $permissions = array_merge($permissions, Array('me', 'members', 'nem')); }
-		
-		#If permissions aren't empty, let the system filter those
-		if (!empty($permissions)) { $permissions = array_unique($permissions); }
-		
-		#Get the public attributes
-		$attributes = db()->table('attribute')->get('readable', $permissions)->fetchAll();
 		
 		#Get the currently active moderative issue
 		#Check if the user has been either banned or suspended
 		$suspension = db()->table('user\suspension')->get('user', $profile)->addRestriction('expires', time(), '>')->fetch();
 		
-		$this->view->set('profile', $profile);
-		$this->view->set('permissions', $permissions);
+		$this->view->set('user', $profile);
+		$this->view->set('profile', $userAttr);
 		$this->view->set('attributes', $attributes);
 		$this->view->set('suspension', $suspension);
 	}
