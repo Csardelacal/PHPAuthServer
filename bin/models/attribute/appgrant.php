@@ -30,8 +30,7 @@ use spitfire\storage\database\Schema;
 class AppGrantModel extends Model
 {
 	
-	const GRANT_PENDING = 0x00;
-	const GRANT_DENIED  = 0x01;
+	const GRANT_DENIED  = 0x00;
 	const GRANT_READ    = 0x10;
 	const GRANT_WRITE   = 0x20;
 	const GRANT_RW      = 0x30;

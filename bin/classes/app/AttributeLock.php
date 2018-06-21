@@ -63,10 +63,10 @@ class AttributeLock
 			 * The user setting will override any previously set state. App based 
 			 * rules will override the standard setting
 			 */
-			return $carry === null || $i->user? $i->grant & $mode : $carry;
+			return $carry === null || $i->user? ((int)$i->grant) & $mode : $carry;
 		}, null);
 		
-		return $grant !== null? $grant : $this->def($mode);
+		return $grant !== null? !!$grant : $this->def($mode);
 	}
 	
 	public function def($mode) {

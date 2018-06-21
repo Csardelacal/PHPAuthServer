@@ -4,7 +4,9 @@ use email\DomainModel;
 use mail\spam\domain\implementation\SpamDomainModelReader;
 use mail\spam\domain\IP;
 use spitfire\exceptions\HTTPMethodException;
+use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
+use spitfire\io\XSSToken;
 use spitfire\storage\database\pagination\Paginator;
 use spitfire\validation\rules\EmptyValidationRule;
 use spitfire\validation\ValidationException;
@@ -141,6 +143,7 @@ class EmailController extends BaseController
 		
 		$p = new Paginator($q);
 		
+		$this->view->set('xsrf', new XSSToken());
 		$this->view->set('records', $p->records());
 		$this->view->set('pages', $p);
 	}
@@ -165,6 +168,8 @@ class EmailController extends BaseController
 				$pieces = explode('/', $_POST['hostname']);
 				$ip   = array_shift($pieces);
 				$cidr = array_shift($pieces)? : 0;
+				
+				if ($cidr % 4) { throw new PrivateException('CIDR must be a value divisible by 4', 1806211156); }
 				
 				$t = new IP($ip, $cidr);
 				$hostname = $t->getBase64();
@@ -194,11 +199,25 @@ class EmailController extends BaseController
 			//Do nothing, just show the form
 		}
 		catch (ValidationException$e) {
-			var_dump($e->getResult());
-			die('here');
+			$this->view->set('messages', $e->getResult());
 		}
 		
 		$this->view->set('domain', $domain);
 	}
 	
+	/**
+	 * 
+	 * @validate GET#xsrf(required string)
+	 * @param DomainModel $d
+	 */
+	public function dropRule(DomainModel$d) {
+		
+		$xsrf = new XSSToken();
+		
+		if ($xsrf->verify($_GET['xsrf'])) {
+			$d->delete();
+		}
+		
+		
+	}
 }

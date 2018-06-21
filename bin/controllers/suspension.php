@@ -61,4 +61,16 @@ class SuspensionController extends AppController
 		
 	}
 	
+	public function end(\user\SuspensionModel$s) {
+		
+		if (!$this->isAdmin || $this->token || $this->authapp) {
+			throw new PublicException('Invalid context', 403);
+		}
+		
+		$s->expires = time();
+		$s->store();
+		
+		return $this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'detail', $s->user->_id));
+	}
+	
 }

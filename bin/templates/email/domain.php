@@ -27,10 +27,10 @@
 					<tr>
 						<?php $isIp = $record->type == \mail\spam\domain\implementation\SpamDomainModelReader::TYPE_IP ?>
 						<td><?= !$isIp? 'Hostname' : 'IP address' ?></td>
-						<td><?= !$isIp? $record->host : inet_ntop(base64_decode($record->host)) ?></td>
+						<td><?= !$isIp? $record->host : \mail\spam\domain\IP::fromBase64($record->host) ?></td>
 						<td><?= $record->list?></td>
 						<td><a href="<?= url('email', 'rule', $record->_id) ?>">Edit</a></td>
-						<td><a href="<?= url('email', 'dropRule', $record->_id) ?>">Delete</a></td>
+						<td><a href="<?= url('email', 'dropRule', $record->_id, ['xsrf' => (string)$xsrf]) ?>">Delete</a></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>

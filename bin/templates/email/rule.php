@@ -7,7 +7,7 @@
 				
 				<div class="field">
 					<label for="input_hostname">Hostname / IP</label>
-					<input type="text" placeholder="Hostname, IP or IP/CIDR..." name="hostname" value="<?= $domain->type == SpamDomainModelReader::TYPE_IP? inet_ntop(base64_decode($domain->host)) : $domain->host ?>">
+					<input type="text" placeholder="Hostname, IP or IP/CIDR..." name="hostname" value="<?= $domain->type == SpamDomainModelReader::TYPE_IP? \mail\spam\domain\IP::fromBase64($domain->host) : $domain->host ?>">
 				</div>
 				
 				<div class="spacer" style="height: 20px"></div>

@@ -98,7 +98,7 @@ class PermissionsController extends BaseController
 		}
 		
 		try {
-			$xsrf->verify($_GET['_XSRF']);
+			if (!$xsrf->verify($_GET['_XSRF'])) { throw new PublicException('Invalid XSRF token', 403); }
 			
 			$record = db()->table('attribute\appgrant')
 				->get('app', $app)
@@ -116,7 +116,7 @@ class PermissionsController extends BaseController
 				$record->attribute = $attribute;
 			}
 			
-			$record->grant = $_GET['grant'];
+			$record->grant = (int)$_GET['grant'];
 			$record->store();
 			
 			return $this->response->setBody('Redirect...')->getHeaders()->redirect($_GET['returnto']?? url());
@@ -124,6 +124,12 @@ class PermissionsController extends BaseController
 		catch (Exception$e) {
 			
 		}
+		
+		$this->view->set('app', $app);
+		$this->view->set('attribute', $attribute);
+		$this->view->set('grant', (int)$_GET['grant']);
+		$this->view->set('xsrf', $xsrf);
+		$this->view->set('returnto', $_GET['returnto']?? url()->absolute());
 	}
 	
 	/**

@@ -65,7 +65,14 @@ class IP
 	}
 	
 	public function getBase64() {
-		return base64_encode($this->cidr? $this->calculateSubnet() : $this->ip);
+		if ($this->cidr == 0) {
+			$cidr = strlen($this->ip) * 8;
+		}
+		else {
+			$cidr = $this->cidr;
+		}
+		
+		return base64_encode($this->cidr? $this->calculateSubnet() : $this->ip) . ';' . $cidr;
 	}
 	
 	public function getParentSubnet() {
@@ -83,6 +90,26 @@ class IP
 		$min = strlen($this->ip) === 4? 8 : 32;
 		
 		return $cidr > $min + 4? new IP(inet_ntop($this->ip), $cidr - 4) : null;
+	}
+	
+	public function __toString() {
+		if ($this->cidr == 0) {
+			$cidr = strlen($this->ip) * 8;
+		}
+		else {
+			$cidr = $this->cidr;
+		}
+		
+		return sprintf('%s/%s', $this->getIP(), $cidr);
+		
+	}
+	
+	public static function fromBase64($str) {
+		$pieces = explode(';', $str);
+		$ip     = array_shift($pieces);
+		$cidr   = array_shift($pieces)?: 0;
+		
+		return new IP(inet_ntop(base64_decode($ip)), $cidr);
 	}
 	
 	/**
