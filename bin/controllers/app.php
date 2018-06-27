@@ -44,6 +44,8 @@ class AppController extends BaseController
 			$app = db()->table('authapp')->newRecord();
 			$app->name      = $_POST['name'];
 			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(self::_getRandomBytes(35, $secure)));
+			$app->system    = false;
+			$app->drawer    = false;
 			
 			if (!$secure) {
 				throw new PrivateException('Could not generate safe AppSecret');
@@ -59,7 +61,7 @@ class AppController extends BaseController
 			} while ($count !== 0);
 			
 			$app->store();
-			$this->response->getHeaders()->redirect(new URL('app', 'index', null, Array('message' => 'success')));
+			$this->response->getHeaders()->redirect(url('app', 'index', null, Array('message' => 'success')));
 			return;
 		}
 		

@@ -122,12 +122,6 @@ class Helper
 		$check = $this->extract($e === null? $_GET['signature'] : $e)->setSecret($src->appSecret);
 
 		if (!$check->checksum()->verify($signature->checksum())) {
-			echo $signature;
-			echo '<br>';
-			echo $signature->checksum()->hash();
-			echo '<br>';
-			echo $check->checksum()->hash();
-			die();
 			throw new PublicException('Hash failure', 403);
 		}
 

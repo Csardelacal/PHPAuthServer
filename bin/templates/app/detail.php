@@ -1,21 +1,24 @@
 
-<div class="topbar sticky">
-	<div class="row5 fluid">
-		<div class="span4">
-			<span class="toggle-button-target" style="background: #2a912e; padding: 12px; margin: 0 10px 0 -10px; vertical-align: middle"></span>
-			Application Details
-		</div>
-		<div class="span1 desktop-only" style="text-align: right">
-			<a class="button error" style="font-size:.7em; line-height: 1.6em; display: inline-block" href="<?= url('app', 'delete', $app->_id) ?>">Delete App</a>
+<div class="row l1">
+	<div class="span">
+		<div class="heading" data-sticky="top">
+			<div class="row l5">
+				<div class="span l4">
+					<h1 class="unpadded">Application Details</h1>
+				</div>
+				<div class="span l1" style="text-align: right">
+					<a class="button error" style="font-size:.6em; display: inline-block" href="<?= url('app', 'delete', $app->_id) ?>">Delete App</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 
 <div class="spacer" style="height: 20px"></div>
 
-<div class="row1 fluid">
-	<div class="span1">
-		<p style="font-size: .8em; color: #555;">
+<div class="row l1">
+	<div class="span l1">
+		<p class="secondary small">
 			These are the oAuth codes and settings for your application. You can use
 			them to generate secure tokens for your app and authenticate users.
 		</p>
@@ -26,20 +29,18 @@
 
 <form class="regular" method="POST" enctype="multipart/form-data">
 	<!-- App Name -->
-	<div class="row5 fluid has-dials">
-		<div class="span4">
+	<div class="row l5 has-dials">
+		<div class="span l4">
 			<div style="font-size: .75em; color: #555">
 				Name
 			</div>
 			
-			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<div class="property-value" id="name-container">
-					<span id="name-display" class="fake-field-ph"><?= __($app->name) ?></span>
-					<div class="edit-field hidden"><input type="text" name="name" id="name-input" disabled></div>
-				</div>
+			<div class="property-value" id="name-container">
+				<span id="name-display" class="fake-field-ph"><?= __($app->name) ?></span>
+				<div class="edit-field hidden"><input type="text" name="name" id="name-input" disabled></div>
 			</div>
 		</div>
-		<div class="span1 dials">
+		<div class="span l1 dials">
 			<ul>
 				<li>
 					<a href="#change" id="change-name">Change</a>
@@ -52,19 +53,17 @@
 	<div class="separator large light"></div>
 	
 	<!-- App URL -->
-	<div class="row5 fluid has-dials">
-		<div class="span4">
+	<div class="row l5 has-dials">
+		<div class="span l4">
 			<div style="font-size: .75em; color: #555">
 				Public URL (users can click this to be directed to the app)
 			</div>
 			
-			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<div class="field">
-					<input type="text" name="url" value="<?= __($app->url) ?>">
-				</div>
+			<div class="field">
+				<input type="text" name="url" value="<?= __($app->url) ?>">
 			</div>
 		</div>
-		<div class="span1 dials">
+		<div class="span l1 dials">
 			<ul>
 				<li>
 					<!-- No dials yet-->
@@ -76,8 +75,8 @@
 	<div class="separator large light"></div>
 	
 	<!-- App ID -->
-	<div class="row5 fluid has-dials">
-		<div class="span4">
+	<div class="row l5 has-dials">
+		<div class="span l4">
 			<div style="font-size: .85em; color: #555">
 				App ID
 			</div>
@@ -86,7 +85,7 @@
 				<div class="property-value" id="id-container"><span class="fake-field"><?= __($app->appID) ?></span></div>
 			</div>
 		</div>
-		<div class="span1 dials">
+		<div class="span l1 dials">
 			<ul>
 				<li>
 					<a id="id-copy" href="#copy">Copy</a>
@@ -98,8 +97,8 @@
 	<div class="separator large light"></div>
 	
 	<!-- App Secret -->
-	<div class="row5 fluid has-dials">
-		<div class="span4">
+	<div class="row l5 has-dials">
+		<div class="span l4">
 			<div style="font-size: .85em; color: #555">
 				App Secret
 			</div>
@@ -108,7 +107,7 @@
 				<div class="property-value" id="secret-container" data-actual="<?= __($app->appSecret) ?>"><em class="fake-field-ph">Hidden</em></div>
 			</div>
 		</div>
-		<div class="span1 dials">
+		<div class="span l1 dials">
 			<ul>
 				<li><a id="secret-copy" href="#copy">Copy</a></li>
 				<li><a id="secret-hidden" href="#reveal">Reveal</a><a id="secret-visible" class="hidden" href="#hide">Hide</a></li>
@@ -119,8 +118,8 @@
 	<div class="separator large light"></div>
 	
 	<!-- Icon -->
-	<div class="row5 fluid has-dials">
-		<div class="span4">
+	<div class="row l5 has-dials">
+		<div class="span l4">
 			<div style="font-size: .85em; color: #555">
 				Icon
 			</div>
@@ -134,7 +133,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="span1 dials">
+		<div class="span l1 dials">
 			<ul>
 				<li><a href="#change" id="change-icon">Change</a><a href="#change" id="cancel-icon" class="hidden cancel">Cancel</a></li>
 			</ul>
@@ -143,8 +142,8 @@
 	
 	<div class="separator"></div>
 	
-	<div class="row1 fluid">
-		<div class="span1" style="text-align: right">
+	<div class="row l1">
+		<div class="span l1" style="text-align: right">
 			<input type="submit" class="button success" value="Save changes">
 		</div>
 	</div>

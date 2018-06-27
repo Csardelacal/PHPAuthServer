@@ -24,30 +24,3 @@
  * THE SOFTWARE.
  */
 
-class AppdrawerController extends BaseController
-{
-	
-	public function index() {
-		
-		if (isset($_GET['all']) && !$this->authapp) {
-			throw new PublicException('App needs to be authenticated for full listing', 403);
-		}
-		
-		$q = db()->table('authapp')->getAll();
-		
-		/*
-		 * Check if the app is just requiring to show the apps from the drawer,
-		 * otherwise we will show the application all the apps it can access from
-		 * within it's scope (non-system apps do not have access to the system app list)
-		 */
-		if (!isset($_GET['all'])) {
-			$q->where('drawer', true);
-		}
-		elseif (!$this->authapp->system) {
-			$q->where('system', false);
-		}
-		
-		$this->view->set('apps', $q->all());
-	}
-	
-}

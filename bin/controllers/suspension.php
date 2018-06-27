@@ -28,16 +28,18 @@ class SuspensionController extends AppController
 		if (!$user) { throw new PublicException('No user found', 404); }
 		
 		switch(_def($_POST['duration'], '0h')) {
-			case '6h': $duration =   6 *  3600; break;
-			case '1d': $duration =       86400; break;
-			case '3d': $duration =   3 * 86400; break;
-			case '1w': $duration =   7 * 86400; break;
-			case '2w': $duration =  14 * 86400; break;
-			case '1m': $duration =  30 * 86400; break;
-			case '3m': $duration =  90 * 86400; break;
-			case '6m': $duration = 180 * 86400; break;
-			case '1y': $duration = 360 * 86400; break;
-			default  : $duration = (int)$_POST['duration'];
+			case '6h' : $duration =    6 *  3600; break;
+			case '12h': $duration =   12 *  3600; break;
+			case '1d' : $duration =        86400; break;
+			case '3d' : $duration =    3 * 86400; break;
+			case '1w' : $duration =    7 * 86400; break;
+			case '2w' : $duration =   14 * 86400; break;
+			case '1m' : $duration =   30 * 86400; break;
+			case '3m' : $duration =   90 * 86400; break;
+			case '6m' : $duration =  180 * 86400; break;
+			case '1y' : $duration =  365 * 86400; break;
+			case '10y': $duration = 3650 * 86400; break;
+			default   : $duration = (int)$_POST['duration'];
 		}
 		
 		$blockLogin = _def($_POST['blockLogin'], 'n') === 'y';
@@ -54,6 +56,13 @@ class SuspensionController extends AppController
 		$tokens = db()->table('token')->get('user', $user)->addRestriction('expires', time(), '>')->fetchAll();
 		
 		foreach ($tokens as $token) {
+			/*
+			 * All of the user's tokens are expired, forcing them to log back into 
+			 * the application.
+			 */
+			$token->expires = time() - 1;
+			$token->store();
+			
 			HookModel::notify(HookModel::TOKEN_UPDATED, $token);
 		}
 		

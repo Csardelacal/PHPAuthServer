@@ -37,8 +37,8 @@ $data['registered']      = date('r', $user->created);
 $data['registered_unix'] = $user->created;
 
 #If the account was disabled we do add the disabled flag
-$data['disabled']  = $user->disabled || ($suspension && $suspension->preventsLogin);
-$data['suspended'] = ($suspension && !$suspension->preventsLogin);
+$data['disabled']  = $user->disabled || ($suspension && $suspension->preventLogin);
+$data['suspended'] = !!$suspension;
 
 #Avatar
 $data['avatar']          = Array();

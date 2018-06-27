@@ -31,7 +31,12 @@ foreach ($apps as $app) {
 		'id' => $app->appID,
 		'name' => $app->name,
 		'url'  => $app->url,
-		'icon' => (string)url('image', 'app', $app->_id, 128)->absolute()
+		'icon' => [
+			's'  => (string)url('image', 'app', $app->_id,  32)->absolute(),
+			'm'  => (string)url('image', 'app', $app->_id,  64)->absolute(),
+			'l'  => (string)url('image', 'app', $app->_id, 128)->absolute(),
+			'xl' => (string)url('image', 'app', $app->_id, 256)->absolute(),
+		]
 	];
 }
 
