@@ -17,6 +17,12 @@ abstract class BaseController extends Controller
 	protected $signature;
 	protected $authapp;
 	
+	/**
+	 *
+	 * @var hook\Hook
+	 */
+	protected $hook;
+	
 	public function _onload() {
 		
 		#Get the user session, if no session is given - we skip all of the processing
@@ -53,6 +59,15 @@ abstract class BaseController extends Controller
 			}
 			
 			$this->authapp = $src;
+		}
+		
+		/*
+		 * Webhook initialization
+		 */
+		if (null !== $hookapp = SysSettingModel::getValue('cptn.h00k')) {
+			$hook = db()->table('authapp')->get('appID', $hookapp)->first();
+			$sig = $this->signature->make($hook->appID, $hook->appSecret, $hook->appID);
+			$this->hook = new hook\Hook($hook->url, $sig);
 		}
 		
 		$this->isAdmin = $isAdmin;

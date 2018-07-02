@@ -139,6 +139,6 @@ class Helper
 	 * @return Signature
 	 */
 	public function make($src, $secret, $target = null, $context = null) {
-		return new Signature(Hash::ALGO_DEFAULT, $src, $secret, $target, $context);
+		return new Signature(Hash::ALGO_DEFAULT, $src, $secret, $target, $context, time() + 600);
 	}
 }

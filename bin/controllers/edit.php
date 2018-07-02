@@ -70,9 +70,9 @@ class EditController extends BaseController
 			$new->store();
 			
 			#Notify the webhook about the change
-			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			$this->hook->trigger('user.update.' . $this->user->_id);
 			
-			return $this->response->getHeaders()->redirect(new URL());
+			return $this->response->getHeaders()->redirect(url());
 		} 
 		catch (HTTPMethodException$e) {/*Do nothing here*/}
 		catch (ValidationException$e) { $this->view->set('messages', $e->getResult());}
@@ -249,7 +249,7 @@ class EditController extends BaseController
 			$attributeValue->store();
 			
 			#Notify the webhook about the change
-			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			$this->hook->trigger('user.update.' . $this->user->_id);
 			
 			return $this->response->getHeaders()->redirect(url());
 		}
