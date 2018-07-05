@@ -6,7 +6,8 @@ ob_start();
 $payload = Array(
 	 'authenticated' => $authenticated,
 	 'grant'         => $grant,
-	 'src'           => ['id' => $src->appID, 'name' => $src->name]
+	 'src'           => ['id' => $src->appID, 'name' => $src->name, 'deprecated' => true],
+	 'local'         => ['id' => $src->appID, 'name' => $src->name]
 );
 
 if ($remote) {
