@@ -26,30 +26,15 @@ class AppController extends BaseController
 		$this->view->set('pagination', $pag);
 		
 	}
-
-	static private function _getRandomBytes($length, &$crypto_strong = null){
-		if (function_exists('random_bytes')){
-			$crypto_strong = true;
-			return random_bytes($length);
-		}
-		else {
-			$crypto_strong = false;
-			return openssl_random_pseudo_bytes($length, $crypto_strong);
-		}
-	}
 	
 	public function create() {
 		
 		if ($this->request->isPost()) {
 			$app = db()->table('authapp')->newRecord();
 			$app->name      = $_POST['name'];
-			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(self::_getRandomBytes(35, $secure)));
+			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(35)));
 			$app->system    = false;
 			$app->drawer    = false;
-			
-			if (!$secure) {
-				throw new PrivateException('Could not generate safe AppSecret');
-			}
 			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->validate()->store();
@@ -87,6 +72,8 @@ class AppController extends BaseController
 				$app->icon = $_POST['icon']->store();
 			}
 			
+			$app->system = isset($_POST['system']);
+			
 			$app->store();
 		}
 		
@@ -99,7 +86,7 @@ class AppController extends BaseController
 			$app = db()->table('authapp')->get('_id', $appID)->fetch();
 			$app->delete();
 			
-			$this->response->getHeaders()->redirect(new URL('app', 'index', null, Array('message' => 'deleted')));
+			$this->response->getHeaders()->redirect(url('app', 'index', null, Array('message' => 'deleted')));
 			return;
 		}
 		

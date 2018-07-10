@@ -142,6 +142,17 @@
 	
 	<div class="separator"></div>
 	
+	
+	<!-- System app-->
+	<div class="row l5 has-dials">
+		<div class="span l4">
+			<input type="checkbox" name="system" id="chk_system" <?= $app->system? 'checked' : '' ?>>
+			<label for="chk_system">System application</label>
+		</div>
+		<div class="span l1 dials">
+		</div>
+	</div>
+	
 	<div class="row l1">
 		<div class="span l1" style="text-align: right">
 			<input type="submit" class="button success" value="Save changes">

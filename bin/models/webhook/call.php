@@ -10,6 +10,10 @@ use StringField;
 use TextField;
 use function db;
 
+/**
+ * 
+ * @deprecated since version 0.1-dev 20180705
+ */
 class CallModel extends Model
 {
 	

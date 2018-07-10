@@ -55,6 +55,24 @@ class ContextController extends BaseController
 		$this->view->set('app', $app);
 	}
 	
+	/**
+	 * Creates a context. A context allows an application to "fence off" certain
+	 * parts of the data it contains and ensure that the user grants sharing this 
+	 * information with external applications before doing so.
+	 * 
+	 * Originally contexts would expire regularly. But it seems to me that the idea
+	 * that contexts expire was not really meaningful at the point.
+	 * 
+	 * Generally, the user should not be in a position of mistrust of the application
+	 * that creates a context. So, when the application wishes to override the 
+	 * context, it doesn't seem like it's useful to keep a record to ensure that
+	 * the user can understand whether the application changed the description.
+	 * 
+	 * This would only be useful if the text was provided by a party that the user
+	 * is supposed to not trust.
+	 * 
+	 * @throws PublicException
+	 */
 	public function create() {
 		/*
 		 * Get the context that the application is pretending to create.
@@ -66,12 +84,12 @@ class ContextController extends BaseController
 		}
 		
 		/*@var $record ContextModel*/
-		$record = db()->table('connection\context')->newRecord();
+		$record = db()->table()->get('ctx', $context)->where('app', $this->authapp)->first()?: db()->table('connection\context')->newRecord();
 		$record->ctx     = $context;
 		$record->app     = $this->authapp;
 		$record->title   = _def($_POST['name'], 'Unnamed context');
 		$record->descr   = _def($_POST['description'], 'Missing description');
-		$record->expires = _def($_POST['expires'], 86400 * 90) + time();
+		$record->expires = _def($_POST['expires'], null) + time();
 		$record->store();
 		
 		$this->view->set('result', $record);
@@ -88,10 +106,6 @@ class ContextController extends BaseController
 	public function edit(ContextModel$ctx) {
 		if (!($this->isAdmin || ($this->authapp && $this->authapp->appID === $ctx->app->appID))) {
 			throw new PublicException('You do not have enough access privileges', 403);
-		}
-		
-		if ($ctx !== null && $ctx->expires < time()) {
-			throw new PublicException('This context is expired', 404);
 		}
 		
 		try {
@@ -142,7 +156,7 @@ class ContextController extends BaseController
 		$record->final  = false;
 		$record->store();
 		
-		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'for', $auth->target->_id));
+		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'on', $auth->target->_id));
 	}
 	
 	public function revoke(AuthModel$auth) {
@@ -159,7 +173,7 @@ class ContextController extends BaseController
 			throw new PublicException('No permissions to edit this context', 403);
 		}
 		
-		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'for', $auth->target->_id));
+		$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('permissions', 'on', $auth->target->_id));
 	}
 	
 	public function destroy(ContextModel$ctx) {

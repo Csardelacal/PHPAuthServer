@@ -44,7 +44,7 @@ class PermissionsController extends BaseController
 		$this->view->set('apps', $pag);
 	}
 	
-	public function for(AuthAppModel$app) {
+	public function on(AuthAppModel$app) {
 		if (!$this->user) {
 			throw new PublicException('You must be logged in to perform this action', 403);
 		}

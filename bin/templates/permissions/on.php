@@ -35,7 +35,7 @@
 				<div class="styled-select">
 					<form action="<?= url('permissions', 'set', $a->_id, $app->appID) ?>" method="GET">
 						<input type="hidden" name="_XSRF"    value="<?= new spitfire\io\XSSToken() ?>">
-						<input type="hidden" name="returnto" value="<?= url('permissions', 'for', $app->_id) ?>">
+						<input type="hidden" name="returnto" value="<?= url('permissions', 'on', $app->_id) ?>">
 						<select name="grant" id="attr-<?= $a->_id ?>" onchange="this.form.submit()">
 							<option value="<?= app\AttributeLock::MODE_N ?>" <?= $read === false && $write === false? 'selected' : '' ?>>No access</option>
 							<option value="<?= app\AttributeLock::MODE_R ?>" <?= $read === true  && $write === false? 'selected' : '' ?>>Read-only access</option>

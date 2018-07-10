@@ -112,7 +112,7 @@
 				<div class="span l1 dials">
 					<ul>
 						<li><a href="<?= url('permissions', 'deauthorize', $app->_id) ?>">Remove</a></li>
-						<li><a href="<?= url('permissions', 'for', $app->_id) ?>">Permissions</a></li>
+						<li><a href="<?= url('permissions', 'on', $app->_id) ?>">Permissions</a></li>
 					</ul>
 				</div>
 			</div>

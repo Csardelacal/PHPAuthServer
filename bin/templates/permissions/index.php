@@ -26,7 +26,7 @@
 			</div>
 			
 			<div class="span l6 m3 s2">
-				<div><a href="<?= url('permissions', 'for', $app->_id) ?>" class="app-name"><?= __($app->name) ?></a></div>
+				<div><a href="<?= url('permissions', 'on', $app->_id) ?>" class="app-name"><?= __($app->name) ?></a></div>
 				<div>
 					<p class="small unpadded">
 						<?php if ($granted): ?> 
@@ -40,7 +40,7 @@
 			
 			<div class="span l2 dials">
 				<ul>
-					<li><a href="<?= url('permissions', 'for', $app->_id) ?>">Permissions</a></li>
+					<li><a href="<?= url('permissions', 'on', $app->_id) ?>">Permissions</a></li>
 					<?php if ($app->url): ?> 
 					<li><a href="<?=$app->url ?>">Open application</a></li>
 					<?php endif; ?> 
