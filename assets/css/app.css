@@ -31,9 +31,14 @@ a {
   text-decoration: none; }
   a:hover {
     color: #333; }
-
-a img {
-  border: none; }
+  a.highlighted {
+    color: #2a912e; }
+    a.highlighted:hover {
+      color: #2a912e; }
+  a.heavy {
+    font-weight: bold; }
+  a img {
+    border: none; }
 
 h1 {
   font-size: 20px;

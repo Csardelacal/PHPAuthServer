@@ -26,7 +26,7 @@
 				
 				<div class="inset padded">
 					<p class="small unpadded">
-						Your avatar is public, any application and user are able to visualize
+						Your avatar is public, all applications and users are able to visualize
 						and download your avatar. Do not upload any image you do not wish
 						to make publicly available.
 					</p>
@@ -35,8 +35,8 @@
 					
 					<p class="small unpadded">
 						By uploading an avatar you authorize us to process your avatar
-						to scale, crop and optimize serving it to other users. We accept
-						PNG, JPEG and GIF images (animations will be removed)
+						to scale, crop and optimize it, in order to serve it to other 
+						users. We accept PNG, JPEG and GIF images (animations will be removed)
 					</p>
 				</div>
 				

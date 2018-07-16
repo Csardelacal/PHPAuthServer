@@ -212,7 +212,7 @@ class Signature
 		 * calculate the checksum.
 		 */
 		if (!$this->checksum) {
-			$hash = new Hash($this->algo, $this->src, $this->target, $this->secret, implode(self::SEPARATOR_CONTEXT, $this->context), $this->getExpiration(), $this->getSalt());
+			$hash = new Hash($this->algo, $this->src, $this->target, $this->secret, $this->context, $this->getExpiration(), $this->getSalt());
 			$this->checksum = $hash->hash();
 		}
 		
@@ -241,7 +241,7 @@ class Signature
 			$this->algo, 
 			$this->src, 
 			$this->target, 
-			implode(self::SEPARATOR_CONTEXT, $this->context), 
+			$this->context, 
 			$this->getExpiration(), 
 			$this->getSalt(),
 			$this->checksum()->hash()

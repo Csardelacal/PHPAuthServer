@@ -213,7 +213,7 @@ class UserController extends BaseController
 		
 		#Get the currently active moderative issue
 		#Check if the user has been either banned or suspended
-		$suspension = db()->table('user\suspension')->get('user', $profile)->addRestriction('expires', time(), '>')->fetch();
+		$suspension = db()->table('user\suspension')->get('user', $profile)->addRestriction('expires', time(), '>')->first();
 		
 		$this->view->set('user', $profile);
 		$this->view->set('profile', $userAttr);

@@ -1,9 +1,17 @@
 <?php
 
-use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
+use spitfire\storage\database\pagination\Paginator;
 
+/**
+ * This controller allows administrators (and only those) to manage the applications
+ * that can connect to the server and manage their preferences and default
+ * access level settings.
+ * 
+ * Only admins receive access since this is the strongest vector for a malicious
+ * application to raise it's privileges and access data it's not supposed to have.
+ */
 class AppController extends BaseController
 {
 		
@@ -21,7 +29,7 @@ class AppController extends BaseController
 	public function index() {
 		
 		$query = db()->table('authapp')->getAll();
-		$pag   = new \spitfire\storage\database\pagination\Paginator($query);
+		$pag   = new Paginator($query);
 		
 		$this->view->set('pagination', $pag);
 		
@@ -46,15 +54,13 @@ class AppController extends BaseController
 			} while ($count !== 0);
 			
 			$app->store();
-			$this->response->getHeaders()->redirect(url('app', 'index', null, Array('message' => 'success')));
+			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'success')));
 			return;
 		}
 		
 	}
 	
-	public function detail($appID) {
-		
-		$app = db()->table('authapp')->get('_id', $appID)->fetch();
+	public function detail(AuthAppModel$app) {
 		
 		if ($this->request->isPost()) {
 			
@@ -73,24 +79,27 @@ class AppController extends BaseController
 			}
 			
 			$app->system = isset($_POST['system']);
+			$app->drawer = isset($_POST['drawer']);
 			
 			$app->store();
 		}
 		
 		$this->view->set('app', $app);
+		$this->view->set('webhooks', $this->hook->on($app->appID)->listeners);
 	}
 	
 	public function delete($appID) {
+		$xsrf = new \spitfire\io\XSSToken();
 		
-		if (isset($_GET['confirm'])) {
+		if (isset($_GET['confirm']) && $xsrf->verify($_GET['confirm'])) {
 			$app = db()->table('authapp')->get('_id', $appID)->fetch();
 			$app->delete();
 			
-			$this->response->getHeaders()->redirect(url('app', 'index', null, Array('message' => 'deleted')));
+			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'deleted')));
 			return;
 		}
 		
-		$this->view->set('confirm', url('app', 'delete', $appID, Array('confirm' => 'true')));
+		$this->view->set('confirm', url('app', 'delete', $appID, Array('confirm' => $xsrf->getValue())));
 	}
 	
 }

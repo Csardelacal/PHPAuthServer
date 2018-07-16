@@ -2,7 +2,6 @@
 
 use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
-use webhook\HookModel;
 
 /* 
  * To change this license header, choose License Headers in Project Properties.
@@ -52,7 +51,10 @@ class SuspensionController extends AppController
 		$ban->notes  = _def($_POST['notes'], '');
 		$ban->store();
 		
-		#Notify applications that this token was nerfed
+		/*
+		 * Retrieve a list of tokens for the current user. If the user was banned
+		 * (blocking log-in) then we disable their current tokens.
+		 */
 		$tokens = db()->table('token')->get('user', $user)->addRestriction('expires', time(), '>')->fetchAll();
 		
 		foreach ($tokens as $token) {
@@ -63,9 +65,23 @@ class SuspensionController extends AppController
 			$token->expires = time() - 1;
 			$token->store();
 			
-			HookModel::notify(HookModel::TOKEN_UPDATED, $token);
+			/*
+			 * Notify the webhook server that the token was deleted. Applications
+			 * may need to empty their caches to prevent the user from continuing 
+			 * to use them.
+			 */
+			$this->hook->trigger('token.expire', ['token' => $token->token, 'user' => $user->_id]);
 		}
 		
+		/*
+		 * Some applications also perform user profile level caching. Something has
+		 * changed for this user, so we inform the application about it too.
+		 */
+		$this->hook->trigger('user.update', ['user' => $user->_id]);
+		
+		/*
+		 * The user is now suspended, we can redirect to the profile.
+		 */
 		$this->response->getHeaders()->redirect(url('user', 'detail', $user->_id));
 		
 	}

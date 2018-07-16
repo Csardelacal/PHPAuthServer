@@ -2,6 +2,7 @@
 
 use spitfire\exceptions\PrivateException;
 use spitfire\io\session\Session;
+use spitfire\exceptions\PublicException;
 
 abstract class BaseController extends Controller
 {
@@ -65,7 +66,7 @@ abstract class BaseController extends Controller
 		 * Webhook initialization
 		 */
 		if (null !== $hookapp = SysSettingModel::getValue('cptn.h00k')) {
-			$hook = db()->table('authapp')->get('appID', $hookapp)->first();
+			$hook = db()->table('authapp')->get('_id', $hookapp)->first();
 			$sig = $this->signature->make($hook->appID, $hook->appSecret, $hook->appID);
 			$this->hook = new hook\Hook($hook->url, $sig);
 		}

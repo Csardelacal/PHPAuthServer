@@ -81,9 +81,9 @@
 						On the right hand side you will find a list of applications that
 						may read this information from your account. If you prefer one 
 						of these applications to be unable to access your data, head to
-						the <a href="<?= url('appgrant') ?>">Application grant</a> page. Disabling access to
-						certain information may cause that application to stop working
-						properly.
+						the <a href="<?= url('permissions') ?>">Application permissions</a> page. 
+						Disabling access to certain information may cause that application 
+						to stop working properly.
 					</p>
 				</div>
 				

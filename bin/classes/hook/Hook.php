@@ -40,7 +40,22 @@ class Hook
 		$this->signature = $signature;
 	}
 	
-	public function trigger($event, $defer = null) {
+	public function authenticate() {
+		$request = request(rtrim($this->endpoint, '/') . '/app/authenticate.json');
+		$request->get('signature', (string) $this->signature);
+		
+		
+		return $request->send()->expect(200)->json();
+	}
+	
+	public function on($appId) {
+		$request = request(rtrim($this->endpoint, '/') . '/listener/on/' . $appId . '.json');
+		$request->get('signature', (string)$this->signature);
+		
+		return $request->send()->expect(200)->json();
+	}
+	
+	public function trigger($event, $payload = null, $defer = null) {
 		
 		if ($defer > time()) { 
 			$schedule = $defer;
@@ -56,9 +71,12 @@ class Hook
 		$request->get('schedule', $schedule);
 		$request->get('signature', (string)$this->signature);
 		
-		$payload = $request->send()->expect(200)->json();
+		$request->header('Content-type', 'application/json');
+		$request->post(json_encode($payload));
 		
-		return $payload;
+		$response = $request->send()->expect(200)->json();
+		
+		return $response;
 	}
 	
 }

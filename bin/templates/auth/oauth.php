@@ -12,9 +12,9 @@
 		
 		<div class="material">
 			<p style="text-align: center">
-				<img src="<?= new URL('image', 'user', $authUser->_id, 128) ?>" width="128"  style="border-radius: 3px; border: solid 1px #777;">
-				<img src="<?= URL::asset('img/right-arrow.png') ?>" style="margin: 4px 20px;">
-				<img src="<?= new URL('image', 'app', $token->app->_id, 128) ?>" width="128" style="border-radius: 3px; border: solid 1px #777;">
+				<img src="<?= url('image', 'user', $authUser->_id, 128) ?>" width="128"  style="border-radius: 3px; border: solid 1px #777;">
+				<img src="<?= \spitfire\core\http\URL::asset('img/right-arrow.png') ?>" style="margin: 4px 20px;">
+				<img src="<?= url('image', 'app', $token->app->_id, 128) ?>" width="128" style="border-radius: 3px; border: solid 1px #777;">
 			</p>
 			
 			<p>

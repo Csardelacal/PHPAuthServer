@@ -41,11 +41,24 @@ a {
 	&:hover {
 		color: #333;
 	}
+	
+	&.highlighted {
+		color: #2a912e;
+		
+		&:hover {
+			color: #2a912e;
+		}
+	}
+	
+	&.heavy {
+		font-weight: bold;
+	}
+	
+	img {
+		border: none;
+	}
 }
 
-a img {
-	border: none;
-}
 
 h1 {
 	font-size: 20px;

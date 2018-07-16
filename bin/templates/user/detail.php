@@ -11,26 +11,26 @@
 <div class="spacer" style="height: 20px"></div>
 
 
-<div class="row l2">
+<div class="row l3">
 	<div class="span l1">
 		<div style="font-size: .75em; color: #555">
 			Registered since
 		</div>
 	</div>
-	<div class="span l1">
+	<div class="span l2">
 			<?= date('m/d/Y', $user->created) ?>
 	</div>
 </div>
 
 <div class="spacer" style="height: 20px"></div>
 
-<div class="row l2">
+<div class="row l3">
 	<div class="span l1">
 		<div style="font-size: .75em; color: #555">
 			Aliases
 		</div>
 	</div>
-	<div class="span l1">
+	<div class="span l2">
 		<?php $aliases = $user->usernames->getQuery()->addRestriction('expires', time(), '>')->fetchAll(); ?>
 		<?= $aliases->count()? $aliases->join('<br>') : '<i>None</i>'; ?>
 	</div>
@@ -150,7 +150,7 @@
 			</div>
 		</div>
 		<div class="span l1 m1 s1" style="text-align: right">
-			<input type="submit" class="button error" value="Suspend">
+			<input type="submit" class="button error small" value="Suspend">
 		</div>
 	</div>
 </form>
@@ -165,7 +165,7 @@
 	</div>
 </div>
 
-<?php $suspensions = db()->table('user\suspension')->get('user', $user)->setOrder('expires', 'DESC')->fetchAll(); ?>
+<?php $suspensions = db()->table('user\suspension')->get('user', $user)->where('expires', '>', time() - 360 * 2 * 86400)->setOrder('expires', 'DESC')->fetchAll(); ?>
 
 <?php foreach ($suspensions as $suspension): ?>
 	<div class="spacer" style="height: 20px"></div>

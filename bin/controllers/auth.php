@@ -58,15 +58,22 @@ class AuthController extends BaseController
 		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
 		$session    = Session::getInstance();
 		
-		#Check whether the user was banned
-		$banned     = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->fetch();
-		if ($banned) { throw new PublicException('Your account was banned, login was disabled', 401); }
+		#Check whether the user was banned. If the account is disabled due to administrative
+		#action, we inform the user that the account was disabled and why.
+		$banned     = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
+		if ($banned) { throw new PublicException('Your account was banned, login was disabled. ' . $banned->reason, 401); }
 		
 		#Check whether the user was disabled
 		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }
 		
 		#If the user already automatically grants the application in, then we continue
 		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
+		
+		#Only administrators are allowed to authorize tokens to system applications.
+		#This imposes a restriction to encourage administrators to be open about the 
+		#applications accessing user data. System applications are not required to
+		#disclose what data they have access to.
+		if ($token->app->system && !$this->isAdmin) { $grant = false; }
 		
 		#No token, no access
 		if (!$token) { throw new PublicException('No token', 404); }

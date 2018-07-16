@@ -34,6 +34,11 @@ use spitfire\validation\ValidationException;
 class ContextController extends BaseController
 {
 	
+	/**
+	 * 
+	 * @param AuthAppModel $app
+	 * @throws PublicException
+	 */
 	public function index(AuthAppModel$app = null) {
 		if ($app === null) {
 			$app = $this->authapp;
