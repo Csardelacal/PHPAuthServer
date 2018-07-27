@@ -188,6 +188,18 @@
 	</div>
 </div>
 
+<div class="row">
+	<div class="span">
+		<p class="secondary small">
+			Lists the webhooks this application is listening for. This only lists
+			webhooks sent from PHPAS, to see all webhooks this application is listening
+			to please consult the application's manual. Webhooks are provided by a
+			external application called <strong>Cptn.H00k</strong>, if the application
+			is not configured correctly it will not work properly.
+		</p>
+	</div>
+</div>
+
 <div class="spacer" style="height: 20px"></div>
 
 <div class="row">
@@ -195,7 +207,7 @@
 		<?php foreach ($webhooks as $webhook): ?>
 		<div class="row l5 has-dials">
 			<div class="span l1">
-				<div style="font-size: .85em; color: #555"><?= __($webhook->on->event) ?></div>
+				<div><?= __($webhook->on->event) ?></div>
 			</div>
 			<div class="span l3">
 				<div style="font-size: .85em; color: #555"><?= $webhook->id ?> (<?= $webhook->url ?>)</div>

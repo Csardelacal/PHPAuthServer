@@ -85,7 +85,13 @@ class AppController extends BaseController
 		}
 		
 		$this->view->set('app', $app);
-		$this->view->set('webhooks', $this->hook->on($app->appID)->listeners);
+		
+		try {
+			$hookapp = db()->table('authapp')->get('_id', SysSettingModel::getValue('cptn.h00k'))->first(true)->appID;
+			$this->view->set('webhooks', $this->hook->on($hookapp, $app->appID)->listeners);
+		} catch (Exception $ex) {
+			$this->view->set('webhooks', []);
+		}
 	}
 	
 	public function delete($appID) {

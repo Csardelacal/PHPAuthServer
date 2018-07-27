@@ -48,8 +48,16 @@ class Hook
 		return $request->send()->expect(200)->json();
 	}
 	
-	public function on($appId) {
-		$request = request(rtrim($this->endpoint, '/') . '/listener/on/' . $appId . '.json');
+	public function on($src, $target) {
+		$request = request(rtrim($this->endpoint, '/') . '/listener/on/' . $src . '.json');
+		$request->get('signature', (string)$this->signature);
+		$request->get('target', $target);
+		
+		return $request->send()->expect(200)->json();
+	}
+	
+	public function listeningFor($appId) {
+		$request = request(rtrim($this->endpoint, '/') . '/listener/target/' . $appId . '.json');
 		$request->get('signature', (string)$this->signature);
 		
 		return $request->send()->expect(200)->json();
@@ -77,6 +85,21 @@ class Hook
 		$response = $request->send()->expect(200)->json();
 		
 		return $response;
+	}
+	
+	public function register($src, $tgt, $id, $event, $url, $defer = 0, $format = 'json') {
+		$request = request(rtrim($this->endpoint, '/') . '/listener/register.json');
+		$request->get('signature', (string)$this->signature);
+		
+		$request->post('app', $src);
+		$request->post('target', $tgt);
+		$request->post('hid', $id);
+		$request->post('listen', $event);
+		$request->post('url', $url);
+		$request->post('defer', $defer);
+		$request->post('format', $format);
+		
+		return $request->send()->expect(200)->json();
 	}
 	
 }
