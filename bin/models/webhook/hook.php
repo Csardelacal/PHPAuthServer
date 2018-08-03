@@ -6,6 +6,11 @@ use spitfire\Model;
 use spitfire\storage\database\Schema;
 use StringField;
 
+/**
+ * This functionality is now provided by CptnH00k
+ * 
+ * @deprecated since version 0.1-dev 20180705
+ */
 class HookModel extends Model
 {
 	const CREATED      = 0x1111;

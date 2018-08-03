@@ -12,7 +12,7 @@
 <?php if(isset($userIsAdmin) && $userIsAdmin): ?>
 <div class="row1">
 	<div class="span1" style="text-align: right">
-		<a class="button" href="<?= new URL('group', 'create') ?>">Create Group</a>
+		<a class="button" href="<?= url('group', 'create') ?>">Create Group</a>
 	</div>
 </div>
 <?php endif; ?>
@@ -33,7 +33,7 @@
 			<tr>
 				<td><?= __($record->name) ?> <?= $record->_id === SysSettingModel::getValue('admin.group')? '<i>(Admin)</i>': '' ?></td>
 				<td><?= __($record->creator) ?></td>
-				<td><a href="<?= new URL('group', 'detail', $record->_id) ?>">Show</a></td>
+				<td><a href="<?= url('group', 'detail', $record->_id) ?>">Show</a></td>
 			</tr>
 			<?php endforeach; ?>
 		</table>

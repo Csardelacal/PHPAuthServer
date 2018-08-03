@@ -1,13 +1,18 @@
 <?php
 
+use auth\Context;
+use connection\AuthModel;
+use spitfire\Model;
+use spitfire\storage\database\Schema;
+
 /**
  * 
  * @todo Add ownership to the apps. So a certain user can administrate his own apps
  */
-class AuthAppModel extends spitfire\Model
+class AuthAppModel extends Model
 {
 	
-	public function definitions(\spitfire\storage\database\Schema $schema) {
+	public function definitions(Schema $schema) {
 		$schema->appID  = new StringField(20);
 		$schema->appSecret = new StringField(50);
 		
@@ -16,31 +21,32 @@ class AuthAppModel extends spitfire\Model
 		$schema->icon   = new FileField();
 		
 		/*
-		 * The webhook allows the App developer to provide a URL that will be called
-		 * when a user modifies it's data.
+		 * System applications do not need to request permissions to access data,
+		 * nor will the user be able to block them. In return, sys apps are only
+		 * able to create tokens for administrative users.
 		 */
-		$schema->webhook= new StringField(100);
+		$schema->system = new BooleanField();
+		$schema->system->setNullable(false);
+		
+		/*
+		 * Indicates whether this application should be placed in the app drawer.
+		 * This allows applications (including PHPAS) to quickly render navigation
+		 * to provide users with the option to jump between apps.
+		 */
+		$schema->drawer = new BooleanField();
+		$schema->drawer->setNullable(false);
 		
 		$schema->appID->setUnique(true);
 	}
 	
-	public function canAccess($app, $user = null, $context = null) {
-		
-		if (is_array($context)) {
-			return collect($context)->reduce(function ($p, $e) use ($app, $user) {
-				return min($p, $this->canAccess($app, $user, $e));
-			}, 2);
-		}
+	public function canAccess($app, $user, $context) {
 		
 		$db = $this->getTable()->getDb();
 		$q  = $db->table('connection\auth')->getAll();
 		
 		$q->addRestriction('source', $this);
 		$q->addRestriction('target', $app);
-		
-		if ($context) {
-			$q->addRestriction('context', $context);
-		}
+		$q->addRestriction('context', $context);
 		
 		if ($user) {
 			$q->addRestriction('user', $user);
@@ -50,14 +56,26 @@ class AuthAppModel extends spitfire\Model
 		}
 		
 		$q->group()->addRestriction('expires', null, 'IS')->addRestriction('expires', time(), '>');
-		$p = $q->fetch();
+		$result = $q->all();
 		
-		return $p? (int)$p->state : connection\AuthModel::STATE_PENDING;
+		$_r = $result->reduce(function (AuthModel$c, AuthModel$e) {
+			if ($e->user && $e->final) { return $e; }
+			if ($c->user && $c->final) { return $c; }
+			if ($e->user && $e->state == AuthModel::STATE_DENIED) { return $e; }
+			if ($c->user && $c->state == AuthModel::STATE_DENIED) { return $c; }
+			if ($e->final) { return $e; }
+			if ($c->final) { return $c; }
+			if ($e->user ) { return $e; }
+			if ($c->user ) { return $c; }
+			return $e;
+		}, $result->rewind());
+			
+		return $_r? $_r->state : AuthModel::STATE_PENDING;
 	}
 	
 	public function getContext($context) {
-		if (is_array($context) || $context instanceof spitfire\io\Get) {
-			return collect($context instanceof spitfire\io\Get? $context->getRaw() : $context)->each(function ($e) { return $this->getContext($e); });
+		if (!is_string($context)) {
+			throw new InvalidArgumentException('Context must be string', 1806130942);
 		}
 		
 		$db = $this->getTable()->getDb();
@@ -69,8 +87,8 @@ class AuthAppModel extends spitfire\Model
 		
 		$r = $q->fetch();
 		
-		return $r? new \auth\Context(true, $r->ctx, $r->app->appID, $r->title, $r->descr, $r->expires) :
-			new \auth\Context(false, $context, $this->appID, null, null, null);
+		return $r? new Context(true, $r->ctx, $r->app->appID, $r->title, $r->descr, $r->expires) :
+			new Context(false, $context, $this->appID, null, null, null);
 	}
 
 	public function __toString() {

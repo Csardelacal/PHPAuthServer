@@ -1,16 +1,4 @@
 
-<div class="topbar sticky">
-	<span class="toggle-button-target" style="background: #2a912e; padding: 12px; margin: 0 10px 0 -10px; vertical-align: middle"></span>
-	Change your username
-</div>
-
-<div class="spacer" style="height: 25px"></div>
-
-<p style="font-size: .8em; color: #555">
-	Enter your new username below to change it. Your old username will be kept
-	as an alias for 3 months before it expires.
-</p>
-
 <?php if (isset($messages) && !empty($messages)): ?>
 <div class="row1">
 	<div class="span1">
@@ -28,27 +16,56 @@
 
 <div class="spacer" style="height: 25px"></div>
 
+
+<!--New layout-->
 <form class="regular" method="POST">
 	
-	<div class="row1 fluid">
-		<div class="span1">
-			<div style="font-size: .75em; color: #555">
-				Select a new username
+	<div class="row l5 s1">
+		<div class="span l1"></div>
+		<div class="span l3 s1">
+			<div class="material unpadded">
+				<div class="padded">
+					
+					
+					<div>
+						Update your username
+					</div>
+
+					<p class="small">
+						Enter your new username below to change it. Your old username will be kept
+						as an alias for 3 months before it expires. After that period,
+						other users may be able to register it.
+					</p>
+					
+					<div class="field">
+						<input type="text" name="username" placeholder="Your new username" value="<?= __(_def($_POST['username'], '')) ?>">
+					</div>
+				</div>
+				
+				<div class="inset padded">
+					<p class="small unpadded">
+						Your username is public and cannot be made private. Users and
+						applications will always be able to find your account by providing
+						the correct username.
+						
+						You can request applications to not show your profile to guest
+						users from the privacy settings tab.
+					</p>
+				</div>
+				
+				<div class="padded">
+					
+					<div class="spacer" style="height: 10px"></div>
+
+					<div class="row1 fluid">
+						<div class="span1" style="text-align: right">
+							<input type="submit" class="button success" value="Store">
+						</div>
+					</div>
+					
+					<div class="spacer" style="height: 25px"></div>
+				</div>
 			</div>
-			
-			<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<input type="text" name="username" placeholder="Your new username" value="<?= __(_def($_POST['username'], '')) ?>">
-			</div>
-		</div>
-	</div>
-	
-	<div class="spacer" style="height: 25px"></div>
-	
-	<div class="row1 fluid">
-		<div class="span1" style="text-align: right">
-			<input type="submit" class="button success" value="Store">
 		</div>
 	</div>
 </form>
-
-<div class="spacer" style="height: 250px"></div>

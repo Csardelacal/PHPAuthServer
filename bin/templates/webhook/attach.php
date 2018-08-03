@@ -41,20 +41,20 @@
 					<div class="span1">
 						<span class="styled-select">
 							<select name="type">
-								<option value="<?= \webhook\HookModel::USER ?>">User</option>
-								<option value="<?= \webhook\HookModel::TOKEN ?>">Token</option>
-								<option value="<?= \webhook\HookModel::APP ?>">App</option>
-								<option value="<?= \webhook\HookModel::GROUP ?>">Group</option>
+								<option value="user">User</option>
+								<option value="token">Token</option>
+								<option value="app">App</option>
+								<option value="group">Group</option>
 							</select>
 						</span>
 					</div>
 					<div class="span1">
 						<span class="styled-select">
 							<select name="action">
-								<option value="<?= \webhook\HookModel::CREATED ?>">Created</option>
-								<option value="<?= \webhook\HookModel::UPDATED ?>">Updated</option>
-								<option value="<?= \webhook\HookModel::DELETED ?>">Deleted</option>
-								<option value="<?= \webhook\HookModel::MEMBER ?>">Member change</option>
+								<option value="create">Created</option>
+								<option value="update">Updated</option>
+								<option value="delete">Deleted</option>
+								<option value="member">Member change</option>
 							</select>
 						</span>
 					</div>
@@ -64,10 +64,10 @@
 			<div class="spacer" style="height: 20px"></div>
 			
 			<div style="font-size: .75em; color: #555">
-				<strong>Name</strong> [optional]
+				<strong>ID</strong>
 			</div>
 			<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<input type="text" name="name" placeholder="Name...">
+				<input type="text" name="id" placeholder="Name...">
 			</div>
 			
 			<div class="spacer" style="height: 20px"></div>

@@ -36,7 +36,7 @@
 						<div class="edit-field" id="icon-upload-wrap">
 							<input type="file" name="icon" id="icon-input" accept="image/png,image/jpeg,image/gif" required>
 						</div><!--
-					</div><!--
+					--></div><!--
 				--></div>
 			</div>
 
@@ -50,4 +50,4 @@
 	</div>
 </div>
 
-<script src="<?= URL::asset('js/app-create.min.js')?>"></script>
+<script src="<?= \spitfire\core\http\URL::asset('js/app-create.min.js')?>"></script>

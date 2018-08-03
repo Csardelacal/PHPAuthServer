@@ -13,63 +13,81 @@
 	a {
 		display: inline-block;
 		padding: 2px;
+		text-decoration: none;
 	}
 	
 	a:hover {
 		background: #EEE;
 	}
 }
+	
+.dial-toggle {
+	@extend .toggle-button;
+	display: block;
+	width: 23px !important;
+	height: 24px;
+	position: absolute; 
+	top: 0;
+	right: 0px;
+	display: none;
+	background-color: #FFF;
+	border-radius: 50%;
+	box-shadow: 0 0 2px #CCC;
+}
 
-@media all and (max-width: 960px) {
+@media all and (max-width: $MobileBreakpoint) {
 	
 	.has-dials {
 		position: relative;
 	}
 	
 	.dial-toggle {
-		padding:  20px;
-		position: absolute;
-		top: 0;
-		right: 10px;
-
-		.dots,
-		.dots:before,
-		.dots:after {
-			position: absolute;
-			top:           0;
-			right:         0;
-			background:   #AAA;
-			width:         4px;
-			height:        4px;
-		}
-
-		.dots:before {
-			content:        '';
-			top:           7px;
-			right:         0;
-		}
-
-		.dots:after {
-			content:        '';
-			top:          14px;
-			right:         0;
-		}
+		display: block;
 	}
 	
 	.dials {
 		border: solid 1px #CCC;
+		padding: 20px 0;
 		background: #FFF;
-		position: absolute;
-		top: 0;
-		right: 20px;
-		width: 200px !important;
+		position: fixed;
+		bottom: 30%;
+		left: 5%;
+		margin: 0 auto;
+		width: 90% !important;
 		display: none;
 		box-shadow: 0 0 3px #CCC;
+		z-index: 10;
+		border-radius: 10px;
+		
+		ul {
+			padding: 0;
+			margin: 0;
+		}
 		
 		a{
-			padding: 5px 20px;
+			display: block;
+			padding: 15px 30px;
+			width: 100%;
 			color: #555;
+			font-size: 1.2em;
 			font-weight: bold;
+		}
+	}
+	
+	.dials-curtain {
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		z-index: 9;
+		background: rgba(0, 0, 0, .25);
+		
+		transition: .7s opacity 0s ease;
+		opacity: 1;
+		
+		&.dnd {
+			opacity: 0;
 		}
 	}
 }

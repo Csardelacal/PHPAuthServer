@@ -14,9 +14,10 @@ class AttributeController extends BaseController
 	public function index() {
 		
 		$query = db()->table('attribute')->getAll();
+		$pagination = new \spitfire\storage\database\pagination\Paginator($query);
 		
-		$this->view->set('pagination', new Pagination($query));
-		$this->view->set('attributes', $query->fetchAll());
+		$this->view->set('pagination', $pagination);
+		$this->view->set('attributes', $pagination->records());
 		
 	}
 	
@@ -30,7 +31,7 @@ class AttributeController extends BaseController
 			$bean->setDBRecord(db()->table('attribute')->newRecord());
 			$bean->updateDBRecord()->store();
 			
-			$this->response->getHeaders()->redirect(new URL('attribute', Array('message' => 'created')));
+			$this->response->getHeaders()->redirect(url('attribute', Array('message' => 'created')));
 		} catch (\spitfire\validation\ValidationException$e) {
 			$this->view->set('messages', $e->getResult());
 		} catch (\spitfire\io\beans\UnSubmittedException$e) {
@@ -43,6 +44,8 @@ class AttributeController extends BaseController
 	public function edit($id) {
 		
 		$record = db()->table('attribute')->getById($id);
+		$collector  = new attribute\AttributeValidatorCollector();
+		
 		
 		$bean = db()->table('attribute')->getBean();
 		$bean->setDBRecord($record);
@@ -62,5 +65,6 @@ class AttributeController extends BaseController
 		}
 		
 		$this->view->set('bean', $bean);
+		$this->view->set('validatorcollector', $collector);
 	}
 }

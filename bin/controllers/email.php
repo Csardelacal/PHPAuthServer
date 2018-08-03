@@ -1,8 +1,14 @@
 <?php
 
+use email\DomainModel;
+use mail\spam\domain\implementation\SpamDomainModelReader;
+use mail\spam\domain\IP;
 use spitfire\exceptions\HTTPMethodException;
+use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
-use spitfire\validation\EmptyValidationRule;
+use spitfire\io\XSSToken;
+use spitfire\storage\database\pagination\Paginator;
+use spitfire\validation\rules\EmptyValidationRule;
 use spitfire\validation\ValidationException;
 
 /**
@@ -31,8 +37,10 @@ class EmailController extends BaseController
 			$queue->setOrder('scheduled', 'DESC');
 		}
 		
-		$this->view->set('pagination', new Pagination($queue));
-		$this->view->set('records', $queue->fetchAll());
+		$pag = new Paginator($queue);
+		
+		$this->view->set('pagination', $pag);
+		$this->view->set('records', $pag->records());
 	}
 	
 	/**
@@ -116,4 +124,100 @@ class EmailController extends BaseController
 		}
 	} 
 	
+	public function detail(EmailModel$msg) {
+		
+		if (!$this->isAdmin) {
+			throw new PublicException('Unauthorized', 403);
+		}
+		
+		$this->view->set('msg', $msg);
+	}
+	
+	public function domain() {
+		
+		if (!$this->isAdmin) {
+			throw new PublicException('Unauthorized', 403);
+		}
+		
+		$q = db()->table('email\domain')->getAll();
+		
+		$p = new Paginator($q);
+		
+		$this->view->set('xsrf', new XSSToken());
+		$this->view->set('records', $p->records());
+		$this->view->set('pages', $p);
+	}
+	
+	/**
+	 * 
+	 * @validate >> POST#hostname(required string) AND POST#reason (required string)
+	 * @validate >> POST#list(required string in[white, black]) AND POST#type(required string in[IP, domain])
+	 * @param DomainModel $domain
+	 */
+	public function rule(DomainModel$domain = null) {
+		
+		if ($domain === null) {
+			$domain = db()->table('email\domain')->newRecord();
+		}
+		
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
+			if (!$this->validation->isEmpty()) { throw new ValidationException('', 0, $this->validation->toArray()); }
+			
+			if ($_POST['type'] === 'IP') {
+				$pieces = explode('/', $_POST['hostname']);
+				$ip   = array_shift($pieces);
+				$cidr = array_shift($pieces)? : 0;
+				
+				if ($cidr % 4) { throw new PrivateException('CIDR must be a value divisible by 4', 1806211156); }
+				
+				$t = new IP($ip, $cidr);
+				$hostname = $t->getBase64();
+				$type     = SpamDomainModelReader::TYPE_IP;
+			}
+			else {
+				$hostname = $_POST['hostname'];
+				$type     = SpamDomainModelReader::TYPE_HOSTNAME;
+			}
+			
+			if ($_POST['list'] === 'black') {
+				$list = SpamDomainModelReader::LIST_BLACKLIST;
+			}
+			else {
+				$list = SpamDomainModelReader::LIST_WHITELIST;
+			}
+			
+			$domain->type = $type;
+			$domain->host = $hostname;
+			$domain->list = $list;
+			$domain->reason = $_POST['reason'];
+			$domain->store();
+			
+			return $this->response->setBody('Redirecting...')->getHeaders()->redirect(url('email', 'rule', $domain->_id));
+		} 
+		catch (HTTPMethodException $ex) {
+			//Do nothing, just show the form
+		}
+		catch (ValidationException$e) {
+			$this->view->set('messages', $e->getResult());
+		}
+		
+		$this->view->set('domain', $domain);
+	}
+	
+	/**
+	 * 
+	 * @validate GET#xsrf(required string)
+	 * @param DomainModel $d
+	 */
+	public function dropRule(DomainModel$d) {
+		
+		$xsrf = new XSSToken();
+		
+		if ($xsrf->verify($_GET['xsrf'])) {
+			$d->delete();
+		}
+		
+		
+	}
 }

@@ -47,6 +47,14 @@ class AttributeValidatorCollector
 		return $validators;
 	}
 	
+	public function getValidator($id) {
+		$validators = $this->getValidators();
+		
+		foreach ($validators as $validator) {
+			if (get_class($validator) === $id) { return $validator; }
+		}
+	}
+	
 	public function makeValidators() {
 		#First of all we need an iterator capable of looping over the classes
 		$iterator   = new DirectoryIterator(realpath(dirname(__FILE__) . '/' . self::VALIDATOR_DIR));

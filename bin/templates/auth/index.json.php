@@ -12,7 +12,7 @@ if ($token && $token->user) {
 	$data['user']['username']  = $token->user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name;
 	$data['user']['verified']  = $token->user->verified;
 	$data['user']['disabled']  = $token->user->disabled || ($suspension && $suspension->preventLogin);
-	$data['user']['suspended'] = ($suspension && !$suspension->preventLogin);
+	$data['user']['suspended'] = !!$suspension;
 	$data['user']['avatar']    = (string)url('image', 'user', $token->user->_id)->absolute();
 	
 	$data['app']               = Array();

@@ -115,7 +115,7 @@ class ImageController extends Controller
 		
 	}
 	
-	public function attribute($attribute, $id, $width = 700, $height = 700) {
+	public function attribute($attribute, $id, $width = 700, $height = null) {
 		$user  = db()->table('user')->get('_id', $id)->fetch();
 		$attr  = db()->table('user\attribute')->get('user', $user)->addRestriction('attr__id', $attribute)->fetch();
 		
@@ -133,7 +133,7 @@ class ImageController extends Controller
 		
 		if ($attr->value && !file_exists($prvw) && file_exists($file)) {
 			$img = new \spitfire\io\Image($file);
-			$img->fitInto($width, $height);
+			$height? $img->fitInto($width, $height) : $img->resize($width);
 			$img->setBackground(255, 255, 255);
 			$img->setCompression(9);
 			$img->store($prvw, 'jpg');

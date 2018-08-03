@@ -1,0 +1,122 @@
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : 21.03.2018, 14:52:40
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+
+$app-switcher-fg-color  : #777;
+$app-switcher-bg-color  : #EAEAEA;
+$app-switcher-tile-size :  5px;
+
+.app-switcher.toggle {
+	vertical-align: middle;
+	background-color: $app-switcher-fg-color;
+	display: inline-block;
+	width: $app-switcher-tile-size * 4;
+	height: $app-switcher-tile-size * 4;
+	cursor: pointer;
+	
+	background-image: 
+		linear-gradient(
+			0deg, 
+			transparent $app-switcher-tile-size * 0, transparent $app-switcher-tile-size * 1,
+			$app-switcher-bg-color $app-switcher-tile-size * 1, $app-switcher-bg-color $app-switcher-tile-size * 1.5,
+			transparent $app-switcher-tile-size * 1.5, transparent $app-switcher-tile-size * 2.5,
+			$app-switcher-bg-color $app-switcher-tile-size * 2.5, $app-switcher-bg-color $app-switcher-tile-size * 3,
+			transparent $app-switcher-tile-size * 3, transparent $app-switcher-tile-size * 4
+		),
+		
+		linear-gradient(
+			90deg, 
+			transparent $app-switcher-tile-size * 0, transparent $app-switcher-tile-size * 1,
+			$app-switcher-bg-color $app-switcher-tile-size * 1, $app-switcher-bg-color $app-switcher-tile-size * 1.5,
+			transparent $app-switcher-tile-size * 1.5, transparent $app-switcher-tile-size * 2.5,
+			$app-switcher-bg-color $app-switcher-tile-size * 2.5, $app-switcher-bg-color $app-switcher-tile-size * 3,
+			transparent $app-switcher-tile-size * 3, transparent $app-switcher-tile-size * 4
+		)
+		
+	;
+}
+
+.app-drawer
+{
+	
+	text-align: left;
+	
+	.app-entry {
+		padding: 10px;
+		border-radius: 3px;
+		border: solid 1px transparent;
+		background-color: transparent;
+		display: inline-block;
+		width: 100%;
+		text-align: center;
+		
+		transition: border .15s ease-in, background-color .15s ease-in;
+		
+		&:hover {
+			background-color: #EAEAEA;
+			border: solid 1px #BBB;
+			box-shadow: 1px 1px 3px #DDD inset;
+		}
+	}
+	
+	.app-icon-drawer {
+		margin: 0 auto;
+		width: 90%;
+		height: auto;
+		display: block;
+	}
+	
+	.app-name-drawer {
+		text-align: center;
+		display: block;
+		font-size: .75em;
+		color: #777;
+		margin-top: .4em;
+		line-height: 1.2em;
+		width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	
+	.footer {
+		background: #DDD;
+		text-align: center;
+		display: block;
+		padding: 10px 15px;
+		color: #888;
+		font-weight: bold;
+		font-size: .8em;
+		
+		background-image: linear-gradient(180deg, #CCC 0px, transparent 3px);
+		
+		&:hover {
+			color: #777;
+			background-color: #CCC;
+		}
+	}
+}

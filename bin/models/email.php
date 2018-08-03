@@ -50,6 +50,15 @@ class EmailModel extends Model
 		$model->delivered = null;
 		$model->store();
 		
+		//Notify
+		try {
+			$lock = new cron\FlipFlop(spitfire()->getCWD() . '/bin/usr/.mail.cron.sem');
+			$lock->notify();
+		} 
+		catch (\Exception$e) {
+			spitfire()->log($e->getMessage());
+		}
+		
 		return $model;
 	}
 	
@@ -62,7 +71,7 @@ class EmailModel extends Model
 		}
 		
 		if (!$email) {
-			return; #Everything delivered nicely
+			return false; #Everything delivered nicely
 		}
 		
 		if (!$email->to) {
@@ -75,6 +84,8 @@ class EmailModel extends Model
 		
 		$email->delivered = time();
 		$email->store();
+		
+		return true;
 	}
 
 }

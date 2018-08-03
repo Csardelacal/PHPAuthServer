@@ -10,33 +10,28 @@ and open the template in the editor.
 
 $disbled-darken-amount: 30;
 
-@import 'reset/_clearfix';
+@import 'reset/_clearfix.scss';
 
 * {
 	box-sizing: border-box;
 }
 
-html {
-	height: 100%;
-}
-
 body {
 	margin: 0;
 	font-family: sans-serif;
-	background-color: #F3F3F3;
-}
-
-.wrapper {
-	max-width: 500px;
-	margin: 0 auto;
+	background-color: #FAFAFA;
 }
 
 .hidden {
 	display: none !important;
 }
+
+/*
+ * Disabled items should be unable to receive mouse pointer events. When clicked
+ * or interacted with, these items should be unresponsive.
+ */
 :disabled, .disabled, [disabled] {
 	pointer-events: none;
-	opacity: .5;
 }
 
 a {
@@ -46,185 +41,112 @@ a {
 	&:hover {
 		color: #333;
 	}
+	
+	&.highlighted {
+		color: #2a912e;
+		
+		&:hover {
+			color: #2a912e;
+		}
+	}
+	
+	&.heavy {
+		font-weight: bold;
+	}
+	
+	img {
+		border: none;
+	}
 }
 
-a img {
-	border: none;
-}
 
 h1 {
-	font-size: 22px;
-	color:     #222;
+	font-size: 20px;
+	color:  #2a912e;
+	font-weight: normal;
+	background: #FAFAFA;
+	
+	&.unpadded {
+		margin: 0;
+		padding: 0;
+	}
 }
 
-form.condensed {
-	//margin:   20px 0;
-	margin:   0 auto;
+h2 {
+	color: #353535;
+	font-size: 18px;
+}
+
+p {
+	color: #555;
+	line-height: 1.6em;
 	
-	.field {
+	&.unpadded {
 		margin: 0;
 	}
 	
-	label {
-		display: none;
+	&.small {
+		font-size: .78em;
 	}
 	
-	input,
-	textarea {
-		/*
-		 * These remove the annoyng styles from the iOS layout that will style
-		 * input for you.
-		 */
-		-webkit-appearance: none;
-		-moz-appearance:    none;
-	}
-	
-	input[type="email"], 
-	input[type="password"], 
-	input[type="text"],
-	textarea {
-		border     :           none;
-		border-top :           none;
-		border-bottom :        none;
-		border-radius:            0;
+	&.secondary {
+		color: #777; 
 		
-		margin:            0;
-		font-size:      17px;
-		width:          100%;
-		padding:        10px;
-		
-		box-sizing: border-box;
-		
-		/*Make the splitter lines. We don't use border to avoid them invading the border */
-		background-image: linear-gradient(180deg, #DDD 1px, #FFF 1px);
-			
-	}
-	
-	/*
-    * Textareas do have specific styles, including smaller text to make them more
-    * useful for users typing in bigger segments of text
-	 */
-	textarea {
-		font-size: .9em;
-		height:    8em;
-	}
-		
-	.field:first-child input[type="email"], 
-	.field:first-child input[type="text"], 
-	.field:first-child input[type="password"],
-	.field:first-child textarea {
-		border-top  : solid 1px #999;
-		background-image: linear-gradient(180deg, #ccc 0%, #fff 8%);
-	}
-	
-	input[type="submit"] {
-		border     : solid 1px #529EBB;
-		border-top :              none;
-		font-family:        sans-serif;
-
-		$bg: #25A9F8;
-		$color: #FFF;
-		background-color:      $bg;
-		color:              $color;
-		margin:                  0;
-		font-size:            20px;
-		width:                100%;
-		padding:              10px;
-		cursor:            pointer;
-		
-		box-sizing: border-box;
-		
-		background-image: linear-gradient(0deg, #0571B1 0%, $bg 6%);
-
-
-		&:disabled {
-			color: darken($color, $disbled-darken-amount);
-			background: darken($bg, $disbled-darken-amount) !important;
-			cursor: not-allowed;
+		a {
+			color: #333;
 		}
 	}
+}
+
+blockquote {
+	margin-left :                  0;
+	padding:      15px 5px 15px 15px;
+	border-left :     solid 3px #AAA;
+	background:              #F9F9F9;
+	color:                      #555;
+	font-size:                  .9em;
+}
+
+table {
+	width: 100%;
+	border-radius:        3px;
+	border-collapse: collapse;
+	font-size:          .85em;
 	
-	.message {
-		position: relative;
-		padding: 10px 10px;
-		font-size: 13px;
-		border-width: 0 1px;
-		border-style: solid;
+	thead tr {
+		box-shadow: 1px 1px 2px #CCC;
 		
-		&.success {
-			border-color: #3C7619;
-			background: #84D950;
-			color: #3C7619;
+		th {
+			border-bottom: solid 1px #AAA;
+			background: #888;
+			color: #FFF;
 			
-			&:after {
-				border-color: transparent transparent #84D950 transparent;
+			&:first-child {
+				border-radius: 2px 0px 0 0;
+			}
+			
+			&:last-child {
+				border-radius: 0px 2px 0 0;
 			}
 		}
-		
-		&.error {
-			border-color: #590C0E;
-			background: #F2B5B7;
-			color: #490C0E;
-			
-			&:after {
-				border-color: transparent transparent #F2B5B7 transparent;
-			}
-		}
-		
-		&:after {
-			position: absolute;
-			bottom:       100%;
-			right:        20px;
-			display:     block;
-			width:           0;
-			height:          0;
-			content:        '';
-			
-			border-style: none solid solid solid;
-			border-color: transparent transparent #CCC transparent;
-			border-width: 7px;
-		}
 	}
 	
-	.description {
+	tr {
 		background: #FFF;
-		padding:    10px;
-		color:      #333;
-		font-size: 13px;
+		border-top: solid 1px #EEE;
 	}
 	
-	&.standalone {
-		max-width: 350px;
-		border-radius: 4px;
-		overflow: hidden;
-		box-shadow: 0 0 5px rgba(0, 0, 0, .7);
-		
-		input:first-child,
-		input:last-child {
-			background-image: none;
-			border-top: none;
-		}
-		
-		input[type="submit"] {
-
-			transition: background-color .5s ease, background-size .5s ease;
-			background-size  : 0 0;
-			background-repeat: no-repeat;
-			background-position: 50% 50%;
-			
-			&:hover {
-				background-color:  #1599E8;
-			}
-			
-			&:active {
-				background-color: #35B9F8;
-			}
-		}
-		
-		.message {
-			border-left: none;
-			border-right: none;
-		}
+	tr:first-child {
+		border-top: none;
+	}
+	
+	tr:nth-child(2n) {
+		background: #FAFAFA;
+	}
+	
+	td, th {
+		margin: 0;
+		padding: 8px 20px;
 	}
 }
 
@@ -232,7 +154,6 @@ form.regular {
 	
 	.field {
 		display: block;
-		margin-bottom: 15px;
 		box-sizing: border-box;
 		
 	
@@ -255,7 +176,10 @@ form.regular {
 			border: solid 1px #EEE;
 			box-sizing: border-box;
 			height: 2em;
-			box-shadow: 0 0 1px rgba(0, 0, 0, .2);
+			
+			&.borderless {
+				border: none;
+			}
 
 			&:focus {
 				outline: none;
@@ -272,11 +196,19 @@ form.regular {
 		padding-right: 10px;
 		margin-top:    15px;
 		text-align:   right;
+		
+		* {
+			vertical-align: middle;
+		}
+		
+		a {
+			font-size: .8em;
+		}
 	}
 	
 	input[type="submit"] {
 		@extend .button;
-		margin-left:                5%;
+		margin-left:              15px;
 		font-family:        sans-serif;
 	}
 }
@@ -318,7 +250,7 @@ form.regular {
 	border-radius: 3px;
 	color: #ffffff;
 	font-weight: bold;
-	padding: .5em .7em;
+	padding: .7em 1.2em;
 	cursor: pointer;
 	text-decoration: none;
 	display: inline-block;
@@ -341,69 +273,15 @@ form.regular {
 	
 	&.small {
 		padding: .35em .5em;
-		font-size: .8em;
+		font-size: .78em;
+	}
+	
+	&.secondary {
+		color: #777; 
 	}
 	
 	&:hover {
 		color: #FFF;
-	}
-}
-
-h1 {
-	color: #282828;
-	margin: 3px 0;
-}
-
-h2 {
-	color: #353535;
-	font-size: 18px;
-}
-
-p {
-	color: #555;
-	line-height: 1.6em;
-}
-
-small {
-	color: #777;
-}
-
-blockquote {
-	margin-left :                  0;
-	padding:      15px 5px 15px 15px;
-	border-left :     solid 3px #AAA;
-	background:              #F9F9F9;
-	color:                      #555;
-	font-size:                  .9em;
-}
-
-table {
-	width: 100%;
-	border:    solid 1px #EEE;
-	border-radius:        3px;
-	border-collapse: collapse;
-	font-size:          .85em;
-	
-	thead tr {
-		background: #E4E4E4;
-	}
-	
-	tr {
-		background: #FFF;
-		border-top: solid 1px #DDD;
-	}
-	
-	tr:first-child {
-		border-top: none;
-	}
-	
-	tr:nth-child(2n) {
-		background: #F5F5F5;
-	}
-	
-	td, th {
-		margin: 0;
-		padding: 8px 20px;
 	}
 }
 
@@ -447,18 +325,13 @@ table {
 }
 
 footer {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	
 	background: #FFF;
 	color: #555;
 	text-align: center;
-	padding: 20px;
+	padding: 5px;
 	line-height: 20px;
 	font-size: 12px;
-	border-top: solid 1px #999;
+	border-top: solid 1px #CCC;
 }
 
 .material {
@@ -475,6 +348,20 @@ footer {
 	.padded {
 		padding: 20px 15px 15px;
 	}
+	
+	.inset {
+		color: #FFF;
+		background: #888;
+		box-shadow: inset 1px 1px 2px #666;
+		
+		p, a {
+			color: #FFF;
+		}
+		
+		&:last-child {
+			border-radius: 0 0 2px 2px;
+		}
+	}
 }
 
 .login-logo {
@@ -485,11 +372,7 @@ footer {
 	}
 }
 
-.user-icon {
-	border-radius: 50%;
-	display: inline-block;
-	vertical-align: middle;
-	border: solid 2px #FFF;
+%icon-sizing {
 	
 	&.extra-small {
 		width:  24px;
@@ -510,13 +393,14 @@ footer {
 		width:  128px;
 		height: 128px;
 	}
+	
+	&.huge {
+		width:  256px;
+		height: 256px;
+	}
 
 	&.full-width {
 		max-width: 100%;
-	}
-
-	&.square {
-		border-radius: 10px;
 	}
 }
 
@@ -525,19 +409,40 @@ footer {
 	display: inline-block;
 	font-size: 1.2em;
 	color: #333;
+	text-decoration: none;
 }
 
-.edit {
+.user-icon {
+	border-radius: 50%;
 	display: inline-block;
-	margin-left: 5px;
-	opacity: .7;
+	vertical-align: middle;
+	border: solid 2px #FFF;
 	
-	&:hover {
-		opacity: 1;
+	@extend %icon-sizing;
+
+	&.square {
+		border-radius: 10px;
 	}
+}
+
+.app-name {
+	vertical-align: middle;
+	display: inline-block;
+	font-size: 1em;
+	color: #333;
+	text-decoration: none;
+}
+
+.app-icon {
+	border-radius: 3px;
+	border-radius: 3px;
+	box-shadow: 0 0 2px #CCC;
+	vertical-align: middle;
 	
-	img {
-		height: 15px;
+	@extend %icon-sizing;
+	
+	&+.app-name {
+		margin-left: .4em;
 	}
 }
 
@@ -565,31 +470,25 @@ footer {
 	}
 }
 
-
-@media all and (min-width: 960px) {
-	@import '_scaffolding';
-	
-	.mobile-only {
-		display: none;
-	}
-}
-
-@media all and (max-width: 960px) {
-	@import '_scaffolding_mobile';
-	
-	.desktop-only {
-		display: none;
-	}
+.heading {
+	display: block;
+	padding: 10px 5px;
+	color: #FFF;
+	font-weight: bold;
+	color: #2a912e;
+	border-bottom: solid 1px #2a912e;
+	background: #FAFAFA;
 }
 
 
+@import '_vars.scss';
+@import 'scaffolding/_scaffolding.scss';
 @import 'ui/_ui.scss';
 @import '_navbar';
-@import '_admin';
+@import '_admin.scss';
 @import '_pagination';
 @import '_properties';
 @import '_messages';
-@import '_tabs';
 @import '_icon-upload';
 @import '_dials';
 @import '_styledSelect.scss';

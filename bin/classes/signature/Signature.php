@@ -113,6 +113,8 @@ class Signature
 	 */
 	private $context;
 	
+	private $expires;
+	
 	/**
 	 * The salt is a random string attached to every signature, which makes it 
 	 * hard for an attacker to forge a request. The salt is mandatory and mustn't
@@ -142,12 +144,13 @@ class Signature
 	 * @param string|null $salt
 	 * @param Checksum|null $hash
 	 */
-	public function __construct($algo, $src, $secret, $target, $context, $salt = null, Checksum$hash = null) {
+	public function __construct($algo, $src, $secret, $target, $context, $expires, $salt = null, Checksum$hash = null) {
 		$this->algo = $algo?: Hash::ALGO_DEFAULT;
 		$this->src = $src;
 		$this->secret = $secret;
 		$this->target = $target;
 		$this->context = $context;
+		$this->expires = $expires;
 		$this->salt = $salt;
 		$this->checksum = $hash instanceof Checksum || !$hash? $hash : new Checksum($this->algo, $hash);
 	}
@@ -177,6 +180,14 @@ class Signature
 		return $this->salt;
 	}
 	
+	public function isExpired() {
+		return $this->expires < time();
+	}
+	
+	public function getExpiration() {
+		return $this->expires === null? time() + 600 : $this->expires;
+	}
+	
 	/**
 	 * Calculates the checksum needed to verify the signature while keeping the 
 	 * secret hidden from curious eyes.
@@ -201,7 +212,7 @@ class Signature
 		 * calculate the checksum.
 		 */
 		if (!$this->checksum) {
-			$hash = new Hash($this->algo, $this->src, $this->target, $this->secret, implode(self::SEPARATOR_CONTEXT, $this->context), $this->getSalt());
+			$hash = new Hash($this->algo, $this->src, $this->target, $this->secret, $this->context, $this->getExpiration(), $this->getSalt());
 			$this->checksum = $hash->hash();
 		}
 		
@@ -217,6 +228,24 @@ class Signature
 	public function setHash(Checksum$hash) {
 		$this->checksum = $hash;
 		return $this;
+	}
+	
+	public function setSecret($secret) {
+		$this->secret = $secret;
+		$this->checksum = null;
+		return $this;
+	}
+	
+	public function __toString() {
+		return implode(self::SEPARATOR_SIGNATURE, array_filter([
+			$this->algo, 
+			$this->src, 
+			$this->target, 
+			$this->context, 
+			$this->getExpiration(), 
+			$this->getSalt(),
+			$this->checksum()->hash()
+		]));
 	}
 		
 	/**

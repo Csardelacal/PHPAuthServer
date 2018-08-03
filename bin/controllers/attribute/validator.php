@@ -3,9 +3,8 @@
 class ValidatorController extends \BaseController
 {
 	
-	public function add($attributeId) {
+	public function add(\AttributeModel$attribute) {
 		
-		$attribute  = db()->table('attribute')->get('_id', $attributeId)->fetch();
 		$collector  = new AttributeValidatorCollector();
 		
 		try {
@@ -18,7 +17,7 @@ class ValidatorController extends \BaseController
 			$model->store();
 			
 			return $this->response->setBody('Redirecting..')
-					->getHeaders()->redirect(new \URL('attribute', 'edit', $attribute->_id));
+					->getHeaders()->redirect(url('attribute', 'edit', $attribute->_id));
 		} 
 		catch (\spitfire\exceptions\HTTPMethodException$ex) { /* This is acceptable */ }
 		

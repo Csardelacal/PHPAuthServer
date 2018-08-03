@@ -17,10 +17,10 @@ class GroupController extends BaseController
 				->addRestriction('members', db()->table('user\group')->get('user', $this->user))->endGroup();
 		}
 		
-		$paginator = new Pagination($query);
+		$pages = new \spitfire\storage\database\pagination\Paginator($query);
 		
-		$this->view->set('records',    $query->fetchAll());
-		$this->view->set('pagination', $paginator);
+		$this->view->set('pagination', $pages);
+		$this->view->set('records',    $pages->records());
 		
 	}
 	

@@ -1,6 +1,7 @@
 <?php namespace connection;
 
 use AuthAppModel;
+use BooleanField;
 use IntegerField;
 use Reference;
 use spitfire\Model;
@@ -49,6 +50,7 @@ class AuthModel extends Model
 		$schema->context = new StringField(50);
 		$schema->created = new IntegerField(true);
 		$schema->expires = new IntegerField(true);
+		$schema->final   = new BooleanField();
 	}
 	
 	public function onbeforesave() {

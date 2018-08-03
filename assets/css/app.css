@@ -8,47 +8,1085 @@ and open the template in the editor.
     Created on : 02-jun-2015, 21:46:57
     Author     : cesaradelacalbretschneider
 */
-.navbar::after {
-  content: '';
-  display: table;
-  height: 1px;
-  clear: both; }
-
 * {
   box-sizing: border-box; }
-
-html {
-  height: 100%; }
 
 body {
   margin: 0;
   font-family: sans-serif;
-  background-color: #F3F3F3; }
-
-.wrapper {
-  max-width: 500px;
-  margin: 0 auto; }
+  background-color: #FAFAFA; }
 
 .hidden {
   display: none !important; }
 
+/*
+ * Disabled items should be unable to receive mouse pointer events. When clicked
+ * or interacted with, these items should be unresponsive.
+ */
 :disabled, .disabled, [disabled] {
-  pointer-events: none;
-  opacity: .5; }
+  pointer-events: none; }
 
 a {
   color: #555;
   text-decoration: none; }
   a:hover {
     color: #333; }
-
-a img {
-  border: none; }
+  a.highlighted {
+    color: #2a912e; }
+    a.highlighted:hover {
+      color: #2a912e; }
+  a.heavy {
+    font-weight: bold; }
+  a img {
+    border: none; }
 
 h1 {
-  font-size: 22px;
-  color: #222; }
+  font-size: 20px;
+  color: #2a912e;
+  font-weight: normal;
+  background: #FAFAFA; }
+  h1.unpadded {
+    margin: 0;
+    padding: 0; }
 
+h2 {
+  color: #353535;
+  font-size: 18px; }
+
+p {
+  color: #555;
+  line-height: 1.6em; }
+  p.unpadded {
+    margin: 0; }
+  p.small {
+    font-size: .78em; }
+  p.secondary {
+    color: #777; }
+    p.secondary a {
+      color: #333; }
+
+blockquote {
+  margin-left: 0;
+  padding: 15px 5px 15px 15px;
+  border-left: solid 3px #AAA;
+  background: #F9F9F9;
+  color: #555;
+  font-size: .9em; }
+
+table {
+  width: 100%;
+  border-radius: 3px;
+  border-collapse: collapse;
+  font-size: .85em; }
+  table thead tr {
+    box-shadow: 1px 1px 2px #CCC; }
+    table thead tr th {
+      border-bottom: solid 1px #AAA;
+      background: #888;
+      color: #FFF; }
+      table thead tr th:first-child {
+        border-radius: 2px 0px 0 0; }
+      table thead tr th:last-child {
+        border-radius: 0px 2px 0 0; }
+  table tr {
+    background: #FFF;
+    border-top: solid 1px #EEE; }
+  table tr:first-child {
+    border-top: none; }
+  table tr:nth-child(2n) {
+    background: #FAFAFA; }
+  table td, table th {
+    margin: 0;
+    padding: 8px 20px; }
+
+form.regular .field {
+  display: block;
+  box-sizing: border-box; }
+  form.regular .field label {
+    display: block;
+    font-size: .9em;
+    color: #555;
+    width: 100%; }
+  form.regular .field input[type=text],
+  form.regular .field input[type=email],
+  form.regular .field input[type=password],
+  form.regular .field textarea,
+  form.regular .field select {
+    width: 100%;
+    padding: 5px 10px;
+    font-size: 1.05em;
+    background: #FFF;
+    border: solid 1px #EEE;
+    box-sizing: border-box;
+    height: 2em; }
+    form.regular .field input[type=text].borderless,
+    form.regular .field input[type=email].borderless,
+    form.regular .field input[type=password].borderless,
+    form.regular .field textarea.borderless,
+    form.regular .field select.borderless {
+      border: none; }
+    form.regular .field input[type=text]:focus,
+    form.regular .field input[type=email]:focus,
+    form.regular .field input[type=password]:focus,
+    form.regular .field textarea:focus,
+    form.regular .field select:focus {
+      outline: none; }
+  form.regular .field textarea {
+    height: 150px; }
+form.regular .form-footer {
+  padding-top: 15px;
+  padding-right: 10px;
+  margin-top: 15px;
+  text-align: right; }
+  form.regular .form-footer * {
+    vertical-align: middle; }
+  form.regular .form-footer a {
+    font-size: .8em; }
+form.regular input[type="submit"] {
+  margin-left: 15px;
+  font-family: sans-serif; }
+
+.material-form input[type="text"], .material-form .fake-field, .material-form .fake-field-ph {
+  display: inline-block;
+  padding: 3px 6px;
+  max-width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis; }
+.material-form .fake-field-ph {
+  border: 1px solid transparent; }
+.material-form input[type="text"], .material-form .fake-field {
+  border: 1px solid grey;
+  background: #fff;
+  font-size: 16px;
+  font-family: inherit;
+  vertical-align: baseline; }
+.material-form .fake-field {
+  user-select: all; }
+
+.no-selection {
+  user-select: none; }
+
+.button, form.regular input[type="submit"] {
+  background: #3191f1;
+  box-shadow: -2px -2px 1px #3167f1 inset;
+  border: none;
+  border-radius: 3px;
+  color: #ffffff;
+  font-weight: bold;
+  padding: .7em 1.2em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block; }
+  .button:disabled, form.regular input[type="submit"]:disabled {
+    background-color: #094580;
+    box-shadow: -2px -2px 1px #092a80 inset;
+    cursor: not-allowed; }
+  .button.error, form.regular input.error[type="submit"] {
+    background: #f13131;
+    box-shadow: -2px -2px 1px #803709 inset; }
+  .button.success, form.regular input.success[type="submit"] {
+    background: #0cb027;
+    box-shadow: -2px -2px 1px #055116 inset; }
+  .button.small, form.regular input.small[type="submit"] {
+    padding: .35em .5em;
+    font-size: .78em; }
+  .button.secondary, form.regular input.secondary[type="submit"] {
+    color: #777; }
+  .button:hover, form.regular input[type="submit"]:hover {
+    color: #FFF; }
+
+.menubar {
+  background: #FEFEFE;
+  vertical-align: top;
+  text-align: right;
+  box-shadow: 0 2px 2px #DDD;
+  border-bottom: solid 1px #CCC;
+  z-index: 5; }
+  .menubar a {
+    display: inline-block;
+    text-decoration: none;
+    color: #333;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; }
+  .menubar a:hover {
+    text-shadow: 0 0 4px #DDD; }
+  .menubar .logo {
+    display: inline-block;
+    float: left;
+    border: none; }
+
+.badge {
+  width: 100%;
+  padding: .5em;
+  box-shadow: -2px 2px 2px #EAEAEA inset;
+  background: #FAFAFA;
+  border: solid 1px #CCC;
+  display: block;
+  border-radius: 3px; }
+
+footer {
+  background: #FFF;
+  color: #555;
+  text-align: center;
+  padding: 5px;
+  line-height: 20px;
+  font-size: 12px;
+  border-top: solid 1px #CCC; }
+
+.material {
+  background: #FFF;
+  box-shadow: 1px 1px 1px #DDD;
+  border-radius: 2px;
+  border: solid 1px #CCC;
+  padding: 20px 15px 15px; }
+  .material.unpadded {
+    padding: 0; }
+  .material .padded {
+    padding: 20px 15px 15px; }
+  .material .inset {
+    color: #FFF;
+    background: #888;
+    box-shadow: inset 1px 1px 2px #666; }
+    .material .inset p, .material .inset a {
+      color: #FFF; }
+    .material .inset:last-child {
+      border-radius: 0 0 2px 2px; }
+
+.login-logo {
+  text-align: center; }
+  .login-logo img {
+    max-width: 500px; }
+
+.extra-small.user-icon, .extra-small.app-icon {
+  width: 24px;
+  height: 24px; }
+.small.user-icon, .small.app-icon {
+  width: 32px;
+  height: 32px; }
+.medium.user-icon, .medium.app-icon {
+  width: 64px;
+  height: 64px; }
+.big.user-icon, .big.app-icon {
+  width: 128px;
+  height: 128px; }
+.huge.user-icon, .huge.app-icon {
+  width: 256px;
+  height: 256px; }
+.full-width.user-icon, .full-width.app-icon {
+  max-width: 100%; }
+
+.user-name {
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 1.2em;
+  color: #333;
+  text-decoration: none; }
+
+.user-icon {
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  border: solid 2px #FFF; }
+  .user-icon.square {
+    border-radius: 10px; }
+
+.app-name {
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 1em;
+  color: #333;
+  text-decoration: none; }
+
+.app-icon {
+  border-radius: 3px;
+  border-radius: 3px;
+  box-shadow: 0 0 2px #CCC;
+  vertical-align: middle; }
+  .app-icon + .app-name {
+    margin-left: .4em; }
+
+.validation-errors {
+  color: #900;
+  list-style: none;
+  font-size: .9em;
+  margin: 10px 0;
+  padding: 0; }
+  .validation-errors li {
+    border-left: solid 2px #900;
+    padding-left: 10px;
+    margin-top: 8px; }
+  .validation-errors .error-message {
+    font-weight: bold;
+    display: block; }
+  .validation-errors .extended-message {
+    font-size: .9em; }
+
+.heading {
+  display: block;
+  padding: 10px 5px;
+  color: #FFF;
+  font-weight: bold;
+  color: #2a912e;
+  border-bottom: solid 1px #2a912e;
+  background: #FAFAFA; }
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 20.04.2018, 16:35:00
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 20.04.2018, 14:51:25
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.span {
+  display: inline-block;
+  vertical-align: top;
+  overflow-x: hidden;
+  margin-left: 1.0416666667%;
+  min-height: 1px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding: 3px;
+  width: 97.9166666667%; }
+
+div.row {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box; }
+  div.row:after {
+    content: "";
+    clear: both;
+    display: table;
+    width: 100%; }
+  div.row.fluid {
+    width: 100%;
+    max-width: 100%; }
+
+/*
+This are the functions (mixins) used to generate the basic scaffolding for our
+website. Due to the inverted functionality of the grid we rewrote big parts to 
+make them more usable.
+*/
+/*!
+    Created on : Oct 26, 2013, 7:18:16 PM
+    Author     : cesar
+*/
+.span.m1,
+.span.m2,
+.span.m3,
+.span.m4,
+.span.m5 {
+  margin-left: 1.0416666667%; }
+  .span.m1:first-child,
+  .span.m2:first-child,
+  .span.m3:first-child,
+  .span.m4:first-child,
+  .span.m5:first-child {
+    margin-left: 1.0416666667%; }
+
+._fs1-s1, .row.s2 > .span.s2, .row.s3 > .span.s3, .row.s4 > .span.s4, .row.s5 > .span.s5, .row.s6 > .span.s6, .row.s7 > .span.s7, .row.s8 > .span.s8, .row.s9 > .span.s9, .row.s10 > .span.s10,
+.row.s1 > .span.s1 {
+  width: 97.9166666667%; }
+
+._fs2-s1, .row.s4 > .span.s2, .row.s6 > .span.s3, .row.s8 > .span.s4, .row.s10 > .span.s5,
+.row.s2 > .span.s1 {
+  width: 47.9166666667%; }
+
+._fs3-s1, .row.s6 > .span.s2, .row.s9 > .span.s3,
+.row.s3 > .span.s1 {
+  width: 31.25%; }
+
+._fs3-s2, .row.s6 > .span.s4, .row.s9 > .span.s6,
+.row.s3 > .span.s2 {
+  width: 64.5833333333%; }
+
+._fs4-s1, .row.s8 > .span.s2,
+.row.s4 > .span.s1 {
+  width: 22.9166666667%; }
+
+._fs4-s3, .row.s8 > .span.s6,
+.row.s4 > .span.s3 {
+  width: 72.9166666667%; }
+
+._fs5-s1, .row.s10 > .span.s2,
+.row.s5 > .span.s1 {
+  width: 17.9166666667%; }
+
+._fs5-s2, .row.s10 > .span.s4,
+.row.s5 > .span.s2 {
+  width: 37.9166666667%; }
+
+._fs5-s3, .row.s10 > .span.s6,
+.row.s5 > .span.s3 {
+  width: 57.9166666667%; }
+
+._fs5-s4, .row.s10 > .span.s8,
+.row.s5 > .span.s4 {
+  width: 77.9166666667%; }
+
+._fs6-s1,
+.row.s6 > .span.s1 {
+  width: 14.5833333333%; }
+
+._fs6-s5,
+.row.s6 > .span.s5 {
+  width: 81.25%; }
+
+._fs7-s1,
+.row.s7 > .span.s1 {
+  width: 12.2023809524%; }
+
+._fs7-s2,
+.row.s7 > .span.s2 {
+  width: 26.4880952381%; }
+
+._fs7-s3,
+.row.s7 > .span.s3 {
+  width: 40.7738095238%; }
+
+._fs7-s4,
+.row.s7 > .span.s4 {
+  width: 55.0595238095%; }
+
+._fs7-s5,
+.row.s7 > .span.s5 {
+  width: 69.3452380952%; }
+
+._fs7-s6,
+.row.s7 > .span.s6 {
+  width: 83.630952381%; }
+
+._fs8-s1,
+.row.s8 > .span.s1 {
+  width: 10.4166666667%; }
+
+._fs8-s3,
+.row.s8 > .span.s3 {
+  width: 35.4166666667%; }
+
+._fs8-s5,
+.row.s8 > .span.s5 {
+  width: 60.4166666667%; }
+
+._fs8-s7,
+.row.s8 > .span.s7 {
+  width: 85.4166666667%; }
+
+._fs9-s1,
+.row.s9 > .span.s1 {
+  width: 9.0277777778%; }
+
+._fs9-s2,
+.row.s9 > .span.s2 {
+  width: 20.1388888889%; }
+
+._fs9-s4,
+.row.s9 > .span.s4 {
+  width: 42.3611111111%; }
+
+._fs9-s5,
+.row.s9 > .span.s5 {
+  width: 53.4722222222%; }
+
+._fs9-s7,
+.row.s9 > .span.s7 {
+  width: 75.6944444444%; }
+
+._fs9-s8,
+.row.s9 > .span.s8 {
+  width: 86.8055555556%; }
+
+._fs10-s1,
+.row.s10 > .span.s1 {
+  width: 7.9166666667%; }
+
+._fs10-s3,
+.row.s10 > .span.s3 {
+  width: 27.9166666667%; }
+
+._fs10-s7,
+.row.s10 > .span.s7 {
+  width: 67.9166666667%; }
+
+._fs10-s9,
+.row.s10 > .span.s9 {
+  width: 87.9166666667%; }
+
+@media all and (max-width: 960px) and (min-width: 480px) {
+  .desktop-only {
+    display: none !important; }
+
+  .mobile-only {
+    display: none; }
+
+  .not-tablet {
+    display: none; }
+
+  /*
+  This are the functions (mixins) used to generate the basic scaffolding for our
+  website. Due to the inverted functionality of the grid we rewrote big parts to 
+  make them more usable.
+  */
+  /*!
+      Created on : Oct 26, 2013, 7:18:16 PM
+      Author     : cesar
+  */
+  .span.m1,
+  .span.m2,
+  .span.m3,
+  .span.m4,
+  .span.m5,
+  .span.m6,
+  .span.m7 {
+    margin-left: 1.0416666667%; }
+    .span.m1:first-child,
+    .span.m2:first-child,
+    .span.m3:first-child,
+    .span.m4:first-child,
+    .span.m5:first-child,
+    .span.m6:first-child,
+    .span.m7:first-child {
+      margin-left: 1.0416666667%; }
+
+  ._fm1-m1, .row.m2 > .span.m2, .row.m3 > .span.m3, .row.m4 > .span.m4, .row.m5 > .span.m5, .row.m6 > .span.m6, .row.m7 > .span.m7, .row.m8 > .span.m8, .row.m9 > .span.m9, .row.m10 > .span.m10,
+  .row.m1 > .span.m1 {
+    width: 97.9166666667%; }
+
+  ._fm2-m1, .row.m4 > .span.m2, .row.m6 > .span.m3, .row.m8 > .span.m4, .row.m10 > .span.m5,
+  .row.m2 > .span.m1 {
+    width: 47.9166666667%; }
+
+  ._fm3-m1, .row.m6 > .span.m2, .row.m9 > .span.m3,
+  .row.m3 > .span.m1 {
+    width: 31.25%; }
+
+  ._fm3-m2, .row.m6 > .span.m4, .row.m9 > .span.m6,
+  .row.m3 > .span.m2 {
+    width: 64.5833333333%; }
+
+  ._fm4-m1, .row.m8 > .span.m2,
+  .row.m4 > .span.m1 {
+    width: 22.9166666667%; }
+
+  ._fm4-m3, .row.m8 > .span.m6,
+  .row.m4 > .span.m3 {
+    width: 72.9166666667%; }
+
+  ._fm5-m1, .row.m10 > .span.m2,
+  .row.m5 > .span.m1 {
+    width: 17.9166666667%; }
+
+  ._fm5-m2, .row.m10 > .span.m4,
+  .row.m5 > .span.m2 {
+    width: 37.9166666667%; }
+
+  ._fm5-m3, .row.m10 > .span.m6,
+  .row.m5 > .span.m3 {
+    width: 57.9166666667%; }
+
+  ._fm5-m4, .row.m10 > .span.m8,
+  .row.m5 > .span.m4 {
+    width: 77.9166666667%; }
+
+  ._fm6-m1,
+  .row.m6 > .span.m1 {
+    width: 14.5833333333%; }
+
+  ._fm6-m5,
+  .row.m6 > .span.m5 {
+    width: 81.25%; }
+
+  ._fm7-m1,
+  .row.m7 > .span.m1 {
+    width: 12.2023809524%; }
+
+  ._fm7-m2,
+  .row.m7 > .span.m2 {
+    width: 26.4880952381%; }
+
+  ._fm7-m3,
+  .row.m7 > .span.m3 {
+    width: 40.7738095238%; }
+
+  ._fm7-m4,
+  .row.m7 > .span.m4 {
+    width: 55.0595238095%; }
+
+  ._fm7-m5,
+  .row.m7 > .span.m5 {
+    width: 69.3452380952%; }
+
+  ._fm7-m6,
+  .row.m7 > .span.m6 {
+    width: 83.630952381%; }
+
+  ._fm8-m1,
+  .row.m8 > .span.m1 {
+    width: 10.4166666667%; }
+
+  ._fm8-m3,
+  .row.m8 > .span.m3 {
+    width: 35.4166666667%; }
+
+  ._fm8-m5,
+  .row.m8 > .span.m5 {
+    width: 60.4166666667%; }
+
+  ._fm8-m7,
+  .row.m8 > .span.m7 {
+    width: 85.4166666667%; }
+
+  ._fm9-m1,
+  .row.m9 > .span.m1 {
+    width: 9.0277777778%; }
+
+  ._fm9-m2,
+  .row.m9 > .span.m2 {
+    width: 20.1388888889%; }
+
+  ._fm9-m4,
+  .row.m9 > .span.m4 {
+    width: 42.3611111111%; }
+
+  ._fm9-m5,
+  .row.m9 > .span.m5 {
+    width: 53.4722222222%; }
+
+  ._fm9-m7,
+  .row.m9 > .span.m7 {
+    width: 75.6944444444%; }
+
+  ._fm9-m8,
+  .row.m9 > .span.m8 {
+    width: 86.8055555556%; }
+
+  ._fm10-m1,
+  .row.m10 > .span.m1 {
+    width: 7.9166666667%; }
+
+  ._fm10-m3,
+  .row.m10 > .span.m3 {
+    width: 27.9166666667%; }
+
+  ._fm10-m7,
+  .row.m10 > .span.m7 {
+    width: 67.9166666667%; }
+
+  ._fm10-m9,
+  .row.m10 > .span.m9 {
+    width: 87.9166666667%; } }
+@media all and (min-width: 960px) {
+  .mobile-only {
+    display: none; }
+
+  .tablet-only {
+    display: none; }
+
+  .not-desktop {
+    display: none; }
+
+  /*
+  This are the functions (mixins) used to generate the basic scaffolding for our
+  website. Due to the inverted functionality of the grid we rewrote big parts to 
+  make them more usable.
+  */
+  /*!
+      Created on : Oct 26, 2013, 7:18:16 PM
+      Author     : cesar
+  */
+  div.row {
+    width: 100%;
+    max-width: 71em; }
+
+  .span {
+    margin-left: 1.0416666667%; }
+    .span:first-child {
+      margin-left: 1.0416666667%; }
+
+  ._fl1-l1, .row.l2 > .span.l2, .row.l3 > .span.l3, .row.l4 > .span.l4, .row.l5 > .span.l5, .row.l6 > .span.l6, .row.l7 > .span.l7, .row.l8 > .span.l8, .row.l9 > .span.l9, .row.l10 > .span.l10,
+  .row.l1 > .span.l1 {
+    width: 97.9166666667%; }
+
+  ._fl2-l1, .row.l4 > .span.l2, .row.l6 > .span.l3, .row.l8 > .span.l4, .row.l10 > .span.l5,
+  .row.l2 > .span.l1 {
+    width: 47.9166666667%; }
+
+  ._fl3-l1, .row.l6 > .span.l2, .row.l9 > .span.l3,
+  .row.l3 > .span.l1 {
+    width: 31.25%; }
+
+  ._fl3-l2, .row.l6 > .span.l4, .row.l9 > .span.l6,
+  .row.l3 > .span.l2 {
+    width: 64.5833333333%; }
+
+  ._fl4-l1, .row.l8 > .span.l2,
+  .row.l4 > .span.l1 {
+    width: 22.9166666667%; }
+
+  ._fl4-l3, .row.l8 > .span.l6,
+  .row.l4 > .span.l3 {
+    width: 72.9166666667%; }
+
+  ._fl5-l1, .row.l10 > .span.l2,
+  .row.l5 > .span.l1 {
+    width: 17.9166666667%; }
+
+  ._fl5-l2, .row.l10 > .span.l4,
+  .row.l5 > .span.l2 {
+    width: 37.9166666667%; }
+
+  ._fl5-l3, .row.l10 > .span.l6,
+  .row.l5 > .span.l3 {
+    width: 57.9166666667%; }
+
+  ._fl5-l4, .row.l10 > .span.l8,
+  .row.l5 > .span.l4 {
+    width: 77.9166666667%; }
+
+  ._fl6-l1,
+  .row.l6 > .span.l1 {
+    width: 14.5833333333%; }
+
+  ._fl6-l5,
+  .row.l6 > .span.l5 {
+    width: 81.25%; }
+
+  ._fl7-l1,
+  .row.l7 > .span.l1 {
+    width: 12.2023809524%; }
+
+  ._fl7-l2,
+  .row.l7 > .span.l2 {
+    width: 26.4880952381%; }
+
+  ._fl7-l3,
+  .row.l7 > .span.l3 {
+    width: 40.7738095238%; }
+
+  ._fl7-l4,
+  .row.l7 > .span.l4 {
+    width: 55.0595238095%; }
+
+  ._fl7-l5,
+  .row.l7 > .span.l5 {
+    width: 69.3452380952%; }
+
+  ._fl7-l6,
+  .row.l7 > .span.l6 {
+    width: 83.630952381%; }
+
+  ._fl8-l1,
+  .row.l8 > .span.l1 {
+    width: 10.4166666667%; }
+
+  ._fl8-l3,
+  .row.l8 > .span.l3 {
+    width: 35.4166666667%; }
+
+  ._fl8-l5,
+  .row.l8 > .span.l5 {
+    width: 60.4166666667%; }
+
+  ._fl8-l7,
+  .row.l8 > .span.l7 {
+    width: 85.4166666667%; }
+
+  ._fl9-l1,
+  .row.l9 > .span.l1 {
+    width: 9.0277777778%; }
+
+  ._fl9-l2,
+  .row.l9 > .span.l2 {
+    width: 20.1388888889%; }
+
+  ._fl9-l4,
+  .row.l9 > .span.l4 {
+    width: 42.3611111111%; }
+
+  ._fl9-l5,
+  .row.l9 > .span.l5 {
+    width: 53.4722222222%; }
+
+  ._fl9-l7,
+  .row.l9 > .span.l7 {
+    width: 75.6944444444%; }
+
+  ._fl9-l8,
+  .row.l9 > .span.l8 {
+    width: 86.8055555556%; }
+
+  ._fl10-l1,
+  .row.l10 > .span.l1 {
+    width: 7.9166666667%; }
+
+  ._fl10-l3,
+  .row.l10 > .span.l3 {
+    width: 27.9166666667%; }
+
+  ._fl10-l7,
+  .row.l10 > .span.l7 {
+    width: 67.9166666667%; }
+
+  ._fl10-l9,
+  .row.l10 > .span.l9 {
+    width: 87.9166666667%; } }
+@media all and (max-width: 480px) {
+  .desktop-only {
+    display: none !important; }
+
+  .tablet-only {
+    display: none; }
+
+  .not-mobile {
+    display: none; } }
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2017, 11:59:43 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : 21.03.2018, 15:18:50
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.has-dropdown {
+  position: relative; }
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: -20px;
+  width: 100%;
+  min-width: 300px;
+  margin-top: 20px;
+  background: #FFF;
+  border: solid 1px #CCC;
+  border-radius: 3px;
+  padding: 5px;
+  z-index: 99999999999;
+  padding: 10px; }
+  .dropdown:before, .dropdown:after {
+    content: '';
+    height: 10px;
+    width: 10px;
+    display: block;
+    position: absolute;
+    bottom: 100%; }
+  .dropdown:before {
+    left: 20px;
+    background-image: linear-gradient(-225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px); }
+  .dropdown:after {
+    left: 30px;
+    background-image: linear-gradient(225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px); }
+  .dropdown.right-bound {
+    right: -20px;
+    left: auto; }
+    .dropdown.right-bound:before {
+      left: auto;
+      right: 30px; }
+    .dropdown.right-bound:after {
+      left: auto;
+      right: 20px; }
+  .dropdown.unpadded {
+    padding: 0; }
+  .dropdown .padded {
+    padding: 5px; }
+
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : 21.03.2018, 14:52:40
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.app-switcher.toggle {
+  vertical-align: middle;
+  background-color: #777;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background-image: linear-gradient(0deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px), linear-gradient(90deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px); }
+
+.app-drawer {
+  text-align: left; }
+  .app-drawer .app-entry {
+    padding: 10px;
+    border-radius: 3px;
+    border: solid 1px transparent;
+    background-color: transparent;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    transition: border .15s ease-in, background-color .15s ease-in; }
+    .app-drawer .app-entry:hover {
+      background-color: #EAEAEA;
+      border: solid 1px #BBB;
+      box-shadow: 1px 1px 3px #DDD inset; }
+  .app-drawer .app-icon-drawer {
+    margin: 0 auto;
+    width: 90%;
+    height: auto;
+    display: block; }
+  .app-drawer .app-name-drawer {
+    text-align: center;
+    display: block;
+    font-size: .75em;
+    color: #777;
+    margin-top: .4em;
+    line-height: 1.2em;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  .app-drawer .footer {
+    background: #DDD;
+    text-align: center;
+    display: block;
+    padding: 10px 15px;
+    color: #888;
+    font-weight: bold;
+    font-size: .8em;
+    background-image: linear-gradient(180deg, #CCC 0px, transparent 3px); }
+    .app-drawer .footer:hover {
+      color: #777;
+      background-color: #CCC; }
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2017, 11:59:49 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 10, 2017, 11:58:05 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+input[type=checkbox].styled {
+  display: none; }
+  input[type=checkbox].styled + span.toggle {
+    display: inline-block;
+    position: relative;
+    width: 1.5em;
+    height: .5em;
+    background-color: #DDD;
+    border-radius: 5px;
+    vertical-align: .11em;
+    margin: 0 .4em;
+    transition: background-color .3s linear; }
+    input[type=checkbox].styled + span.toggle:before {
+      display: block;
+      position: absolute;
+      top: -.20em;
+      left: 0;
+      height: .85em;
+      width: .9em;
+      border-radius: 50%;
+      background: #FFF;
+      border: solid 1px #777;
+      content: '';
+      transition: left .3s ease; }
+  input[type=checkbox].styled:checked + span.toggle {
+    background-color: #a1d49d; }
+    input[type=checkbox].styled:checked + span.toggle:before {
+      left: 50%; }
+
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/* 
+    Created on : Jun 6, 2018, 5:21:03 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
 form.condensed {
   margin: 0 auto;
   	/*
@@ -120,6 +1158,12 @@ form.condensed {
       color: #3C7619; }
       form.condensed .message.success:after {
         border-color: transparent transparent #84D950 transparent; }
+    form.condensed .message.info {
+      border-color: #CCC;
+      background: #EEE;
+      color: #555; }
+      form.condensed .message.info:after {
+        border-color: transparent transparent #EEE transparent; }
     form.condensed .message.error {
       border-color: #590C0E;
       background: #F2B5B7;
@@ -164,668 +1208,114 @@ form.condensed {
       border-left: none;
       border-right: none; }
 
-form.regular .field {
-  display: block;
-  margin-bottom: 15px;
-  box-sizing: border-box; }
-  form.regular .field label {
-    display: block;
-    font-size: .9em;
-    color: #555;
-    width: 100%; }
-  form.regular .field input[type=text],
-  form.regular .field input[type=email],
-  form.regular .field input[type=password],
-  form.regular .field textarea,
-  form.regular .field select {
-    width: 100%;
-    padding: 5px 10px;
-    font-size: 1.05em;
-    background: #FFF;
-    border: solid 1px #EEE;
-    box-sizing: border-box;
-    height: 2em;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2); }
-    form.regular .field input[type=text]:focus,
-    form.regular .field input[type=email]:focus,
-    form.regular .field input[type=password]:focus,
-    form.regular .field textarea:focus,
-    form.regular .field select:focus {
-      outline: none; }
-  form.regular .field textarea {
-    height: 150px; }
-form.regular .form-footer {
-  padding-top: 15px;
-  padding-right: 10px;
-  margin-top: 15px;
-  text-align: right; }
-form.regular input[type="submit"] {
-  margin-left: 5%;
-  font-family: sans-serif; }
+/*
+The MIT License
 
-.material-form input[type="text"], .material-form .fake-field, .material-form .fake-field-ph {
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/* 
+    Created on : Jun 7, 2018, 2:39:55 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/* 
+    Created on : Jun 7, 2018, 2:39:33 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.toggle-button, .dial-toggle {
   display: inline-block;
-  padding: 3px 6px;
-  max-width: 95%;
-  overflow: hidden;
-  text-overflow: ellipsis; }
-.material-form .fake-field-ph {
-  border: 1px solid transparent; }
-.material-form input[type="text"], .material-form .fake-field {
-  border: 1px solid grey;
-  background: #fff;
-  font-size: 16px;
-  font-family: inherit;
-  vertical-align: baseline; }
-.material-form .fake-field {
-  user-select: all; }
-
-.no-selection {
-  user-select: none; }
-
-.button, form.regular input[type="submit"] {
-  background: #3191f1;
-  box-shadow: -2px -2px 1px #3167f1 inset;
-  border: none;
-  border-radius: 3px;
-  color: #ffffff;
-  font-weight: bold;
-  padding: .5em .7em;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block; }
-  .button:disabled, form.regular input[type="submit"]:disabled {
-    background-color: #094580;
-    box-shadow: -2px -2px 1px #092a80 inset;
-    cursor: not-allowed; }
-  .button.error, form.regular input.error[type="submit"] {
-    background: #f13131;
-    box-shadow: -2px -2px 1px #803709 inset; }
-  .button.success, form.regular input.success[type="submit"] {
-    background: #0cb027;
-    box-shadow: -2px -2px 1px #055116 inset; }
-  .button.small, form.regular input.small[type="submit"] {
-    padding: .35em .5em;
-    font-size: .8em; }
-  .button:hover, form.regular input[type="submit"]:hover {
-    color: #FFF; }
-
-h1 {
-  color: #282828;
-  margin: 3px 0; }
-
-h2 {
-  color: #353535;
-  font-size: 18px; }
-
-p {
-  color: #555;
-  line-height: 1.6em; }
-
-small {
-  color: #777; }
-
-blockquote {
-  margin-left: 0;
-  padding: 15px 5px 15px 15px;
-  border-left: solid 3px #AAA;
-  background: #F9F9F9;
-  color: #555;
-  font-size: .9em; }
-
-table {
-  width: 100%;
-  border: solid 1px #EEE;
-  border-radius: 3px;
-  border-collapse: collapse;
-  font-size: .85em; }
-  table thead tr {
-    background: #E4E4E4; }
-  table tr {
-    background: #FFF;
-    border-top: solid 1px #DDD; }
-  table tr:first-child {
-    border-top: none; }
-  table tr:nth-child(2n) {
-    background: #F5F5F5; }
-  table td, table th {
-    margin: 0;
-    padding: 8px 20px; }
-
-.menubar {
-  background: #FEFEFE;
-  vertical-align: top;
-  text-align: right;
-  box-shadow: 0 2px 2px #DDD;
-  border-bottom: solid 1px #CCC;
-  z-index: 5; }
-  .menubar a {
-    display: inline-block;
-    text-decoration: none;
-    color: #333;
-    padding: 10px 15px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box; }
-  .menubar a:hover {
-    text-shadow: 0 0 4px #DDD; }
-  .menubar .logo {
-    display: inline-block;
-    float: left;
-    border: none; }
-
-.badge {
-  width: 100%;
-  padding: .5em;
-  box-shadow: -2px 2px 2px #EAEAEA inset;
-  background: #FAFAFA;
-  border: solid 1px #CCC;
-  display: block;
-  border-radius: 3px; }
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #FFF;
-  color: #555;
-  text-align: center;
-  padding: 20px;
-  line-height: 20px;
-  font-size: 12px;
-  border-top: solid 1px #999; }
-
-.material {
-  background: #FFF;
-  box-shadow: 1px 1px 1px #DDD;
-  border-radius: 2px;
-  border: solid 1px #CCC;
-  padding: 20px 15px 15px; }
-  .material.unpadded {
-    padding: 0; }
-  .material .padded {
-    padding: 20px 15px 15px; }
-
-.login-logo {
-  text-align: center; }
-  .login-logo img {
-    max-width: 500px; }
-
-.user-icon {
-  border-radius: 50%;
-  display: inline-block;
+  position: relative;
   vertical-align: middle;
-  border: solid 2px #FFF; }
-  .user-icon.extra-small {
-    width: 24px;
-    height: 24px; }
-  .user-icon.small {
-    width: 32px;
-    height: 32px; }
-  .user-icon.medium {
-    width: 64px;
-    height: 64px; }
-  .user-icon.big {
-    width: 128px;
-    height: 128px; }
-  .user-icon.full-width {
-    max-width: 100%; }
-  .user-icon.square {
-    border-radius: 10px; }
-
-.user-name {
-  vertical-align: middle;
-  display: inline-block;
-  font-size: 1.2em;
-  color: #333; }
-
-.edit {
-  display: inline-block;
-  margin-left: 5px;
-  opacity: .7; }
-  .edit:hover {
-    opacity: 1; }
-  .edit img {
-    height: 15px; }
-
-.validation-errors {
-  color: #900;
-  list-style: none;
-  font-size: .9em;
-  margin: 10px 0;
-  padding: 0; }
-  .validation-errors li {
-    border-left: solid 2px #900;
-    padding-left: 10px;
-    margin-top: 8px; }
-  .validation-errors .error-message {
-    font-weight: bold;
-    display: block; }
-  .validation-errors .extended-message {
-    font-size: .9em; }
-
-@media all and (min-width: 960px) {
-  /*
-  This are the functions (mixins) used to generate the basic scaffolding for our
-  website. Due to the inverted functionality of the grid we rewrote big parts to 
-  make them more usable.
-  */
-  /* 
-      Created on : Oct 26, 2013, 7:18:16 PM
-      Author     : cesar
-  */
-  div[class^="span"] {
-    float: left;
-    margin-left: 2.08333%;
-    min-height: 1px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box; }
-    div[class^="span"]:first-child {
-      margin-left: 1.04167%; }
-
-  div[class^="row"] {
-    display: block;
-    margin: 0 auto;
-    width: 960px; }
-    div[class^="row"]:after {
-      content: "";
-      display: table;
-      clear: both; }
-    div[class^="row"].fluid {
-      width: 100%; }
-
-  /**
-   * This function creates fractions. It takes two parameters (the current row's fragmentation
-   * and the most fragmented row's) and calculates the different percentual widths.
-   * 
-   * For the parameters 3 and 10 it will create the following
-   * - %span-fr-1-3 -> 33% width
-   * - %span-fr-2-6 -> @extends %span-fr-1-3
-   * - %span-fr-3-9 -> @extends %span-fr-1-3
-   * - %span-fr-2-3 -> 66% width
-   * - %span-fr-4-6 -> @extends %span-fr-2-3
-   * - %span-fr-8-9 -> @extends %span-fr-2-3
-   * [...]
-   */
-  div.row2 > div.span2, div.row3 > div.span3, div.row4 > div.span4, div.row5 > div.span5, div.row6 > div.span6, div.row7 > div.span7, div.row8 > div.span8, div.row9 > div.span9, div.row10 > div.span10, div.row1 > div.span1, div.row1 > div.span {
-    width: 97.91667%; }
-
-  div.row4 > div.span2, div.row6 > div.span3, div.row8 > div.span4, div.row10 > div.span5, div.row2 > div.span1, div.row2 > div.span {
-    width: 47.91667%; }
-
-  div.row6 > div.span2, div.row9 > div.span3, div.row3 > div.span1, div.row3 > div.span {
-    width: 31.25%; }
-
-  div.row6 > div.span4, div.row9 > div.span6, div.row3 > div.span2 {
-    width: 64.58333%; }
-
-  div.row8 > div.span2, div.row4 > div.span1, div.row4 > div.span {
-    width: 22.91667%; }
-
-  div.row8 > div.span6, div.row4 > div.span3 {
-    width: 72.91667%; }
-
-  div.row10 > div.span2, div.row5 > div.span1, div.row5 > div.span {
-    width: 17.91667%; }
-
-  div.row10 > div.span4, div.row5 > div.span2 {
-    width: 37.91667%; }
-
-  div.row10 > div.span6, div.row5 > div.span3 {
-    width: 57.91667%; }
-
-  div.row10 > div.span8, div.row5 > div.span4 {
-    width: 77.91667%; }
-
-  div.row6 > div.span1, div.row6 > div.span {
-    width: 14.58333%; }
-
-  div.row6 > div.span5 {
-    width: 81.25%; }
-
-  div.row7 > div.span1, div.row7 > div.span {
-    width: 12.20238%; }
-
-  div.row7 > div.span2 {
-    width: 26.4881%; }
-
-  div.row7 > div.span3 {
-    width: 40.77381%; }
-
-  div.row7 > div.span4 {
-    width: 55.05952%; }
-
-  div.row7 > div.span5 {
-    width: 69.34524%; }
-
-  div.row7 > div.span6 {
-    width: 83.63095%; }
-
-  div.row8 > div.span1, div.row8 > div.span {
-    width: 10.41667%; }
-
-  div.row8 > div.span3 {
-    width: 35.41667%; }
-
-  div.row8 > div.span5 {
-    width: 60.41667%; }
-
-  div.row8 > div.span7 {
-    width: 85.41667%; }
-
-  div.row9 > div.span1, div.row9 > div.span {
-    width: 9.02778%; }
-
-  div.row9 > div.span2 {
-    width: 20.13889%; }
-
-  div.row9 > div.span4 {
-    width: 42.36111%; }
-
-  div.row9 > div.span5 {
-    width: 53.47222%; }
-
-  div.row9 > div.span7 {
-    width: 75.69444%; }
-
-  div.row9 > div.span8 {
-    width: 86.80556%; }
-
-  div.row10 > div.span1, div.row10 > div.span {
-    width: 7.91667%; }
-
-  div.row10 > div.span3 {
-    width: 27.91667%; }
-
-  div.row10 > div.span7 {
-    width: 67.91667%; }
-
-  div.row10 > div.span9 {
-    width: 87.91667%; }
-
-  .mobile-only {
-    display: none; } }
-@media all and (max-width: 960px) {
-  /*
-  This are the functions (mixins) used to generate the basic scaffolding for our
-  website. Due to the inverted functionality of the grid we rewrote big parts to 
-  make them more usable.
-  */
-  /* 
-      Created on : Oct 26, 2013, 7:18:16 PM
-      Author     : cesar
-  */
-  div[class^="span"] {
-    float: left;
-    margin-left: 1.04167%;
-    min-height: 1px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    padding: 3px; }
-    div[class^="span"] img {
-      max-width: 100%; }
-
-  div.row, div.row1, div.row2, div.row3, div.row4, div.row5, div.row6, div.row7, div.row8, div.row9, div.row10 {
-    display: block;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box; }
-    div.row:after, div.row1:after, div.row2:after, div.row3:after, div.row4:after, div.row5:after, div.row6:after, div.row7:after, div.row8:after, div.row9:after, div.row10:after {
-      content: "";
-      display: table;
-      clear: both; }
-
-  div.row1 > div.span1 {
-    width: 95.83333%; }
-  div.row1 > div.span {
-    width: 95.83333%; }
-
-  div.row2 > div.span1 {
-    width: 95.83333%; }
-  div.row2 > div.span {
-    width: 95.83333%; }
-  div.row2 > div.span2 {
-    width: 95.83333%; }
-
-  div.row3 > div.span1 {
-    width: 95.83333%; }
-  div.row3 > div.span {
-    width: 95.83333%; }
-  div.row3 > div.span2 {
-    width: 95.83333%; }
-  div.row3 > div.span3 {
-    width: 95.83333%; }
-
-  div.row4 > div.span1 {
-    width: 95.83333%; }
-  div.row4 > div.span {
-    width: 95.83333%; }
-  div.row4 > div.span2 {
-    width: 95.83333%; }
-  div.row4 > div.span3 {
-    width: 95.83333%; }
-  div.row4 > div.span4 {
-    width: 95.83333%; }
-
-  div.row5 > div.span1 {
-    width: 95.83333%; }
-  div.row5 > div.span {
-    width: 95.83333%; }
-  div.row5 > div.span2 {
-    width: 95.83333%; }
-  div.row5 > div.span3 {
-    width: 95.83333%; }
-  div.row5 > div.span4 {
-    width: 95.83333%; }
-  div.row5 > div.span5 {
-    width: 95.83333%; }
-
-  div.row6 > div.span1 {
-    width: 95.83333%; }
-  div.row6 > div.span {
-    width: 95.83333%; }
-  div.row6 > div.span2 {
-    width: 95.83333%; }
-  div.row6 > div.span3 {
-    width: 95.83333%; }
-  div.row6 > div.span4 {
-    width: 95.83333%; }
-  div.row6 > div.span5 {
-    width: 95.83333%; }
-  div.row6 > div.span6 {
-    width: 95.83333%; }
-
-  div.row7 > div.span1 {
-    width: 95.83333%; }
-  div.row7 > div.span {
-    width: 95.83333%; }
-  div.row7 > div.span2 {
-    width: 95.83333%; }
-  div.row7 > div.span3 {
-    width: 95.83333%; }
-  div.row7 > div.span4 {
-    width: 95.83333%; }
-  div.row7 > div.span5 {
-    width: 95.83333%; }
-  div.row7 > div.span6 {
-    width: 95.83333%; }
-  div.row7 > div.span7 {
-    width: 95.83333%; }
-
-  div.row8 > div.span1 {
-    width: 95.83333%; }
-  div.row8 > div.span {
-    width: 95.83333%; }
-  div.row8 > div.span2 {
-    width: 95.83333%; }
-  div.row8 > div.span3 {
-    width: 95.83333%; }
-  div.row8 > div.span4 {
-    width: 95.83333%; }
-  div.row8 > div.span5 {
-    width: 95.83333%; }
-  div.row8 > div.span6 {
-    width: 95.83333%; }
-  div.row8 > div.span7 {
-    width: 95.83333%; }
-  div.row8 > div.span8 {
-    width: 95.83333%; }
-
-  div.row9 > div.span1 {
-    width: 95.83333%; }
-  div.row9 > div.span {
-    width: 95.83333%; }
-  div.row9 > div.span2 {
-    width: 95.83333%; }
-  div.row9 > div.span3 {
-    width: 95.83333%; }
-  div.row9 > div.span4 {
-    width: 95.83333%; }
-  div.row9 > div.span5 {
-    width: 95.83333%; }
-  div.row9 > div.span6 {
-    width: 95.83333%; }
-  div.row9 > div.span7 {
-    width: 95.83333%; }
-  div.row9 > div.span8 {
-    width: 95.83333%; }
-  div.row9 > div.span9 {
-    width: 95.83333%; }
-
-  div.row10 > div.span1 {
-    width: 95.83333%; }
-  div.row10 > div.span {
-    width: 95.83333%; }
-  div.row10 > div.span2 {
-    width: 95.83333%; }
-  div.row10 > div.span3 {
-    width: 95.83333%; }
-  div.row10 > div.span4 {
-    width: 95.83333%; }
-  div.row10 > div.span5 {
-    width: 95.83333%; }
-  div.row10 > div.span6 {
-    width: 95.83333%; }
-  div.row10 > div.span7 {
-    width: 95.83333%; }
-  div.row10 > div.span8 {
-    width: 95.83333%; }
-  div.row10 > div.span9 {
-    width: 95.83333%; }
-  div.row10 > div.span10 {
-    width: 95.83333%; }
-
-  .desktop-only {
-    display: none; } }
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : Oct 10, 2017, 11:59:43 AM
-    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
-*/
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : Oct 10, 2017, 11:59:49 AM
-    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
-*/
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : Oct 10, 2017, 11:58:05 AM
-    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
-*/
-input[type=checkbox].styled {
-  display: none; }
-  input[type=checkbox].styled + span.toggle {
-    display: inline-block;
-    position: relative;
-    width: 2em;
-    height: .7em;
-    background-color: #DDD;
-    border-radius: 5px;
-    vertical-align: middle;
-    margin: 0 .3em;
-    transition: background-color .3s linear; }
-    input[type=checkbox].styled + span.toggle:before {
-      display: block;
-      position: absolute;
-      top: -.15em;
-      left: 0;
-      height: .9em;
-      width: .9em;
-      border-radius: 50%;
-      background: #FFF;
-      border: solid 1px #777;
-      content: '';
-      transition: left .3s ease; }
-  input[type=checkbox].styled:checked + span.toggle {
-    background-color: #a1d49d; }
-    input[type=checkbox].styled:checked + span.toggle:before {
-      left: 60%; }
-
-.navbar {
-  padding: 8px;
-  text-align: center; }
-  .navbar::after {
+  width: 38px;
+  height: 17px;
+  padding: 0px;
+  background-image: linear-gradient(180deg, #FFF 3px, transparent 3px, transparent 7px, #FFF 7px, #FFF 10px, transparent 10px, transparent 14px, #FFF 14px);
+  background-size: 20px 17px;
+  background-position: center center;
+  background-repeat: no-repeat; }
+  .toggle-button.hidden, .hidden.dial-toggle {
     display: none; }
-  .navbar .logo {
-    display: block;
-    width: 100%;
-    float: none;
-    font-size: 1.05em;
-    margin-bottom: 10px !important; }
-    .navbar .logo, .navbar .logo ~ :not(.desktop-only) {
-      padding: 0 4px !important;
-      height: initial !important; }
-    .navbar .logo ~ :not(.desktop-only) {
-      font-size: .9em; }
+  .toggle-button.medium, .medium.dial-toggle {
+    background-image: linear-gradient(180deg, #777 3px, transparent 3px, transparent 7px, #777 7px, #777 10px, transparent 10px, transparent 14px, #777 14px); }
+    .toggle-button.medium:after, .medium.dial-toggle:after, .toggle-button.medium:before, .medium.dial-toggle:before {
+      background: #242424; }
+  .toggle-button.dark, .dark.dial-toggle {
+    background-image: linear-gradient(180deg, #242424 3px, transparent 3px, transparent 7px, #242424 7px, #242424 10px, transparent 10px, transparent 14px, #242424 14px); }
+    .toggle-button.dark:after, .dark.dial-toggle:after, .toggle-button.dark:before, .dark.dial-toggle:before {
+      background: #242424; }
+  .toggle-button.narrow, .narrow.dial-toggle {
+    background-size: 3px 17px;
+    width: 20px; }
 
 .navbar {
-  background: #FEFEFE;
-  vertical-align: top;
-  text-align: right;
+  background: #EEE;
   box-shadow: 0 2px 2px #DDD;
   border-bottom: 1px solid #CCC;
+  display: table;
+  width: 100%;
   z-index: 5; }
-  .navbar > * {
-    display: inline-block;
-    padding: 10px 15px;
-    margin-right: 0 !important;
-    line-height: 25px; }
+  .navbar .left,
+  .navbar .right {
+    display: table-cell;
+    padding: 15px 10px; }
+  .navbar .right {
+    text-align: right; }
   .navbar a {
     text-decoration: none;
-    color: #333; }
-    .navbar a:hover {
-      text-shadow: 0 0 4px #DDD; }
+    color: #444;
+    font-weight: bold;
+    display: inline-block;
+    padding: 0 10px; }
   .navbar .logo {
     display: inline-block;
     float: left;
     border: none; }
     .navbar .logo > * {
-      display: inline-block;
       vertical-align: middle; }
     .navbar .logo img {
-      height: 25px;
-      width: 21.57107px;
+      height: 20px;
       margin-right: 5px; }
 
-@media all and (max-width: 960px) {
-  .navbar {
-    padding: 4px; }
-    .navbar a {
-      font-size: .9em;
-      padding: 4px; } }
 .admin-navigation {
   background: #222;
   color: #FFF;
@@ -913,24 +1403,6 @@ ul.pagination {
     background: #F2B5B7;
     color: #490C0E; }
 
-/*
-Contains the code needed to create a tabbed area to ease filtered navigation.
-*/
-/* 
-    Created on : May 3, 2016, 11:55:02 AM
-    Author     : cesar
-*/
-.tabs {
-  border-bottom: solid 1px #999; }
-  .tabs.centered {
-    text-align: center; }
-  .tabs .tab {
-    color: #242424;
-    padding: 5px 15px;
-    display: inline-block; }
-    .tabs .tab.active {
-      border-bottom: solid 3px #333; }
-
 #icon-upload-wrap {
   position: relative;
   width: 128px;
@@ -980,50 +1452,66 @@ Contains the code needed to create a tabbed area to ease filtered navigation.
     list-style-type: none; }
   .dials a {
     display: inline-block;
-    padding: 2px; }
+    padding: 2px;
+    text-decoration: none; }
   .dials a:hover {
     background: #EEE; }
+
+.dial-toggle {
+  display: block;
+  width: 23px !important;
+  height: 24px;
+  position: absolute;
+  top: 0;
+  right: 0px;
+  display: none;
+  background-color: #FFF;
+  border-radius: 50%;
+  box-shadow: 0 0 2px #CCC; }
 
 @media all and (max-width: 960px) {
   .has-dials {
     position: relative; }
 
   .dial-toggle {
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    right: 10px; }
-    .dial-toggle .dots,
-    .dial-toggle .dots:before,
-    .dial-toggle .dots:after {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: #AAA;
-      width: 4px;
-      height: 4px; }
-    .dial-toggle .dots:before {
-      content: '';
-      top: 7px;
-      right: 0; }
-    .dial-toggle .dots:after {
-      content: '';
-      top: 14px;
-      right: 0; }
+    display: block; }
 
   .dials {
     border: solid 1px #CCC;
+    padding: 20px 0;
     background: #FFF;
-    position: absolute;
-    top: 0;
-    right: 20px;
-    width: 200px !important;
+    position: fixed;
+    bottom: 30%;
+    left: 5%;
+    margin: 0 auto;
+    width: 90% !important;
     display: none;
-    box-shadow: 0 0 3px #CCC; }
+    box-shadow: 0 0 3px #CCC;
+    z-index: 10;
+    border-radius: 10px; }
+    .dials ul {
+      padding: 0;
+      margin: 0; }
     .dials a {
-      padding: 5px 20px;
+      display: block;
+      padding: 15px 30px;
+      width: 100%;
       color: #555;
-      font-weight: bold; } }
+      font-size: 1.2em;
+      font-weight: bold; }
+
+  .dials-curtain {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    background: rgba(0, 0, 0, 0.25);
+    transition: .7s opacity 0s ease;
+    opacity: 1; }
+    .dials-curtain.dnd {
+      opacity: 0; } }
 .styled-select {
   text-align: left;
   background: none;

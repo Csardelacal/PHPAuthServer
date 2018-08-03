@@ -1,9 +1,17 @@
 <?php
 
-use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
+use spitfire\storage\database\pagination\Paginator;
 
+/**
+ * This controller allows administrators (and only those) to manage the applications
+ * that can connect to the server and manage their preferences and default
+ * access level settings.
+ * 
+ * Only admins receive access since this is the strongest vector for a malicious
+ * application to raise it's privileges and access data it's not supposed to have.
+ */
 class AppController extends BaseController
 {
 		
@@ -21,22 +29,10 @@ class AppController extends BaseController
 	public function index() {
 		
 		$query = db()->table('authapp')->getAll();
-		$pag   = new Pagination($query, 'app');
+		$pag   = new Paginator($query);
 		
-		$this->view->set('query',      $query);
 		$this->view->set('pagination', $pag);
 		
-	}
-
-	static private function _getRandomBytes($length, &$crypto_strong = null){
-		if (function_exists('random_bytes')){
-			$crypto_strong = true;
-			return random_bytes($length);
-		}
-		else {
-			$crypto_strong = false;
-			return openssl_random_pseudo_bytes($length, $crypto_strong);
-		}
 	}
 	
 	public function create() {
@@ -44,11 +40,9 @@ class AppController extends BaseController
 		if ($this->request->isPost()) {
 			$app = db()->table('authapp')->newRecord();
 			$app->name      = $_POST['name'];
-			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(self::_getRandomBytes(35, $secure)));
-			
-			if (!$secure) {
-				throw new PrivateException('Could not generate safe AppSecret');
-			}
+			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(35)));
+			$app->system    = false;
+			$app->drawer    = false;
 			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->validate()->store();
@@ -60,15 +54,13 @@ class AppController extends BaseController
 			} while ($count !== 0);
 			
 			$app->store();
-			$this->response->getHeaders()->redirect(new URL('app', 'index', null, Array('message' => 'success')));
+			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'success')));
 			return;
 		}
 		
 	}
 	
-	public function detail($appID) {
-		
-		$app = db()->table('authapp')->get('_id', $appID)->fetch();
+	public function detail(AuthAppModel$app) {
 		
 		if ($this->request->isPost()) {
 			
@@ -83,41 +75,37 @@ class AppController extends BaseController
 			}
 			
 			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->validate()->store();
+				$app->icon = $_POST['icon']->store();
 			}
+			
+			$app->system = isset($_POST['system']);
+			$app->drawer = isset($_POST['drawer']);
 			
 			$app->store();
 		}
 		
 		$this->view->set('app', $app);
+		
+		try {
+			$hookapp = db()->table('authapp')->get('_id', SysSettingModel::getValue('cptn.h00k'))->first(true)->appID;
+			$this->view->set('webhooks', $this->hook->on($hookapp, $app->appID)->listeners);
+		} catch (Exception $ex) {
+			$this->view->set('webhooks', []);
+		}
 	}
 	
 	public function delete($appID) {
+		$xsrf = new \spitfire\io\XSSToken();
 		
-		if (isset($_GET['confirm'])) {
+		if (isset($_GET['confirm']) && $xsrf->verify($_GET['confirm'])) {
 			$app = db()->table('authapp')->get('_id', $appID)->fetch();
 			$app->delete();
 			
-			$this->response->getHeaders()->redirect(new URL('app', 'index', null, Array('message' => 'deleted')));
+			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'deleted')));
 			return;
 		}
 		
-		$this->view->set('confirm', url('app', 'delete', $appID, Array('confirm' => 'true')));
-	}
-	
-	/**
-	 * 
-	 * @template none
-	 * @layout none
-	 * @param type $appID
-	 */
-	public function deauthorize($appID) {
-		$app  = db()->table('authapp')->get('_id', $appID)->fetch();
-		$auth = db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $app)->fetch();
-		
-		if ($auth) { $auth->delete(); }
-		
-		$this->response->getHeaders()->redirect(url());
+		$this->view->set('confirm', url('app', 'delete', $appID, Array('confirm' => $xsrf->getValue())));
 	}
 	
 }

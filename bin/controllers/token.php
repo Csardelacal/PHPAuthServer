@@ -14,8 +14,10 @@ class TokenController extends BaseController
 				->addRestriction('expires', null, 'IS')
 				->addRestriction('expires', time(), '>');
 		
-		$this->view->set('pagination', new Pagination($query));
-		$this->view->set('records',    $query->fetchAll());;
+		$pages = new \spitfire\storage\database\pagination\Paginator($query);
+		
+		$this->view->set('pagination', $pages);
+		$this->view->set('records',    $pages->records());
 	}
 	
 	public function create() {

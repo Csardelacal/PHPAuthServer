@@ -31,5 +31,5 @@
 
 <p style="text-align: center">
 	Already have an account? 
-	<a href="<?= new URL('user', 'login') ?>">Sign in.</a>
+	<a href="<?= url('user', 'login', ['returnto' => $returnto]) ?>">Sign in.</a>
 </p>

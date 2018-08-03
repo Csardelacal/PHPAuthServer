@@ -1,11 +1,15 @@
 <?php
 
+use app\AttributeLock;
+use mail\spam\domain\implementation\SpamDomainModelReader;
+use mail\spam\domain\SpamDomainValidationRule;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
 use spitfire\validation\EmptyValidationRule;
 use spitfire\validation\FilterValidationRule;
 use spitfire\validation\MinLengthValidationRule;
+use spitfire\validation\rules\MaxLengthValidationRule;
 use spitfire\validation\ValidationError;
 use spitfire\validation\ValidationException;
 use webhook\HookModel;
@@ -66,9 +70,9 @@ class EditController extends BaseController
 			$new->store();
 			
 			#Notify the webhook about the change
-			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			$this->hook->trigger('user.update.' . $this->user->_id);
 			
-			return $this->response->getHeaders()->redirect(new URL());
+			return $this->response->getHeaders()->redirect(url());
 		} 
 		catch (HTTPMethodException$e) {/*Do nothing here*/}
 		catch (ValidationException$e) { $this->view->set('messages', $e->getResult());}
@@ -85,12 +89,10 @@ class EditController extends BaseController
 			#Read the email from Post
 			$email = _def($_POST['email'], '');
 			
-			//TODO: remove
-			list($emailuser, $emaildomain) = explode('@', $email);
-			if (count(explode('.', $emaildomain)) != 2) { throw new spitfire\exceptions\PublicException('Invalid domain', 400); }
-			
 			#Check if the email is actually an email
 			$v = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email'));
+			$v->addRule(new MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
+			$v->addRule(new SpamDomainValidationRule(new SpamDomainModelReader(db())));
 			validate($v->setValue($email));
 			
 			#Check if the email is currently in use
@@ -159,15 +161,45 @@ class EditController extends BaseController
 	
 	public function attribute($attrid) {
 		
-		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
+		if (!$this->user) { 
+			throw new PublicException('Need to be logged in', 403); 
+		}
+		
+		if ($this->token && !$this->authapp) { 
+			throw new PublicException('Insufficient privileges. Token context requires app context', 403); 
+		}
 		
 		/*
-		 * Check if the attribute exists and is writable. This should prevent users
-		 * from causing vandalism on the site.
+		 * Check if the attribute exists. Prepare a lock for the attribute, the lock
+		 * is a helper class that allows to check whether certain applications have
+		 * sufficient privileges to edit this attribute.
 		 */
 		$attribute = db()->table('attribute')->get('_id', $attrid)->fetch();
-		if (!$attribute || $attribute->writable === 'nem') { throw new Exception('No property found', 404); }
+		$lock = new AttributeLock($attribute, $this->user);
 		
+		if (!$attribute) { 
+			throw new Exception('No property found', 404); 
+		}
+		
+		/*
+		 * If an application is requesting write privileges, we check whether the 
+		 * application can access the data. If it does not have the necessary 
+		 * privileges, we can stop it right there.
+		 */
+		if ($this->authapp && !$lock->unlock($this->authapp, AttributeLock::MODE_W)) { 
+			throw new PublicException('No write permission', 403); 
+		}
+		/*
+		 * If the user is trying to write the data we confirm that the user is not
+		 * being prevented from doing so by virtue of the value being a system variable.
+		 */
+		elseif ($attribute->writable === 'nem') { 
+			throw new Exception('System property. This value is not user configurable.', 404); 
+		}
+		
+		/*
+		 * Get the value for the attribute.
+		 */
 		$attributeValue = db()->table('user\attribute')->get('user', $this->user)->addRestriction('attr', $attribute)->fetch();
 		
 		/*
@@ -217,13 +249,17 @@ class EditController extends BaseController
 			$attributeValue->store();
 			
 			#Notify the webhook about the change
-			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			$this->hook->trigger('user.update.' . $this->user->_id);
 			
 			return $this->response->getHeaders()->redirect(url());
 		}
 		catch (HTTPMethodException$e) { /* Do nothing, show the form normall */}
 		catch (ValidationException$e) { $this->view->set('errors', $e->getResult()); } 
 		
+		$grants = db()->table('authapp')->get('system', false)->all()
+			->filter(function ($e) use ($lock) { return $lock->unlock($e) || $lock->unlock($e, AttributeLock::MODE_W); });
+		
+		$this->view->set('apps', $grants);
 		$this->view->set('attribute', $attribute);
 		$this->view->set('value', $attributeValue? $attributeValue->value : '');
 	}

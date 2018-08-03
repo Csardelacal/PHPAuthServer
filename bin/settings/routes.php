@@ -12,3 +12,5 @@
  * of the following rules. So add them wisely.
  * It's really easy and fun!
  */
+
+spitfire\core\router\Router::getInstance()->request('/app/permissions/:action?', ['controller' => ['permissions'], 'action' => ':action']);
