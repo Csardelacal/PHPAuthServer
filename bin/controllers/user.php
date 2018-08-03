@@ -7,10 +7,10 @@ use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\session\Session;
 use spitfire\storage\database\pagination\Paginator;
-use spitfire\validation\FilterValidationRule;
-use spitfire\validation\MaxLengthValidationRule;
-use spitfire\validation\MinLengthValidationRule;
-use spitfire\validation\RegexValidationRule;
+use spitfire\validation\rules\FilterValidationRule;
+use spitfire\validation\rules\MaxLengthValidationRule;
+use spitfire\validation\rules\MinLengthValidationRule;
+use spitfire\validation\rules\RegexValidationRule;
 use spitfire\validation\ValidationException;
 
 class UserController extends BaseController
