@@ -70,14 +70,14 @@ class SuspensionController extends AppController
 			 * may need to empty their caches to prevent the user from continuing 
 			 * to use them.
 			 */
-			$this->hook->trigger('token.expire', ['token' => $token->token, 'user' => $user->_id]);
+			$this->hook && $this->hook->trigger('token.expire', ['token' => $token->token, 'user' => $user->_id]);
 		}
 		
 		/*
 		 * Some applications also perform user profile level caching. Something has
 		 * changed for this user, so we inform the application about it too.
 		 */
-		$this->hook->trigger('user.update', ['user' => $user->_id]);
+		$this->hook && $this->hook->trigger('user.update', ['user' => $user->_id]);
 		
 		/*
 		 * The user is now suspended, we can redirect to the profile.
