@@ -70,7 +70,7 @@ class EditController extends BaseController
 			$new->store();
 			
 			#Notify the webhook about the change
-			$this->hook->trigger('user.update.' . $this->user->_id);
+			$this->hook && $this->hook->trigger('user.update.' . $this->user->_id);
 			
 			return $this->response->getHeaders()->redirect(url());
 		} 
@@ -249,7 +249,7 @@ class EditController extends BaseController
 			$attributeValue->store();
 			
 			#Notify the webhook about the change
-			$this->hook->trigger('user.update.' . $this->user->_id);
+			$this->hook && $this->hook->trigger('user.update.' . $this->user->_id);
 			
 			return $this->response->getHeaders()->redirect(url());
 		}
