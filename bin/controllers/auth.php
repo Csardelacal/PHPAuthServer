@@ -156,7 +156,7 @@ class AuthController extends BaseController
 		}
 		else {
 			$remote  = isset($_GET['remote'])? $this->signature->verify($_GET['remote']) : null;
-			$context = isset($_GET['context'])? $_GET->array('context') : null;
+			$context = isset($_GET['context'])? $_GET->array('context') : [];
 			
 			if ($remote) {
 				list($sig, $src, $tgt) = $remote;
