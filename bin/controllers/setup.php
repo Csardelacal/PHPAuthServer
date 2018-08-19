@@ -3,6 +3,11 @@
 class SetupController extends Controller
 {
 	
+	/**
+	 * 
+	 * @layout minimal.php
+	 * @throws spitfire\exceptions\PublicException
+	 */
 	public function index() {
 		
 		if (db()->table('user')->getAll()->count()) { throw new spitfire\exceptions\PublicException('Setup was already executed', 403); }

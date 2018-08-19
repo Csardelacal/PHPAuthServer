@@ -32,6 +32,14 @@ abstract class BaseController extends Controller
 		$u = $s->getUser();
 		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
 		
+		try {
+			#Check if the user is an administrator
+			$admingroupid = SysSettingModel::getValue('admin.group');
+		}
+		catch (PrivateException$e) {
+			$admingroupid = null;
+		}
+		
 		if ($u || $t) { 
 		
 			#Export the user to the controllers that may need it.
@@ -39,15 +47,7 @@ abstract class BaseController extends Controller
 			$this->user  = $user;
 			$this->token = $t;
 
-			try {
-				#Check if the user is an administrator
-				$admingroupid = SysSettingModel::getValue('admin.group');
-				$isAdmin      = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
-			}
-			catch (PrivateException$e) {
-				$admingroupid = null;
-				$isAdmin      = false;
-			}
+			$isAdmin = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
 		}
 		
 		$this->signature = new \signature\Helper(db());
@@ -71,10 +71,10 @@ abstract class BaseController extends Controller
 			$this->hook = new hook\Hook($hook->url, $sig);
 		}
 		
-		$this->isAdmin = $isAdmin;
+		$this->isAdmin = $isAdmin?? false;
 		$this->view->set('authUser', $this->user);
 		$this->view->set('authApp',  $this->app);
-		$this->view->set('userIsAdmin', $isAdmin);
+		$this->view->set('userIsAdmin', $isAdmin ?? false);
 		$this->view->set('administrativeGroup', $admingroupid);
 	}
 	
