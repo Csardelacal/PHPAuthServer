@@ -3,7 +3,7 @@
 
 <div class="row1">
 	<div class="span1 login-logo">
-		<img src="<?= URL::asset(SysSettingModel::getValue('page.logo')) ?>">
+		<img src="<?= url('image', 'hero') ?>">
 	</div>
 </div>
 
@@ -17,8 +17,3 @@
 </form>
 
 <div class="spacer" style="height: 10px;"></div>
-
-<p style="text-align: center">
-	Already have an account? 
-	<a href="<?= new URL('user', 'login') ?>">Sign in.</a>
-</p>
