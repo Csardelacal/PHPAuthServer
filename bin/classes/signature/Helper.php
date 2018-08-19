@@ -112,8 +112,8 @@ class Helper
 		/**
 		 * @var AuthAppModel The source application (the application requesting data)
 		 */
-		$src = $src? : db()->table('authapp')->get('appID', $signature->getSrc())->first(true);
-		$tgt = $tgt? : db()->table('authapp')->get('appID', $signature->getTarget())->first();
+		$src = db()->table('authapp')->get('appID', $signature->getSrc())->first(true);
+		$tgt = db()->table('authapp')->get('appID', $signature->getTarget())->first();
 
 		/*
 		 * In order to verify that the signature is correct, we make a second signature
