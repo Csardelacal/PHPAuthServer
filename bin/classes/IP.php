@@ -20,7 +20,7 @@ class IP
 			/*
 			 * Extract the IP from the request
 			 */
-			$r  = file_get_contents(sprintf('https://freegeoip.net/json/%s', $ip));
+			$r  = file_get_contents(sprintf('https://api.ipstack.com/%s?access_key=%s', $ip, \spitfire\core\Environment::get('ipstack.key')));
 
 			/*
 			 * Check if the request returned anything
