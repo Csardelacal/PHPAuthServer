@@ -33,7 +33,13 @@ class ImageController extends Controller
 			throw new spitfire\exceptions\PublicException('Invalid app id');
 		}
 		
-		$icon = $app->icon;
+		try {
+			$icon = storage($app->icon)->getPath();
+		} 
+		catch (Exception $ex) {
+			$icon = $app->icon;
+		}
+		
 		if (empty($icon)){
 			$icon = self::DEFAULT_APP_ICON;
 		}
@@ -81,7 +87,12 @@ class ImageController extends Controller
 			throw new spitfire\exceptions\PublicException('Invalid user id');
 		}
 		
-		$icon = $user->picture;
+		try {
+			$icon = storage($user->picture)->getPath();
+		} 
+		catch (Exception $ex) {
+			$icon = $user->picture;
+		}
 		
 		/*
 		 * Define the filename of the target, we store the thumbs for the objects
@@ -93,6 +104,7 @@ class ImageController extends Controller
 			throw new spitfire\exceptions\PublicException('Invalid size', 1604272250);
 		}
 		
+		
 		if (!file_exists($file) && file_exists($icon)) {
 			$img = new \spitfire\io\Image($icon);
 			$img->fitInto($size, $size);
@@ -103,7 +115,7 @@ class ImageController extends Controller
 			$file = './assets/img/user.png';
 		}
 		
-		$this->response->getHeaders()->set('Content-type', mime_content_type($file));
+		$this->response->getHeaders()->set('Content-type', mime($file));
 		$this->response->getHeaders()->set('Cache-Control', 'no-transform,public,max-age=3600');
 		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
 		
@@ -123,7 +135,13 @@ class ImageController extends Controller
 			throw new spitfire\exceptions\PublicException('Invalid user / attribute id');
 		}
 		
-		$file = $attr->value;
+		try {
+			$file = storage($attr->value)->getPath();
+		} 
+		catch (Exception $ex) {
+			$file = $attr->value;
+		}
+		
 		
 		/*
 		 * Define the filename of the target, we store the thumbs for the objects

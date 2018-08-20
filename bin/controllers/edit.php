@@ -149,11 +149,11 @@ class EditController extends BaseController
 		
 		if ($this->request->isPost() && $_POST['upload'] instanceof Upload) {
 			$upload = $_POST['upload'];
-			$this->user->picture = $upload->validate()->store();
+			$this->user->picture = $upload->validate()->store()->uri();
 			$this->user->store();
 			
 			#Notify the webhook about the change
-			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			$this->hook && $this->hook->trigger('user.update.' . $this->user->_id);
 			
 			return $this->response->getHeaders()->redirect(url());
 		}
@@ -245,7 +245,7 @@ class EditController extends BaseController
 			#Validate the new value
 			validate($v->setValue($value));
 			
-			$attributeValue->value = $value instanceof Upload? $value->validate()->store() : $value;
+			$attributeValue->value = $value instanceof Upload? $value->validate()->store()->uri() : $value;
 			$attributeValue->store();
 			
 			#Notify the webhook about the change
