@@ -88,7 +88,7 @@ class ImageController extends Controller
 		}
 		
 		try {
-			$icon = storage($user->picture)->getPath();
+			$icon = $icon? storage($user->picture)->getPath() : null;
 		} 
 		catch (Exception $ex) {
 			$icon = $user->picture;
