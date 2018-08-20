@@ -45,7 +45,7 @@ class AppController extends BaseController
 			$app->drawer    = false;
 			
 			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->validate()->store();
+				$app->icon = $_POST['icon']->validate()->store()->uri();
 			}
 			
 			do {
