@@ -24,17 +24,13 @@
 	 
 	/*
 	 * This function quickly allows the application to check whether it should 
-	 * consider the browser it is running in as a mobile viewport.
+	 * consider the browser it is running in as a viewport to small to handle the
+	 * sidebar and the content simultaneously.
 	 * 
 	 * @returns {Boolean}
 	 */
-	var mobile = function () {
-		return ww < 1160;
-	};
-	
-	
 	var floating = function () { 
-		return mobile();// || containerHTML.classList.contains('always-float'); 
+		return ww < 1160;
 	};
 
 	/*
@@ -68,6 +64,12 @@
 		 * During startup of our animation, we do want the browser to not animate the
 		 * components... This would just cause unnecessary load and the elements to be
 		 * shifted around like crazy.
+		 * 
+		 * @todo I don't like how this is managed. A bunch of CSS code has nothing 
+		 * to do with our JS and should be moved outside of it. My suggestion to 
+		 * solve the issue would be to add a "no-animation" class to the CSS of the
+		 * root element. Allowing JS to toggle the animations by setting a single
+		 * class on the root element.
 		 */
 		if (set === false) {
 			contentHTML.style.transition = null;
@@ -81,6 +83,18 @@
 		}
 	};
 	
+	/**
+	 * This function returns the constraints that an element fits into. This allows
+	 * an application to determine whether an item is onscreen, or whether two items
+	 * intersect.
+	 * 
+	 * Note: this function provides only the vertical offset, which is most often
+	 * needed since web pages tend to grow into the vertical space more than the 
+	 * horizontal.
+	 * 
+	 * @param {type} el
+	 * @returns {ui-layoutL#1.getConstraints.ui-layoutAnonym$0}
+	 */
 	var getConstraints = function (el) {
 		var t = 0;
 		var w = el.clientWidth;
@@ -122,13 +136,13 @@
 		 * 
 		 * @type Boolean
 		 */
-		var detached = constraints.top < 0;
+		var detached = constraints.top < pageY;
 		var collapsed = containerHTML.classList.contains('collapsed');
 		
 		sidebarHTML.style.height   = height + 'px';
 		sidebarHTML.style.width    = floating()? (collapsed? 0 : '240px') : '200px';
-		sidebarHTML.style.top      = detached || floating() || constraints.top < pageY?   '0px' : Math.max(0, constraints.top - pageY ) + 'px';
-		sidebarHTML.style.position = detached || floating() || constraints.top < pageY?   'fixed' : 'static';
+		sidebarHTML.style.top      = Math.max(0, constraints.top - pageY ) + 'px';
+		sidebarHTML.style.position = detached || floating()?   'fixed' : 'static';
 		
 		contentHTML.style.width    = floating() || collapsed? '100%' : (constraints.width - 200) + 'px';
 
