@@ -1,6 +1,12 @@
 
 body {
 	overflow-x: hidden;
+	
+	&.sb-no-animation {
+		.sidebar, .content, .contains-sidebar, .contains-sidebar * {
+			transition: none !important;
+		}
+	}
 }
 
 * {
@@ -15,6 +21,7 @@ body {
 	left: 0;
 	height: 100%;
 	width:  100%;
+	transition: left .2s ease-in, .2s opacity .3s ease-in, .2s width .3s ease-in;
 	
 	.menu-title {
 		color: #2a912e;
@@ -76,19 +83,55 @@ body {
 	}
 }
 
-.contains-sidebar.persistent {
-	width: 200px;
-	display: inline-block;
-	vertical-align: top;
-	position: relative;
-	z-index: 99999;
-	overflow-x: hidden;
+.contains-sidebar {
+	
+	
+	&.persistent {
+		width: 200px;
+		display: inline-block;
+		vertical-align: top;
+		position: relative;
+		z-index: 99999;
+		overflow-x: hidden;
 
 
-	&.collapsed {
-		width: 0px;
-		opacity : 0;
+		&.collapsed {
+			width: 0px;
+			opacity : 0;
+		}
 	}
+
+	&.floating {
+		z-index: 99999;
+		background: rgba(0, 0, 0, 0.05);
+		top: 0;
+		left: 0;
+		width: 0;
+		height: 100%;
+		position: fixed;
+		overflow: hidden;
+		opacity: 0;
+		width: 100%;
+		opacity: 1;
+
+		.sidebar {
+			left : 0;
+			background: #FFF;
+			box-shadow: 0px 2px 10px rgba(0, 0, 0, .3);
+		}
+
+		&.collapsed {
+			width: 0%;
+			opacity : 0;
+
+			.sidebar {
+				left: -240px;
+				box-shadow: none;
+			}
+		}
+	}
+	
+	transition: .2s opacity .3s ease-in, .2s width .3s ease-in;
 }
 
 .content {
@@ -103,39 +146,11 @@ body {
     * is changed in size, not all children behave as expected.
 	 */
 	overflow-x: hidden;
+	transition: .2s width .3s ease-in
 }
 
 	
 
-.contains-sidebar.floating {
-	z-index: 99999;
-	background: rgba(0, 0, 0, 0.05);
-	top: 0;
-	left: 0;
-	width: 0;
-	height: 100%;
-	position: fixed;
-	overflow: hidden;
-	opacity: 0;
-	width: 100%;
-	opacity: 1;
-
-	.sidebar {
-		left : 0;
-		background: #FFF;
-		box-shadow: 0px 2px 10px rgba(0, 0, 0, .3);
-	}
-
-	&.collapsed {
-		width: 0%;
-		opacity : 0;
-
-		.sidebar {
-			left: -240px;
-			box-shadow: none;
-		}
-	}
-}
 
 @media all and (max-width: 1160px) {
 	.contains-sidebar:not(.floating):not(.persistent) {

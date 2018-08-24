@@ -12,8 +12,6 @@
 	var wh  = window.innerHeight;
 	var ww  = window.innerWidth;
 	
-	var animations = false;
-	
 	/*
 	 * Collect the constraints from the parent element to consider where the 
 	 * application is required to redraw the child.
@@ -21,6 +19,21 @@
 	 * @type type
 	 */
 	var constraints;
+	
+	var sidebar = {
+		toggle : function () {
+			containerHTML.classList.toggle('collapsed');
+			scrollListener();
+		},
+		
+		hide: function () {
+			containerHTML.classList.add('collapsed');
+		},
+		
+		show : function () {
+			containerHTML.classList.remove('collapsed');
+		}
+	};
 	 
 	/*
 	 * This function quickly allows the application to check whether it should 
@@ -31,6 +44,13 @@
 	 */
 	var floating = function () { 
 		return ww < 1160;
+	};
+	
+	var listener = function (element, listeners) {
+		for (var i in listeners) {
+			if (!listeners.hasOwnProperty(i)) { continue; }
+			element.addEventListener(i, listeners[i], false);
+		}
 	};
 
 	/*
@@ -56,10 +76,6 @@
 	};
 	
 	var enableAnimation = function (set) {
-		if (animations === set) { return; }
-		
-		animations = set;
-		
 		/*
 		 * During startup of our animation, we do want the browser to not animate the
 		 * components... This would just cause unnecessary load and the elements to be
@@ -71,16 +87,12 @@
 		 * root element. Allowing JS to toggle the animations by setting a single
 		 * class on the root element.
 		 */
-		if (set === false) {
-			contentHTML.style.transition = null;
-			containerHTML.style.transition = null;
-			sidebarHTML.style.transition = null;
-		}
-		else {
-			contentHTML.style.transition = '.2s width .3s ease-in'; 
-			containerHTML.style.transition = '.2s opacity .3s ease-in, .2s width .3s ease-in';
-			sidebarHTML.style.transition = 'left .2s ease-in, .2s opacity .3s ease-in, .2s width .3s ease-in';
-		}
+		if (set === false) { document.body.classList.add('sb-no-animation'); }
+		else               { document.body.classList.remove('sb-no-animation'); }
+	};
+	
+	var pixels = function (n) {
+		return n + 'px';
 	};
 	
 	/**
@@ -139,14 +151,14 @@
 		var detached = constraints.top < pageY;
 		var collapsed = containerHTML.classList.contains('collapsed');
 		
-		sidebarHTML.style.height   = height + 'px';
-		sidebarHTML.style.width    = floating()? (collapsed? 0 : '240px') : '200px';
-		sidebarHTML.style.top      = Math.max(0, constraints.top - pageY ) + 'px';
+		sidebarHTML.style.height   = pixels(height);
+		sidebarHTML.style.width    = floating()? (collapsed? 0 : pixels(240)) : pixels(200);
+		sidebarHTML.style.top      = floating()? 0 : pixels(Math.max(0, constraints.top - pageY ));
 		sidebarHTML.style.position = detached || floating()?   'fixed' : 'static';
 		
-		contentHTML.style.width    = floating() || collapsed? '100%' : (constraints.width - 200) + 'px';
+		contentHTML.style.width    = floating() || collapsed? '100%' : pixels(constraints.width - 200);
 
-		containerHTML.style.top    = detached || floating()?   '0px' : null;
+		containerHTML.style.top    = detached || floating()?   pixels(0) : null;
 		
 	};
 
@@ -186,24 +198,29 @@
 		containerHTML.parentNode.style.whiteSpace = 'nowrap';
 	 };
 	
-	
-
-	window.addEventListener('resize', debounce(resizeListener));
-	window.addEventListener('load', resizeListener);
-	document.addEventListener('scroll', debounce(scrollListener, 25));
-
 	/*
-	 * Defer the listener for the toggles to the document.
+	 * Create listeners that allow the application to react to events happening 
+	 * in the browser.
 	 */
-	document.addEventListener('click', function(e) { 
-		if (!e.target.classList.contains('toggle-button')) { return; }
-		containerHTML.classList.toggle('collapsed');
-		scrollListener();
-	}, false);
-
-	containerHTML.addEventListener('click', function() { 
-		containerHTML.classList.add('collapsed'); 
-	}, false);
+	listener(window, {
+		resize: debounce(resizeListener),
+		load: resizeListener
+	});
 	
-	sidebarHTML.addEventListener('click', function(e) { e.stopPropagation(); }, false);
+	listener(document, {
+		scroll: debounce(scrollListener, 25),
+		click: function(e) { 
+			if (!e.target.classList.contains('toggle-button')) { return; }
+			sidebar.toggle();
+		}
+	});
+	
+	listener(containerHTML, {
+		click: sidebar.hide
+	});
+	
+	listener(sidebarHTML, {
+		click: function(e) { e.stopPropagation(); }
+	});
+	
 }());
