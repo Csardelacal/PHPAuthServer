@@ -32,6 +32,18 @@
 		
 		show : function () {
 			containerHTML.classList.remove('collapsed');
+		},
+		
+		float : function () {
+			containerHTML.classList.contains('floating') || containerHTML.classList.add('collapsed');
+			containerHTML.classList.add('floating');
+			containerHTML.classList.remove('persistent');
+		},
+		
+		persistent : function () {
+			containerHTML.classList.add('persistent');
+			containerHTML.classList.remove('floating');
+			containerHTML.classList.remove('collapsed');
 		}
 	};
 	 
@@ -132,14 +144,9 @@
 		
 		/**
 		 * 
-		 * @todo There's a minus 1 "magic number" in there. For some reason, the code
-		 *       seems to be misscalculating the amount of pixels it has between the
-		 *       top and the bottom of the page. The issue is that I cannot currently
-		 *       pinpoint the source of the issue, and the issue is minor enough that
-		 *       it doesn't warrant investing the time to properly address it for now.
 		 * @type Number|Window.innerHeight
 		 */
-		var height = floating()? wh : Math.min(wh, maxY - pageY - constraints.bottom) - Math.max(constraints.top - pageY, 0) - 1;
+		var height = floating()? wh : Math.min(wh, maxY - Math.max(pageY, constraints.top) - constraints.bottom);
 		
 		/*
 		 * This flag determines whether the scrolled element is past the viewport
@@ -152,13 +159,13 @@
 		var collapsed = containerHTML.classList.contains('collapsed');
 		
 		sidebarHTML.style.height   = pixels(height);
-		sidebarHTML.style.width    = floating()? (collapsed? 0 : pixels(240)) : pixels(200);
+		sidebarHTML.style.width    = floating() && collapsed? 0 : pixels(200);
 		sidebarHTML.style.top      = floating()? 0 : pixels(Math.max(0, constraints.top - pageY ));
 		sidebarHTML.style.position = detached || floating()?   'fixed' : 'static';
 		
 		contentHTML.style.width    = floating() || collapsed? '100%' : pixels(constraints.width - 200);
 
-		containerHTML.style.top    = detached || floating()?   pixels(0) : null;
+		containerHTML.style.top    = floating()? pixels(0) : null;
 		
 	};
 
@@ -184,16 +191,8 @@
 		scrollListener();
 		
 		//For mobile devices we toggle to collapsable mode
-		if (floating()) {
-			containerHTML.classList.contains('floating') || containerHTML.classList.add('collapsed');
-			containerHTML.classList.add('floating');
-			containerHTML.classList.remove('persistent');
-		} 
-		else {
-			containerHTML.classList.add('persistent');
-			containerHTML.classList.remove('floating');
-			containerHTML.classList.remove('collapsed');
-		}
+		if (floating()) { sidebar.float(); } 
+		else            { sidebar.persistent(); }
 		
 		containerHTML.parentNode.style.whiteSpace = 'nowrap';
 	 };

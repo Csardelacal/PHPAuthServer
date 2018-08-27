@@ -46,7 +46,7 @@
 		};
 	}
 
-	function getModuleByName(name) {
+	function available(name) {
 		for (var i = 0; i < modules.length; i++) {
 			if (modules[i].getName() === name) {
 				return modules[i];
@@ -63,70 +63,80 @@
 			}
 		}
 	}
+	
+	function script(src) {
+		/*
+		 * We create a script tag so the user gets a feeling for what he imported.
+		 * This allows the browser to expose proper debugging.
+		 *
+		 * @type @exp;document@call;createElement
+		 */
+		var script = document.createElement('script');
+		script.src = baseURL + src + '.js';
+		script.async = true;
+		script.type = 'text/javascript';
+		script.setAttribute('data-src', src);
+		
+		return script;
+	}
 
 	function DependencyLoader(dependencies, callback) {
 
 		var total = dependencies.length;
 		var progress = 0;
 		var loaded = [];
+		var self = this;
+		
+		this.notify = function (module) {
+			loaded[dependencies.indexOf(module.getName())] = module.getCallable();
+			progress++;
+			
+			if (progress === total) {
+				callback(loaded);
+			}
+		};
 
 		for (var i = 0; i < total; i++) {
-			if (getModuleByName(dependencies[i])) {
-				var module = getModuleByName(dependencies[i]);
-				loaded[dependencies.indexOf(module.getName())] = module.getCallable();
-				progress++;
+			if (available(dependencies[i])) {
+				this.notify(available(dependencies[i]));
 				continue;
 			}
-
+			
 			if (isQueued(dependencies[i])) {
-				on(isQueued(dependencies[i]), 'load', function (e) {
-					var module = getModuleByName(e.target.getAttribute('data-src'));
-					module.onReady(function () {
-						loaded[dependencies.indexOf(module.getName())] = module.getCallable();
-						progress++;
-						if (progress === total) {
-							callback(loaded);
-						}
-					});
-				});
-
-				continue; //The script was already added, we don't need to do anything else
+				var tag = isQueued(dependencies[i]);
+			}
+			else {
+				var tag = script(dependencies[i]);
 			}
 
-			/*
-			 * We create a script tag so the user gets a feeling for what he imported.
-			 * This allows the browser to expose proper debugging.
-			 *
-			 * @type @exp;document@call;createElement
-			 */
-			var script = document.createElement('script');
-			script.src = baseURL + dependencies[i] + '.js';
-			script.async = true;
-			script.type = 'text/javascript';
-			script.setAttribute('data-src', dependencies[i]);
-
-			on(script, 'load', function (e) {
-				var result = last? last : getModuleByName(e.target.getAttribute('data-src'));
+			on(tag, 'load', function (e) {
+				/*
+				 * This function is called once per module awaiting this script's end,
+				 * which implies that the first listener will basically "consume" last
+				 * and therefore, subsequent listeners will have to retrieve the 
+				 * appropriate module.
+				 */
+				var module = last? last : available(e.target.getAttribute('data-src'));
+				
 				//We just received the onload event for the script the browser was compiling.
 				//This means we can use the script's name to address the module it just compiled
-				result.setName(e.target.getAttribute('data-src'));
+				module.setName(e.target.getAttribute('data-src'));
 
 				//Drop the module we were loading from the list of modules we're waiting for
-				pending.splice(pending.indexOf(this), 1);
-				last = null;
+				if (pending.indexOf(this) !== -1) {
+					pending.splice(pending.indexOf(this), 1);
+					last = null;
+				}
 
-				result.onReady(function () {
-					loaded[dependencies.indexOf(result.getName())] = result.getCallable();
-
-					progress++;
-					if (progress === total) {
-						callback(loaded);
-					}
+				module.onReady(function () {
+					self.notify(module);
 				});
 			});
-
-			document.head.appendChild(script);
-			pending.push(script);
+			
+			if (!tag.parentNode) {
+				document.head.appendChild(tag);
+				pending.push(tag);
+			}
 		}
 
 		if (total === progress) {
@@ -139,12 +149,14 @@
 		var self = this;
 
 		this.name = name;
-		this.callable = null;
+		this.callable = undefined;
+		this.resolved = false;
 		this.listeners = [];
 
 		this.init = function () {
-			new DependencyLoader(dependencies, function (deps) {
+			var d = new DependencyLoader(dependencies, function (deps) {
 				self.callable = definition.apply(null, deps);
+				self.resolved = true;
 				self.onReady();
 			});
 		};
@@ -153,10 +165,10 @@
 			if (param) {
 				this.listeners.push(param);
 			}
-
-			if (this.callable) {
+			
+			if (this.resolved) {
 				for (var i = 0; i < this.listeners.length; i++) {
-					this.listeners[i].call();
+					this.listeners[i].call(this);
 				}
 
 				this.listeners = [];

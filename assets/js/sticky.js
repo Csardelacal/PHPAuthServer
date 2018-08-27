@@ -30,7 +30,7 @@
  * 
  * @returns {undefined}
  */
-(function () {
+depend(['core/debounce'], function (debounce) {
 	
 	"use strict";
 	
@@ -189,34 +189,6 @@
 		};
 	};
 	
-	/*
-	 * This helper allows the application to define listeners that will prevent
-	 * the application from hogging system resources when a lot of events are 
-	 * fired.
-	 * 
-	 * @param {type} fn
-	 * @returns {Function}
-	 */
-	var debounce = function (fn, interval) {
-	  var timeout = undefined;
-	  var returnv = undefined;
-
-	  return function () {
-		  if (returnv === undefined) { return returnv = fn.apply(window, arguments); }
-		  if (timeout) { return returnv; }
-		  
-		  var args = arguments;
-		  var callback = function () {
-			  returnv = fn.apply(window, args) || null;
-			  timeout = undefined;
-		  };
-		  
-		  if (window.requestAnimationFrame && !interval) { timeout = window.requestAnimationFrame(callback); }
-		  else { timeout = setTimeout(callback, interval || 50); }
-		  
-		  return returnv;
-	  };
-	};
 	
 	var findContext = function (e) {
 		if (e === document.body) { return e; }
@@ -300,4 +272,4 @@
 		
 	}), false);
 	
-}());
+});
