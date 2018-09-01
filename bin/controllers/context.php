@@ -52,7 +52,7 @@ class ContextController extends BaseController
 			throw new PublicException('No application found', 404);
 		}
 		
-		$query = db()->table('connection\context')->get('app', $app)->where('expires', '>', time());
+		$query = db()->table('connection\context')->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup();
 		$pagination = new Paginator($query);
 		
 		$this->view->set('records', $pagination->records());
@@ -89,12 +89,12 @@ class ContextController extends BaseController
 		}
 		
 		/*@var $record ContextModel*/
-		$record = db()->table()->get('ctx', $context)->where('app', $this->authapp)->first()?: db()->table('connection\context')->newRecord();
+		$record = db()->table('connection\context')->get('ctx', $context)->where('app', $this->authapp)->first()?: db()->table('connection\context')->newRecord();
 		$record->ctx     = $context;
 		$record->app     = $this->authapp;
 		$record->title   = _def($_POST['name'], 'Unnamed context');
 		$record->descr   = _def($_POST['description'], 'Missing description');
-		$record->expires = _def($_POST['expires'], null) + time();
+		$record->expires = isset($_POST['expires'])? $_POST['expires'] + time() : null;
 		$record->store();
 		
 		$this->view->set('result', $record);

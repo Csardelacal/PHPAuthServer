@@ -133,7 +133,7 @@
 		<script src="<?= spitfire\core\http\URL::asset('js/depend.js') ?>" type="text/javascript"></script>
 		<script type="text/javascript">
 		(function () {
-			window.depend.setBaseURL('<?= \spitfire\SpitFire::baseUrl() . '/' . ASSET_DIRECTORY . '/js/' ?>');
+			window.depend.setBaseURL('<?= \spitfire\SpitFire::baseUrl() . '/' . ASSET_DIRECTORY . 'js/' ?>');
 			
 			depend(['ui/dropdown'], function (dropdown) {
 				dropdown('.app-switcher');
@@ -142,10 +142,16 @@
 		</script>
 		
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui-layout.js') ?>"></script>
-		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/sticky.js') ?>"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/dials.js') ?>" async="true"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui/form/styledElements.js') ?>" async="true"></script>
 		
 		<script type="text/javascript" src="<?= url('appdrawer')->setExtension('js'); ?>"></script>
+		
+		<script type="text/javascript">
+			depend(['core/debounce', 'sticky'], function (debounce, sticky) {
+				console.log(typeof debounce);
+				console.log(typeof sticky);
+			});
+		</script>
 	</body>
 </html>
