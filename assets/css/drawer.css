@@ -1,0 +1,83 @@
+@charset "UTF-8";
+/*
+The MIT License
+
+Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : 21.03.2018, 14:52:40
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.app-switcher.toggle {
+  vertical-align: middle;
+  background-color: #777;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background-image: linear-gradient(0deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px), linear-gradient(90deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px); }
+
+.app-drawer {
+  text-align: left; }
+  .app-drawer .app-entry {
+    padding: 10px;
+    border-radius: 3px;
+    border: solid 1px transparent;
+    background-color: transparent;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    transition: border .15s ease-in, background-color .15s ease-in; }
+    .app-drawer .app-entry:hover {
+      background-color: #EAEAEA;
+      border: solid 1px #BBB;
+      box-shadow: 1px 1px 3px #DDD inset; }
+  .app-drawer .app-icon-drawer {
+    margin: 0 auto;
+    width: 90%;
+    height: auto;
+    display: block; }
+  .app-drawer .app-name-drawer {
+    text-align: center;
+    display: block;
+    font-size: .75em;
+    color: #777;
+    margin-top: .4em;
+    line-height: 1.2em;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  .app-drawer .footer {
+    background: #DDD;
+    text-align: center;
+    display: block;
+    padding: 10px 15px;
+    color: #888;
+    font-weight: bold;
+    font-size: .8em;
+    background-image: linear-gradient(180deg, #CCC 0px, transparent 3px); }
+    .app-drawer .footer:hover {
+      color: #777;
+      background-color: #CCC; }
+
+/*# sourceMappingURL=drawer.css.map */

@@ -87,22 +87,6 @@
 	  };
 	};
 	
-	var enableAnimation = function (set) {
-		/*
-		 * During startup of our animation, we do want the browser to not animate the
-		 * components... This would just cause unnecessary load and the elements to be
-		 * shifted around like crazy.
-		 * 
-		 * @todo I don't like how this is managed. A bunch of CSS code has nothing 
-		 * to do with our JS and should be moved outside of it. My suggestion to 
-		 * solve the issue would be to add a "no-animation" class to the CSS of the
-		 * root element. Allowing JS to toggle the animations by setting a single
-		 * class on the root element.
-		 */
-		if (set === false) { document.body.classList.add('sb-no-animation'); }
-		else               { document.body.classList.remove('sb-no-animation'); }
-	};
-	
 	var pixels = function (n) {
 		return n + 'px';
 	};
@@ -170,14 +154,6 @@
 	};
 
 	var resizeListener  = function () {
-		
-		/*
-		 * During startup of our animation, we do want the browser to not animate the
-		 * components... This would just cause unnecessary load and the elements to be
-		 * shifted around like crazy.
-		 */
-		enableAnimation(false);
-		setTimeout(function () { enableAnimation(true); }, 100);
 		
 		//Reset the size for window width and height that we collected
 		wh  = window.innerHeight;

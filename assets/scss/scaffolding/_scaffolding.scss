@@ -37,13 +37,6 @@ div.row {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	
-	&:after {
-		content:    "";
-		clear:    both;
-		display: table;
-		width:    100%;
-	}
-	
 	&.fluid {
 		width: 100%;
 		max-width: 100%;

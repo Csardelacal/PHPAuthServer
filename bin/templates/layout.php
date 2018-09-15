@@ -131,12 +131,20 @@
 		
 		<!--Import depend.js -->
 		<script src="<?= spitfire\core\http\URL::asset('js/depend.js') ?>" type="text/javascript"></script>
+		<script src="<?= spitfire\core\http\URL::asset('js/depend/router.js') ?>" type="text/javascript"></script>
 		<script type="text/javascript">
 		(function () {
-			window.depend.setBaseURL('<?= \spitfire\SpitFire::baseUrl() . '/' . ASSET_DIRECTORY . 'js/' ?>');
+			depend(['depend/router'], function(router) {
+				router.all().to(function(e) { return '<?= \spitfire\SpitFire::baseUrl() . '/' . ASSET_DIRECTORY . 'js/' ?>' + e + '.js'; });
+				router.equals('phpas/app/drawer').to( function() { return '<?= url('appdrawer')->setExtension('js') ?>'; });
+			});
 			
 			depend(['ui/dropdown'], function (dropdown) {
 				dropdown('.app-switcher');
+			});
+			
+			depend(['phpas/app/drawer'], function (drawer) {
+				console.log(drawer);
 			});
 		}());
 		</script>
@@ -145,7 +153,6 @@
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/dials.js') ?>" async="true"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui/form/styledElements.js') ?>" async="true"></script>
 		
-		<script type="text/javascript" src="<?= url('appdrawer')->setExtension('js'); ?>"></script>
 		
 		<script type="text/javascript">
 			depend(['core/debounce', 'sticky'], function (debounce, sticky) {
