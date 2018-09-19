@@ -894,13 +894,15 @@ THE SOFTWARE.
   left: -20px;
   width: 100%;
   min-width: 300px;
+  max-width: 100%;
   margin-top: 20px;
   background: #FFF;
-  border: solid 1px #CCC;
+  border: solid 1px #DDD;
   border-radius: 3px;
   padding: 5px;
   z-index: 99999999999;
-  padding: 10px; }
+  padding: 10px;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.2); }
   .dropdown:before, .dropdown:after {
     content: '';
     height: 10px;
@@ -910,10 +912,10 @@ THE SOFTWARE.
     bottom: 100%; }
   .dropdown:before {
     left: 20px;
-    background-image: linear-gradient(-225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px); }
+    background-image: linear-gradient(-225deg, transparent 7px, #DDD 7px, #DDD 8px, #FFF 9px); }
   .dropdown:after {
     left: 30px;
-    background-image: linear-gradient(225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px); }
+    background-image: linear-gradient(225deg, transparent 7px, #DDD 7px, #DDD 8px, #FFF 9px); }
   .dropdown.right-bound {
     right: -20px;
     left: auto; }

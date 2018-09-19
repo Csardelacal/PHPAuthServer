@@ -22,7 +22,16 @@
  * THE SOFTWARE.
  */
 
-
+/*
+ * Provides routing for the depend.js dependency loader. This allows applications
+ * to map namespaces or certain suffixes to certain locations.
+ * 
+ * This router can generally not be loaded through depend itself. Since usually,
+ * the router is required to even load components.
+ * 
+ * Instead, it will register itself. Therefore allowing to load it in a "classic"
+ * fashion and then register rules and load the actual dependencies.
+ */
 depend('depend/router', [], function () {
 	
 	"use strict";

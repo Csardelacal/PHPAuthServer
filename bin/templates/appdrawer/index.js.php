@@ -98,7 +98,7 @@ $json = json_encode($payload);
 			wrapper = make(target, 'div', {
 				style: {
 					width: '100%',
-					padding: '5px'
+					padding: '5px 20px'
 				}
 			});
 		}

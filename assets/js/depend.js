@@ -153,6 +153,16 @@
 				});
 			});
 			
+			on (tag, 'error', function (e) {
+				console.error('Error loading module ' + e.target.getAttribute('data-src'));
+				console.log('Dependency loading failed. Depending modules will not be initialized.');
+				
+				if (pending.indexOf(this) !== -1) {
+					pending.splice(pending.indexOf(this), 1);
+					last = null;
+				}
+			});
+			
 			if (!tag.parentNode) {
 				document.head.appendChild(tag);
 				pending.push(tag);
@@ -179,7 +189,11 @@
 		};
 		
 		if (0 === total) {
-			callback(dependencies.map(function (e) { return e.callable; }));
+			/*
+			 * Since there are no dependencies, the system will need to load none and 
+			 * can therefore immediately proceed to calling the provided callback.
+			 */
+			callback([]);
 		}
 
 		for (var i = 0; i < total; i++) {
@@ -198,7 +212,12 @@
 
 		this.init = function () {
 			new DependencyLoader(dependencies, function (deps) {
-				self.callable = definition.apply(null, deps);
+				try {
+					self.callable = definition.apply(null, deps);
+				} catch (e) {
+					console.log('Error initializing module. Error was: ');
+					console.error(e);
+				}
 				self.resolved = true;
 				self.onReady();
 			});

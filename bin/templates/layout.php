@@ -129,13 +129,13 @@
 		});
 		</script>
 		
-		<!--Import depend.js -->
+		<!--Import depend.js and the router it uses to load locations -->
 		<script src="<?= spitfire\core\http\URL::asset('js/depend.js') ?>" type="text/javascript"></script>
 		<script src="<?= spitfire\core\http\URL::asset('js/depend/router.js') ?>" type="text/javascript"></script>
 		<script type="text/javascript">
 		(function () {
 			depend(['depend/router'], function(router) {
-				router.all().to(function(e) { return '<?= \spitfire\SpitFire::baseUrl() . '/' . ASSET_DIRECTORY . 'js/' ?>' + e + '.js'; });
+				router.all().to(function(e) { return '<?= \spitfire\SpitFire::baseUrl() . '/assets/js/' ?>' + e + '.js'; });
 				router.equals('phpas/app/drawer').to( function() { return '<?= url('appdrawer')->setExtension('js') ?>'; });
 			});
 			
@@ -156,8 +156,15 @@
 		
 		<script type="text/javascript">
 			depend(['core/debounce', 'sticky'], function (debounce, sticky) {
-				console.log(typeof debounce);
-				console.log(typeof sticky);
+				
+				/*
+				 * Create elements for all the elements defined via HTML
+				 */
+				var els = document.querySelectorAll('*[data-sticky]');
+
+				for (var i = 0; i < els.length; i++) {
+					sticky.stick(els[i], sticky.context(els[i]), els[i].getAttribute('data-sticky'));
+				}
 			});
 		</script>
 	</body>

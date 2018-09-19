@@ -30,27 +30,26 @@ THE SOFTWARE.
   vertical-align: middle;
   background-color: #777;
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  background-image: linear-gradient(0deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px), linear-gradient(90deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px); }
+  background-image: linear-gradient(0deg, transparent 0px, transparent 4px, #EAEAEA 4px, #EAEAEA 6px, transparent 6px, transparent 10px, #EAEAEA 10px, #EAEAEA 12px, transparent 12px, transparent 16px), linear-gradient(90deg, transparent 0px, transparent 4px, #EAEAEA 4px, #EAEAEA 6px, transparent 6px, transparent 10px, #EAEAEA 10px, #EAEAEA 12px, transparent 12px, transparent 16px); }
 
 .app-drawer {
   text-align: left; }
   .app-drawer .app-entry {
-    padding: 10px;
-    border-radius: 3px;
+    padding: 10px 12px;
+    border-radius: 2px;
     border: solid 1px transparent;
     background-color: transparent;
     display: inline-block;
     width: 100%;
     text-align: center;
     text-decoration: none;
-    transition: border .15s ease-in, background-color .15s ease-in; }
+    transition: border .1s ease-in, background-color .1s ease-in; }
     .app-drawer .app-entry:hover {
-      background-color: #EAEAEA;
-      border: solid 1px #BBB;
-      box-shadow: 1px 1px 3px #DDD inset; }
+      background-color: #F9F9F9;
+      border: solid 1px #CCC; }
   .app-drawer .app-icon-drawer {
     margin: 0 auto;
     width: 90%;
@@ -60,15 +59,16 @@ THE SOFTWARE.
     text-align: center;
     display: block;
     font-size: .75em;
-    color: #777;
-    margin-top: .4em;
-    line-height: 1.2em;
+    color: #242424;
+    margin-top: .75em;
+    margin-bottom: .25em;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; }
+    text-overflow: ellipsis;
+    font-weight: normal; }
   .app-drawer .footer {
-    background: #DDD;
+    background: #EEE;
     text-align: center;
     display: block;
     padding: 10px 15px;
@@ -78,6 +78,6 @@ THE SOFTWARE.
     background-image: linear-gradient(180deg, #CCC 0px, transparent 3px); }
     .app-drawer .footer:hover {
       color: #777;
-      background-color: #CCC; }
+      background-color: #D5D5D5; }
 
 /*# sourceMappingURL=drawer.css.map */

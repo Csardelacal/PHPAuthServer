@@ -137,7 +137,7 @@ class EditController extends BaseController
 			$this->user->store();
 			
 			#Notify the webhook about the change
-			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			$this->hook && $this->hook->trigger('user.update.' . $this->user->_id);
 			
 			return $this->response->getHeaders()->redirect(url());
 		}
