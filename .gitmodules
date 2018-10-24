@@ -2,3 +2,6 @@
 	path = spitfire
 	url = https://github.com/Csardelacal/SpitfireEngine
 	branch = develop
+[submodule "unserscoreSCSS"]
+	path = assets/scss/_
+	url = https://github.com/Csardelacal/underscoreSCSS.git

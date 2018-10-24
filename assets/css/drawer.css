@@ -30,10 +30,10 @@ THE SOFTWARE.
   vertical-align: middle;
   background-color: #777;
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-  background-image: linear-gradient(0deg, transparent 0px, transparent 4px, #EAEAEA 4px, #EAEAEA 6px, transparent 6px, transparent 10px, #EAEAEA 10px, #EAEAEA 12px, transparent 12px, transparent 16px), linear-gradient(90deg, transparent 0px, transparent 4px, #EAEAEA 4px, #EAEAEA 6px, transparent 6px, transparent 10px, #EAEAEA 10px, #EAEAEA 12px, transparent 12px, transparent 16px); }
+  background-image: linear-gradient(0deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px), linear-gradient(90deg, transparent 0px, transparent 5px, #EAEAEA 5px, #EAEAEA 7.5px, transparent 7.5px, transparent 12.5px, #EAEAEA 12.5px, #EAEAEA 15px, transparent 15px, transparent 20px); }
 
 .app-drawer {
   text-align: left; }
