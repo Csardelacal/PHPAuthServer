@@ -139,6 +139,10 @@
 				router.equals('phpas/app/drawer').to( function() { return '<?= url('appdrawer')->setExtension('js') ?>'; });
 			});
 			
+			depend(['test'], function (test) {
+				console.log(test);
+			});
+			
 			depend(['ui/dropdown'], function (dropdown) {
 				dropdown('.app-switcher');
 			});
@@ -146,6 +150,7 @@
 			depend(['phpas/app/drawer'], function (drawer) {
 				console.log(drawer);
 			});
+			
 		}());
 		</script>
 		

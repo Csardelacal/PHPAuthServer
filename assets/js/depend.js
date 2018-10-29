@@ -106,8 +106,10 @@
 			var self = this;
 			
 			if (available(identifier)) {
-				this.callable = available(identifier).getCallable();
-				loader.notify();
+				available(identifier).onReady(function() {
+					self.callable = this.getCallable();
+					loader.notify();
+				});
 				return;
 			}
 			
@@ -282,7 +284,14 @@
 		var module = new Module(name, dependencies, definition);
 		modules.push(module);
 		last = name ? null : module;
-		module.init();
+		
+		/*
+		 * Move the execution of the module to a clean stack trace. This prevents 
+		 * the stack from becoming to unwieldy and errors from stopping the execution
+		 * of properly working modules.
+		 * 
+		 */
+		setTimeout(function() {module.init();}, 0);
 		
 		return module;
 	}

@@ -105,14 +105,16 @@
 	 */
 	var getConstraints = function (el) {
 		var t = 0;
+		var l = 0;
 		var w = el.clientWidth;
 		var h = el.clientHeight;
 		
 		do {
 			t = t + el.offsetTop;
+			l = l + el.offsetLeft;
 		} while (null !== (el = el.offsetParent));
 		
-		return {top : t, bottom : document.body.clientHeight - t - h, width: w, height: h};
+		return {top : t, bottom : document.body.clientHeight - t - h, left: l, width: w, height: h};
 	};
 	 
 	/**

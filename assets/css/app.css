@@ -357,6 +357,19 @@ THE SOFTWARE.
 /*
     Created on : 24.10.2018, 16:26:42
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+	 
+	 The purpose of this software is to provide a series of minimal standard
+	 components that are typical among UIs and that are required almost universally
+	 by web applications. These include resetting, scaffolding, basic form elements,
+	 basic text formatting elements, basic navigation bars and footers.
+	 
+	 Some of these functions will require appropriate Javascript to be used. 
+	 This requires the use of a _.scss.js file that will provide the required 
+	 functionality. This file will be provided with compatibility for m3.js's
+	 dependency loader.
+
+	 The use of the Javascript component MUST be optional and allow for graceful
+	 fallbacks while the JS is either not loaded, or failed loading.
 */
 /*
 To change this license header, choose License Headers in Project Properties.
