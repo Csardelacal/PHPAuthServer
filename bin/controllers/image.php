@@ -143,7 +143,12 @@ class ImageController extends Controller
 		}
 		
 		try {
-			$file = storage($attr->value)->getPath();
+			if (!empty($attr->value)) {
+				$file = storage($attr->value)->getPath();
+			}
+			else {
+				throw new Exception('No file', 1811031627);
+			}
 		} 
 		catch (Exception $ex) {
 			$file = $attr->value;
@@ -162,7 +167,7 @@ class ImageController extends Controller
 			$img->setBackground(255, 255, 255);
 			$img->setCompression(9);
 			$img->store($prvw, 'jpg');
-		} elseif (!$attr->value || !file_exists($file)) {
+		} elseif (empty($file) || !file_exists($file)) {
 			//Fallback if the attribute was either not set or not an image the system
 			//can preview
 			$prvw = './assets/img/user.png';
