@@ -131,6 +131,7 @@
 				
 				//We just received the onload event for the script the browser was compiling.
 				//This means we can use the script's name to address the module it just compiled
+				console.log(e.target.getAttribute('data-src'));
 				module.setName(e.target.getAttribute('data-src'));
 				
 				/*

@@ -231,6 +231,7 @@ class UserController extends BaseController
 	public function recover($tokenid = null) {
 		
 		$token = $tokenid? db()->table('token')->get('token', $tokenid)->fetch() : null;
+		$returnto = isset($_GET['returnto'])? $_GET['returnto'] : url();
 		
 		if ($token && $token->app !== null) {
 			throw new PublicException('Token level insufficient', 403);

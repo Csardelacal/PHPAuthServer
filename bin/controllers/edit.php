@@ -105,7 +105,7 @@ class EditController extends BaseController
 			$this->user->verified = false;
 			$this->user->store();
 			
-			return $this->response->getHeaders()->redirect(new URL());
+			return $this->response->getHeaders()->redirect(url());
 		}
 		
 	}

@@ -62,8 +62,8 @@ depend(['core/debounce'], function (debounce) {
 						html.style    = null;
 						wrapper.style = null;
 						
-						wrapper.style.display = 'inline-block';
-						wrapper.style.width   = '100%';
+						//wrapper.style.display = 'inline-block';
+						//wrapper.style.width   = '100%';
 						console.log(wrapper.style);
 					}
 					
@@ -108,8 +108,8 @@ depend(['core/debounce'], function (debounce) {
 				html.style    = null;
 				wrapper.style = null;
 				
-				wrapper.style.display = 'inline-block';
-				wrapper.style.width   = '100%';
+				//wrapper.style.display = 'inline-block';
+				//wrapper.style.width   = '100%';
 				
 				child = undefined;
 				html  = undefined;
@@ -173,8 +173,8 @@ depend(['core/debounce'], function (debounce) {
 		/*
 		 * These lines prevent the system from collapsing the borders.
 		 */
-		original.style.display = 'inline-block';
-		original.style.width   = '100%';
+		//original.style.display = 'inline-block';
+		//original.style.width   = '100%';
 		
 		this.getBoundaries = debounce(function () { 
 			var box = original.getBoundingClientRect();

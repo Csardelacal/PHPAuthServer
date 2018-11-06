@@ -3,6 +3,7 @@
 	<head>
 		<title><?= isset(${'page.title'}) && ${'page.title'}? ${'page.title'} : 'Account server' ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="_scss" content="<?= \spitfire\SpitFire::baseUrl() ?>/assets/scss/_/js/">
 		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/app.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/ui-layout.css') ?>">
 		
@@ -131,16 +132,13 @@
 		
 		<!--Import depend.js and the router it uses to load locations -->
 		<script src="<?= spitfire\core\http\URL::asset('js/depend.js') ?>" type="text/javascript"></script>
-		<script src="<?= spitfire\core\http\URL::asset('js/depend/router.js') ?>" type="text/javascript"></script>
+		<script src="<?= spitfire\core\http\URL::asset('js/m3/depend/router.js') ?>" type="text/javascript"></script>
 		<script type="text/javascript">
 		(function () {
-			depend(['depend/router'], function(router) {
+			depend(['m3/depend/router'], function(router) {
 				router.all().to(function(e) { return '<?= \spitfire\SpitFire::baseUrl() . '/assets/js/' ?>' + e + '.js'; });
 				router.equals('phpas/app/drawer').to( function() { return '<?= url('appdrawer')->setExtension('js') ?>'; });
-			});
-			
-			depend(['test'], function (test) {
-				console.log(test);
+				router.equals('_scss').to( function() { return '<?= \spitfire\SpitFire::baseUrl() ?>/assets/scss/_/js/_.scss.js'; });
 			});
 			
 			depend(['ui/dropdown'], function (dropdown) {
@@ -151,16 +149,80 @@
 				console.log(drawer);
 			});
 			
+			/*depend(['m3/animation/bezier'], function(bezier) {
+				var size = 500;
+				var canvas = document.body.appendChild(document.createElement('canvas'));
+				var context = canvas.getContext('2d')
+				canvas.width = size;
+				canvas.height = size;
+				
+				var b = bezier.bezier(bezier.point(0, size), bezier.point(200, size), bezier.point(size - 200, 0), bezier.point(size, 0));
+				
+				context.beginPath();
+				context.moveTo(0,size);
+				
+				for (var i = 0; i < size; i++) {
+					context.lineTo(b.x(i / size), b.y(i / size));
+				}
+				
+				context.stroke();
+			});/**/
+
+			
+			
+			/*depend(['m3/animation/easing', 'm3/animation/bezier'], function(easing, bezier) {
+				var size = 500;
+				var canvas = document.body.appendChild(document.createElement('canvas'));
+				var context = canvas.getContext('2d');
+				canvas.width = size;
+				canvas.height = size;
+				
+				var b = easing.compile(
+					bezier.point(0.42, 0), 
+					bezier.point(0.58, 1), 
+				300);
+				
+				
+				for (var i = 0; i < size; i++) {
+					setTimeout(function(p) {
+						return function() {
+							context.fillRect(p, size - b.calculate(p / size) * size, 1, 1);
+						};
+					}(i), i * 5);
+				}
+				
+			});/**/
+			
+			depend(['m3/animation/animation'], function(transition) {
+				return;
+				var div = document.body.appendChild(document.createElement('div'));
+				div.style.display = 'block';
+				div.style.width = '0px';
+				div.style.height = '0px';
+				div.style.top = '0px';
+				div.style.left = '0px';
+				div.style.background = '#f00';
+				div.style.position = 'fixed';
+				
+				transition(function(position) {
+					div.style.width = position * 100 + 'px';
+					div.style.height = position * 100 + 'px';
+				}, 200, 'easeOut');
+			});
+			
+			depend(['_scss'], function() {
+				//Loaded
+			});
+			
 		}());
 		</script>
 		
-		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui-layout.js') ?>"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/dials.js') ?>" async="true"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui/form/styledElements.js') ?>" async="true"></script>
 		
 		
 		<script type="text/javascript">
-			depend(['core/debounce', 'sticky'], function (debounce, sticky) {
+			depend(['sticky'], function (sticky) {
 				
 				/*
 				 * Create elements for all the elements defined via HTML

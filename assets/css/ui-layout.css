@@ -1,7 +1,5 @@
 body {
   overflow-x: hidden; }
-  body.sb-no-animation .sidebar, body.sb-no-animation .content, body.sb-no-animation .contains-sidebar, body.sb-no-animation .contains-sidebar * {
-    transition: none !important; }
 
 * {
   box-sizing: border-box;
@@ -9,12 +7,8 @@ body {
 
 .sidebar {
   overflow: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  transition: left .2s ease-in, .2s opacity .3s ease-in, .2s width .3s ease-in; }
+  position: relative;
+  width: 200px; }
   .sidebar .menu-title {
     color: #2a912e;
     padding: 10px; }
@@ -56,39 +50,7 @@ body {
     width: 20px; }
 
 .contains-sidebar {
-  transition: .2s opacity .3s ease-in, .2s width .3s ease-in; }
-  .contains-sidebar.persistent {
-    width: 200px;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    z-index: 99999;
-    overflow-x: hidden; }
-    .contains-sidebar.persistent.collapsed {
-      width: 0px;
-      opacity: 0; }
-  .contains-sidebar.floating {
-    z-index: 99999;
-    background: rgba(0, 0, 0, 0.05);
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    position: fixed;
-    overflow: hidden;
-    opacity: 0;
-    width: 100%;
-    opacity: 1; }
-    .contains-sidebar.floating .sidebar {
-      left: 0;
-      background: #FFF;
-      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3); }
-    .contains-sidebar.floating.collapsed {
-      width: 0%;
-      opacity: 0; }
-      .contains-sidebar.floating.collapsed .sidebar {
-        left: -240px;
-        box-shadow: none; }
+  overflow-x: hidden; }
 
 .content {
   display: inline-block;
@@ -100,22 +62,29 @@ body {
       * the children properly when resizing the UI. For some reason, when the parent
       * is changed in size, not all children behave as expected.
   	 */
-  overflow-x: hidden;
-  transition: 0.2s width 0.3s ease-in; }
+  overflow-x: hidden; }
 
-@media all and (max-width: 1160px) {
-  .contains-sidebar:not(.floating):not(.persistent) {
-    display: none; } }
-@media all and (min-width: 1160px) {
-  .contains-sidebar:not(.floating):not(.persistent) {
+@media all {
+  .contains-sidebar {
     display: inline-block;
-    width: 200px; }
-    .contains-sidebar:not(.floating):not(.persistent) + .content {
-      width: calc(100% - 200px); }
-    .contains-sidebar:not(.floating):not(.persistent) .sidebar {
-      position: static; } }
-@media handheld {
+    width: 200px;
+    height: 100%;
+    background: #FBFBFB;
+    border-right: solid 1px #EEE; } }
+@media all and (max-width: 1160px) {
+  .contains-sidebar {
+    display: none; }
+
   .sidebar {
-    overflow: auto; } }
+    display: none; }
+
+  .content {
+    width: 100%; } }
+@media all and (min-width: 1160px) {
+  .contains-sidebar + .content {
+    width: calc(100% - 200px); }
+  .contains-sidebar .sidebar {
+    position: relative;
+    width: 200px; } }
 
 /*# sourceMappingURL=ui-layout.css.map */
