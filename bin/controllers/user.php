@@ -295,7 +295,7 @@ class UserController extends BaseController
 		}
 		
 		#We need to redirect the user back to the home page
-		$this->response->getHeaders()->redirect(url(Array('message' => 'success')));
+		$this->response->setBody('Redirect...')->getHeaders()->redirect(url(Array('message' => 'success')));
 	}
 	
 }

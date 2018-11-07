@@ -1,8 +1,8 @@
 <?php /** @var $user UserModel */ ?>
 
 <?php if (isset($_GET['message']) && $_GET['message'] === 'success') : ?>
-<div class="row1">
-	<div class="span1">
+<div class="row l1">
+	<div class="span l1">
 		<div class="message success">
 			Request successful.
 		</div>

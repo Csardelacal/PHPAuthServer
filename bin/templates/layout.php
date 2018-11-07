@@ -94,9 +94,11 @@
 					you didn't make up your address.
 				-->
 				<div class="spacer" style="height: 30px;"></div>
-				<div class="row1">
-					<div class="span1 message error">
-						Your account has not yet been activated. <a href="<?= url('user', 'activate') ?>">Resend activation mail</a>
+				<div class="row l1">
+					<div class="span l1">
+						<div class="message error">
+							Your account has not yet been activated. <a href="<?= url('user', 'activate') ?>">Resend activation mail</a>
+						</div>
 					</div>
 				</div>
 				<?php endif; ?> 
@@ -147,67 +149,6 @@
 			
 			depend(['phpas/app/drawer'], function (drawer) {
 				console.log(drawer);
-			});
-			
-			/*depend(['m3/animation/bezier'], function(bezier) {
-				var size = 500;
-				var canvas = document.body.appendChild(document.createElement('canvas'));
-				var context = canvas.getContext('2d')
-				canvas.width = size;
-				canvas.height = size;
-				
-				var b = bezier.bezier(bezier.point(0, size), bezier.point(200, size), bezier.point(size - 200, 0), bezier.point(size, 0));
-				
-				context.beginPath();
-				context.moveTo(0,size);
-				
-				for (var i = 0; i < size; i++) {
-					context.lineTo(b.x(i / size), b.y(i / size));
-				}
-				
-				context.stroke();
-			});/**/
-
-			
-			
-			/*depend(['m3/animation/easing', 'm3/animation/bezier'], function(easing, bezier) {
-				var size = 500;
-				var canvas = document.body.appendChild(document.createElement('canvas'));
-				var context = canvas.getContext('2d');
-				canvas.width = size;
-				canvas.height = size;
-				
-				var b = easing.compile(
-					bezier.point(0.42, 0), 
-					bezier.point(0.58, 1), 
-				300);
-				
-				
-				for (var i = 0; i < size; i++) {
-					setTimeout(function(p) {
-						return function() {
-							context.fillRect(p, size - b.calculate(p / size) * size, 1, 1);
-						};
-					}(i), i * 5);
-				}
-				
-			});/**/
-			
-			depend(['m3/animation/animation'], function(transition) {
-				return;
-				var div = document.body.appendChild(document.createElement('div'));
-				div.style.display = 'block';
-				div.style.width = '0px';
-				div.style.height = '0px';
-				div.style.top = '0px';
-				div.style.left = '0px';
-				div.style.background = '#f00';
-				div.style.position = 'fixed';
-				
-				transition(function(position) {
-					div.style.width = position * 100 + 'px';
-					div.style.height = position * 100 + 'px';
-				}, 200, 'easeOut');
 			});
 			
 			depend(['_scss'], function() {
