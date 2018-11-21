@@ -111,10 +111,10 @@ class ImageController extends Controller
 		 * inside the same directory they get stored to.
 		 */
 		try {
-			$file = $icon->up()->open($size . '_' . $icon->basename() . '.jpg');
+			$file = storage()->dir(spitfire\core\Environment::get('uploads.dir'))->open($size . '_' . $icon->basename() . '.jpg');
 		}
 		catch (FileNotFoundException$e) {
-			$file = $icon->up()->make($size . '_' . $icon->basename() . '.jpg');
+			$file = storage()->dir(spitfire\core\Environment::get('uploads.dir'))->make($size . '_' . $icon->basename() . '.jpg');
 			
 			$img  = media()->load($icon);
 			$img->fit($size, $size);
