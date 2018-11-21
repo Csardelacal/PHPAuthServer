@@ -7,9 +7,9 @@ use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
 use spitfire\validation\EmptyValidationRule;
-use spitfire\validation\MinLengthValidationRule;
 use spitfire\validation\rules\FilterValidationRule;
 use spitfire\validation\rules\MaxLengthValidationRule;
+use spitfire\validation\rules\MinLengthValidationRule;
 use spitfire\validation\ValidationError;
 use spitfire\validation\ValidationException;
 
