@@ -77,7 +77,7 @@ class SuspensionController extends AppController
 		 * Some applications also perform user profile level caching. Something has
 		 * changed for this user, so we inform the application about it too.
 		 */
-		$this->hook && $this->hook->trigger('user.update', ['user' => $user->_id]);
+		$this->hook && $this->hook->trigger('user.update', ['type' => 'user', 'id' => $this->user->_id]);
 		
 		/*
 		 * The user is now suspended, we can redirect to the profile.
