@@ -55,6 +55,7 @@ class PermissionsController extends BaseController
 		
 		$connections = db()->table('connection\auth')
 			->get('target', $app)
+			->where('source', '!=', db()->table('authapp')->get('system', true))
 			->group()->where('user', $this->user)->where('user', null)->endGroup()
 			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
 			->all()

@@ -1,3 +1,5 @@
+/* global HTMLElement */
+
 (function () {
 
 	var modules = [];
@@ -17,7 +19,7 @@
 	 * @todo Replace with a proper router for multiple locations and whatnot.
 	 * @type String|url
 	 */
-	var baseURL = '';
+	var router = function(e) { return e + '.js'; };
 
 	/**
 	 * Provides a standard behavior for attaching listeners to a HTMLElement 
@@ -30,15 +32,31 @@
 	 * @returns {undefined}
 	 */
 	function on(src, evt, callback) {
-		if (window.addEventListener) {
+		
+		/*
+		 * If the browser supports addeventlistener we can stop right there, since
+		 * we do already have support for listeners the way we want them.
+		 */
+		if (window.addEventListener && src instanceof HTMLElement) {
 			return src.addEventListener(evt, callback, false);
 		}
-		if (window.attachEvent) {
+		
+		/*
+		 * Old versions (ancient by now) do support the attachEvent alternative to
+		 * addEventlistener, while it is essentially identical, it has a different
+		 * syntax.
+		 */
+		if (window.attachEvent && src instanceof HTMLElement) {
 			return src.attachEvent('on' + evt, callback);
 		}
 
-		//This will locate a onLoad, for example, and stack it. Should provide fallback
-		//even for the most primitive of browsers.
+		/*
+		 * This will locate a onLoad, for example, and stack it. Should provide fallback
+		 * even for the most primitive of browsers.
+		 * 
+		 * Using this, we can also generate stacked events for any objects that are
+		 * not HTMLElements and therefore do not support addEventlistener.
+		 */
 		var attr = 'on' + evt;
 		var prev = src[attr] !== undefined ? src[attr] : null;
 		src[attr] = function (e) {
@@ -46,7 +64,7 @@
 		};
 	}
 
-	function getModuleByName(name) {
+	function available(name) {
 		for (var i = 0; i < modules.length; i++) {
 			if (modules[i].getName() === name) {
 				return modules[i];
@@ -63,74 +81,126 @@
 			}
 		}
 	}
-
-	function DependencyLoader(dependencies, callback) {
-
-		var total = dependencies.length;
-		var progress = 0;
-		var loaded = [];
-
-		for (var i = 0; i < total; i++) {
-			if (getModuleByName(dependencies[i])) {
-				var module = getModuleByName(dependencies[i]);
-				loaded[dependencies.indexOf(module.getName())] = module.getCallable();
-				progress++;
-				continue;
-			}
-
-			if (isQueued(dependencies[i])) {
-				on(isQueued(dependencies[i]), 'load', function (e) {
-					var module = getModuleByName(e.target.getAttribute('data-src'));
-					module.onReady(function () {
-						loaded[dependencies.indexOf(module.getName())] = module.getCallable();
-						progress++;
-						if (progress === total) {
-							callback(loaded);
-						}
-					});
+	
+	function script(src) {
+		/*
+		 * We create a script tag so the user gets a feeling for what he imported.
+		 * This allows the browser to expose proper debugging.
+		 *
+		 * @type @exp;document@call;createElement
+		 */
+		var script = document.createElement('script');
+		script.src = router(src);
+		script.async = true;
+		script.type = 'text/javascript';
+		script.setAttribute('data-src', src);
+		
+		return script;
+	}
+	
+	function Dependency(loader, identifier) {
+		
+		this.callable = undefined;
+		
+		this.load = function () {
+			var self = this;
+			
+			if (available(identifier)) {
+				available(identifier).onReady(function() {
+					self.callable = this.getCallable();
+					loader.notify();
 				});
-
-				continue; //The script was already added, we don't need to do anything else
+				return;
 			}
-
-			/*
-			 * We create a script tag so the user gets a feeling for what he imported.
-			 * This allows the browser to expose proper debugging.
-			 *
-			 * @type @exp;document@call;createElement
-			 */
-			var script = document.createElement('script');
-			script.src = baseURL + dependencies[i] + '.js';
-			script.async = true;
-			script.type = 'text/javascript';
-			script.setAttribute('data-src', dependencies[i]);
-
-			on(script, 'load', function (e) {
-				var result = last? last : getModuleByName(e.target.getAttribute('data-src'));
+			
+			if (isQueued(identifier)) {
+				var tag = isQueued(identifier);
+			}
+			else {
+				var tag = script(identifier);
+			}
+			
+			on(tag, 'load', function (e) {
+				/*
+				 * This function is called once per module awaiting this script's end,
+				 * which implies that the first listener will basically "consume" last
+				 * and therefore, subsequent listeners will have to retrieve the 
+				 * appropriate module.
+				 */
+				var module = last? last : available(e.target.getAttribute('data-src'));
+				
 				//We just received the onload event for the script the browser was compiling.
 				//This means we can use the script's name to address the module it just compiled
-				result.setName(e.target.getAttribute('data-src'));
-
-				//Drop the module we were loading from the list of modules we're waiting for
-				pending.splice(pending.indexOf(this), 1);
-				last = null;
-
-				result.onReady(function () {
-					loaded[dependencies.indexOf(result.getName())] = result.getCallable();
-
-					progress++;
-					if (progress === total) {
-						callback(loaded);
-					}
+				console.log(e.target.getAttribute('data-src'));
+				module.setName(e.target.getAttribute('data-src'));
+				
+				/*
+				 * Drop the module we were loading from the list of modules we're waiting for
+				 */
+				if (pending.indexOf(this) !== -1) {
+					pending.splice(pending.indexOf(this), 1);
+					last = null;
+				}
+				
+				/*
+				 * Since we now have a module we can basically apply to be notified
+				 * once the module is compiled and ready to be used.
+				 * 
+				 * When the module is ready, the dependency will retrieve it's callable
+				 * (which is not required to be a function) and notifies the loader
+				 * that the dependency has been resolved.
+				 */
+				module.onReady(function () {
+					self.callable = module.getCallable();
+					loader.notify();
 				});
 			});
+			
+			on (tag, 'error', function (e) {
+				console.error('Error loading module ' + e.target.getAttribute('data-src'));
+				console.log('Dependency loading failed. Depending modules will not be initialized.');
+				
+				if (pending.indexOf(this) !== -1) {
+					pending.splice(pending.indexOf(this), 1);
+					last = null;
+				}
+			});
+			
+			if (!tag.parentNode) {
+				document.head.appendChild(tag);
+				pending.push(tag);
+			}
+		};
+	}
 
-			document.head.appendChild(script);
-			pending.push(script);
+	function DependencyLoader(d, callback) {
+		
+		
+		var dependencies = d.map(function (e) {
+			return new Dependency(this, e);
+		}, this);
+		
+		var total = dependencies.length;
+		var progress = 0;
+		
+		this.notify = function () {
+			progress++;
+			
+			if (progress === total) {
+				callback(dependencies.map(function (e) { return e.callable; }));
+			}
+		};
+		
+		if (0 === total) {
+			/*
+			 * Since there are no dependencies, the system will need to load none and 
+			 * can therefore immediately proceed to calling the provided callback.
+			 */
+			callback([]);
 		}
 
-		if (total === progress) {
-			return callback(loaded);
+		for (var i = 0; i < total; i++) {
+			dependencies[i].load();
 		}
 	}
 
@@ -139,12 +209,19 @@
 		var self = this;
 
 		this.name = name;
-		this.callable = null;
+		this.callable = undefined;
+		this.resolved = false;
 		this.listeners = [];
 
 		this.init = function () {
 			new DependencyLoader(dependencies, function (deps) {
-				self.callable = definition.apply(null, deps);
+				try {
+					self.callable = definition.apply(null, deps);
+				} catch (e) {
+					console.log('Error initializing module. Error was: ');
+					console.error(e);
+				}
+				self.resolved = true;
 				self.onReady();
 			});
 		};
@@ -153,10 +230,10 @@
 			if (param) {
 				this.listeners.push(param);
 			}
-
-			if (this.callable) {
+			
+			if (this.resolved) {
 				for (var i = 0; i < this.listeners.length; i++) {
-					this.listeners[i].call();
+					this.listeners[i].call(this);
 				}
 
 				this.listeners = [];
@@ -199,6 +276,7 @@
 			definition = dependencies;
 			dependencies = [];
 		}
+		
 
 		/*
 		 * We return a module. This object will then be named by the onload of our
@@ -207,7 +285,14 @@
 		var module = new Module(name, dependencies, definition);
 		modules.push(module);
 		last = name ? null : module;
-		module.init();
+		
+		/*
+		 * Move the execution of the module to a clean stack trace. This prevents 
+		 * the stack from becoming to unwieldy and errors from stopping the execution
+		 * of properly working modules.
+		 * 
+		 */
+		setTimeout(function() {module.init();}, 0);
 		
 		return module;
 	}
@@ -217,6 +302,6 @@
 	 * developer to use the class.
 	 */
 	window.depend = depend;
-	window.depend.setBaseURL = function(url) { baseURL = url; };
+	window.depend.setRouter = function(r) { router = r; };
 	
 }());

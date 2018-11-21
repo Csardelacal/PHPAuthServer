@@ -43,41 +43,102 @@ $json = json_encode($payload);
 	
 	"use strict";
 	
-	var outer  = document.getElementById('app-drawer');
-	var target = outer.appendChild(document.createElement('div'));
-	var els    = <?= $json ?>;
+	/*
+	 * This script provides self contained code to attach the app-drawer to your
+	 * application. Therefore it should have no external dependencies and have as
+	 * little side effects as possible.
+	 * 
+	 * Therefore, this function allows us to "dump" CSS properties into an object,
+	 * removing the need for third party CSS
+	 */
+	var merge = function (b) {
+		/*
+		 * Loop over the elements in b and overwrite the ones on the local object 
+		 * that are overshadowed.
+		 */
+		for (var i in b) {
+			if (!b.hasOwnProperty(i)) { continue; }
+			
+			if (typeof(b[i]) === 'object') { 
+				/*
+				 * When recursing into objects, we need to be careful to check whether
+				 * the source already has the property defined or not
+				 */
+				if (this[i]) { merge.call(this[i], b[i]); }
+				else         { this[i] = b[i]; }
+			}
+			else { this[i] = b[i]; }
+		}
+	};
+	
+	/*
+	 * This function is a helper to quickly create elements with static properties
+	 */
+	var make = function (parent, tag, properties) {
+		var e = document.createElement(tag);
+		merge.call(e, properties || {});
+		
+		parent && parent.appendChild(e);
+		
+		return e;
+	};
+	
+	var outer = document.getElementById('app-drawer');
+	var target = make(null, 'div', {className: 'padded'});
+	var els = <?= $json ?>;
 	var logout = "<?= url('user', 'logout')->absolute(); ?>";
 	
 	var wrapper;
+	var span;
+	
+	make(document.head, 'style', <?= json_encode(['innerHTML' => file_get_contents(spitfire()->getCWD() . '/assets/css/drawer.css')]) ?>);
 	
 	for (var i = 0; i < els.length; i++) {
 		if (i % 3 === 0) { 
-			wrapper = document.createElement('div'); 
-			wrapper.className = 'row l3 m3 s3 fluid';
-			target.appendChild(wrapper);
+			wrapper = make(target, 'div', {
+				style: {
+					width: '100%',
+					padding: '5px 20px'
+				}
+			});
 		}
 		
-		var span = wrapper.appendChild(document.createElement('div'));
-		span.className = 'span l1 m1 s1';
+		span = make(wrapper, 'div', {style : {
+				width: '30%',
+				margin: '0 1.5%',
+				display: 'inline-block'
+		}});
 		
-		var a    = span.appendChild(document.createElement('a'));
-		a.className = 'app-entry';
-		a.href = els[i].url;
+		var a = make(span, 'a', {
+			//TODO: Remove references to PHPAS specific CSS
+			className: 'app-entry',
+			href: els[i].url
+		});
 		
-		var img = a.appendChild(document.createElement('img'));
-		img.src = els[i].icon;
-		img.className = 'app-icon-drawer';
+		make(a, 'img', {
+			src: els[i].icon,
+			//TODO: Remove references to PHPAS specific CSS
+			className: 'app-icon-drawer'
+		});
 		
-		var name = a.appendChild(document.createElement('span'));
-		name.className = 'app-name-drawer';
-		name.appendChild(document.createTextNode(els[i].name));	
+		make(a, 'span', {
+			//TODO: Remove references to PHPAS specific CSS
+			className: 'app-name-drawer',
+			innerHTML: els[i].name
+		});
+		
 	}
 	
-	target.className = 'padded';
+	outer.appendChild(target);
 	
-	var logoutlink = outer.appendChild(document.createElement('a'));
-	logoutlink.className = 'footer';
-	logoutlink.href = logout + '?returnto=' + encodeURIComponent(window.location);
-	logoutlink.innerHTML = 'Logout';
+	make(outer, 'a', {
+		className: 'footer',
+		href: logout + '?returnto=' + encodeURIComponent(window.location),
+		innerHTML: 'Logout'
+	});
+	
+	depend('phpas/app/drawer', function () {
+		return 'drawer loaded';
+	});
 	
 }());

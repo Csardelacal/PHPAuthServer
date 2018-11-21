@@ -30,7 +30,7 @@
  * 
  * @returns {undefined}
  */
-(function () {
+depend(['core/debounce'], function (debounce) {
 	
 	"use strict";
 	
@@ -41,7 +41,14 @@
 	var registered = [];
 	var offset     = {x : window.pageXOffset, y : window.pageYOffset };
 	
-	var Stuck = function (position) {
+	/*
+	 * Stuck elements are those two that are either pinned to the top or the bottom
+	 * of the page.
+	 * 
+	 * @param {type} position
+	 * @returns {stickyL#33.Stuck}
+	 */
+	var Pin = function (position) {
 		var html    = undefined;
 		var wrapper = undefined;
 		var child   = undefined;
@@ -55,8 +62,8 @@
 						html.style    = null;
 						wrapper.style = null;
 						
-						wrapper.style.display = 'inline-block';
-						wrapper.style.width   = '100%';
+						//wrapper.style.display = 'inline-block';
+						//wrapper.style.width   = '100%';
 						console.log(wrapper.style);
 					}
 					
@@ -101,8 +108,8 @@
 				html.style    = null;
 				wrapper.style = null;
 				
-				wrapper.style.display = 'inline-block';
-				wrapper.style.width   = '100%';
+				//wrapper.style.display = 'inline-block';
+				//wrapper.style.width   = '100%';
 				
 				child = undefined;
 				html  = undefined;
@@ -116,9 +123,9 @@
 	 * 
 	 * @type Object
 	 */
-	var html = {
-		top: new Stuck('top'),
-		bottom: new Stuck('bottom')
+	var pinned = {
+		top: new Pin('top'),
+		bottom: new Pin('bottom')
 	};
 	
 	var Sticky = function (element, context, direction) {
@@ -166,8 +173,8 @@
 		/*
 		 * These lines prevent the system from collapsing the borders.
 		 */
-		original.style.display = 'inline-block';
-		original.style.width   = '100%';
+		//original.style.display = 'inline-block';
+		//original.style.width   = '100%';
 		
 		this.getBoundaries = debounce(function () { 
 			var box = original.getBoundingClientRect();
@@ -189,34 +196,6 @@
 		};
 	};
 	
-	/*
-	 * This helper allows the application to define listeners that will prevent
-	 * the application from hogging system resources when a lot of events are 
-	 * fired.
-	 * 
-	 * @param {type} fn
-	 * @returns {Function}
-	 */
-	var debounce = function (fn, interval) {
-	  var timeout = undefined;
-	  var returnv = undefined;
-
-	  return function () {
-		  if (returnv === undefined) { return returnv = fn.apply(window, arguments); }
-		  if (timeout) { return returnv; }
-		  
-		  var args = arguments;
-		  var callback = function () {
-			  returnv = fn.apply(window, args) || null;
-			  timeout = undefined;
-		  };
-		  
-		  if (window.requestAnimationFrame && !interval) { timeout = window.requestAnimationFrame(callback); }
-		  else { timeout = setTimeout(callback, interval || 50); }
-		  
-		  return returnv;
-	  };
-	};
 	
 	var findContext = function (e) {
 		if (e === document.body) { return e; }
@@ -233,26 +212,12 @@
 		return wrapper;
 	};
 	
-	
 	/*
-	 * Export the basic functions and register the necessary listeners.
+	 * Register a listener to defer all scroll listening. When the user scrolls, 
+	 * the listener will check which elements it should pin to the top and which
+	 * it should leave behind.
 	 */
-	window.sticky = {
-		stick : function (element, context, direction) { 
-			return new Sticky(new Element(wrap(wrap(element))), new Context(new Element(context)), direction);
-		}
-	};
-	
-	/*
-	 * Create elements for all the elements defined via HTML
-	 */
-	var els = document.querySelectorAll('*[data-sticky]');
-	
-	for (var i = 0; i < els.length; i++) {
-		new Sticky(new Element(wrap(wrap(els[i]))), new Context(new Element(findContext(els[i]))), els[i].getAttribute('data-sticky'));
-	}
-	
-	window.addEventListener('scroll', debounce(function (e) {
+	window.addEventListener('scroll', debounce(function () {
 		var stuck     = { top : undefined, bottom : undefined };
 		var runnerups = { top : undefined, bottom : undefined };
 		
@@ -261,43 +226,79 @@
 		 * of the browser. So, we must read them before making any changes to the
 		 * DOM
 		 */
-		offset        = {x : window.pageXOffset, y : window.pageYOffset };
+		offset = {x : window.pageXOffset, y : window.pageYOffset };
 		
-		for (var i = 0; i < registered.length; i++) {
-			if (!registered[i].getContext().getElement().getBoundaries().onscreen() ) {
-				continue;
-			}
-			
-			if (registered[i].getDirection() === 'top') {
-				if (registered[i].getElement().getBoundaries().getScreenOffsetTop() < 0) {
-					if (!stuck.top || stuck.top.getElement().getBoundaries().getScreenOffsetTop() < registered[i].getElement().getBoundaries().getScreenOffsetTop()) {
-						stuck.top = registered[i];
-					}
-				}
-				else {
-					if (!runnerups.top || runnerups.top.getElement().getBoundaries().getScreenOffsetTop() > registered[i].getElement().getBoundaries().getScreenOffsetTop()) {
-						runnerups.top = registered[i];
-					}
-				}
-			}
-			
-			if (registered[i].getDirection() === 'bottom') {
-				if (registered[i].getElement().getBoundaries().getScreenOffsetBottom() < 0) {
-					if (!stuck.bottom || stuck.bottom.getElement().getBoundaries().getScreenOffsetBottom() < registered[i].getElement().getBoundaries().getScreenOffsetBottom()) {
-						stuck.bottom = registered[i];
-					}
-				}
-				else {
-					if (!runnerups.bottom || runnerups.bottom.getElement().getBoundaries().getScreenOffsetBottom() > registered[i].getElement().getBoundaries().getScreenOffsetBottom()) {
-						runnerups.bottom = registered[i];
-					}
-				}
-			}
-		}
+		/*
+		 * Only elements with oncreen contexts are even remotely relevant to this 
+		 * query, since offscreen contexts never allow their elements to escape.
+		 */
+		var onscreen = registered.filter(function (e) { 
+			return e.getContext().getElement().getBoundaries().onscreen(); 
+		});
 		
-		html.top.setChild(stuck.top && stuck.top.getElement(), stuck.top && stuck.top.getContext().getElement(), runnerups.top && runnerups.top.getElement());
-		html.bottom.setChild(stuck.bottom && stuck.bottom.getElement(), stuck.bottom && stuck.bottom.getContext().getElement(), runnerups.bottom && runnerups.bottom.getElement());
+		/*
+		 * Select only the elements to be bound to the top of the page to check 
+		 * whether the element needs to be pinned
+		 */
+		var topbound = onscreen.filter(function(e) {
+			return e.getDirection() === 'top';
+		});
+		
+		topbound.sort(function (a, b) {
+			var va = a.getElement().getBoundaries().getScreenOffsetTop();
+			var vb = b.getElement().getBoundaries().getScreenOffsetTop();
+			
+			if (va < vb) { return -1; }
+			if (vb < va) { return  1; }
+			return 0;
+		});
+		
+		stuck.top = topbound.filter(function(e) { return e.getElement().getBoundaries().getScreenOffsetTop() <= 0;}).pop();
+		runnerups.top = topbound.filter(function(e) { return e.getElement().getBoundaries().getScreenOffsetTop() > 0;}).shift();
+		
+		/*
+		 * Repeat the same, but do it only with the elements bound to the bottom of
+		 * the page.
+		 */
+		var bottombound = onscreen.filter(function(e) {
+			return e.getDirection() === 'bottom';
+		});
+		
+		bottombound.sort(function (a, b) {
+			var va = a.getElement().getBoundaries().getScreenOffsetBottom();
+			var vb = b.getElement().getBoundaries().getScreenOffsetBottom();
+			
+			if (va < vb) { return -1; }
+			if (vb < va) { return  1; }
+			return 0;
+		});
+		
+		stuck.bottom = bottombound.filter(function(e) { return e.getElement().getBoundaries().getScreenOffsetBottom() <= 0;}).pop();
+		runnerups.bottom = bottombound.filter(function(e) { return e.getElement().getBoundaries().getScreenOffsetBottom() > 0;}).shift();
+		
+		/*
+		 * Pin the found elements to the top and / or bottom respectively
+		 */
+		pinned.top.setChild(
+			stuck.top && stuck.top.getElement(), 
+			stuck.top && stuck.top.getContext().getElement(), 
+			runnerups.top && runnerups.top.getElement()
+		);
+		
+		pinned.bottom.setChild(
+			stuck.bottom && stuck.bottom.getElement(), 
+			stuck.bottom && stuck.bottom.getContext().getElement(), 
+			runnerups.bottom && runnerups.bottom.getElement()
+		);
 		
 	}), false);
 	
-}());
+	return {
+		context : findContext,
+		
+		stick : function (element, context, direction) { 
+			return new Sticky(new Element(wrap(wrap(element))), new Context(new Element(context)), direction);
+		}
+	};
+	
+});

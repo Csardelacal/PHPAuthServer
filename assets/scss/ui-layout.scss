@@ -10,11 +10,8 @@ body {
 
 .sidebar {
 	overflow: hidden;
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width:  100%;
+	position: relative;
+	width:  200px;
 	
 	.menu-title {
 		color: #2a912e;
@@ -76,19 +73,8 @@ body {
 	}
 }
 
-.contains-sidebar.persistent {
-	width: 200px;
-	display: inline-block;
-	vertical-align: top;
-	position: relative;
-	z-index: 99999;
+.contains-sidebar {
 	overflow-x: hidden;
-
-
-	&.collapsed {
-		width: 0px;
-		opacity : 0;
-	}
 }
 
 .content {
@@ -107,59 +93,42 @@ body {
 
 	
 
-.contains-sidebar.floating {
-	z-index: 99999;
-	background: rgba(0, 0, 0, 0.05);
-	top: 0;
-	left: 0;
-	width: 0;
-	height: 100%;
-	position: fixed;
-	overflow: hidden;
-	opacity: 0;
-	width: 100%;
-	opacity: 1;
-
-	.sidebar {
-		left : 0;
-		background: #FFF;
-		box-shadow: 0px 2px 10px rgba(0, 0, 0, .3);
-	}
-
-	&.collapsed {
-		width: 0%;
-		opacity : 0;
-
-		.sidebar {
-			left: -240px;
-			box-shadow: none;
-		}
-	}
-}
-
-@media all and (max-width: 1160px) {
-	.contains-sidebar:not(.floating):not(.persistent) {
-		display: none;
-	}
-}
-
-@media all and (min-width: 1160px) {
-	.contains-sidebar:not(.floating):not(.persistent) {
+@media all {
+	.contains-sidebar {
 		display: inline-block;
 		width: 200px;
+		height: 100%;
+		background: #FBFBFB;
+		border-right: solid 1px #EEE;
 		
+	}
+}
+
+
+@media all and (max-width: 1160px) {
+	.contains-sidebar {
+		display: none;
+	}
+	
+	.sidebar {
+		display: none;
+	}
+	
+	.content {
+		width: 100%;
+	}
+}
+
+
+@media all and (min-width: 1160px) {
+	.contains-sidebar {
 		&+.content {
 			width: calc(100% - 200px);
 		}
 		
 		.sidebar {
-			position: static;
+			position: relative;
+			width: 200px;
 		}
-	}
-}
-
-@media handheld {
-	.sidebar {
-		overflow: auto;
 	}
 }

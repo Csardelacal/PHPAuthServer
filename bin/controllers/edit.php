@@ -7,12 +7,11 @@ use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
 use spitfire\validation\EmptyValidationRule;
-use spitfire\validation\FilterValidationRule;
-use spitfire\validation\MinLengthValidationRule;
+use spitfire\validation\rules\FilterValidationRule;
 use spitfire\validation\rules\MaxLengthValidationRule;
+use spitfire\validation\rules\MinLengthValidationRule;
 use spitfire\validation\ValidationError;
 use spitfire\validation\ValidationException;
-use webhook\HookModel;
 
 class EditController extends BaseController
 {
@@ -97,7 +96,7 @@ class EditController extends BaseController
 			
 			#Check if the email is currently in use
 			if (db()->table('user')->get('email', $email)->count() !== 0) {
-				throw new PublicException('Email is duplicated');
+				throw new PublicException('Email is duplicated', 400);
 			}
 			
 			#Store the new email and de-verify the account.
@@ -105,7 +104,7 @@ class EditController extends BaseController
 			$this->user->verified = false;
 			$this->user->store();
 			
-			return $this->response->getHeaders()->redirect(new URL());
+			return $this->response->setBody('redirecting...')->getHeaders()->redirect(url());
 		}
 		
 	}
@@ -137,7 +136,7 @@ class EditController extends BaseController
 			$this->user->store();
 			
 			#Notify the webhook about the change
-			HookModel::notify(HookModel::USER_UPDATED, $this->user);
+			$this->hook && $this->hook->trigger('user.update.' . $this->user->_id);
 			
 			return $this->response->getHeaders()->redirect(url());
 		}

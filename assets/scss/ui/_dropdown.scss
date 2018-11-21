@@ -26,6 +26,8 @@ THE SOFTWARE.
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
 
+$dropdown-border-color: #DDD;
+
 .has-dropdown {
 	position: relative;
 }
@@ -37,13 +39,15 @@ THE SOFTWARE.
 	left: -20px;
 	width: 100%;
 	min-width: 300px;
+	max-width:  100%;
 	margin-top: 20px;
 	background: #FFF;
-	border: solid 1px #CCC;
+	border: solid 1px $dropdown-border-color;
 	border-radius: 3px;
 	padding: 5px;
 	z-index: 99999999999;
 	padding: 10px;
+	box-shadow: 0 0 7px rgba(0, 0, 0, 0.2);
 	
 	&:before,
 	&:after {
@@ -57,12 +61,12 @@ THE SOFTWARE.
 	
 	&:before {
 		left: 20px;
-		background-image: linear-gradient(-225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px);
+		background-image: linear-gradient(-225deg, transparent 7px, $dropdown-border-color 7px, $dropdown-border-color 8px, #FFF 9px);
 	}
 	
 	&:after {
 		left: 30px;
-		background-image: linear-gradient(+225deg, transparent 7px, #CCC 7px, #CCC 8px, #FFF 9px);
+		background-image: linear-gradient(+225deg, transparent 7px, $dropdown-border-color 7px, $dropdown-border-color 8px, #FFF 9px);
 	}
 	
 	&.right-bound {

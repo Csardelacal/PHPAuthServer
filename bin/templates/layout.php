@@ -3,6 +3,7 @@
 	<head>
 		<title><?= isset(${'page.title'}) && ${'page.title'}? ${'page.title'} : 'Account server' ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="_scss" content="<?= \spitfire\SpitFire::baseUrl() ?>/assets/scss/_/js/">
 		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/app.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/ui-layout.css') ?>">
 		
@@ -93,9 +94,11 @@
 					you didn't make up your address.
 				-->
 				<div class="spacer" style="height: 30px;"></div>
-				<div class="row1">
-					<div class="span1 message error">
-						Your account has not yet been activated. <a href="<?= url('user', 'activate') ?>">Resend activation mail</a>
+				<div class="row l1">
+					<div class="span l1">
+						<div class="message error">
+							Your account has not yet been activated. <a href="<?= url('user', 'activate') ?>">Resend activation mail</a>
+						</div>
 					</div>
 				</div>
 				<?php endif; ?> 
@@ -129,23 +132,48 @@
 		});
 		</script>
 		
-		<!--Import depend.js -->
+		<!--Import depend.js and the router it uses to load locations -->
 		<script src="<?= spitfire\core\http\URL::asset('js/depend.js') ?>" type="text/javascript"></script>
+		<script src="<?= spitfire\core\http\URL::asset('js/m3/depend/router.js') ?>" type="text/javascript"></script>
 		<script type="text/javascript">
 		(function () {
-			window.depend.setBaseURL('<?= \spitfire\SpitFire::baseUrl() . '/' . ASSET_DIRECTORY . '/js/' ?>');
+			depend(['m3/depend/router'], function(router) {
+				router.all().to(function(e) { return '<?= \spitfire\SpitFire::baseUrl() . '/assets/js/' ?>' + e + '.js'; });
+				router.equals('phpas/app/drawer').to( function() { return '<?= url('appdrawer')->setExtension('js') ?>'; });
+				router.equals('_scss').to( function() { return '<?= \spitfire\SpitFire::baseUrl() ?>/assets/scss/_/js/_.scss.js'; });
+			});
 			
 			depend(['ui/dropdown'], function (dropdown) {
 				dropdown('.app-switcher');
 			});
+			
+			depend(['phpas/app/drawer'], function (drawer) {
+				console.log(drawer);
+			});
+			
+			depend(['_scss'], function() {
+				//Loaded
+			});
+			
 		}());
 		</script>
 		
-		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui-layout.js') ?>"></script>
-		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/sticky.js') ?>"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/dials.js') ?>" async="true"></script>
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/ui/form/styledElements.js') ?>" async="true"></script>
 		
-		<script type="text/javascript" src="<?= url('appdrawer')->setExtension('js'); ?>"></script>
+		
+		<script type="text/javascript">
+			depend(['sticky'], function (sticky) {
+				
+				/*
+				 * Create elements for all the elements defined via HTML
+				 */
+				var els = document.querySelectorAll('*[data-sticky]');
+
+				for (var i = 0; i < els.length; i++) {
+					sticky.stick(els[i], sticky.context(els[i]), els[i].getAttribute('data-sticky'));
+				}
+			});
+		</script>
 	</body>
 </html>

@@ -141,55 +141,39 @@ class AuthController extends BaseController
 			throw new PublicException('Invalid token: ' . __($_GET['token']), 400); 
 		}
 		
-		
-		if (isset($_GET['appSec'])) { //TODO: Remove
-			/*
-			 * This section is soon gonna get phased out to prevent the Application
-			 * secret from being sent around between servers.
-			 */
-			$appId  = $_GET['appId'];
-			$appSec = $_GET['appSec'];
-		
-			$app = db()->table('authapp')->get('appID', $appId)->addRestriction('appSecret', $appSec)->fetch();
-			$this->view->set('authenticated', !!$app);
-			$this->view->set('grant', true);
+		$remote  = isset($_GET['remote'])? $this->signature->verify($_GET['remote']) : null;
+		$context = isset($_GET['context'])? $_GET->toArray('context') : [];
+
+		if ($remote) {
+			list($sig, $src, $tgt) = $remote;
+
+			if (!$tgt || $tgt->appID != $this->authapp->appID) {
+				throw new PublicException('Invalid remote signature. Target did not authorize itself properly', 401);
+			}
+
+			if ($sig->getContext()) {
+				throw new PublicException('Invalid signature. Context should be provided via _GET', 400);
+			}
+
+			$contexts = [];
+			$grant    = [];
+
+			foreach ($context as $ctx) {
+				$contexts[]  = $tgt->getContext($ctx);
+				$grant[$ctx] = $tgt->canAccess($src, $this->token? $this->token->user : null, $ctx);
+			}
+
+			$this->view->set('context', $contexts);
+			$this->view->set('grant', $grant);
 		}
 		else {
-			$remote  = isset($_GET['remote'])? $this->signature->verify($_GET['remote']) : null;
-			$context = isset($_GET['context'])? $_GET->array('context') : [];
-			
-			if ($remote) {
-				list($sig, $src, $tgt) = $remote;
-				
-				if (!$tgt || $tgt->appID != $this->authapp->appID) {
-					throw new PublicException('Invalid remote signature. Target did not authorize itself properly', 401);
-				}
-				
-				if ($sig->getContext()) {
-					throw new PublicException('Invalid signature. Context should be provided via _GET', 400);
-				}
-				
-				$contexts = [];
-				$grant    = [];
-				
-				foreach ($context as $ctx) {
-					$contexts[]  = $tgt->getContext($ctx);
-					$grant[$ctx] = $tgt->canAccess($src, $this->token? $this->token->user : null, $ctx);
-				}
-				
-				$this->view->set('context', $contexts);
-				$this->view->set('grant', $grant);
-			}
-			else {
-				$this->view->set('context', null);
-			}
-			
-			$this->view->set('authenticated', !!$this->authapp);
-			$this->view->set('src', $this->authapp);
-			$this->view->set('remote', $src);
-			$this->view->set('token', $this->token);
+			$this->view->set('context', null);
 		}
-		
+
+		$this->view->set('authenticated', !!$this->authapp);
+		$this->view->set('src', $this->authapp);
+		$this->view->set('remote', $src);
+		$this->view->set('token', $this->token);
 	}
 	
 	/**
