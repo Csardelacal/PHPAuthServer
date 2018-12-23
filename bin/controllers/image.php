@@ -116,7 +116,7 @@ class ImageController extends Controller
 		catch (FileNotFoundException$e) {
 			$file = storage()->dir(spitfire\core\Environment::get('uploads.directory'))->make($size . '_' . $icon->basename() . '.jpg');
 			
-			$img  = media()->load($icon);
+			$img  = media()->load($icon)->poster();
 			$img->fit($size, $size);
 			$img->background(255, 255, 255);
 			$img->store($file);
