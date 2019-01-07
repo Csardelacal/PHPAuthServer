@@ -276,19 +276,17 @@ class AuthController extends BaseController
 				$connection->target  = $tgt;
 				$connection->source  = $src;
 				$connection->user    = $this->user;
-				$connection->context = $c->getContext()[0];
+				$connection->context = $c->getContext();
 				$connection->state   = AuthModel::STATE_AUTHORIZED;
 				$connection->expires = isset($_POST['remember'])? null : time() + (86400 * 30);
 				$connection->store();
 			}
 			
-			if (isset($_GET['returnto'])) {
-				return $this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']?: url(/*Grant success page or w/e*/));
-			}
+			return $this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']?: url(/*Grant success page or w/e*/));
 		}
 		
 		$this->view->set('ctx', $signatures->each(function (Signature$e) {
-			return $e->getContext()[0];
+			return $e->getContext();
 		})->each(function ($e) use ($src) {
 			return $e? $src->getContext($e) : null;
 		})->filter());
