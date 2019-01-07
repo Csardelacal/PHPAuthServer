@@ -57,6 +57,7 @@
 				<div class="sidebar">
 					<div class="spacer" style="height: 20px"></div>
 					
+                                        <?php if(isset($authUser)): ?>
 					<div class="menu-title"> Account</div>
 					<div class="menu-entry"><a href="<?= url() ?>"                  >Edit profile</a></div>
 					<div class="menu-entry"><a href="<?= url('edit', 'email')    ?>">Change email address</a></div>
@@ -81,6 +82,7 @@
 						<div class="menu-entry"><a href="<?= url('email', ['history' => 1]) ?>">History</a></div>
 						<div class="menu-entry"><a href="<?= url('email', 'domain') ?>">Domains</a></div>
 					</div>
+					<?php endif; ?> 
 					<?php endif; ?> 
 					
 				</div>

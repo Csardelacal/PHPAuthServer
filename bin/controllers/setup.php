@@ -19,10 +19,11 @@ class SetupController extends Controller
 			
 			#Create the user
 			$user->email    = $_POST['email'];
-			$user->password = $_POST['password'];
 			$user->verified = true;
 			$user->created  = time();
+			$user->setPassword($_POST['password']);
 			$user->store();
+			
 			
 			$username = db()->table('username')->newRecord();
 			$username->user = $user;
