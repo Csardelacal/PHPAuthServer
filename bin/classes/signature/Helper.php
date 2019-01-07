@@ -69,8 +69,7 @@ class Helper
 				list($algo, $src, $target, $expires, $salt, $hash) = $signature;
 				break;
 			case 7:
-				list($algo, $src, $target, $contextstr, $expires, $salt, $hash) = $signature;
-				$context = explode(Signature::SEPARATOR_CONTEXT, $contextstr);
+				list($algo, $src, $target, $context, $expires, $salt, $hash) = $signature;
 				break;
 			default:
 				throw new PublicException('Invalid signature', 400);

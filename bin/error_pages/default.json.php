@@ -25,7 +25,7 @@
  */
 
 if (\spitfire\core\Environment::get('debug_mode')) {
-	echo json_encode(['error' => $code, 'msg' => $message, 'trace' => $exception->getTraceAsString(), 'debug' => spitfire()->getMessages()]);
+	echo json_encode(['error' => $code, 'msg' => $message, 'trace' => $exception? $exception->getTraceAsString() : null, 'debug' => spitfire()->getMessages()]);
 } 
 else {
 	echo json_encode(['error' => $code, 'msg' => $message]);

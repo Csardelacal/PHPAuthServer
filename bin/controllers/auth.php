@@ -143,7 +143,7 @@ class AuthController extends BaseController
 		
 		$remote  = isset($_GET['remote'])? $this->signature->verify($_GET['remote']) : null;
 		$context = isset($_GET['context'])? $_GET->toArray('context') : [];
-
+		
 		if ($remote) {
 			list($sig, $src, $tgt) = $remote;
 
@@ -168,6 +168,7 @@ class AuthController extends BaseController
 		}
 		else {
 			$this->view->set('context', null);
+			$this->view->set('grant', null);
 		}
 
 		$this->view->set('authenticated', !!$this->authapp);
@@ -207,7 +208,7 @@ class AuthController extends BaseController
 		 * to provide several signatures, it also makes it way more flexible for 
 		 * the receiving application to select which permissions it wishes to request.
 		 */
-		$signatures = collect($_GET['signatures']->array())->each(function ($e) { 
+		$signatures = collect($_GET->toArray('signatures'))->each(function ($e) { 
 			list($signature, $src, $tgt) = $this->signature->verify($e);
 			
 			/*
