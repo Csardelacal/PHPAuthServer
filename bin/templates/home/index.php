@@ -39,7 +39,7 @@
 						<?php if ($user->verified): ?> 
 						Email verified
 						<?php else: ?> 
-						<a href="<?= url('account', 'activate') ?>">Verify your account</a>
+						<a href="<?= url('user', 'activate') ?>">Verify your account</a>
 						<?php endif; ?>
 					</div>
 				</div>
