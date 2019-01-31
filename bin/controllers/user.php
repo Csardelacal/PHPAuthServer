@@ -94,10 +94,11 @@ class UserController extends BaseController
 			 */
 			$user = db()->table('user')->newRecord();
 			$user->email    = $_POST['email'];
-			$user->password = $_POST['password'];
 			$user->verified = false;
 			$user->created  = time();
 			$user->store();
+			
+			$user->setPassword($_POST['password']);
 			
 			$username = db()->table('username')->newRecord();
 			$username->user = $user;
