@@ -24,6 +24,12 @@
 					<div class="field">
 						<input type="text" name="email" placeholder="Set your email">
 					</div>
+					
+					<div class="spacer" style="height: 10px"></div>
+					
+					<div class="field">
+						<input type="password" name="password" placeholder="Verify your password">
+					</div>
 				</div>
 				
 				<div class="inset padded">

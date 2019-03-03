@@ -84,7 +84,7 @@ class EditController extends BaseController
 			throw new PublicException('Account has been limited. Reason given: ' . $s->reason);
 		}
 		
-		if ($this->request->isPost()) {
+		if ($this->request->isPost() && $this->user->checkPassword($_POST['password'])) {
 			#Read the email from Post
 			$email = _def($_POST['email'], '');
 			
