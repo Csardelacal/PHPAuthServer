@@ -250,7 +250,7 @@ class EditController extends BaseController
 			#Notify the webhook about the change
 			$this->hook && $this->hook->trigger('user.update', ['type' => 'user', 'id' => $this->user->_id]);
 			
-			return $this->response->getHeaders()->redirect(url());
+			return $this->response->setBody('Redirect...')->getHeaders()->redirect(url());
 		}
 		catch (HTTPMethodException$e) { /* Do nothing, show the form normall */}
 		catch (ValidationException$e) { $this->view->set('errors', $e->getResult()); } 

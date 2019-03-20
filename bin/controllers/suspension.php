@@ -82,7 +82,7 @@ class SuspensionController extends AppController
 		/*
 		 * The user is now suspended, we can redirect to the profile.
 		 */
-		$this->response->getHeaders()->redirect(url('user', 'detail', $user->_id));
+		$this->response->setBody('Redirect...')->getHeaders()->redirect(url('user', 'detail', $user->_id));
 		
 	}
 	
