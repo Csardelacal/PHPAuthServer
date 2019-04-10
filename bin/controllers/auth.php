@@ -198,6 +198,14 @@ class AuthController extends BaseController
 			throw new PublicException('This method cannot be called from token context', 400);
 		}
 		
+		/**
+		 * If the user is not logged in, we need to send them to the log-in screen
+		 * first to ensure that they can create the connection.
+		 */
+		if (!$this->user) {
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current())));
+		}
+		
 		if (!isset($_GET['signatures'])) {
 			throw new PublicException('Invalid signature', 400); 
 		}
