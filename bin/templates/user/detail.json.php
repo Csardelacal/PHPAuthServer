@@ -56,6 +56,7 @@ foreach ($attributes as $attribute) {
 	$data['attributes'][$attribute->_id] = [
 		'id' => $attribute->_id,
 		'name' => $attribute->name,
+		'type' => $attribute->datatype,
 		'readable' => isset($profile[$attribute->_id])
 	];
 	
