@@ -261,19 +261,44 @@ class Signature
 	public static function extract($from) {
 		$signature = explode(self::SEPARATOR_SIGNATURE, $from);
 		$context   = [];
+		$target    = null;
 		
 		switch(count($signature)) {
 			case 4:
 				list($algo, $src, $salt, $hash) = $signature;
-				$target = null;
 				break;
 			case 5:
 				list($algo, $src, $target, $salt, $hash) = $signature;
 				break;
+			/*
+			 * By adding a context we make the signature a public signature, this can
+			 * be used to direct a user to a page where they are supposed to grant
+			 * an application certain access to certain data another application holds
+			 * about this user.
+			 * 
+			 * In this case, the src and target applications are "swapped", meaning
+			 * the target is the one receiving privileges to read.
+			 */
 			case 6:
-				list($algo, $src, $target, $contextstr, $salt, $hash) = $signature;
-				$context = explode(self::SEPARATOR_CONTEXT, $contextstr);
+				list($algo, $src, $target, $context, $salt, $hash) = $signature;
 				break;
+			
+			/*
+			 * Signatures should never be used to grant a user permission or allow
+			 * the user to grant permissions beyond the scope of their own account.
+			 * 
+			 * A single signature cannot identify a user, and therefore it allows 
+			 * a potential attacker to get a signature and grant an account or app 
+			 * permissions it was not intended to have.
+			 * 
+			 * For permissions you need to use PHPAS's groups, or a third application
+			 * that provides permission control and the ability to identify a user,
+			 * a pair of applications and something like a context to create a global
+			 * permission for data retrieval, data exchange or RPCing
+			 * 
+			 * [This comment may seem out of place, but it explains why there is no
+			 * case 7, which would have linked the two apps and a token.]
+			 */
 			default:
 				throw new PublicException('Invalid signature', 400);
 		}
