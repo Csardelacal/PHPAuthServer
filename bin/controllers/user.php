@@ -258,6 +258,11 @@ class UserController extends BaseController
 				$token->store();
 				$url   = url('user', 'recover', $token->token, ['returnto' => $returnto])->absolute();
 				EmailModel::queue($user->email, 'Recover your password', sprintf('Click here to recover your password: <a href="%s">%s</a>', $url, $url));
+				
+				$this->view->set('success', 'An email with the link to recover your account was sent to you.');
+			}
+			else {
+				$this->view->set('error', 'That email address is not attached to any account');
 			}
 			
 			$this->view->set('action', 'emailform');

@@ -1,5 +1,7 @@
 <?php
 
+current_context()->response->getHeaders()->set('Access-Control-Allow-Origin', '*');
+
 /* 
  * The MIT License
  *

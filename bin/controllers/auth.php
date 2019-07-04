@@ -38,6 +38,16 @@ class AuthController extends BaseController
 			$token->store();
 		}
 		
+		#Check whether the app has signed the package, and whether it has been registered
+		$usage = db()->table('token\usage')->get('token', $token)->where('app', $this->authapp)->first();
+		
+		if (!$usage) {
+			$usage = db()->table('token\usage')->newRecord();
+			$usage->token = $token;
+			$usage->app   = $this->authapp;
+			$usage->store();
+		}
+		
 		$this->view->set('token', $token);
 		$this->view->set('suspension', $suspension);
 	}
