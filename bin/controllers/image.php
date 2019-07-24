@@ -134,7 +134,7 @@ class ImageController extends Controller
 		
 	}
 	
-	public function attribute($attribute, $id, $width = 700, $height = null) {
+	public function attribute($attribute, $id, $width = 700) {
 		$user  = db()->table('user')->get('_id', $id)->fetch();
 		$attr  = db()->table('user\attribute')->get('user', $user)->addRestriction('attr__id', $attribute)->fetch();
 		
@@ -144,14 +144,15 @@ class ImageController extends Controller
 		
 		try {
 			if (!empty($attr->value)) {
-				$file = storage($attr->value)->getPath();
+				/*@var $file \spitfire\storage\drive\File*/
+				$file = storage($attr->value);
 			}
 			else {
 				throw new Exception('No file', 1811031627);
 			}
 		} 
 		catch (Exception $ex) {
-			$file = $attr->value;
+			$file = storage()->get('app://' . $attr->value);
 		}
 		
 		
@@ -159,18 +160,14 @@ class ImageController extends Controller
 		 * Define the filename of the target, we store the thumbs for the objects
 		 * inside the same directory they get stored to.
 		 */
-		$prvw = rtrim(dirname($file), '\/') . DIRECTORY_SEPARATOR . $width . '_' . ($height? : 'auto') . '_' . basename($file);
+		$dir = storage()->dir(\spitfire\core\Environment::get('uploads.directory'));
+		$prvw = $width . '_' . 'auto' . '_' . $file->filename() . '.jpg';
 		
-		if ($attr->value && !file_exists($prvw) && file_exists($file)) {
-			$img = new Image($file);
-			$height? $img->fitInto($width, $height) : $img->resize($width);
-			$img->setBackground(255, 255, 255);
-			$img->setCompression(9);
-			$img->store($prvw, 'jpg');
-		} elseif (empty($file) || !file_exists($file)) {
-			//Fallback if the attribute was either not set or not an image the system
-			//can preview
-			$prvw = './assets/img/user.png';
+		if (!$dir->contains($prvw)) {
+			$img = media()->load($file);
+			$img->background(255, 255, 255);
+			$img->scale($width);
+			$img->store($dir->make($prvw));
 		}
 		
 		if (ob_get_length() !== 0) {
@@ -181,7 +178,7 @@ class ImageController extends Controller
 		$this->response->getHeaders()->set('Cache-Control', 'no-transform,public,max-age=3600');
 		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
 		
-		return $this->response->setBody(file_get_contents($prvw));
+		return $this->response->setBody($dir->open($prvw));
 		
 	}
 	
