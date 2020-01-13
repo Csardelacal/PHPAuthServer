@@ -176,6 +176,8 @@ class UserController extends BaseController
 	public function logout() {
 		$s = Session::getInstance();
 		$s->destroy();
+
+		$this->response->setBody('Redirect...');
 		
 		return $this->response->getHeaders()->redirect(new URL());
 	}
