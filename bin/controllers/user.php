@@ -59,7 +59,7 @@ class UserController extends BaseController
 			 */
 			$validatorUsername = validate()->addRule(new MinLengthValidationRule(4, 'Username must be more than 3 characters'));
 			$validatorUsername->addRule(new MaxLengthValidationRule(20, 'Username must be shorter than 20 characters'));
-			$validatorUsername->addRule(new RegexValidationRule('/^[a-zA-z][a-zA-z0-9\-\_]+$/', 'Username must only contain characters, numbers, underscores and hyphens'));
+			$validatorUsername->addRule(new RegexValidationRule('/^[a-zA-Z][a-zA-Z0-9\-\_]+$/', 'Username must only contain characters, numbers, underscores and hyphens'));
 			$validatorEmail    = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email found'));
 			$validatorEmail->addRule(new MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
 			$validatorEmail->addRule(new SpamDomainValidationRule(new SpamDomainModelReader(db())));

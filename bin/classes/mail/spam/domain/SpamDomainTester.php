@@ -52,6 +52,14 @@ class SpamDomainTester
 			return false;
 		}
 		
+		if ($this->reader->isWhitelisted($domain)) {
+			return false;
+		}
+		
+		if ($this->reader->isBlacklisted($domain)) {
+			return true;
+		}
+		
 		/*
 		 * If one or more of the IP addresses that process this host's MX, then we
 		 * return a negative result for this server.
@@ -79,14 +87,42 @@ class SpamDomainTester
 			return false;
 		}, false);
 		
+		if ($ipban) {
+			return true;
+		}
+		
+		if (!$domain->getParent() ) {
+			return false;
+		}
+		
 		/*
 		 * Check if the domain itself is blacklisted, and if this is not the case,
 		 * then we check if the parent domain can be used to determine whether the
 		 * domain is or not blacklisted.
 		 */
-		return 
-			!$this->reader->isWhitelisted($domain) &&
-			($ipban || $this->reader->isBlacklisted($domain) || $this->check($domain->getParent(), false));
+		if ($this->check($domain->getParent(), false)) {
+			return true;
+		}
+		
+		/*
+		 * Sometimes temporary email providers will use a single mail exchange 
+		 * domain coupled with several IPs. In this case, banning the mx server
+		 * will do the trick.
+		 */
+		$mxDomain = Domain::mx($domain);
+		
+		/*
+		 * If we don't have a record for the domain to send email to, we will make 
+		 * the validation depend on NXDOMAINFAIL which will indicate whether the 
+		 * validation should fail due to an unavailable DNS record
+		 */
+		if ($mxDomain === false) {
+			return $nxdomainfail;
+		}
+		
+		return $mxDomain->reduce(function ($c, Domain$e) {
+			return $c || $this->reader->isBlacklisted($e);
+		}, false);
 	}
 
 }

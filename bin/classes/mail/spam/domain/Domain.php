@@ -47,7 +47,22 @@ class Domain
 	}
 	
 	public function getParent() {
+		if (empty($this->pieces[1])) { return null; }
 		return new Domain(array_slice($this->pieces, 1));
+	}
+	
+	/**
+	 * 
+	 * @todo This function currently only supports IPV4
+	 * @param $hostname string
+	 */
+	public static function mx($hostname) {
+		if ($hostname instanceof Domain) {
+			$hostname = $hostname->getHostname();
+		}
+		
+		if(!getmxrr($hostname, $mxhosts)) { return false; }
+		return collect($mxhosts)->each(function ($e) { return new Domain($e); });
 	}
 
 }

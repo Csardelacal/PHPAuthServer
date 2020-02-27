@@ -28,7 +28,7 @@ class EditController extends BaseController
 			
 			#Read the username if it was sent, check if it's valid
 			$username = _def($_POST['username'], '');
-			if (!preg_match('/^[a-zA-z][a-zA-z0-9\-\_]{2,19}$/', $username)) { 
+			if (!preg_match('/^[a-zA-Z][a-zA-Z0-9\-\_]{2,19}$/', $username)) { 
 				throw new ValidationException('Invalid username', 400, Array(new ValidationError('Username is invalid', 'Usernames may not start with a number and contain only letters, numbers, hyphens and underscores'))); 
 			}
 			
