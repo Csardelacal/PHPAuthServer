@@ -19,7 +19,7 @@ class ImageController extends Controller
 		$file = SysSettingModel::getValue('page.logo');
 		
 		$responseHeaders = $this->response->getHeaders();
-		$responseHeaders->set('Content-type', mime_content_type($file));
+		$responseHeaders->set('Content-type', storage()->get($file)->mime());
 		$responseHeaders->set('Cache-Control', 'no-transform,public,max-age=3600');
 		$responseHeaders->set('Expires', date('r', time() + 3600));
 		
@@ -27,7 +27,7 @@ class ImageController extends Controller
 			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
-		return $this->response->setBody(file_get_contents($file));
+		return $this->response->setBody(storage()->get($file));
 	}
 	
 	public function app($id, $size = 32) {

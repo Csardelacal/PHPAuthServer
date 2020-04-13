@@ -12,6 +12,7 @@ use spitfire\validation\rules\MaxLengthValidationRule;
 use spitfire\validation\rules\MinLengthValidationRule;
 use spitfire\validation\rules\RegexValidationRule;
 use spitfire\validation\ValidationException;
+use exceptions\suspension\LoginDisabledException;
 
 class UserController extends BaseController
 {
@@ -154,7 +155,7 @@ class UserController extends BaseController
 			
 			#Check whether the user was banned
 			$banned     = $user? db()->table('user\suspension')->get('user', $user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->fetch() : false;
-			if ($banned) { throw new PublicException('Your account was banned, login was disabled.' . $banned->reason, 401); }
+			if ($banned) { throw new LoginDisabledException($banned); }
 			
 			
 			if ($user && $user->disabled !== null) {
