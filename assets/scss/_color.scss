@@ -1,0 +1,73 @@
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Dec 9, 2019, 4:25:00 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+
+$grey100: #23282C;
+$grey200: #31383D;
+$grey300: #464F56;
+$grey400: #5F6C75;
+$grey500: #74838E;
+$grey600: #8D99A3;
+$grey700: #A9B3B9;
+$grey800: #C1C8CD;
+$grey900: #E6E8EA;
+
+$green100: #356808;
+$green300: #63B618;
+$green500: #8ADE40;
+$green700: #B5F47D;
+$green900: #E8FCD7;
+
+$red100 : #601B1B;
+$red300 : #B22929;
+$red500 : #C93D3D;
+$red700 : #D87171;
+$red900 : #E8ADAD;
+
+$colors : (
+	"grey-100": $grey100, 
+	"grey-200": $grey200, 
+	"grey-300": $grey300, 
+	"grey-400": $grey400, 
+	"grey-500": $grey500, 
+	"grey-600": $grey600, 
+	"grey-700": $grey700, 
+	"grey-800": $grey800, 
+	"grey-900": $grey900,
+	
+	"green-100" : $green100,
+	"green-300" : $green300,
+	"green-500" : $green500,
+	"green-700" : $green700,
+	"green-900" : $green900,
+	
+	"red-100" : $red100,
+	"red-300" : $red300,
+	"red-500" : $red500,
+	"red-700" : $red700,
+	"red-900" : $red900
+);

@@ -1,8 +1,15 @@
 
+/*
+ * Dials are becomming a dying breed. I am replacing them more and more with 
+ * already better defined components like dialogs and so on.
+ * 
+ * They should not be used and are only included to maintain the currently available
+ * UI functional
+ */
 
 .dials {
 	border-left: solid 1px #CCC;
-	font-size: .8em;
+	font-size: .8rem;
 	
 	ul {
 		margin: 2px;

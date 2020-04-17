@@ -36,58 +36,38 @@
 		
 		<div class="navbar">
 			<div class="left">
-				<span class="toggle-button dark"></span>
-				<a href="<?= url() ?>">Account</a>
+				<div style="line-height: 32px">
+					<span class="toggle-button dark"></span>
+				</div>
 			</div>
 			<div class="right">
-				<?php if(isset($authUser)): ?>
-				<div class="has-dropdown" style="display: inline-block">
-					<span class="app-switcher toggle" data-toggle="app-drawer"></span>
-					<div class="dropdown right-bound unpadded" data-dropdown="app-drawer">
-						<div class="app-drawer" id="app-drawer"></div>
+				<?php if(isset($authUser) && $authUser): ?>
+					<div class="has-dropdown" style="display: inline-block">
+						<a href="<?= url('user', $authUser->username) ?>" class="app-switcher" data-toggle="app-drawer">
+							<img src="<?= url('image', 'user', $authUser->_id, 64) ?>" width="32" height="32" style="border-radius: 50%;" >
+						</a>
+						<div class="dropdown right-bound unpadded" data-dropdown="app-drawer">
+							<div class="app-drawer">
+								<div class="navigation vertical">
+									<!-- Todo: Once a dedicated profile hosting server is available, the link to editing the user profile there could be included here-->
+									<a class="navigation-item" href="<?= url('user', 'logout') ?>">Logout</a>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
-				<span class="h-spacer" style="display: inline-block; width: 20px;"></span>
+				<?php else: ?>
+					<a class="menu-item" href="<?= url('account', 'login') ?>">Login</a>
 				<?php endif; ?>
+			</div>
+			<div class="center">
+				<div style="line-height: 32px">
+					<a href="<?= url() ?>">Account</a>
+				</div>
 			</div>
 		</div>
 		
 		<div class="auto-extend">
-			<div class="contains-sidebar">
-				<div class="sidebar">
-					<div class="spacer" style="height: 20px"></div>
-					
-                                        <?php if(isset($authUser)): ?>
-					<div class="menu-title"> Account</div>
-					<div class="menu-entry"><a href="<?= url() ?>"                  >Edit profile</a></div>
-					<div class="menu-entry"><a href="<?= url('edit', 'email')    ?>">Change email address</a></div>
-					<div class="menu-entry"><a href="<?= url('edit', 'password') ?>">Change password</a></div>
-					<div class="menu-entry"><a href="<?= url('edit', 'avatar') ?>"  >Upload avatar</a></div>
-					<div class="menu-entry"><a href="<?= url('permissions') ?>"     >Application permissions</a></div>
-					
-					<?php if(isset($userIsAdmin) && $userIsAdmin): ?> 
-					<div class="spacer" style="height: 30px"></div>
-					<div class="menu-title">Administration</div>
-					<div class="menu-entry"><a href="<?= url('user')  ?>">Users</a></div>
-					<div class="menu-entry"><a href="<?= url('group') ?>">Groups</a></div>
-					<div class="menu-entry"><a href="<?= url('admin') ?>">System settings</a></div>
-					<div class="menu-entry"><a href="<?= url('token') ?>">Active sessions</a></div>
-					
-					<!--APPLICATIONS-->
-					<div class="menu-entry"><a href="<?= url('app') ?>"  >App administration</a></div>
-					
-					<!-- EMAIL -->
-					<div class="menu-entry"><a href="<?= url('email') ?>">Email</a></div>
-					<div class="indented">
-						<div class="menu-entry"><a href="<?= url('email', ['history' => 1]) ?>">History</a></div>
-						<div class="menu-entry"><a href="<?= url('email', 'domain') ?>">Domains</a></div>
-					</div>
-					<?php endif; ?> 
-					<?php endif; ?> 
-					
-				</div>
-			</div><!--
-			--><div class="content">
+			<div class="content">
 		
 				<?php if (isset($authUser) && $authUser && !$authUser->verified): ?> 
 				<!-- 
@@ -124,6 +104,44 @@
 			</div>
 		</footer>
 		
+		<div class="contains-sidebar">
+			<div class="sidebar">
+				<div class="spacer" style="height: 20px"></div>
+
+				<?php if(isset($authUser)): ?>
+				<div class="menu-title"> Account</div>
+				<div class="menu-entry"><a href="<?= url() ?>"                  >Edit profile</a></div>
+				<div class="menu-entry"><a href="<?= url('edit', 'email')    ?>">Change email address</a></div>
+				<div class="menu-entry"><a href="<?= url('edit', 'password') ?>">Change password</a></div>
+				<div class="menu-entry"><a href="<?= url('edit', 'avatar') ?>"  >Upload avatar</a></div>
+				<div class="menu-entry"><a href="<?= url('permissions') ?>"     >Application permissions</a></div>
+
+				<?php if(isset($userIsAdmin) && $userIsAdmin): ?> 
+				<div class="spacer" style="height: 30px"></div>
+				<div class="menu-title">Administration</div>
+				<div class="menu-entry"><a href="<?= url('user')  ?>">Users</a></div>
+				<div class="menu-entry"><a href="<?= url('group') ?>">Groups</a></div>
+				<div class="menu-entry"><a href="<?= url('admin') ?>">System settings</a></div>
+				<div class="menu-entry"><a href="<?= url('token') ?>">Active sessions</a></div>
+
+				<!--APPLICATIONS-->
+				<div class="menu-entry"><a href="<?= url('app') ?>"  >App administration</a></div>
+
+				<!-- EMAIL -->
+				<div class="menu-entry"><a href="<?= url('email') ?>">Email</a></div>
+				<div class="indented">
+					<div class="menu-entry"><a href="<?= url('email', ['history' => 1]) ?>">History</a></div>
+					<div class="menu-entry"><a href="<?= url('email', 'domain') ?>">Domains</a></div>
+				</div>
+				<?php endif; ?> 
+				<?php endif; ?> 
+				
+				<div class="menu-title">Our network</div>
+				<div id="appdrawer"></div>
+
+			</div>
+		</div>
+		
 		<script type="text/javascript">
 		document.addEventListener('DOMContentLoaded', function () {
 			var ae = document.querySelector('.auto-extend');
@@ -149,15 +167,36 @@
 				dropdown('.app-switcher');
 			});
 			
-			depend(['phpas/app/drawer'], function (drawer) {
-				console.log(drawer);
-			});
-			
 			depend(['_scss'], function() {
 				//Loaded
 			});
 			
 		}());
+		</script>
+		
+		<script type="text/javascript">
+		
+			depend(['m3/core/request'], function (Request) {
+				var request = new Request('<?= url('appdrawer')->setExtension('json') ?>');
+				request
+					.then(JSON.parse)
+					.then(function (e) {
+						e.forEach(function (i) {
+							console.log(i)
+							var entry = document.createElement('div');
+							var link  = entry.appendChild(document.createElement('a'));
+							var icon  = link.appendChild(document.createElement('img'));
+							entry.className = 'menu-entry';
+							
+							link.href = i.url;
+							link.appendChild(document.createTextNode(i.name));
+							
+							icon.src = i.icon.m;
+							document.getElementById('appdrawer').appendChild(entry);
+						});
+					})
+					.catch(console.log);
+			});
 		</script>
 		
 		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/dials.js') ?>" async="true"></script>

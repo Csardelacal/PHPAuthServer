@@ -334,6 +334,33 @@ footer {
 /*
 The MIT License
 
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Dec 9, 2019, 4:25:00 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+The MIT License
+
 Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -372,6 +399,40 @@ THE SOFTWARE.
 	 fallbacks while the JS is either not loaded, or failed loading.
 */
 /*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Aug 20, 2019, 5:06:55 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+html {
+  /*
+   * Resets the system to use a known good system font.
+   * See: https://furbo.org/2018/03/28/system-fonts-in-css/
+   */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; }
+
+/*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
@@ -392,24 +453,36 @@ and open the template in the editor.
 .span {
   display: inline-block;
   vertical-align: top;
-  overflow-x: hidden;
-  margin-left: 1.0416666667%;
   min-height: 1px;
+  font-size: 16px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  padding: 3px;
-  width: 97.9166666667%; }
+  padding: 3px 1.0416666667%;
+  width: 100%; }
 
 div.row {
   display: block;
   margin: 0 auto;
   width: 100%;
+  	/*
+      * Fixes an issue that browsers will have rendering the layout. Since the system
+      * does use inline-block, spaces that are parsed from the HTML file (due to tabs
+      * or spaces being present to indent the file) will cause the blocks to separate
+      * just a tiny bit and cause the layout to break.
+  	 */
+  font-size: 0;
   box-sizing: border-box;
   -moz-box-sizing: border-box; }
   div.row.fluid {
     width: 100%;
     max-width: 100%; }
+  div.row.ng .span {
+    padding: 0; }
+  div.row.ng-lr .span:first-child {
+    padding-left: 0; }
+  div.row.ng-lr .span:nth-last-of-type(1) {
+    padding-right: 0; }
 
 /*
 This are the functions (mixins) used to generate the basic scaffolding for our
@@ -420,146 +493,133 @@ make them more usable.
     Created on : Oct 26, 2013, 7:18:16 PM
     Author     : cesar
 */
-.span.m1,
-.span.m2,
-.span.m3,
-.span.m4,
-.span.m5 {
-  margin-left: 1.0416666667%; }
-  .span.m1:first-child,
-  .span.m2:first-child,
-  .span.m3:first-child,
-  .span.m4:first-child,
-  .span.m5:first-child {
-    margin-left: 1.0416666667%; }
-
 ._fs1-s1, .row.s2 > .span.s2, .row.s3 > .span.s3, .row.s4 > .span.s4, .row.s5 > .span.s5, .row.s6 > .span.s6, .row.s7 > .span.s7, .row.s8 > .span.s8, .row.s9 > .span.s9, .row.s10 > .span.s10,
 .row.s1 > .span.s1 {
-  width: 97.9166666667%; }
+  width: 100%; }
 
 ._fs2-s1, .row.s4 > .span.s2, .row.s6 > .span.s3, .row.s8 > .span.s4, .row.s10 > .span.s5,
 .row.s2 > .span.s1 {
-  width: 47.9166666667%; }
+  width: 50%; }
 
 ._fs3-s1, .row.s6 > .span.s2, .row.s9 > .span.s3,
 .row.s3 > .span.s1 {
-  width: 31.25%; }
+  width: 33.3333333333%; }
 
 ._fs3-s2, .row.s6 > .span.s4, .row.s9 > .span.s6,
 .row.s3 > .span.s2 {
-  width: 64.5833333333%; }
+  width: 66.6666666667%; }
 
 ._fs4-s1, .row.s8 > .span.s2,
 .row.s4 > .span.s1 {
-  width: 22.9166666667%; }
+  width: 25%; }
 
 ._fs4-s3, .row.s8 > .span.s6,
 .row.s4 > .span.s3 {
-  width: 72.9166666667%; }
+  width: 75%; }
 
 ._fs5-s1, .row.s10 > .span.s2,
 .row.s5 > .span.s1 {
-  width: 17.9166666667%; }
+  width: 20%; }
 
 ._fs5-s2, .row.s10 > .span.s4,
 .row.s5 > .span.s2 {
-  width: 37.9166666667%; }
+  width: 40%; }
 
 ._fs5-s3, .row.s10 > .span.s6,
 .row.s5 > .span.s3 {
-  width: 57.9166666667%; }
+  width: 60%; }
 
 ._fs5-s4, .row.s10 > .span.s8,
 .row.s5 > .span.s4 {
-  width: 77.9166666667%; }
+  width: 80%; }
 
 ._fs6-s1,
 .row.s6 > .span.s1 {
-  width: 14.5833333333%; }
+  width: 16.6666666667%; }
 
 ._fs6-s5,
 .row.s6 > .span.s5 {
-  width: 81.25%; }
+  width: 83.3333333333%; }
 
 ._fs7-s1,
 .row.s7 > .span.s1 {
-  width: 12.2023809524%; }
+  width: 14.2857142857%; }
 
 ._fs7-s2,
 .row.s7 > .span.s2 {
-  width: 26.4880952381%; }
+  width: 28.5714285714%; }
 
 ._fs7-s3,
 .row.s7 > .span.s3 {
-  width: 40.7738095238%; }
+  width: 42.8571428571%; }
 
 ._fs7-s4,
 .row.s7 > .span.s4 {
-  width: 55.0595238095%; }
+  width: 57.1428571429%; }
 
 ._fs7-s5,
 .row.s7 > .span.s5 {
-  width: 69.3452380952%; }
+  width: 71.4285714286%; }
 
 ._fs7-s6,
 .row.s7 > .span.s6 {
-  width: 83.630952381%; }
+  width: 85.7142857143%; }
 
 ._fs8-s1,
 .row.s8 > .span.s1 {
-  width: 10.4166666667%; }
+  width: 12.5%; }
 
 ._fs8-s3,
 .row.s8 > .span.s3 {
-  width: 35.4166666667%; }
+  width: 37.5%; }
 
 ._fs8-s5,
 .row.s8 > .span.s5 {
-  width: 60.4166666667%; }
+  width: 62.5%; }
 
 ._fs8-s7,
 .row.s8 > .span.s7 {
-  width: 85.4166666667%; }
+  width: 87.5%; }
 
 ._fs9-s1,
 .row.s9 > .span.s1 {
-  width: 9.0277777778%; }
+  width: 11.1111111111%; }
 
 ._fs9-s2,
 .row.s9 > .span.s2 {
-  width: 20.1388888889%; }
+  width: 22.2222222222%; }
 
 ._fs9-s4,
 .row.s9 > .span.s4 {
-  width: 42.3611111111%; }
+  width: 44.4444444444%; }
 
 ._fs9-s5,
 .row.s9 > .span.s5 {
-  width: 53.4722222222%; }
+  width: 55.5555555556%; }
 
 ._fs9-s7,
 .row.s9 > .span.s7 {
-  width: 75.6944444444%; }
+  width: 77.7777777778%; }
 
 ._fs9-s8,
 .row.s9 > .span.s8 {
-  width: 86.8055555556%; }
+  width: 88.8888888889%; }
 
 ._fs10-s1,
 .row.s10 > .span.s1 {
-  width: 7.9166666667%; }
+  width: 10%; }
 
 ._fs10-s3,
 .row.s10 > .span.s3 {
-  width: 27.9166666667%; }
+  width: 30%; }
 
 ._fs10-s7,
 .row.s10 > .span.s7 {
-  width: 67.9166666667%; }
+  width: 70%; }
 
 ._fs10-s9,
 .row.s10 > .span.s9 {
-  width: 87.9166666667%; }
+  width: 90%; }
 
 @media all and (max-width: 960px) and (min-width: 480px) {
   .desktop-only {
@@ -580,150 +640,133 @@ make them more usable.
       Created on : Oct 26, 2013, 7:18:16 PM
       Author     : cesar
   */
-  .span.m1,
-  .span.m2,
-  .span.m3,
-  .span.m4,
-  .span.m5,
-  .span.m6,
-  .span.m7 {
-    margin-left: 1.0416666667%; }
-    .span.m1:first-child,
-    .span.m2:first-child,
-    .span.m3:first-child,
-    .span.m4:first-child,
-    .span.m5:first-child,
-    .span.m6:first-child,
-    .span.m7:first-child {
-      margin-left: 1.0416666667%; }
-
   ._fm1-m1, .row.m2 > .span.m2, .row.m3 > .span.m3, .row.m4 > .span.m4, .row.m5 > .span.m5, .row.m6 > .span.m6, .row.m7 > .span.m7, .row.m8 > .span.m8, .row.m9 > .span.m9, .row.m10 > .span.m10,
   .row.m1 > .span.m1 {
-    width: 97.9166666667%; }
+    width: 100%; }
 
   ._fm2-m1, .row.m4 > .span.m2, .row.m6 > .span.m3, .row.m8 > .span.m4, .row.m10 > .span.m5,
   .row.m2 > .span.m1 {
-    width: 47.9166666667%; }
+    width: 50%; }
 
   ._fm3-m1, .row.m6 > .span.m2, .row.m9 > .span.m3,
   .row.m3 > .span.m1 {
-    width: 31.25%; }
+    width: 33.3333333333%; }
 
   ._fm3-m2, .row.m6 > .span.m4, .row.m9 > .span.m6,
   .row.m3 > .span.m2 {
-    width: 64.5833333333%; }
+    width: 66.6666666667%; }
 
   ._fm4-m1, .row.m8 > .span.m2,
   .row.m4 > .span.m1 {
-    width: 22.9166666667%; }
+    width: 25%; }
 
   ._fm4-m3, .row.m8 > .span.m6,
   .row.m4 > .span.m3 {
-    width: 72.9166666667%; }
+    width: 75%; }
 
   ._fm5-m1, .row.m10 > .span.m2,
   .row.m5 > .span.m1 {
-    width: 17.9166666667%; }
+    width: 20%; }
 
   ._fm5-m2, .row.m10 > .span.m4,
   .row.m5 > .span.m2 {
-    width: 37.9166666667%; }
+    width: 40%; }
 
   ._fm5-m3, .row.m10 > .span.m6,
   .row.m5 > .span.m3 {
-    width: 57.9166666667%; }
+    width: 60%; }
 
   ._fm5-m4, .row.m10 > .span.m8,
   .row.m5 > .span.m4 {
-    width: 77.9166666667%; }
+    width: 80%; }
 
   ._fm6-m1,
   .row.m6 > .span.m1 {
-    width: 14.5833333333%; }
+    width: 16.6666666667%; }
 
   ._fm6-m5,
   .row.m6 > .span.m5 {
-    width: 81.25%; }
+    width: 83.3333333333%; }
 
   ._fm7-m1,
   .row.m7 > .span.m1 {
-    width: 12.2023809524%; }
+    width: 14.2857142857%; }
 
   ._fm7-m2,
   .row.m7 > .span.m2 {
-    width: 26.4880952381%; }
+    width: 28.5714285714%; }
 
   ._fm7-m3,
   .row.m7 > .span.m3 {
-    width: 40.7738095238%; }
+    width: 42.8571428571%; }
 
   ._fm7-m4,
   .row.m7 > .span.m4 {
-    width: 55.0595238095%; }
+    width: 57.1428571429%; }
 
   ._fm7-m5,
   .row.m7 > .span.m5 {
-    width: 69.3452380952%; }
+    width: 71.4285714286%; }
 
   ._fm7-m6,
   .row.m7 > .span.m6 {
-    width: 83.630952381%; }
+    width: 85.7142857143%; }
 
   ._fm8-m1,
   .row.m8 > .span.m1 {
-    width: 10.4166666667%; }
+    width: 12.5%; }
 
   ._fm8-m3,
   .row.m8 > .span.m3 {
-    width: 35.4166666667%; }
+    width: 37.5%; }
 
   ._fm8-m5,
   .row.m8 > .span.m5 {
-    width: 60.4166666667%; }
+    width: 62.5%; }
 
   ._fm8-m7,
   .row.m8 > .span.m7 {
-    width: 85.4166666667%; }
+    width: 87.5%; }
 
   ._fm9-m1,
   .row.m9 > .span.m1 {
-    width: 9.0277777778%; }
+    width: 11.1111111111%; }
 
   ._fm9-m2,
   .row.m9 > .span.m2 {
-    width: 20.1388888889%; }
+    width: 22.2222222222%; }
 
   ._fm9-m4,
   .row.m9 > .span.m4 {
-    width: 42.3611111111%; }
+    width: 44.4444444444%; }
 
   ._fm9-m5,
   .row.m9 > .span.m5 {
-    width: 53.4722222222%; }
+    width: 55.5555555556%; }
 
   ._fm9-m7,
   .row.m9 > .span.m7 {
-    width: 75.6944444444%; }
+    width: 77.7777777778%; }
 
   ._fm9-m8,
   .row.m9 > .span.m8 {
-    width: 86.8055555556%; }
+    width: 88.8888888889%; }
 
   ._fm10-m1,
   .row.m10 > .span.m1 {
-    width: 7.9166666667%; }
+    width: 10%; }
 
   ._fm10-m3,
   .row.m10 > .span.m3 {
-    width: 27.9166666667%; }
+    width: 30%; }
 
   ._fm10-m7,
   .row.m10 > .span.m7 {
-    width: 67.9166666667%; }
+    width: 70%; }
 
   ._fm10-m9,
   .row.m10 > .span.m9 {
-    width: 87.9166666667%; } }
+    width: 90%; } }
 @media all and (min-width: 960px) {
   .mobile-only {
     display: none; }
@@ -745,140 +788,135 @@ make them more usable.
   */
   div.row {
     width: 100%;
-    max-width: 71em; }
-
-  .span {
-    margin-left: 1.0416666667%; }
-    .span:first-child {
-      margin-left: 1.0416666667%; }
+    max-width: 960px; }
 
   ._fl1-l1, .row.l2 > .span.l2, .row.l3 > .span.l3, .row.l4 > .span.l4, .row.l5 > .span.l5, .row.l6 > .span.l6, .row.l7 > .span.l7, .row.l8 > .span.l8, .row.l9 > .span.l9, .row.l10 > .span.l10,
   .row.l1 > .span.l1 {
-    width: 97.9166666667%; }
+    width: 100%; }
 
   ._fl2-l1, .row.l4 > .span.l2, .row.l6 > .span.l3, .row.l8 > .span.l4, .row.l10 > .span.l5,
   .row.l2 > .span.l1 {
-    width: 47.9166666667%; }
+    width: 50%; }
 
   ._fl3-l1, .row.l6 > .span.l2, .row.l9 > .span.l3,
   .row.l3 > .span.l1 {
-    width: 31.25%; }
+    width: 33.3333333333%; }
 
   ._fl3-l2, .row.l6 > .span.l4, .row.l9 > .span.l6,
   .row.l3 > .span.l2 {
-    width: 64.5833333333%; }
+    width: 66.6666666667%; }
 
   ._fl4-l1, .row.l8 > .span.l2,
   .row.l4 > .span.l1 {
-    width: 22.9166666667%; }
+    width: 25%; }
 
   ._fl4-l3, .row.l8 > .span.l6,
   .row.l4 > .span.l3 {
-    width: 72.9166666667%; }
+    width: 75%; }
 
   ._fl5-l1, .row.l10 > .span.l2,
   .row.l5 > .span.l1 {
-    width: 17.9166666667%; }
+    width: 20%; }
 
   ._fl5-l2, .row.l10 > .span.l4,
   .row.l5 > .span.l2 {
-    width: 37.9166666667%; }
+    width: 40%; }
 
   ._fl5-l3, .row.l10 > .span.l6,
   .row.l5 > .span.l3 {
-    width: 57.9166666667%; }
+    width: 60%; }
 
   ._fl5-l4, .row.l10 > .span.l8,
   .row.l5 > .span.l4 {
-    width: 77.9166666667%; }
+    width: 80%; }
 
   ._fl6-l1,
   .row.l6 > .span.l1 {
-    width: 14.5833333333%; }
+    width: 16.6666666667%; }
 
   ._fl6-l5,
   .row.l6 > .span.l5 {
-    width: 81.25%; }
+    width: 83.3333333333%; }
 
   ._fl7-l1,
   .row.l7 > .span.l1 {
-    width: 12.2023809524%; }
+    width: 14.2857142857%; }
 
   ._fl7-l2,
   .row.l7 > .span.l2 {
-    width: 26.4880952381%; }
+    width: 28.5714285714%; }
 
   ._fl7-l3,
   .row.l7 > .span.l3 {
-    width: 40.7738095238%; }
+    width: 42.8571428571%; }
 
   ._fl7-l4,
   .row.l7 > .span.l4 {
-    width: 55.0595238095%; }
+    width: 57.1428571429%; }
 
   ._fl7-l5,
   .row.l7 > .span.l5 {
-    width: 69.3452380952%; }
+    width: 71.4285714286%; }
 
   ._fl7-l6,
   .row.l7 > .span.l6 {
-    width: 83.630952381%; }
+    width: 85.7142857143%; }
 
   ._fl8-l1,
   .row.l8 > .span.l1 {
-    width: 10.4166666667%; }
+    width: 12.5%; }
 
   ._fl8-l3,
   .row.l8 > .span.l3 {
-    width: 35.4166666667%; }
+    width: 37.5%; }
 
   ._fl8-l5,
   .row.l8 > .span.l5 {
-    width: 60.4166666667%; }
+    width: 62.5%; }
 
   ._fl8-l7,
   .row.l8 > .span.l7 {
-    width: 85.4166666667%; }
+    width: 87.5%; }
 
   ._fl9-l1,
   .row.l9 > .span.l1 {
-    width: 9.0277777778%; }
+    width: 11.1111111111%; }
 
   ._fl9-l2,
   .row.l9 > .span.l2 {
-    width: 20.1388888889%; }
+    width: 22.2222222222%; }
 
   ._fl9-l4,
   .row.l9 > .span.l4 {
-    width: 42.3611111111%; }
+    width: 44.4444444444%; }
 
   ._fl9-l5,
   .row.l9 > .span.l5 {
-    width: 53.4722222222%; }
+    width: 55.5555555556%; }
 
   ._fl9-l7,
   .row.l9 > .span.l7 {
-    width: 75.6944444444%; }
+    width: 77.7777777778%; }
 
   ._fl9-l8,
   .row.l9 > .span.l8 {
-    width: 86.8055555556%; }
+    width: 88.8888888889%; }
 
   ._fl10-l1,
   .row.l10 > .span.l1 {
-    width: 7.9166666667%; }
+    width: 10%; }
 
   ._fl10-l3,
   .row.l10 > .span.l3 {
-    width: 27.9166666667%; }
+    width: 30%; }
 
   ._fl10-l7,
   .row.l10 > .span.l7 {
-    width: 67.9166666667%; }
+    width: 70%; }
 
   ._fl10-l9,
   .row.l10 > .span.l9 {
-    width: 87.9166666667%; } }
+    width: 90%; } }
 @media all and (max-width: 480px) {
   .desktop-only {
     display: none !important; }
@@ -888,6 +926,1102 @@ make them more usable.
 
   .not-mobile {
     display: none; } }
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : May 14, 2019, 11:15:57 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Aug 30, 2019, 4:28:26 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.toggle-button, .dial-toggle {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  cursor: pointer;
+  width: 26px;
+  height: 32px;
+  padding: 0px;
+  background-image: linear-gradient(180deg, #FFF 4px, transparent 4px, transparent 8px, #FFF 8px, #FFF 12px, transparent 12px, transparent 16px, #FFF 16px);
+  background-size: 25px 20px;
+  background-position: center center;
+  background-repeat: no-repeat; }
+  .toggle-button.hidden, .hidden.dial-toggle {
+    display: none; }
+  .toggle-button.dark, .dark.dial-toggle {
+    background-image: linear-gradient(180deg, #777 4px, transparent 4px, transparent 8px, #777 8px, #777 12px, transparent 12px, transparent 16px, #777 16px); }
+    .toggle-button.dark:after, .dark.dial-toggle:after, .toggle-button.dark:before, .dark.dial-toggle:before {
+      background: #242424; }
+  .toggle-button.narrow, .narrow.dial-toggle {
+    background-size: 3px 17px;
+    width: 20px; }
+
+body {
+  overflow-x: hidden; }
+
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box; }
+
+.sidebar {
+  overflow: hidden;
+  position: fixed;
+  display: block;
+  height: 100%;
+  left: 0px;
+  top: 0;
+  width: 300px;
+  max-width: 90%;
+  transform: translate(-300px, 0);
+  background: #FFF;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #DDD; }
+  .sidebar .menu-title {
+    display: block;
+    color: #999;
+    font-size: 1rem;
+    padding: .8rem 1rem .5rem; }
+  .sidebar .menu-entry {
+    font-size: .8rem;
+    color: #666;
+    display: block; }
+    .sidebar .menu-entry:hover {
+      color: #242424;
+      background: #F7F7F7; }
+    .sidebar .menu-entry.active, .sidebar .menu-entry:active {
+      background-color: #2f97e0;
+      color: #FFF;
+      font-weight: bold; }
+    .sidebar .menu-entry a {
+      padding: .7rem 1rem;
+      display: block;
+      width: 100%; }
+    .sidebar .menu-entry img {
+      vertical-align: middle;
+      height: 1.2em;
+      margin-right: .5rem; }
+  .sidebar .indented {
+    padding-left: 10px;
+    border-left: solid 1px #DDD; }
+  .sidebar .navbar {
+    box-shadow: none; }
+  .sidebar a {
+    color: inherit;
+    text-decoration: none; }
+    .sidebar a:hover {
+      color: #333; }
+    .sidebar a:active {
+      color: #FFF; }
+
+.sidebar:hover {
+  overflow: auto; }
+
+.contains-sidebar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 30; }
+
+/*
+The MIT License
+
+Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Feb 28, 2020, 5:45:31 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.button, form.regular input[type="submit"] {
+  background: linear-gradient(90deg, #396afc, #2948ff);
+  border-radius: 4px;
+  border: none;
+  padding: 0.5rem 1.4rem;
+  color: #FFF;
+  font-weight: bolder;
+  box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  vertical-align: middle; }
+  .button.success, form.regular input.success[type="submit"] {
+    background: linear-gradient(-90deg, #2FAD30, #35C537); }
+  .button.borderless, form.regular input.borderless[type="submit"] {
+    background: none;
+    color: #652CA5;
+    font-weight: bold;
+    box-shadow: none; }
+  .button.outline, form.regular input.outline[type="submit"] {
+    background: none;
+    color: #652CA5;
+    border: solid 1px #652CA5;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.fill-on-hover:hover, form.regular input.outline.fill-on-hover[type="submit"]:hover {
+      background: #652CA5;
+      color: #FFF;
+      border: solid 1px #652CA5; }
+  .button.outline.button-color-grey-100, form.regular input.outline.button-color-grey-100[type="submit"] {
+    background: none;
+    color: #23282C;
+    border: solid 1px #23282C;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-100.fill-on-hover:hover, form.regular input.outline.button-color-grey-100.fill-on-hover[type="submit"]:hover {
+      background: #23282C;
+      color: #FFF;
+      border: solid 1px #23282C; }
+  .button.outline.button-color-grey-200, form.regular input.outline.button-color-grey-200[type="submit"] {
+    background: none;
+    color: #31383D;
+    border: solid 1px #31383D;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-200.fill-on-hover:hover, form.regular input.outline.button-color-grey-200.fill-on-hover[type="submit"]:hover {
+      background: #31383D;
+      color: #FFF;
+      border: solid 1px #31383D; }
+  .button.outline.button-color-grey-300, form.regular input.outline.button-color-grey-300[type="submit"] {
+    background: none;
+    color: #464F56;
+    border: solid 1px #464F56;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-300.fill-on-hover:hover, form.regular input.outline.button-color-grey-300.fill-on-hover[type="submit"]:hover {
+      background: #464F56;
+      color: #FFF;
+      border: solid 1px #464F56; }
+  .button.outline.button-color-grey-400, form.regular input.outline.button-color-grey-400[type="submit"] {
+    background: none;
+    color: #5F6C75;
+    border: solid 1px #5F6C75;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-400.fill-on-hover:hover, form.regular input.outline.button-color-grey-400.fill-on-hover[type="submit"]:hover {
+      background: #5F6C75;
+      color: #FFF;
+      border: solid 1px #5F6C75; }
+  .button.outline.button-color-grey-500, form.regular input.outline.button-color-grey-500[type="submit"] {
+    background: none;
+    color: #74838E;
+    border: solid 1px #74838E;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-500.fill-on-hover:hover, form.regular input.outline.button-color-grey-500.fill-on-hover[type="submit"]:hover {
+      background: #74838E;
+      color: #FFF;
+      border: solid 1px #74838E; }
+  .button.outline.button-color-grey-600, form.regular input.outline.button-color-grey-600[type="submit"] {
+    background: none;
+    color: #8D99A3;
+    border: solid 1px #8D99A3;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-600.fill-on-hover:hover, form.regular input.outline.button-color-grey-600.fill-on-hover[type="submit"]:hover {
+      background: #8D99A3;
+      color: #FFF;
+      border: solid 1px #8D99A3; }
+  .button.outline.button-color-grey-700, form.regular input.outline.button-color-grey-700[type="submit"] {
+    background: none;
+    color: #A9B3B9;
+    border: solid 1px #A9B3B9;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-700.fill-on-hover:hover, form.regular input.outline.button-color-grey-700.fill-on-hover[type="submit"]:hover {
+      background: #A9B3B9;
+      color: #FFF;
+      border: solid 1px #A9B3B9; }
+  .button.outline.button-color-grey-800, form.regular input.outline.button-color-grey-800[type="submit"] {
+    background: none;
+    color: #C1C8CD;
+    border: solid 1px #C1C8CD;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-800.fill-on-hover:hover, form.regular input.outline.button-color-grey-800.fill-on-hover[type="submit"]:hover {
+      background: #C1C8CD;
+      color: #FFF;
+      border: solid 1px #C1C8CD; }
+  .button.outline.button-color-grey-900, form.regular input.outline.button-color-grey-900[type="submit"] {
+    background: none;
+    color: #E6E8EA;
+    border: solid 1px #E6E8EA;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-grey-900.fill-on-hover:hover, form.regular input.outline.button-color-grey-900.fill-on-hover[type="submit"]:hover {
+      background: #E6E8EA;
+      color: #FFF;
+      border: solid 1px #E6E8EA; }
+  .button.outline.button-color-green-100, form.regular input.outline.button-color-green-100[type="submit"] {
+    background: none;
+    color: #356808;
+    border: solid 1px #356808;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-green-100.fill-on-hover:hover, form.regular input.outline.button-color-green-100.fill-on-hover[type="submit"]:hover {
+      background: #356808;
+      color: #FFF;
+      border: solid 1px #356808; }
+  .button.outline.button-color-green-300, form.regular input.outline.button-color-green-300[type="submit"] {
+    background: none;
+    color: #63B618;
+    border: solid 1px #63B618;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-green-300.fill-on-hover:hover, form.regular input.outline.button-color-green-300.fill-on-hover[type="submit"]:hover {
+      background: #63B618;
+      color: #FFF;
+      border: solid 1px #63B618; }
+  .button.outline.button-color-green-500, form.regular input.outline.button-color-green-500[type="submit"] {
+    background: none;
+    color: #8ADE40;
+    border: solid 1px #8ADE40;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-green-500.fill-on-hover:hover, form.regular input.outline.button-color-green-500.fill-on-hover[type="submit"]:hover {
+      background: #8ADE40;
+      color: #FFF;
+      border: solid 1px #8ADE40; }
+  .button.outline.button-color-green-700, form.regular input.outline.button-color-green-700[type="submit"] {
+    background: none;
+    color: #B5F47D;
+    border: solid 1px #B5F47D;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-green-700.fill-on-hover:hover, form.regular input.outline.button-color-green-700.fill-on-hover[type="submit"]:hover {
+      background: #B5F47D;
+      color: #FFF;
+      border: solid 1px #B5F47D; }
+  .button.outline.button-color-green-900, form.regular input.outline.button-color-green-900[type="submit"] {
+    background: none;
+    color: #E8FCD7;
+    border: solid 1px #E8FCD7;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-green-900.fill-on-hover:hover, form.regular input.outline.button-color-green-900.fill-on-hover[type="submit"]:hover {
+      background: #E8FCD7;
+      color: #FFF;
+      border: solid 1px #E8FCD7; }
+  .button.outline.button-color-red-100, form.regular input.outline.button-color-red-100[type="submit"] {
+    background: none;
+    color: #601B1B;
+    border: solid 1px #601B1B;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-red-100.fill-on-hover:hover, form.regular input.outline.button-color-red-100.fill-on-hover[type="submit"]:hover {
+      background: #601B1B;
+      color: #FFF;
+      border: solid 1px #601B1B; }
+  .button.outline.button-color-red-300, form.regular input.outline.button-color-red-300[type="submit"] {
+    background: none;
+    color: #B22929;
+    border: solid 1px #B22929;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-red-300.fill-on-hover:hover, form.regular input.outline.button-color-red-300.fill-on-hover[type="submit"]:hover {
+      background: #B22929;
+      color: #FFF;
+      border: solid 1px #B22929; }
+  .button.outline.button-color-red-500, form.regular input.outline.button-color-red-500[type="submit"] {
+    background: none;
+    color: #C93D3D;
+    border: solid 1px #C93D3D;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-red-500.fill-on-hover:hover, form.regular input.outline.button-color-red-500.fill-on-hover[type="submit"]:hover {
+      background: #C93D3D;
+      color: #FFF;
+      border: solid 1px #C93D3D; }
+  .button.outline.button-color-red-700, form.regular input.outline.button-color-red-700[type="submit"] {
+    background: none;
+    color: #D87171;
+    border: solid 1px #D87171;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-red-700.fill-on-hover:hover, form.regular input.outline.button-color-red-700.fill-on-hover[type="submit"]:hover {
+      background: #D87171;
+      color: #FFF;
+      border: solid 1px #D87171; }
+  .button.outline.button-color-red-900, form.regular input.outline.button-color-red-900[type="submit"] {
+    background: none;
+    color: #E8ADAD;
+    border: solid 1px #E8ADAD;
+    font-weight: bold;
+    box-shadow: none; }
+    .button.outline.button-color-red-900.fill-on-hover:hover, form.regular input.outline.button-color-red-900.fill-on-hover[type="submit"]:hover {
+      background: #E8ADAD;
+      color: #FFF;
+      border: solid 1px #E8ADAD; }
+  .button.small, form.regular input.small[type="submit"] {
+    font-size: .82rem;
+    padding: .3rem .7rem;
+    border-radius: .18rem;
+    vertical-align: .15rem; }
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Jun 28, 2019, 11:48:02 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.dialog {
+  padding: 2.5rem .5rem 2.5rem .5rem;
+  background: #FFF;
+  border-radius: .3rem;
+  border: solid 1px #999;
+  max-width: 90%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  max-height: calc(100% - 9rem);
+  display: inline-block;
+  position: relative; }
+  .dialog .inner {
+    overflow: auto;
+    position: relative;
+    height: 100%; }
+  .dialog .close {
+    color: #AAA;
+    font-weight: bold;
+    text-align: right;
+    cursor: pointer;
+    position: absolute;
+    top: .2rem;
+    right: .5rem;
+    font-size: 1.8rem;
+    line-height: 1.8rem; }
+    .dialog .close:hover {
+      color: #777; }
+  .dialog.transparent {
+    background: transparent;
+    border: none;
+    margin: .5rem auto;
+    max-width: 90%;
+    box-shadow: none; }
+    .dialog.transparent .close {
+      color: #FFF;
+      text-shadow: 0 0 3px #555; }
+
+.dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 9;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center; }
+
+body.has-dialog {
+  height: 100%;
+  overflow: hidden; }
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Jun 28, 2019, 11:48:02 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.gallery {
+  border-radius: .3rem;
+  border: solid 1px #999;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center; }
+  .gallery .close {
+    font-weight: bold;
+    text-align: right;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    line-height: 1.8rem;
+    color: #FFF;
+    text-shadow: 0 0 3px #555; }
+    .gallery .close:hover {
+      color: #777; }
+  .gallery .inner {
+    max-height: 90%;
+    max-width: 90%; }
+
+.gallery-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9; }
+
+.navbar {
+  width: 100%;
+  white-space: nowrap;
+  overflow: visible;
+  padding: 0 .4rem;
+  z-index: 5; }
+  .navbar .left,
+  .navbar .right,
+  .navbar .center {
+    padding: 20px 0; }
+  .navbar .right {
+    float: right;
+    text-align: right; }
+  .navbar .left {
+    float: left;
+    text-align: left; }
+  .navbar .center {
+    text-align: center;
+    white-space: nowrap; }
+  .navbar a {
+    text-decoration: none;
+    color: #444;
+    font-weight: bold;
+    display: inline-block;
+    padding: 0 13.3333333333px; }
+  .navbar .logo {
+    display: inline-block;
+    float: left;
+    border: none; }
+    .navbar .logo > * {
+      vertical-align: middle; }
+    .navbar .logo img {
+      height: 10px;
+      width: auto;
+      margin-right: 5px; }
+  .navbar:after {
+    clear: both;
+    content: '';
+    display: table; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : May 22, 2019, 9:47:20 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.navigation .navigation-item {
+  display: inline-block;
+  padding: .8em 1em;
+  font-size: 1em; }
+.navigation.tabs {
+  border-bottom: solid 1px #DDD; }
+  .navigation.tabs .navigation-item {
+    border: solid 1px transparent;
+    margin-bottom: -1px; }
+  .navigation.tabs .navigation-item.active {
+    font-weight: bold;
+    border-radius: 5px 5px 0 0;
+    border: solid 1px #DDD;
+    border-bottom: solid 1px #FFF; }
+.navigation.pills .navigation-item.active {
+  border-radius: 5px;
+  background-color: #2f97e0;
+  color: #FFF; }
+.navigation.vertical .navigation-item {
+  display: block;
+  width: 100%; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Nov 4, 2019, 11:43:38 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+ * Messages are used to present information to the user. This way the application
+ * can show success, error, information and warning messages.
+ */
+.message {
+  border: solid 1px #CCC;
+  border-radius: 3px;
+  background: #FAFAFA;
+  padding: 1rem 2.5rem 1rem 1.5rem;
+  color: #444;
+  position: relative; }
+  .message.error {
+    border-color: #732c2c;
+    color: #632626;
+    background-color: #f09797; }
+  .message.warn {
+    border-color: #2f3014;
+    color: #2f3014;
+    background-color: #e3e87d; }
+  .message.success {
+    border-color: #266326;
+    color: #266326;
+    background-color: #c4f097; }
+  .message.info {
+    border-color: #264463;
+    color: #264463;
+    background-color: #97c4f0; }
+  .message .discard-message {
+    position: absolute;
+    display: block;
+    font-weight: bold;
+    opacity: .6;
+    top: 0;
+    right: 0;
+    padding: 0 .6rem 1rem .6rem;
+    font-size: 1.4rem;
+    cursor: pointer; }
+    .message .discard-message:hover {
+      opacity: 1; }
+    .message .discard-message:before {
+      content: '\00d7'; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Jun 17, 2019, 11:49:32 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Jun 17, 2019, 11:56:04 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+label {
+  display: inline-block; }
+
+input, textarea {
+  line-height: inherit;
+  margin: 0; }
+
+textarea {
+  resize: vertical; }
+
+input[type="text"],
+textarea {
+  border-radius: 3px;
+  border: solid 1px #CCC;
+  box-shadow: 0 0 0 transparent;
+  transition: box-shadow .15s ease; }
+  input[type="text"]:focus,
+  textarea:focus {
+    border-color: #279af1;
+    box-shadow: 0px 0px 2px #279af1;
+    outline: none; }
+
+select {
+  border-radius: 3px;
+  border: solid 1px #CCC;
+  box-shadow: 0 0 0 transparent;
+  transition: box-shadow .15s ease;
+  background: #FFF; }
+  select:focus {
+    border-color: #279af1;
+    box-shadow: 0px 0px 2px #279af1;
+    outline: none; }
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0; }
+
+legend {
+  font-size: 1.3rem;
+  margin-bottom: .3rem; }
+
+input[type="submit"]:not(.disabled), button:not(.disabled) {
+  cursor: pointer; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Jun 17, 2019, 11:59:07 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.frm-ctrl {
+  display: block;
+  width: 100%; }
+  .frm-ctrl.right {
+    text-align: right; }
+
+.frm-group {
+  margin-bottom: 1rem; }
+
+.frm-inline {
+  display: flex;
+  flex-flow: row wrap; }
+  .frm-inline .frm-ctrl {
+    display: inline-block;
+    width: auto; }
+
+.frm-lbl {
+  padding: .75rem .4rem;
+  color: #444;
+  font-size: .9rem; }
+
+input[type="text"].frm-ctrl,
+textarea.frm-ctrl {
+  padding: .75rem .5rem; }
+
+/*
+ * Checkbox specific styling
+ */
+input[type="checkbox"].frm-ctrl {
+  display: none; }
+
+span.frm-ctrl-chk {
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: .25rem;
+  border: solid 1px #CCC;
+  background-color: #DDD;
+  position: relative;
+  margin-right: .2rem;
+  vertical-align: -.4rem;
+  transition: background-color .3s ease; }
+  span.frm-ctrl-chk:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.3rem;
+    width: 1.3rem;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%228%22%20height%3D%228%22%20viewBox%3D%220%200%208%208%22%3E%3Cpath%20fill%3D%22%23FFF%22%20d%3D%22M6.41%200l-.69.72-2.78%202.78-.81-.78-.72-.72-1.41%201.41.72.72%201.5%201.5.69.72.72-.72%203.5-3.5.72-.72-1.44-1.41z%22%2F%3E%3C%2Fsvg%3E%0A");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 0 0;
+    border-radius: 50%;
+    transition: background-size .15s ease; }
+
+span.frm-ctrl-chk.toggle {
+  display: inline-block;
+  width: 2rem;
+  height: 1.3rem;
+  border-radius: .65rem;
+  background-color: #CCC;
+  position: relative;
+  margin-right: .2rem;
+  vertical-align: -.4rem;
+  transition: background-color .3s ease;
+  border: none; }
+  span.frm-ctrl-chk.toggle:before {
+    content: '';
+    position: absolute;
+    top: .15rem;
+    left: .15rem;
+    height: 1rem;
+    width: 1rem;
+    background-color: #FFF;
+    border-radius: 50%;
+    transition: left .3s ease; }
+
+input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk {
+  background-color: #56a1d6;
+  border: solid 1px #56a1d6; }
+  input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk:before {
+    background-size: .8rem .8rem; }
+  input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk.toggle {
+    border: none; }
+    input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk.toggle:before {
+      left: .9rem; }
+
+/*
+ * Radio specific styling
+ */
+input[type="radio"].frm-ctrl {
+  display: none; }
+
+span.frm-ctrl-rad {
+  display: inline-block;
+  border: solid .05rem #777;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: .65rem;
+  background-color: #DDD;
+  position: relative;
+  margin-right: .2rem;
+  vertical-align: -.4rem;
+  transition: background-color .3s ease; }
+  span.frm-ctrl-rad:before {
+    position: absolute;
+    background: #FFF;
+    top: .65rem;
+    left: .65rem;
+    height: .0rem;
+    width: .0rem;
+    content: '';
+    border-radius: 50%;
+    transition: left .3s ease, top .3s ease, width .3s ease, height .3s ease, opacity .3s ease; }
+
+input[type="radio"].frm-ctrl:checked + span.frm-ctrl-rad {
+  background-color: #56a1d6; }
+  input[type="radio"].frm-ctrl:checked + span.frm-ctrl-rad:before {
+    top: .3rem;
+    left: .3rem;
+    height: .6rem;
+    width: .6rem;
+    background-color: #FFF;
+    color: #FFF;
+    line-height: .9rem;
+    font-size: .9rem;
+    text-align: center;
+    font-weight: bold; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Aug 22, 2019, 4:19:27 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+select.frm-ctrl {
+  padding: .75rem .4rem;
+  background-repeat: no-repeat;
+  background-position: center right 1.1rem;
+  background-size: .8rem .8rem;
+  padding-right: 2.4rem;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Aug 22, 2019, 4:33:17 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.frm-ctrl-grp {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  transition: box-shadow .2s ease; }
+  .frm-ctrl-grp .frm-ctrl {
+    width: 1px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    border-radius: 0;
+    border-left-style: none;
+    border-right-style: none; }
+    .frm-ctrl-grp .frm-ctrl:first-child {
+      border-radius: 3px 0 0 3px;
+      border-left-style: solid; }
+    .frm-ctrl-grp .frm-ctrl:last-child {
+      border-radius: 0 3px 3px 0;
+      border-right-style: solid; }
+    .frm-ctrl-grp .frm-ctrl.fixed-width {
+      flex-grow: 0;
+      flex-shrink: 0; }
+    .frm-ctrl-grp .frm-ctrl.narrow {
+      width: 7rem; }
+    .frm-ctrl-grp .frm-ctrl.medium {
+      width: 12rem; }
+    .frm-ctrl-grp .frm-ctrl:focus {
+      box-shadow: none;
+      border-color: #CCC; }
+  .frm-ctrl-grp:focus-within {
+    box-shadow: 0px 0px 2px #279af1; }
+    .frm-ctrl-grp:focus-within .frm-ctrl {
+      border-color: #279af1; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+	Classes in this file manage the flow of the content, they provide utility classes
+	like right, left and center for test alignment, etc
+
+    Created on : Nov 20, 2019, 12:03:46 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.align-left {
+  text-align: left; }
+
+.align-right {
+  text-align: right; }
+
+.align-center {
+  text-align: center; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Nov 20, 2019, 11:58:35 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.spacer.minuscule {
+  height: .3rem; }
+.spacer.smaller {
+  height: .7rem; }
+.spacer.small {
+  height: 1rem; }
+.spacer.medium {
+  height: 2rem; }
+.spacer.large {
+  height: 3rem; }
+.spacer.huge {
+  height: 4rem; }
+
+.horizontal-spacer {
+  display: inline-block;
+  height: 1px;
+  vertical-align: middle; }
+  .horizontal-spacer.minuscule {
+    width: .3rem; }
+  .horizontal-spacer.smaller {
+    width: .7rem; }
+  .horizontal-spacer.small {
+    width: 1rem; }
+  .horizontal-spacer.medium {
+    width: 2rem; }
+  .horizontal-spacer.large {
+    width: 3rem; }
+  .horizontal-spacer.huge {
+    width: 4rem; }
+
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -942,7 +2076,8 @@ THE SOFTWARE.
   padding: 5px;
   z-index: 99999999999;
   padding: 10px;
-  box-shadow: 0 0 7px rgba(0, 0, 0, 0.2); }
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.2);
+  text-align: left; }
   .dropdown:before, .dropdown:after {
     content: '';
     height: 10px;
@@ -1244,35 +2379,6 @@ THE SOFTWARE.
     background-size: 3px 17px;
     width: 20px; }
 
-.navbar {
-  background: #EEE;
-  box-shadow: 0 2px 2px #DDD;
-  border-bottom: 1px solid #CCC;
-  display: table;
-  width: 100%;
-  z-index: 5; }
-  .navbar .left,
-  .navbar .right {
-    display: table-cell;
-    padding: 15px 10px; }
-  .navbar .right {
-    text-align: right; }
-  .navbar a {
-    text-decoration: none;
-    color: #444;
-    font-weight: bold;
-    display: inline-block;
-    padding: 0 10px; }
-  .navbar .logo {
-    display: inline-block;
-    float: left;
-    border: none; }
-    .navbar .logo > * {
-      vertical-align: middle; }
-    .navbar .logo img {
-      height: 20px;
-      margin-right: 5px; }
-
 .admin-navigation {
   background: #222;
   color: #FFF;
@@ -1400,9 +2506,16 @@ ul.pagination {
     transform: rotate(0deg); }
   to {
     transform: rotate(360deg); } }
+/*
+ * Dials are becomming a dying breed. I am replacing them more and more with 
+ * already better defined components like dialogs and so on.
+ * 
+ * They should not be used and are only included to maintain the currently available
+ * UI functional
+ */
 .dials {
   border-left: solid 1px #CCC;
-  font-size: .8em; }
+  font-size: .8rem; }
   .dials ul {
     margin: 2px;
     padding-left: 10px;
