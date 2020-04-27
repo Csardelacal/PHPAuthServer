@@ -11,6 +11,8 @@ use spitfire\storage\database\Schema;
  * user to choose and configure. The validators we need to provide need not only
  * validate the data but also inform the system of what kind of data they're good
  * for.
+ * 
+ * @deprecated since version 0.1-dev
  */
 class ValidatorModel extends Model
 {

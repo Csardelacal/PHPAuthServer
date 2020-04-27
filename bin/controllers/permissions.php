@@ -77,60 +77,9 @@ class PermissionsController extends BaseController
 			});
 		
 		
-		$attributes = db()->table('attribute')->getAll()->all();
 		
 		$this->view->set('app',  $app);
-		$this->view->set('attributes', $attributes);
 		$this->view->set('connections', $connections);
-	}
-	
-	/**
-	 * 
-	 * @validate GET#grant(required number in[0, 16, 32, 48])
-	 * @param AttributeModel $attribute
-	 * @param int $appId
-	 */
-	public function set(AttributeModel$attribute, $appId) {
-		$app  = db()->table('authapp')->get('appID', $appId)->first(true);
-		$xsrf = new spitfire\io\XSSToken();
-		
-		if (isset($_GET['all']) && !$this->isAdmin) {
-			throw new PublicException('You must be an administrator to set generic rules', 403);
-		}
-		
-		try {
-			if (!$xsrf->verify($_GET['_XSRF'])) { throw new PublicException('Invalid XSRF token', 403); }
-			
-			$record = db()->table('attribute\appgrant')
-				->get('app', $app)
-				->where('user', isset($_GET['all'])? null : $this->user)
-				->where('attribute', $attribute)
-				->first();
-			
-			//TODO: Check if attribute is NEM. If it is, the user cannot grant permissions 
-			//beyond the generic for this app.
-			
-			if (!$record) {
-				$record = db()->table('attribute\appgrant')->newRecord();
-				$record->app = $app;
-				$record->user = $this->user;
-				$record->attribute = $attribute;
-			}
-			
-			$record->grant = (int)$_GET['grant'];
-			$record->store();
-			
-			return $this->response->setBody('Redirect...')->getHeaders()->redirect($_GET['returnto']?? url());
-		}
-		catch (Exception$e) {
-			
-		}
-		
-		$this->view->set('app', $app);
-		$this->view->set('attribute', $attribute);
-		$this->view->set('grant', (int)$_GET['grant']);
-		$this->view->set('xsrf', $xsrf);
-		$this->view->set('returnto', $_GET['returnto']?? url()->absolute());
 	}
 	
 	/**

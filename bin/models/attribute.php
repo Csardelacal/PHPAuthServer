@@ -15,6 +15,7 @@ use spitfire\storage\database\Schema;
  * There's the possibility of altering the bean's form with JS when the user selects
  * file as the desired data type which is the only one to require a different input.
  * 
+ * @deprecated since version 0.1-dev
  */
 class AttributeModel extends Model
 {

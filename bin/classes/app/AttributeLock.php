@@ -28,6 +28,11 @@ use UserModel;
  * THE SOFTWARE.
  */
 
+/**
+ * 
+ * @deprecated since version 0.1-dev
+ * @author César de la Cal Bretschneider <cesar@magic3w.com>
+ */
 class AttributeLock
 {
 	

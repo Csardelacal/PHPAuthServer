@@ -230,50 +230,6 @@
 </div>
 <?php endif; ?>
 
-<div class="spacer" style="height: 30px"></div>
-
-<!-- 
-	Show the permissions the app has to read the data from the server. These are
-	generic settings that a user can override if wanted. 
--->
-<div class="row">
-	<div class="span">
-		<div class="heading" data-sticky="top">
-			<h1 class="unpadded">Attributes</h1>
-		</div>
-		
-		<div class="spacer" style="height: 30px"></div>
-		
-		<?php $attributes = db()->table('attribute')->getAll()->all(); ?>
-		<?php foreach ($attributes as $a): ?>
-		<?php $lock  = new app\AttributeLock($a, null); ?>
-		<?php $read  = $lock->unlock($app); ?>
-		<?php $write = $lock->unlock($app, app\AttributeLock::MODE_W); ?>
-		
-		<div class="row l3">
-			<div class="span l2">
-				<a href="<?= url('edit', 'attribute', $a->_id) ?>"><?= $a->name ?></a>
-			</div>
-			<div class="span l1">
-				<div class="styled-select">
-					<form action="<?= url('permissions', 'set', $a->_id, $app->appID, ['all' => 'yes']) ?>" method="GET">
-						<input type="hidden" name="_XSRF"    value="<?= new spitfire\io\XSSToken() ?>">
-						<input type="hidden" name="returnto" value="<?=url('app', 'detail', $app->_id) ?>">
-						<select name="grant" id="attr-<?= $a->_id ?>" onchange="this.form.submit()">
-							<option value="<?= app\AttributeLock::MODE_N ?>" <?= $read === false && $write === false? 'selected' : '' ?>>No access</option>
-							<option value="<?= app\AttributeLock::MODE_R ?>" <?= $read === true  && $write === false? 'selected' : '' ?>>Read-only access</option>
-							<option value="<?= app\AttributeLock::MODE_W ?>" <?= $read === false && $write === true ? 'selected' : '' ?>>Write-only access</option>
-							<option value="<?= app\AttributeLock::MODE_RW ?>" <?= $read === true  && $write === true ? 'selected' : '' ?>>Full access</option>
-						</select>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="spacer" style="height: 30px"></div>
-		<?php endforeach; ?>
-	</div>
-</div>
-
 
 <!-- Go on about the contexts defined by this application-->
 <div class="spacer" style="height: 50px"></div>
@@ -287,7 +243,7 @@
 </div>
 
 <div class="spacer" style="height: 20px"></div>
-
+ 
 <?php $contexts = db()->table('connection\context')->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup()->fetchAll(); ?>
 <?php foreach ($contexts as $context): ?>
 <div class="row l5 has-dials">

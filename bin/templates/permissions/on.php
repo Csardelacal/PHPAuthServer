@@ -16,45 +16,6 @@
 			<strong>Applications may stop working if they cannot access the data they need</strong>
 		</p>
 		
-		<div class="heading">
-			<h1 class="unpadded">Attributes</h1>
-		</div>
-		
-		<div class="spacer" style="height: 30px"></div>
-		
-		<?php foreach ($attributes as $a): ?>
-		<?php $lock  = new app\AttributeLock($a, $authUser); ?>
-		<?php $read  = $lock->unlock($app); ?>
-		<?php $write = $lock->unlock($app, app\AttributeLock::MODE_W); ?>
-		
-		<div class="row l3">
-			<div class="span l2">
-				<a href="<?= url('edit', 'attribute', $a->_id) ?>"><?= $a->name ?></a>
-			</div>
-			<div class="span l1">
-				<div class="styled-select">
-					<form action="<?= url('permissions', 'set', $a->_id, $app->appID) ?>" method="GET">
-						<input type="hidden" name="_XSRF"    value="<?= new spitfire\io\XSSToken() ?>">
-						<input type="hidden" name="returnto" value="<?= url('permissions', 'on', $app->_id) ?>">
-						<select name="grant" id="attr-<?= $a->_id ?>" onchange="this.form.submit()">
-							<option value="<?= app\AttributeLock::MODE_N ?>" <?= $read === false && $write === false? 'selected' : '' ?>>No access</option>
-							<option value="<?= app\AttributeLock::MODE_R ?>" <?= $read === true  && $write === false? 'selected' : '' ?>>Read-only access</option>
-							<option value="<?= app\AttributeLock::MODE_W ?>" <?= $read === false && $write === true ? 'selected' : '' ?>>Write-only access</option>
-							<option value="<?= app\AttributeLock::MODE_RW ?>" <?= $read === true  && $write === true ? 'selected' : '' ?>>Full access</option>
-						</select>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="spacer" style="height: 30px"></div>
-		<?php endforeach; ?>
-		
-		<div class="spacer" style="height: 30px"></div>
-		
-		<div class="heading">
-			<h1 class="unpadded">Application connections</h1>
-		</div>
-		
 		<div class="spacer" style="height: 10px"></div>
 		
 		<p class="small secondary">

@@ -27,6 +27,9 @@ use spitfire\storage\database\Schema;
  * THE SOFTWARE.
  */
 
+/**
+ * @deprecated since version 0.1-dev
+ */
 class AppGrantModel extends Model
 {
 	
