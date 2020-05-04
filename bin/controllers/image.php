@@ -13,13 +13,17 @@ class ImageController extends Controller
 	
 	private static $thumbSizes = Array( 32, 48, 64, 128, 256 );
 
-	const DEFAULT_APP_ICON = BASEDIR . '/assets/img/app.png';
+	const DEFAULT_APP_ICON = 'app://' . BASEDIR . '/assets/img/app.png';
 	
 	public function hero() {
-		$file = SysSettingModel::getValue('page.logo');
+		try {
+			$file = storage()->get(SysSettingModel::getValue('page.logo'));
+		} catch (\Exception$e) {
+			$file = storage()->get('app://' . SysSettingModel::getValue('page.logo'));
+		}
 		
 		$responseHeaders = $this->response->getHeaders();
-		$responseHeaders->set('Content-type', storage()->get($file)->mime());
+		$responseHeaders->set('Content-type', $file->mime());
 		$responseHeaders->set('Cache-Control', 'no-transform,public,max-age=3600');
 		$responseHeaders->set('Expires', date('r', time() + 3600));
 		
@@ -27,7 +31,7 @@ class ImageController extends Controller
 			throw new Exception('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
-		return $this->response->setBody(storage()->get($file));
+		return $this->response->setBody($file);
 	}
 	
 	public function app($id, $size = 32) {
@@ -38,36 +42,34 @@ class ImageController extends Controller
 		}
 		
 		try {
-			$icon = storage($app->icon)->getPath();
-		} 
-		catch (Exception $ex) {
-			$icon = $app->icon;
+			try {
+				$icon = storage($app->icon);
+			} 
+			catch (Exception $ex) {
+				$icon = storage('app://' . $app->icon);
+			}
+		}
+		catch (\Exception$e) {
+			$icon = storage(self::DEFAULT_APP_ICON);
 		}
 		
-		if (empty($icon)){
-			$icon = self::DEFAULT_APP_ICON;
+		
+		if(!in_array($size, self::$thumbSizes)) {
+			throw new PublicException('Invalid size', 1604272250);
 		}
 		
 		/*
 		 * Define the filename of the target, we store the thumbs for the objects
 		 * inside the same directory they get stored to.
 		 */
-		$file = rtrim(dirname($icon), '\/') . DIRECTORY_SEPARATOR . $size . '_' . basename($icon);
-		
-		if(!in_array($size, self::$thumbSizes)) {
-			throw new PublicException('Invalid size', 1604272250);
-		}
-		
-		if (!file_exists($file)) {
-			try {
-				$img = new Image($icon);
-			}
-			catch (PrivateException$e){
-				if (strpos($e->getMessage(), "doesn't exist") === false){ throw $e; }
+		try {
+			$file = $icon->up()->open($size . '_' . $icon->filename());
+		} 
+		catch (\Exception $ex) {
+			$file = $icon->up()->make($size . '_' . $icon->filename());
 
-				$img = new Image(self::DEFAULT_APP_ICON);
-			}
-			$img->fitInto($size, $size);
+			$img = media()->load($icon);
+			$img->fit($size, $size);
 			$img->store($file);
 		}
 		
@@ -80,7 +82,7 @@ class ImageController extends Controller
 			throw new PrivateException('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
-		return $this->response->setBody(file_get_contents($file));
+		return $this->response->setBody($file);
 		
 	}
 	

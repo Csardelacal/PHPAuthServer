@@ -29,13 +29,13 @@ class AdminController extends BaseController
 	public function logo() {
 		
 		if ($this->request->isPost() && isset($_POST['file']) && $_POST['file'] instanceof Upload) {
-			$location = $_POST['file']->store();
+			$location = $_POST['file']->validate()->store();
 			
 			$img = media()->load($location);
 			$img->scale(500);
-			$resized = $img->store($location);
+			$img->store($location);
 			
-			SysSettingModel::setValue('page.logo', $resized->uri());
+			SysSettingModel::setValue('page.logo', $location->uri());
 		}
 		
 		
