@@ -12,6 +12,8 @@ use StringField;
  * a given time to ensure that the information hasn't been tampered with by the 
  * authorizing app.
  * 
+ * @see \access\ScopeModel
+ * @deprecated since version 0.1-dev
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  */
 class ContextModel extends Model

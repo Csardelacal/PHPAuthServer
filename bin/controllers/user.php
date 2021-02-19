@@ -1,10 +1,15 @@
 <?php
 
-use app\AttributeLock;
+use client\LocationModel;
+use defer\IncinerateSessionTask;
+use exceptions\suspension\LoginDisabledException;
+use mail\MailUtils;
 use mail\spam\domain\implementation\SpamDomainModelReader;
 use mail\spam\domain\SpamDomainValidationRule;
+use spitfire\core\Environment;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
+use spitfire\io\curl\URLReflection;
 use spitfire\io\session\Session;
 use spitfire\storage\database\pagination\Paginator;
 use spitfire\validation\rules\FilterValidationRule;
@@ -12,7 +17,6 @@ use spitfire\validation\rules\MaxLengthValidationRule;
 use spitfire\validation\rules\MinLengthValidationRule;
 use spitfire\validation\rules\RegexValidationRule;
 use spitfire\validation\ValidationException;
-use exceptions\suspension\LoginDisabledException;
 
 class UserController extends BaseController
 {
@@ -46,10 +50,6 @@ class UserController extends BaseController
 		else {
 			$returnto = (string)url();
 		}
-		
-		$query = db()->table('attribute')->get('writable', Array('public', 'groups', 'related', 'me'));
-		$query->addRestriction('required', true);
-		$attributes = $query->fetchAll();
 		
 		try {
 			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
@@ -100,19 +100,13 @@ class UserController extends BaseController
 			$user->setPassword($_POST['password']);
 			$user->store();
 			
+			//TODO: Email needs to be properly stored as a contact
+			
 			
 			$username = db()->table('username')->newRecord();
 			$username->user = $user;
 			$username->name = $_POST['username'];
 			$username->store();
-			
-			foreach($attributes as $attribute) {
-				$userattribute = db()->table('user\attribute')->newRecord();
-				$userattribute->user = $user;
-				$userattribute->attr = $attribute;
-				$userattribute->value = $_POST[$attribute->_id];
-				$userattribute->store();
-			}
 			
 			$s = Session::getInstance();
 			$s->lock($user->_id);
@@ -123,14 +117,12 @@ class UserController extends BaseController
 		catch(ValidationException$e) { $this->view->set('messages', $e->getResult()); }
 		
 		
-		$this->view->set('attributes', $attributes);
 		$this->view->set('returnto', $returnto);
 	}
 	
 	/**
 	 * 
 	 * @layout minimal.php
-	 * @return type
 	 * @throws PublicException
 	 */
 	public function login() {
@@ -165,6 +157,23 @@ class UserController extends BaseController
 				$session = Session::getInstance();
 				$session->lock($user->_id);
 				
+				$dbsession = db()->table('session')->get('_id', $session->sessionId(false))->first(true);
+				$dbsession->user = $user;
+				$dbsession->device = DeviceModel::makeFromRequest();
+				$dbsession->ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])? $_SERVER['HTTP_X_FORWARDED_FOR']: $_SERVER['REMOTE_ADDR'];
+				
+				/*
+				 * Retrieve the IP information from the client. This should allow the 
+				 * application to provide the user with data where they connected from.
+				 */
+				$ip = IP::makeLocation();
+				if ($ip->country_code) {
+					$dbsession->location = LocationModel::getLocation($ip->country_code, substr($ip->city, 0, 50));
+				}
+				
+				$dbsession->store();
+				async()->defer(time() + 86400 * 90, new IncinerateSessionTask($dbsession->_id));
+				
 				return $this->response->getHeaders()->redirect($returnto);
 			} else {
 				$this->view->set('message', 'Username or password did not match');
@@ -177,10 +186,55 @@ class UserController extends BaseController
 	public function logout() {
 		$s = Session::getInstance();
 		$s->destroy();
-
-		$this->response->setBody('Redirect...');
 		
-		return $this->response->getHeaders()->redirect(new URL());
+		$dbsession = db()->table('session')->get('_id', $s->sessionId())->first();
+		$token = isset($_GET['token'])? db()->table('access\token')->get('_id', $_GET['token'])->first() : null;
+		$rtt = new URLReflection($_GET['returnto']?? null);
+		
+		if ($dbsession) {
+			$dbsession->expires = time();
+			$dbsession->store();
+			
+			/*
+			 * When a session is terminated, we clean it up after about twenty minutes,
+			 * this gives the system more than enough time to perform some administrative
+			 * tasks while maintaining the reference.
+			 */
+			async()->defer(time() + 1200, new IncinerateSessionTask($dbsession->_id));
+			
+			/*
+			 * It's absolutely imperative for a good user experience that the server
+			 * sends a logout command for the session to all clients that depend on
+			 * this session. Otherwise they will keep logged into the application and
+			 * the sessions will get fractured (some clients maintain an old session).
+			 */
+			async()->defer(time(), new defer\notify\EndSessionTask($dbsession->_id));
+		}
+		
+		if ($token) {
+			$locations = db()->table('client\location')->get('client', $token->client)->all();
+			#TODO: This should be extracted to a function with a proper name
+			$accept = $locations->filter(function (LocationModel $e) use ($rtt) {
+				if ($rtt->getPassword() || $rtt->getUser()) { return false; }
+				if ($rtt->getProtocol() !== $e->protocol) { return false; }
+				if ($rtt->getServer() !== $e->hostname) { return false; }
+				if (!Strings::startsWith($rtt->getPath(), $e->path)) { return false; }
+				return true;
+			});
+			
+			if (!$accept) { $rtt = false; }
+		}
+		else {
+			$rtt = false;
+		}
+		
+		$this->response->setBody('Redirect...');
+		#TODO: Actually the system should be redirecting to a location that waits for the
+		#session to be properly terminated before continuing.
+		#At that stage leaking the OIDC session id would be irrelevant, since it's already
+		#been terminated and therefore cannot be used for anything but checking whether
+		#the response was successful.
+		return $this->response->getHeaders()->redirect($rtt? strval($rtt) : url());
 	}
 	
 	public function detail($userid) {
@@ -200,19 +254,12 @@ class UserController extends BaseController
 		if (!$profile) { throw new PublicException('No user found', 404); }
 		
 		#Get the list of attributes
+		#TODO: Remove, deprecated
 		$attributes = db()->table('attribute')->getAll()->all();
 		$userAttr   = collect();
 		
 		foreach ($attributes as $attr) {
-			$lock = new AttributeLock($attr, $profile);
-			
-			/*
-			 * Depending on whether the user is an administrator or an app that can
-			 * unlock the attribute, we add the data to the list.
-			 */
-			if ($this->isAdmin || $lock->unlock($this->authapp)) {
-				$userAttr[$attr->_id] = db()->table('user\attribute')->get('user', $profile)->where('attr', $attr)->first();
-			}
+			$userAttr[$attr->_id] = db()->table('user\attribute')->get('user', $profile)->where('attr', $attr)->first();
 		}
 		
 		#Get the currently active moderative issue
@@ -223,6 +270,7 @@ class UserController extends BaseController
 		$this->view->set('profile', $userAttr);
 		$this->view->set('attributes', $attributes);
 		$this->view->set('suspension', $suspension);
+		$this->view->set('email', $this->authapp->email);
 	}
 	
 	
@@ -296,8 +344,22 @@ class UserController extends BaseController
 			$token->user = $this->user? : $token->user;
 			$token->store();
 			$url   = url('user', 'activate', $token->token)->absolute();
+			
+			/*
+			 * If the email the user is using to activate this account is not the 
+			 * canonical for their account, we need to make sure that they're not
+			 * using a provider thatallows them to bypass verification systems.
+			 * 
+			 * This is a common behavior for temporary email providers that generate
+			 * gmail addresses (they take advantage of the fact that gmail allows 
+			 * incoming emails to be routed to the same account by just adding stops,
+			 * making email@gmail.com exactly equal to e.mail@gmail.com and ema.il@gmail.com)
+			 */
+			$canonical = MailUtils::canonicalize($this->user->email, true) !== $this->user->email;
+			$delay = $canonical? (Environment::get('phpas.email.delaynoncanonical')?: 45 * 60) : 0;
+			
 			EmailModel::queue($this->user->email, 'Activate your account', 
-					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url));
+					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url), time() + $delay);
 		}
 		else {
 			throw new PublicException('Not logged in', 403);

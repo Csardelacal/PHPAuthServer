@@ -40,6 +40,14 @@ $data['registered_unix'] = $user->created;
 $data['disabled']  = $user->disabled || ($suspension && $suspension->preventLogin);
 $data['suspended'] = !!$suspension;
 
+if ($email) {
+	/*
+	 * TODO: This needs to use the email contact instead of the field inside the
+	 * user table.
+	 */
+	$data['email'] = $user->email;
+}
+
 #Avatar
 $data['avatar']          = Array();
 $data['avatar']['32']    = (string)url('image', 'user', $user->_id,  32, ['t' => $user->modified])->absolute();

@@ -59,10 +59,10 @@
 					<a class="menu-item" href="<?= url('account', 'login') ?>">Login</a>
 				<?php endif; ?>
 			</div>
-			<div class="center">
-				<div style="line-height: 32px">
-					<a href="<?= url() ?>">Account</a>
-				</div>
+			<div class="center align-center">
+				<form class="search-input">
+					<input type="hidden" data-placeholder="Search..." id="search-input">
+				</form>
 			</div>
 		</div>
 		
@@ -126,13 +126,6 @@
 
 				<!--APPLICATIONS-->
 				<div class="menu-entry"><a href="<?= url('app') ?>"  >App administration</a></div>
-
-				<!-- EMAIL -->
-				<div class="menu-entry"><a href="<?= url('email') ?>">Email</a></div>
-				<div class="indented">
-					<div class="menu-entry"><a href="<?= url('email', ['history' => 1]) ?>">History</a></div>
-					<div class="menu-entry"><a href="<?= url('email', 'domain') ?>">Domains</a></div>
-				</div>
 				<?php endif; ?> 
 				<?php endif; ?> 
 				
@@ -214,6 +207,33 @@
 				for (var i = 0; i < els.length; i++) {
 					sticky.stick(els[i], sticky.context(els[i]), els[i].getAttribute('data-sticky'));
 				}
+			});
+		</script>
+		<script type="text/javascript">
+			depend(['autocomplete'], function (autocomplete) {
+				
+				var ac = autocomplete(document.getElementById('search-input'), function (input, output, entry) {
+					
+					var index = [
+						entry('Change your avatar', 'edit/avatar', {}),
+						entry('Login history', 'edit/avatar', {}),
+						entry('Devices history', 'edit/avatar', {}),
+						entry('Applications connected', 'edit/avatar', {}),
+					];
+					
+					var result = [];
+					if (!input) { output(index.slice(0, 10)); return; }
+					
+					for (var i = 0; i < index.length; i++) {
+						if (index[i].value.substr(0, input.length) === input) {
+							result.push(index[i]);
+						}
+					}
+					
+					output(result);
+				});
+				
+				ac.allowUndefined = true;
 			});
 		</script>
 	</body>

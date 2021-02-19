@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
+	<description>The coding standard for PHP_CodeSniffer itself.</description>
+	
+	<exclude-pattern>assets/css/*</exclude-pattern>
+	<exclude-pattern>assets/scss/_/*</exclude-pattern>
+	<exclude-pattern>spitfire/*</exclude-pattern>
+	<exclude-pattern>vendor/*</exclude-pattern>
+	<exclude-pattern>bin/templates/*</exclude-pattern>
+	<exclude-pattern>bin/error_pages/*</exclude-pattern>
+	<exclude-pattern>*.js$</exclude-pattern>
+	
+	<arg name="tab-width" value="4"/>
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+	  <properties>
+		 <property name="indent" value="4"/>
+		 <property name="tabIndent" value="true"/>
+	  </properties>
+	</rule>
+</ruleset>

@@ -1,15 +1,8 @@
 <?php
 
-use email\DomainModel;
-use mail\spam\domain\implementation\SpamDomainModelReader;
-use mail\spam\domain\IP;
+use spitfire\core\http\URL;
 use spitfire\exceptions\HTTPMethodException;
-use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
-use spitfire\io\XSSToken;
-use spitfire\storage\database\pagination\Paginator;
-use spitfire\validation\rules\EmptyValidationRule;
-use spitfire\validation\ValidationException;
 
 /**
  * The email controller is one of the weirder controllers in PHPAuthServer. This
@@ -20,204 +13,196 @@ use spitfire\validation\ValidationException;
 class EmailController extends BaseController
 {
 	
-	/**
-	 * Administrators are allowed to see how the current email queue looks and to
-	 * check how many emails were sent recently.
-	 * 
-	 * @throws PublicException
-	 */
-	public function index() {
-		if (!$this->isAdmin) { throw new PublicException('Not authorized', 401); }
+	public function _onload() {
+		parent::_onload();
 		
-		if (isset($_GET['history'])) {
-			$queue = db()->table('email')->get('scheduled', time(), '<')->addRestriction('delivered', null, 'IS NOT');
-			$queue->setOrder('scheduled', 'ASC');
-		} else {
-			$queue = db()->table('email')->get('scheduled', time(), '<')->addRestriction('delivered', null, 'IS');
-			$queue->setOrder('scheduled', 'DESC');
+		if ($this->context->action == 'send') {
+			//This needs to be here until the send method is gone.
 		}
 		
-		$pag = new Paginator($queue);
-		
-		$this->view->set('pagination', $pag);
-		$this->view->set('records', $pag->records());
+		/*
+		 * If the user is not logged in, we will ask them to do so. Otherwise this
+		 * section is useless to them.
+		 */
+		elseif (!$this->user) {
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('user', 'login', ['returnto' => (string) URL::current()]));
+			return;
+		}
+	}
+	
+	/**
+	 * Allows the user to see which email addresses are connected to their account.
+	 */
+	public function index() {
+		$emails = db()->table('passport')->get('user', $this->user)->where('type', 'email')->all();
+		$this->view->set('emails', $emails);
 	}
 	
 	/**
 	 * 
-	 * GET Parameters:
-	 * - appId     - Id of the app trying to relay the message
-	 * - appSecret - App Secret to authenticate the App
-	 * - userId    - Either a valid email or a user id
+	 * @validate >> POST#email(string required)
+	 * @throws HTTPMethodException
+	 */
+	public function create() {
+		
+		try {
+			if (!$this->request->isPost()) { throw new HTTPMethodException('Not Posted'); }
+			if (!$this->validation->isEmpty()) { throw new ValidationException('Validation failed', 2005121355, $this->validation->toArray()); }
+			
+			/*
+			 * For the sake of validation, we canonicalize email addresses before searching
+			 * for duplicates. This prevents users from abusing the system by adding
+			 * namespace email addresses to the system.
+			 * 
+			 * Since it's common practice to ignore the fragment fo an email address
+			 * (the part after a plus sign) and the stops inside it, we will do so
+			 * too. This may lead to the system rejecting email addresses that are
+			 * similar but different to an email server, but they will then either
+			 * be extremely generic or attempts to imporsonate someone regardless.
+			 */
+			$canonical = \mail\MailUtils::canonicalize($_POST['email'], true);
+			
+			if (db()->table('passport')->get('canonical', $canonical)->first()) { 
+				throw new ValidationException('Validation failed', 2005121355, ['Email is already registered']); 
+			}
+			
+			$passport = db()->table('passport')->newRecord();
+			$passport->user = $this->user;
+			$passport->type = 'email';
+			$passport->content = $_POST['email'];
+			$passport->canonical = $canonical;
+			$passport->login = true;
+			
+			/*
+			 * If the user does not verify the email within 30 days, we will remove 
+			 * the record. This prevents users from locking other people out of 
+			 * registration by registering an account with an email they do not 
+			 * own and just abandoning the account.
+			 */
+			$passport->expires = time() + 86400 * 30;
+			$passport->store();
+			
+			$auth = db()->table('authentication\provider')->newRecord();
+			$auth->user = $this->user;
+			$auth->type = \authentication\ProviderModel::TYPE_EMAIL;
+			$auth->passport = $passport;
+			$auth->content = $_POST['email'];
+			$auth->preferred = false;
+			$auth->expires = time() + 86400 * 30;
+			$auth->store();
+			
+			//TODO: Verification procedures need to be initiated
+		} 
+		catch (HTTPMethodException $ex) {
+			# Do nothing, just show the form to the user
+		}
+	}
+	
+	public function remove(PassportModel$email) {
+		//TODO: Check for strong authentication
+		$auth    = db()->table('authentication\provider')->get('passport', $email)->first();
+		
+		$auth->expires    = time() + 90 * 86400;
+		$email->expires   = time() + 90 * 86400;
+		
+		$auth->store();
+		$email->store();
+	}
+	
+	public function twofactor(\authentication\ProviderModel$email) {
+		
+		if ($email->type != \authentication\ProviderModel::TYPE_EMAIL) {
+			throw new PublicException('Invalid provider', 400);
+		}
+		
+		$self = db()->table('authapp')->get('_id', SysSettingModel::getValue('app.self'))->first();
+		$relay = db()->table('authapp')->get('_id', SysSettingModel::getValue('app.email'))->first();
+		$url  = rtrim($relay->url, '\/');
+		
+		$twofactor = \authentication\ChallengeModel::make($email);
+		$to = ':' . $email->user->_id;
+
+		$request = request($url . '/message/create.json');
+		$request->get('signature', (string)$this->signature->make($self->appID, $self->appSecret, $relay->appID));
+		$request->post('to', $to);
+		$request->post('subject', 'Your two factor authentication code');
+		$request->post('html', 'Your two factor authentication code is ' . $twofactor->secret . ' or <a href="' . url('twofactor', 'check', $email->_id, $twofactor->secret, ['returnto' => $_GET['returnto']?? '/'])->absolute() . '">click here</a>');
+
+		$response = $request->send()->expect(200)->json();
+		$mid = $response->payload->id;
+
+		$request3 = request($url . '/email/create/' . $mid .'.json');
+		$request3->get('signature', (string)$this->signature->make($self->appID, $self->appSecret, $relay->appID));
+		$request3->post('meta', time());
+
+		$response3 = $request3->send()->expect(200)->json();
+		$id = $response3->id;
+
+		$request2 = request($url . '/email/send/' . $id . '.json');
+		$request2->get('signature', $this->signature->make($self->appID, $self->appSecret, $relay->appID));
+		
+		$request2->send();
+		
+		$this->response->setBody('Redirect...')->getHeaders()->redirect(url('twofactor', 'check', $email->_id, ['returnto' => $_GET['returnto']?? '/']));
+		
+	}
+
+	public function verify(PassportModel$email, $token = null) {
+		
+	}
+	
+	/**
+	 * Redirects the request to relay. This allows old applications to send messages
+	 * the way they were used to, but will eventually be deprecated
 	 * 
-	 * @todo  Introduce email permissions for certain applications
+	 * @deprecated since version 2020-05-12
 	 * @param int $userid Deprecated, do not use
 	 * @throws PublicException
 	 * @throws Exception
 	 * @throws HTTPMethodException
 	 */
 	public function send($userid = null) {
+		$self  = db()->table('authapp')->get('_id', SysSettingModel::getValue('app.self'))->first();
+		$email = db()->table('authapp')->get('_id', SysSettingModel::getValue('app.email'))->first();
 		
-		//TODO: Add search by username
+		$url = rtrim($email->url, '\/');
 		
-		try {
-			#Check if the request is post and subject and body are not empty
-			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
-			
-			/*
-			 * Retrieve the email / userId from the request. This should either be posted
-			 * or getted. 
-			 */
-			$userid = isset($_GET['to'])? $_GET['to'] : _def($_POST['to'], $userid);
-
-			/*
-			 * We check whether we received any data at all via POST for the recipient.
-			 * We can obviously not relay any email to any user if we don't know where
-			 * to send it to.
-			 */
-			if (!$userid) { 
-				throw new PublicException('This enpoint requires a recipient'); 
-			}
-
-			/*
-			 * Get the application authorizing the email. Although we do not log this 
-			 * right now, it's gonna be invaluable to help determining whether an app
-			 * was compromised and is sending garbage.
-			 */
-			if (!$this->token) { 
-				$app = db()->table('authapp')->get('appID', $_GET['appId'])->addRestriction('appSecret', $_GET['appSecret'])->fetch();
-			}
-			else {
-				$app = $this->token->app;
-			}
-
-			if (!$app) { 
-				throw new Exception('Could not authenticate the application trying to send the email'); 
-			}
-
-			/*
-			 * Determine what kind of id you were sent to determine where to send the 
-			 * email to.
-			 */
-			if (filter_var($userid, FILTER_VALIDATE_EMAIL)) {
-				$email = $userid;
-			}
-			elseif(is_numeric($userid)) {
-				$user  = db()->table('user')->get('_id', _def($_POST['to'], $userid))->fetch();
-				$email = $user->email;
-			}
-			
-			$vsubject = validate()->addRule(new EmptyValidationRule('Subject cannot be empty'));
-			$vcontent = validate()->addRule(new EmptyValidationRule('Message body cannot be empty'));
-			validate($vsubject->setValue($_POST['subject']), $vcontent->setValue($_POST['body']));
-			
-			#Create the message and put it into the message queue
-			EmailModel::queue($email, $vsubject->getValue(), $vcontent->getValue())->store();
-			
-			#Everything was okay - that's it. The email will be delivered later
-		} 
-		catch (ValidationException$e)  {
-			$this->view->set('errors', $e->getResult());
+		
+		/*
+		 * Get the application authorizing the email. Although we do not log this 
+		 * right now, it's gonna be invaluable to help determining whether an app
+		 * was compromised and is sending garbage.
+		 * 
+		 * This is concerning, the application should not be using the token, since
+		 * that is known information. I'm locking down the ability to send like this.
+		 */
+		$app = db()->table('authapp')->get('appID', $_GET['appId'])->addRestriction('appSecret', $_GET['appSecret'])->fetch(true);
+		
+		if (!$email->url) {
+			throw new PublicException('Relay has no URL', 202006051537);
 		}
-		catch (HTTPMethodException$e) {
-			//Do nothing, we'll serve it with get
+		
+		if (filter_var($_POST['to']?? $userid, FILTER_VALIDATE_EMAIL)) {
+			$to = $_POST['to']?? $userid;
 		}
+		else {
+			$to = ':' . ($_POST['to']?? $userid);
+		}
+		
+		$request = request($url . '/message/create.json');
+		$request->get('signature', (string)$this->signature->make($app->appID, $app->appSecret, $email->appID));
+		$request->post('to', $to);
+		$request->post('subject', $_POST['subject']);
+		$request->post('html', $_POST['body']);
+		
+		$response = $request->send()->expect(200)->json();
+		$mid = $response->payload->id;
+		
+		$request3 = request($url . '/outbox/send/' . $mid .'.json');
+		$request3->get('signature', (string)$this->signature->make($app->appID, $app->appSecret, $email->appID));
+		$request3->post('meta', time());
+		
+		$response3 = $request3->send()->expect(200)->json();
 	} 
 	
-	public function detail(EmailModel$msg) {
-		
-		if (!$this->isAdmin) {
-			throw new PublicException('Unauthorized', 403);
-		}
-		
-		$this->view->set('msg', $msg);
-	}
-	
-	public function domain() {
-		
-		if (!$this->isAdmin) {
-			throw new PublicException('Unauthorized', 403);
-		}
-		
-		$q = db()->table('email\domain')->getAll();
-		
-		$p = new Paginator($q);
-		
-		$this->view->set('xsrf', new XSSToken());
-		$this->view->set('records', $p->records());
-		$this->view->set('pages', $p);
-	}
-	
-	/**
-	 * 
-	 * @validate >> POST#hostname(required string) AND POST#reason (required string)
-	 * @validate >> POST#list(required string in[white, black]) AND POST#type(required string in[IP, domain])
-	 * @param DomainModel $domain
-	 */
-	public function rule(DomainModel$domain = null) {
-		
-		if ($domain === null) {
-			$domain = db()->table('email\domain')->newRecord();
-		}
-		
-		try {
-			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
-			if (!$this->validation->isEmpty()) { throw new ValidationException('', 0, $this->validation->toArray()); }
-			
-			if ($_POST['type'] === 'IP') {
-				$pieces = explode('/', $_POST['hostname']);
-				$ip   = array_shift($pieces);
-				$cidr = array_shift($pieces)? : 0;
-				
-				if ($cidr % 4) { throw new PrivateException('CIDR must be a value divisible by 4', 1806211156); }
-				
-				$t = new IP($ip, $cidr);
-				$hostname = $t->getBase64();
-				$type     = SpamDomainModelReader::TYPE_IP;
-			}
-			else {
-				$hostname = $_POST['hostname'];
-				$type     = SpamDomainModelReader::TYPE_HOSTNAME;
-			}
-			
-			if ($_POST['list'] === 'black') {
-				$list = SpamDomainModelReader::LIST_BLACKLIST;
-			}
-			else {
-				$list = SpamDomainModelReader::LIST_WHITELIST;
-			}
-			
-			$domain->type = $type;
-			$domain->host = $hostname;
-			$domain->list = $list;
-			$domain->reason = $_POST['reason'];
-			$domain->store();
-			
-			return $this->response->setBody('Redirecting...')->getHeaders()->redirect(url('email', 'rule', $domain->_id));
-		} 
-		catch (HTTPMethodException $ex) {
-			//Do nothing, just show the form
-		}
-		catch (ValidationException$e) {
-			$this->view->set('messages', $e->getResult());
-		}
-		
-		$this->view->set('domain', $domain);
-	}
-	
-	/**
-	 * 
-	 * @validate GET#xsrf(required string)
-	 * @param DomainModel $d
-	 */
-	public function dropRule(DomainModel$d) {
-		
-		$xsrf = new XSSToken();
-		
-		if ($xsrf->verify($_GET['xsrf'])) {
-			$d->delete();
-		}
-		
-		
-	}
 }

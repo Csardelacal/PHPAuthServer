@@ -7,6 +7,7 @@ use spitfire\storage\database\Schema;
 
 /**
  * 
+@property UserModel $owner The user that created the client and manages it
  * @todo Add ownership to the apps. So a certain user can administrate his own apps
  */
 class AuthAppModel extends Model
@@ -14,29 +15,28 @@ class AuthAppModel extends Model
 	
 	public function definitions(Schema $schema) {
 		$schema->appID  = new StringField(20);
+		$schema->appID->setUnique(true);
+		
+		/**
+		 * @deprecated since version 0.1-dev
+		 */
 		$schema->appSecret = new StringField(50);
 		
+		$schema->owner  = new Reference(UserModel::class);
+		
 		$schema->name   = new StringField(20);
-		$schema->url    = new StringField(100);
 		$schema->icon   = new FileField();
 		
 		/*
-		 * System applications do not need to request permissions to access data,
-		 * nor will the user be able to block them. In return, sys apps are only
-		 * able to create tokens for administrative users.
+		 * Whether the application requires two factor authentication to log into it.
+		 * If that's the case, PHPAS will require the user to  reauthenticate before 
+		 * logging into it.
 		 */
-		$schema->system = new BooleanField();
-		$schema->system->setNullable(false);
+		$schema->twofactor = new BooleanField();
+		$schema->twofactor->setNullable(false);
 		
-		/*
-		 * Indicates whether this application should be placed in the app drawer.
-		 * This allows applications (including PHPAS) to quickly render navigation
-		 * to provide users with the option to jump between apps.
-		 */
-		$schema->drawer = new BooleanField();
-		$schema->drawer->setNullable(false);
+		$schema->credentials = new ChildrenField(client\CredentialModel::class, 'client');
 		
-		$schema->appID->setUnique(true);
 	}
 	
 	public function canAccess($app, $user, $context) {

@@ -8,6 +8,8 @@ use spitfire\storage\database\Schema;
  * system. The user can then customize these settings on the account server and
  * see them reflected across several sites.
  * 
+ * @deprecated since version 0.1-dev
+ * 
  * @todo I'm currently debating how to handle the different defaults for the 
  * different types. I don't know what the best way of handling default files 
  * (for example) would be.

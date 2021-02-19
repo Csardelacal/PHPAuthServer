@@ -50,10 +50,10 @@ class CronDirector extends Director
 			$flipflop = new cron\FlipFlop($file);
 		} catch (Exception $ex) {
 			console()->error('SysV is not enabled, falling back to timed flip-flop')->ln();
-			$flipflop = new cron\TimerFlipFlop($file);
+			$flipflop = new cron\TimerFlipFlop();
 		}
 		
-		while(($delivered = EmailModel::deliver()) || $flipflop->wait()) {
+		while(($delivered = \email\OutgoingModel::deliver()) || $flipflop->wait()) {
 			if ($delivered) {
 				console()->success('Email delivered!')->ln();
 			}
@@ -69,6 +69,42 @@ class CronDirector extends Director
 		
 		return 0;
 		
+	}
+	
+	/**
+	 * Refresh the deliverability information for the email domains. This allows
+	 * PHPAS to determine whether it should continue gray-listing domains that it
+	 * has been sending email to.
+	 * 
+	 * @deprecated since version 0.1-dev
+	 */
+	public function delivery() {
+		$domains = db()->table('email\domain')->get('type', mail\spam\domain\StorageInterface::TYPE_HOSTNAME)->where('updated', '<', time() - 7 * 86400)->all();
+		
+		foreach ($domains as $domain) {
+			/*
+			 * Count the amount of emails that were clicked in the last 90 days for
+			 * this domain.
+			 */
+			$clicked   = db()->table('email\outgoing')->get('domain', $domain)->where('scheduled', '>', time() - 86400 * 90)->where('clicked', '!=', null)->count();
+			
+			/*
+			 * Count the amount of emails that were sent out but have not yet been
+			 * clicked by a user.
+			 */
+			$unclicked = db()->table('email\outgoing')->get('domain', $domain)->where('scheduled', '>', time() - 86400 * 90)->where('clicked', null)->count();
+			$total = $clicked + $unclicked;
+			
+			if ($total == 0) { continue; }
+			
+			/*
+			 * Record the deliverability to the database.
+			 */
+			$domain->deliverability = $clicked / $total;
+			$domain->store();
+			
+			console()->info(sprintf('Updated %s(%s/%s)', $domain->host, $clicked, $total))->ln();
+		}
 	}
 	
 }

@@ -1,0 +1,11 @@
+
+includes:
+        - phpstan-baseline.neon
+
+parameters: 
+	excludes_analyse:
+		- vendor/
+		- spitfire/
+		- bin/templates/
+	bootstrapFiles:
+		- spitfire/bootstrap.php

@@ -1,40 +1,49 @@
 <?php
 
-class TokenModel extends spitfire\Model
+use spitfire\exceptions\PrivateException;
+use spitfire\Model;
+use spitfire\storage\database\Schema;
+
+class TokenModel extends Model
 {
 	
-	public function definitions(\spitfire\storage\database\Schema $schema) {
+	public function definitions(Schema $schema) {
 		$schema->token   = new StringField(50);
 		
 		$schema->user    = new Reference('user');
 		$schema->app     = new Reference('authapp');
 		
+		$schema->created = new IntegerField();
 		$schema->expires = new IntegerField();
 		$schema->ttl     = new IntegerField();
-		$schema->extends = new BooleanField();
 		
-		$schema->country = new StringField(02);
-		$schema->city    = new StringField(20);
+		$schema->session = new Reference('session');
+		
+		/*
+		 * Applications can use the IP address of the device to prevent an attacker
+		 * generating a token from a certain IP address and sending it to an unsuspecting
+		 * victim that may authorize this token from a different IP address.
+		 */
+		$schema->ip       = new StringField(128);
 		
 		$schema->token->setUnique(true);
 		
 	}
 	
-	public static function create($app, $expires = 14400, $extends = true) {
+	public static function create($app, $user, $expires = 14400) {
 		$token = substr(bin2hex(openssl_random_pseudo_bytes(25, $secure)), 0, 50);
 		
-		if (!$secure) { throw new spitfire\exceptions\PrivateException('Could not generate secure token', 403); }
-		if (db()->table('token')->get('token', $token)->fetch()) { return self::create($app, $expires, $extends); }
+		if (!$secure) { throw new PrivateException('Could not generate secure token', 403); }
+		if (db()->table('token')->get('token', $token)->fetch()) { return self::create($app, $user, $expires); }
 		
 		$record = db()->table('token')->newRecord();
 		$record->token   = $token;
-		$record->user    = null;
+		$record->created = time();
+		$record->user    = $user;
 		$record->app     = $app;
 		$record->expires = time() + $expires;
-		$record->extends = $extends;
 		$record->ttl     = $expires;
 		$record->store();
-		
 		return $record;
 	}
 

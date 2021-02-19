@@ -37,6 +37,7 @@ ini_set("display_errors" , "0");
 
 /* Include Spitfire core.
  */
+include 'vendor/autoload.php';
 include 'spitfire/bootstrap.php';
 
 ini_set('memory_limit', '128M');/**/

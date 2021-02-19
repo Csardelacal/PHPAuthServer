@@ -2,7 +2,7 @@
 (function () {
 	
 	var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	
+	return;
 	for (var i = 0; i < checkboxes.length; i++) {
 		var child = document.createElement('span');
 		child.className = 'toggle';

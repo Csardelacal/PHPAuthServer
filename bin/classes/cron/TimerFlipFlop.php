@@ -28,8 +28,6 @@ use spitfire\exceptions\PrivateException;
 
 class TimerFlipFlop
 {
-	public function __construct($filename) {
-	}
 	
 	public function notify() {
 		//Not applicable. This does not work here

@@ -2,6 +2,10 @@
 
 use spitfire\Model;
 
+/**
+ * 
+ * @deprecated since version 0.1-dev
+ */
 class AttributeModel extends Model
 {
 	

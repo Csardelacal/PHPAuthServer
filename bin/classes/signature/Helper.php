@@ -119,7 +119,7 @@ class Helper
 		 * that gets completed with the app secret of the source application.
 		 */
 		$check = $this->extract($e === null? $_GET['signature'] : $e)->setSecret($src->appSecret);
-
+		
 		if (!$check->checksum()->verify($signature->checksum())) {
 			throw new PublicException('Hash failure', 403);
 		}

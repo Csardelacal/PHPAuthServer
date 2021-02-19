@@ -2,6 +2,12 @@
 
 use \spitfire\exceptions\PrivateException;
 
+/**
+ * 
+ * @property int $_id The user's id
+ * @property string $password Hashed password. See PHP password functions
+ * @author César de la Cal Bretschneider <cesar@magic3w.com>
+ */
 class UserModel extends spitfire\Model
 {
 	
@@ -11,8 +17,8 @@ class UserModel extends spitfire\Model
 		$schema->email     = new StringField(50);
 		
 		$schema->verified  = new BooleanField();
+		$schema->mfa       = new BooleanField();
 		$schema->created   = new IntegerField();
-		$schema->picture   = new FileField();
 		
 		$schema->modified  = new IntegerField();
 		$schema->disabled  = new IntegerField(); #Timestamp the user was disabled

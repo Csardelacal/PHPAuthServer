@@ -12,9 +12,7 @@ and open the template in the editor.
   box-sizing: border-box; }
 
 body {
-  margin: 0;
-  font-family: sans-serif;
-  background-color: #FAFAFA; }
+  margin: 0; }
 
 .hidden {
   display: none !important; }
@@ -25,79 +23,6 @@ body {
  */
 :disabled, .disabled, [disabled] {
   pointer-events: none; }
-
-a {
-  color: #555;
-  text-decoration: none; }
-  a:hover {
-    color: #333; }
-  a.highlighted {
-    color: #2a912e; }
-    a.highlighted:hover {
-      color: #2a912e; }
-  a.heavy {
-    font-weight: bold; }
-  a img {
-    border: none; }
-
-h1 {
-  font-size: 20px;
-  color: #2a912e;
-  font-weight: normal;
-  background: #FAFAFA; }
-  h1.unpadded {
-    margin: 0;
-    padding: 0; }
-
-h2 {
-  color: #353535;
-  font-size: 18px; }
-
-p {
-  color: #555;
-  line-height: 1.6em; }
-  p.unpadded {
-    margin: 0; }
-  p.small {
-    font-size: .78em; }
-  p.secondary {
-    color: #777; }
-    p.secondary a {
-      color: #333; }
-
-blockquote {
-  margin-left: 0;
-  padding: 15px 5px 15px 15px;
-  border-left: solid 3px #AAA;
-  background: #F9F9F9;
-  color: #555;
-  font-size: .9em; }
-
-table {
-  width: 100%;
-  border-radius: 3px;
-  border-collapse: collapse;
-  font-size: .85em; }
-  table thead tr {
-    box-shadow: 1px 1px 2px #CCC; }
-    table thead tr th {
-      border-bottom: solid 1px #AAA;
-      background: #888;
-      color: #FFF; }
-      table thead tr th:first-child {
-        border-radius: 2px 0px 0 0; }
-      table thead tr th:last-child {
-        border-radius: 0px 2px 0 0; }
-  table tr {
-    background: #FFF;
-    border-top: solid 1px #EEE; }
-  table tr:first-child {
-    border-top: none; }
-  table tr:nth-child(2n) {
-    background: #FAFAFA; }
-  table td, table th {
-    margin: 0;
-    padding: 8px 20px; }
 
 form.regular .field {
   display: block;
@@ -166,35 +91,6 @@ form.regular input[type="submit"] {
 .no-selection {
   user-select: none; }
 
-.button, form.regular input[type="submit"] {
-  background: #3191f1;
-  box-shadow: -2px -2px 1px #3167f1 inset;
-  border: none;
-  border-radius: 3px;
-  color: #ffffff;
-  font-weight: bold;
-  padding: .7em 1.2em;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block; }
-  .button:disabled, form.regular input[type="submit"]:disabled {
-    background-color: #094580;
-    box-shadow: -2px -2px 1px #092a80 inset;
-    cursor: not-allowed; }
-  .button.error, form.regular input.error[type="submit"] {
-    background: #f13131;
-    box-shadow: -2px -2px 1px #803709 inset; }
-  .button.success, form.regular input.success[type="submit"] {
-    background: #0cb027;
-    box-shadow: -2px -2px 1px #055116 inset; }
-  .button.small, form.regular input.small[type="submit"] {
-    padding: .35em .5em;
-    font-size: .78em; }
-  .button.secondary, form.regular input.secondary[type="submit"] {
-    color: #777; }
-  .button:hover, form.regular input[type="submit"]:hover {
-    color: #FFF; }
-
 .menubar {
   background: #FEFEFE;
   vertical-align: top;
@@ -216,15 +112,6 @@ form.regular input[type="submit"] {
     float: left;
     border: none; }
 
-.badge {
-  width: 100%;
-  padding: .5em;
-  box-shadow: -2px 2px 2px #EAEAEA inset;
-  background: #FAFAFA;
-  border: solid 1px #CCC;
-  display: block;
-  border-radius: 3px; }
-
 footer {
   background: #FFF;
   color: #555;
@@ -240,6 +127,9 @@ footer {
   border-radius: 2px;
   border: solid 1px #CCC;
   padding: 20px 15px 15px; }
+  .material.soft {
+    background: #FEFEFE;
+    box-shadow: none; }
   .material.unpadded {
     padding: 0; }
   .material .padded {
@@ -331,6 +221,16 @@ footer {
   border-bottom: solid 1px #2a912e;
   background: #FAFAFA; }
 
+.jumbo h1 {
+  font-weight: bold; }
+
+.blurred {
+  filter: blur(3px); }
+
+.toggle-blur {
+  transition: filter .3s ease;
+  cursor: pointer; }
+
 /*
 The MIT License
 
@@ -358,6 +258,247 @@ THE SOFTWARE.
     Created on : Dec 9, 2019, 4:25:00 PM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Dec 9, 2019, 4:28:07 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.text\:grey-100 {
+  color: #23282C; }
+
+.text\:grey-200 {
+  color: #31383D; }
+
+.text\:grey-300 {
+  color: #464F56; }
+
+.text\:grey-400 {
+  color: #5F6C75; }
+
+.text\:grey-500 {
+  color: #74838E; }
+
+.text\:grey-600 {
+  color: #8D99A3; }
+
+.text\:grey-700 {
+  color: #A9B3B9; }
+
+.text\:grey-800 {
+  color: #C1C8CD; }
+
+.text\:grey-900 {
+  color: #E6E8EA; }
+
+.text\:green-100 {
+  color: #356808; }
+
+.text\:green-300 {
+  color: #63B618; }
+
+.text\:green-500 {
+  color: #8ADE40; }
+
+.text\:green-700 {
+  color: #B5F47D; }
+
+.text\:green-900 {
+  color: #E8FCD7; }
+
+.text\:red-100 {
+  color: #601B1B; }
+
+.text\:red-300 {
+  color: #B22929; }
+
+.text\:red-500 {
+  color: #C93D3D; }
+
+.text\:red-700 {
+  color: #D87171; }
+
+.text\:red-900 {
+  color: #E8ADAD; }
+
+.text\:blue-100 {
+  color: #163348; }
+
+.text\:blue-300 {
+  color: #245375; }
+
+.text\:blue-500 {
+  color: #2F6D9A; }
+
+.text\:blue-700 {
+  color: #3B89C1; }
+
+.text\:blue-800 {
+  color: #6DA7D2; }
+
+.text\:blue-900 {
+  color: #AFCFE6; }
+
+small {
+  font-size: .8rem; }
+
+.no-decoration {
+  text-decoration: none; }
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Oct 14, 2019, 9:21:34 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.dropdownlist-list .dropdownlist-hidden {
+  display: none; }
+
+.dropdownlist-list .dropdownlist-entry {
+  white-space: nowrap;
+  color: #555;
+  padding: .5rem .5rem;
+  font-size: .8rem;
+  cursor: pointer;
+  border-radius: 5px;
+  overflow: hidden; }
+  .dropdownlist-list .dropdownlist-entry.active, .dropdownlist-list .dropdownlist-entry:hover {
+    color: #FFF;
+    background-color: #44a5eb; }
+
+@media all and (max-width: 600px) {
+  .dropdownlist-list {
+    position: absolute;
+    width: 95%;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: .5rem 0;
+    left: 2.5%;
+    z-index: 5;
+    background: #FFF;
+    margin-top: 5px; }
+
+  .autocomplete-results-anchor {
+    width: 100%; } }
+@media all and (min-width: 601px) {
+  .dropdownlist-list {
+    position: absolute;
+    width: 100%;
+    min-width: 300px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: 0;
+    top: 5px;
+    left: 0;
+    z-index: 5;
+    background: #FFF; }
+
+  .autocomplete-results-anchor {
+    position: relative;
+    width: 100%; } }
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Apr 15, 2020, 2:22:59 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.shadow-input.outer {
+  font-size: .8rem !important;
+  line-height: 1.2rem;
+  background: #FFF;
+  border: solid 1px #ccc;
+  height: 2.6rem;
+  font-family: inherit; }
+
+.shadow-input.inner,
+.shadow-input.shadow {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: .8rem !important;
+  line-height: 1.2rem;
+  height: 2.6rem;
+  font-family: inherit;
+  padding: .75rem 0rem .75rem .5rem; }
+
+.shadow-input.shadow {
+  color: #AAA;
+  padding: .75rem .5rem .75rem 0rem; }
+
+/*
+The MIT License
+
+Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Apr 28, 2020, 4:42:43 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.search-input {
+  display: inline-block;
+  max-width: 500px;
+  width: calc(100% - 150px) !important;
+  text-align: left; }
+  .search-input .shadow-input.outer {
+    background: #F1F2F3 !important;
+    color: #464F56;
+    text-align: left;
+    border-radius: .3rem;
+    transition: background-color .5s ease, box-shadow .3s ease; }
+    .search-input .shadow-input.outer.focus {
+      background: #FFF !important;
+      box-shadow: 2px 2px 3px #C1C8CD; }
+  .search-input .dropdownlist-list {
+    font-weight: bold; }
+    .search-input .dropdownlist-list .dropdownlist-entry {
+      padding: .8rem 1rem; }
+      .search-input .dropdownlist-list .dropdownlist-entry:first-child {
+        padding-top: 1.0rem; }
+
 /*
 The MIT License
 
@@ -422,6 +563,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /*
+	Created on : Dec 9, 2019, 4:25:00 PM
+	Updated    : Sep 9, 2020
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
     Created on : Aug 20, 2019, 5:06:55 PM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
@@ -430,7 +599,24 @@ html {
    * Resets the system to use a known good system font.
    * See: https://furbo.org/2018/03/28/system-fonts-in-css/
    */
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; }
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.2; }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0; }
+
+a {
+  color: #5AA5F7;
+  text-decoration: none; }
+  a:hover {
+    text-decoration: underline; }
 
 /*
 To change this license header, choose License Headers in Project Properties.
@@ -454,17 +640,20 @@ and open the template in the editor.
   display: inline-block;
   vertical-align: top;
   min-height: 1px;
-  font-size: 16px;
+  font-size: 1rem;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   padding: 3px 1.0416666667%;
   width: 100%; }
+  .span img {
+    max-width: 100%; }
 
 div.row {
   display: block;
   margin: 0 auto;
   width: 100%;
+  width: calc(100% - 30px);
   	/*
       * Fixes an issue that browsers will have rendering the layout. Since the system
       * does use inline-block, spaces that are parsed from the HTML file (due to tabs
@@ -477,9 +666,9 @@ div.row {
   div.row.fluid {
     width: 100%;
     max-width: 100%; }
-  div.row.ng .span {
+  div.row.ng > .span {
     padding: 0; }
-  div.row.ng-lr .span:first-child {
+  div.row.ng-lr > .span:first-child {
     padding-left: 0; }
   div.row.ng-lr .span:nth-last-of-type(1) {
     padding-right: 0; }
@@ -962,28 +1151,6 @@ THE SOFTWARE.
     Created on : Aug 30, 2019, 4:28:26 PM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
-.toggle-button, .dial-toggle {
-  display: inline-block;
-  position: relative;
-  vertical-align: middle;
-  cursor: pointer;
-  width: 26px;
-  height: 32px;
-  padding: 0px;
-  background-image: linear-gradient(180deg, #FFF 4px, transparent 4px, transparent 8px, #FFF 8px, #FFF 12px, transparent 12px, transparent 16px, #FFF 16px);
-  background-size: 25px 20px;
-  background-position: center center;
-  background-repeat: no-repeat; }
-  .toggle-button.hidden, .hidden.dial-toggle {
-    display: none; }
-  .toggle-button.dark, .dark.dial-toggle {
-    background-image: linear-gradient(180deg, #777 4px, transparent 4px, transparent 8px, #777 8px, #777 12px, transparent 12px, transparent 16px, #777 16px); }
-    .toggle-button.dark:after, .dark.dial-toggle:after, .toggle-button.dark:before, .dark.dial-toggle:before {
-      background: #242424; }
-  .toggle-button.narrow, .narrow.dial-toggle {
-    background-size: 3px 17px;
-    width: 20px; }
-
 body {
   overflow-x: hidden; }
 
@@ -1081,228 +1248,609 @@ THE SOFTWARE.
     Created on : Feb 28, 2020, 5:45:31 PM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
+/*
+ * Define the button radius' for small and large buttons.
+ * 
+ * These radiuses are affected by the size of the button, and it's extremely
+ * difficult to determine the radius of a button programmatically, since they
+ * are not directly correlated.
+ */
 .button, form.regular input[type="submit"] {
+  /*
+   * We default the text color of buttons to white, since most buttons will have
+   * a darker solid background that fills the button.
+   */
+  color: #FFFFFF;
+  /*
+   * Buttons are inline elements, which means that we wish to have them behave accordingly
+   * in the context of inline components.
+   * 
+   * CSS makes it extraordinarily challenging to mix static and inline-block elements, while
+   * maintaining a good vertical alignment. Most of the time the baseline will behave improperly
+   * and the elements will shift.
+   * 
+   * While I understand that this is a challenge that something like CSS just faces, we like 
+   * to handle all our elements that are to be displayed as inline blocks with a static height,
+   * so they become better behaved and are able to align vertically with the rest.
+   */
+  display: inline-block;
+  vertical-align: middle;
+  height: 3.25rem;
+  line-height: 1.625rem;
+  font-size: 1.1607142857rem;
+  /*
+   * Buttons are always clickable elements, and therefore should indicate their clickability to the
+   * user by setting setting the cursor to a clicking hand.
+   */
+  cursor: pointer;
   background: linear-gradient(90deg, #396afc, #2948ff);
   border-radius: 4px;
-  border: none;
-  padding: 0.5rem 1.4rem;
-  color: #FFF;
+  border: transparent solid 0.0625rem;
+  padding: 0.75rem 1.1rem;
   font-weight: bolder;
-  box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.3);
   text-decoration: none;
-  vertical-align: middle; }
-  .button.success, form.regular input.success[type="submit"] {
-    background: linear-gradient(-90deg, #2FAD30, #35C537); }
+  transition: background-color .3s ease, border-color .3s ease; }
+  .button:hover, form.regular input[type="submit"]:hover {
+    text-decoration: none; }
   .button.borderless, form.regular input.borderless[type="submit"] {
     background: none;
     color: #652CA5;
     font-weight: bold;
-    box-shadow: none; }
+    border: solid 0.0625rem transparent; }
   .button.outline, form.regular input.outline[type="submit"] {
     background: none;
     color: #652CA5;
-    border: solid 1px #652CA5;
+    border: solid 0.0625rem #652CA5;
     font-weight: bold;
     box-shadow: none; }
-    .button.outline.fill-on-hover:hover, form.regular input.outline.fill-on-hover[type="submit"]:hover {
+    .button.outline.fill-on-hover:hover, form.regular input.outline.fill-on-hover[type="submit"]:hover, .button.outline .solid, form.regular input.outline[type="submit"] .solid {
       background: #652CA5;
       color: #FFF;
-      border: solid 1px #652CA5; }
+      border: solid 0.0625rem #652CA5; }
+  .button.outline.button-color-grey-050, form.regular input.outline.button-color-grey-050[type="submit"] {
+    color: #F6F9FA;
+    border: solid 0.0625rem #F6F9FA; }
+  .button.solid.button-color-grey-050, form.regular input.solid.button-color-grey-050[type="submit"], .button.solid.hover-fill-grey-050:hover, form.regular input.solid.hover-fill-grey-050[type="submit"]:hover, .button.outline.hover-fill-grey-050:hover, form.regular input.outline.hover-fill-grey-050[type="submit"]:hover, .button.borderless.hover-fill-grey-050:hover, form.regular input.borderless.hover-fill-grey-050[type="submit"]:hover {
+    background: #F6F9FA;
+    color: #FFF;
+    border: solid 0.0625rem #F6F9FA; }
+  .button.borderless.button-color-grey-050, form.regular input.borderless.button-color-grey-050[type="submit"] {
+    color: #F6F9FA; }
   .button.outline.button-color-grey-100, form.regular input.outline.button-color-grey-100[type="submit"] {
-    background: none;
-    color: #23282C;
-    border: solid 1px #23282C;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-100.fill-on-hover:hover, form.regular input.outline.button-color-grey-100.fill-on-hover[type="submit"]:hover {
-      background: #23282C;
-      color: #FFF;
-      border: solid 1px #23282C; }
+    color: #F1F2F3;
+    border: solid 0.0625rem #F1F2F3; }
+  .button.solid.button-color-grey-100, form.regular input.solid.button-color-grey-100[type="submit"], .button.solid.hover-fill-grey-100:hover, form.regular input.solid.hover-fill-grey-100[type="submit"]:hover, .button.outline.hover-fill-grey-100:hover, form.regular input.outline.hover-fill-grey-100[type="submit"]:hover, .button.borderless.hover-fill-grey-100:hover, form.regular input.borderless.hover-fill-grey-100[type="submit"]:hover {
+    background: #F1F2F3;
+    color: #FFF;
+    border: solid 0.0625rem #F1F2F3; }
+  .button.borderless.button-color-grey-100, form.regular input.borderless.button-color-grey-100[type="submit"] {
+    color: #F1F2F3; }
   .button.outline.button-color-grey-200, form.regular input.outline.button-color-grey-200[type="submit"] {
-    background: none;
-    color: #31383D;
-    border: solid 1px #31383D;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-200.fill-on-hover:hover, form.regular input.outline.button-color-grey-200.fill-on-hover[type="submit"]:hover {
-      background: #31383D;
-      color: #FFF;
-      border: solid 1px #31383D; }
-  .button.outline.button-color-grey-300, form.regular input.outline.button-color-grey-300[type="submit"] {
-    background: none;
-    color: #464F56;
-    border: solid 1px #464F56;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-300.fill-on-hover:hover, form.regular input.outline.button-color-grey-300.fill-on-hover[type="submit"]:hover {
-      background: #464F56;
-      color: #FFF;
-      border: solid 1px #464F56; }
-  .button.outline.button-color-grey-400, form.regular input.outline.button-color-grey-400[type="submit"] {
-    background: none;
-    color: #5F6C75;
-    border: solid 1px #5F6C75;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-400.fill-on-hover:hover, form.regular input.outline.button-color-grey-400.fill-on-hover[type="submit"]:hover {
-      background: #5F6C75;
-      color: #FFF;
-      border: solid 1px #5F6C75; }
-  .button.outline.button-color-grey-500, form.regular input.outline.button-color-grey-500[type="submit"] {
-    background: none;
-    color: #74838E;
-    border: solid 1px #74838E;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-500.fill-on-hover:hover, form.regular input.outline.button-color-grey-500.fill-on-hover[type="submit"]:hover {
-      background: #74838E;
-      color: #FFF;
-      border: solid 1px #74838E; }
-  .button.outline.button-color-grey-600, form.regular input.outline.button-color-grey-600[type="submit"] {
-    background: none;
-    color: #8D99A3;
-    border: solid 1px #8D99A3;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-600.fill-on-hover:hover, form.regular input.outline.button-color-grey-600.fill-on-hover[type="submit"]:hover {
-      background: #8D99A3;
-      color: #FFF;
-      border: solid 1px #8D99A3; }
-  .button.outline.button-color-grey-700, form.regular input.outline.button-color-grey-700[type="submit"] {
-    background: none;
-    color: #A9B3B9;
-    border: solid 1px #A9B3B9;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-700.fill-on-hover:hover, form.regular input.outline.button-color-grey-700.fill-on-hover[type="submit"]:hover {
-      background: #A9B3B9;
-      color: #FFF;
-      border: solid 1px #A9B3B9; }
-  .button.outline.button-color-grey-800, form.regular input.outline.button-color-grey-800[type="submit"] {
-    background: none;
-    color: #C1C8CD;
-    border: solid 1px #C1C8CD;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-800.fill-on-hover:hover, form.regular input.outline.button-color-grey-800.fill-on-hover[type="submit"]:hover {
-      background: #C1C8CD;
-      color: #FFF;
-      border: solid 1px #C1C8CD; }
-  .button.outline.button-color-grey-900, form.regular input.outline.button-color-grey-900[type="submit"] {
-    background: none;
     color: #E6E8EA;
-    border: solid 1px #E6E8EA;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-grey-900.fill-on-hover:hover, form.regular input.outline.button-color-grey-900.fill-on-hover[type="submit"]:hover {
-      background: #E6E8EA;
-      color: #FFF;
-      border: solid 1px #E6E8EA; }
-  .button.outline.button-color-green-100, form.regular input.outline.button-color-green-100[type="submit"] {
-    background: none;
-    color: #356808;
-    border: solid 1px #356808;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-green-100.fill-on-hover:hover, form.regular input.outline.button-color-green-100.fill-on-hover[type="submit"]:hover {
-      background: #356808;
-      color: #FFF;
-      border: solid 1px #356808; }
-  .button.outline.button-color-green-300, form.regular input.outline.button-color-green-300[type="submit"] {
-    background: none;
-    color: #63B618;
-    border: solid 1px #63B618;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-green-300.fill-on-hover:hover, form.regular input.outline.button-color-green-300.fill-on-hover[type="submit"]:hover {
-      background: #63B618;
-      color: #FFF;
-      border: solid 1px #63B618; }
-  .button.outline.button-color-green-500, form.regular input.outline.button-color-green-500[type="submit"] {
-    background: none;
-    color: #8ADE40;
-    border: solid 1px #8ADE40;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-green-500.fill-on-hover:hover, form.regular input.outline.button-color-green-500.fill-on-hover[type="submit"]:hover {
-      background: #8ADE40;
-      color: #FFF;
-      border: solid 1px #8ADE40; }
-  .button.outline.button-color-green-700, form.regular input.outline.button-color-green-700[type="submit"] {
-    background: none;
-    color: #B5F47D;
-    border: solid 1px #B5F47D;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-green-700.fill-on-hover:hover, form.regular input.outline.button-color-green-700.fill-on-hover[type="submit"]:hover {
-      background: #B5F47D;
-      color: #FFF;
-      border: solid 1px #B5F47D; }
-  .button.outline.button-color-green-900, form.regular input.outline.button-color-green-900[type="submit"] {
-    background: none;
-    color: #E8FCD7;
-    border: solid 1px #E8FCD7;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-green-900.fill-on-hover:hover, form.regular input.outline.button-color-green-900.fill-on-hover[type="submit"]:hover {
-      background: #E8FCD7;
-      color: #FFF;
-      border: solid 1px #E8FCD7; }
+    border: solid 0.0625rem #E6E8EA; }
+  .button.solid.button-color-grey-200, form.regular input.solid.button-color-grey-200[type="submit"], .button.solid.hover-fill-grey-200:hover, form.regular input.solid.hover-fill-grey-200[type="submit"]:hover, .button.outline.hover-fill-grey-200:hover, form.regular input.outline.hover-fill-grey-200[type="submit"]:hover, .button.borderless.hover-fill-grey-200:hover, form.regular input.borderless.hover-fill-grey-200[type="submit"]:hover {
+    background: #E6E8EA;
+    color: #FFF;
+    border: solid 0.0625rem #E6E8EA; }
+  .button.borderless.button-color-grey-200, form.regular input.borderless.button-color-grey-200[type="submit"] {
+    color: #E6E8EA; }
+  .button.outline.button-color-grey-300, form.regular input.outline.button-color-grey-300[type="submit"] {
+    color: #C1C8CD;
+    border: solid 0.0625rem #C1C8CD; }
+  .button.solid.button-color-grey-300, form.regular input.solid.button-color-grey-300[type="submit"], .button.solid.hover-fill-grey-300:hover, form.regular input.solid.hover-fill-grey-300[type="submit"]:hover, .button.outline.hover-fill-grey-300:hover, form.regular input.outline.hover-fill-grey-300[type="submit"]:hover, .button.borderless.hover-fill-grey-300:hover, form.regular input.borderless.hover-fill-grey-300[type="submit"]:hover {
+    background: #C1C8CD;
+    color: #FFF;
+    border: solid 0.0625rem #C1C8CD; }
+  .button.borderless.button-color-grey-300, form.regular input.borderless.button-color-grey-300[type="submit"] {
+    color: #C1C8CD; }
+  .button.outline.button-color-grey-400, form.regular input.outline.button-color-grey-400[type="submit"] {
+    color: #A9B3B9;
+    border: solid 0.0625rem #A9B3B9; }
+  .button.solid.button-color-grey-400, form.regular input.solid.button-color-grey-400[type="submit"], .button.solid.hover-fill-grey-400:hover, form.regular input.solid.hover-fill-grey-400[type="submit"]:hover, .button.outline.hover-fill-grey-400:hover, form.regular input.outline.hover-fill-grey-400[type="submit"]:hover, .button.borderless.hover-fill-grey-400:hover, form.regular input.borderless.hover-fill-grey-400[type="submit"]:hover {
+    background: #A9B3B9;
+    color: #FFF;
+    border: solid 0.0625rem #A9B3B9; }
+  .button.borderless.button-color-grey-400, form.regular input.borderless.button-color-grey-400[type="submit"] {
+    color: #A9B3B9; }
+  .button.outline.button-color-grey-500, form.regular input.outline.button-color-grey-500[type="submit"] {
+    color: #8D99A3;
+    border: solid 0.0625rem #8D99A3; }
+  .button.solid.button-color-grey-500, form.regular input.solid.button-color-grey-500[type="submit"], .button.solid.hover-fill-grey-500:hover, form.regular input.solid.hover-fill-grey-500[type="submit"]:hover, .button.outline.hover-fill-grey-500:hover, form.regular input.outline.hover-fill-grey-500[type="submit"]:hover, .button.borderless.hover-fill-grey-500:hover, form.regular input.borderless.hover-fill-grey-500[type="submit"]:hover {
+    background: #8D99A3;
+    color: #FFF;
+    border: solid 0.0625rem #8D99A3; }
+  .button.borderless.button-color-grey-500, form.regular input.borderless.button-color-grey-500[type="submit"] {
+    color: #8D99A3; }
+  .button.outline.button-color-grey-600, form.regular input.outline.button-color-grey-600[type="submit"] {
+    color: #74838E;
+    border: solid 0.0625rem #74838E; }
+  .button.solid.button-color-grey-600, form.regular input.solid.button-color-grey-600[type="submit"], .button.solid.hover-fill-grey-600:hover, form.regular input.solid.hover-fill-grey-600[type="submit"]:hover, .button.outline.hover-fill-grey-600:hover, form.regular input.outline.hover-fill-grey-600[type="submit"]:hover, .button.borderless.hover-fill-grey-600:hover, form.regular input.borderless.hover-fill-grey-600[type="submit"]:hover {
+    background: #74838E;
+    color: #FFF;
+    border: solid 0.0625rem #74838E; }
+  .button.borderless.button-color-grey-600, form.regular input.borderless.button-color-grey-600[type="submit"] {
+    color: #74838E; }
+  .button.outline.button-color-grey-700, form.regular input.outline.button-color-grey-700[type="submit"] {
+    color: #5F6C75;
+    border: solid 0.0625rem #5F6C75; }
+  .button.solid.button-color-grey-700, form.regular input.solid.button-color-grey-700[type="submit"], .button.solid.hover-fill-grey-700:hover, form.regular input.solid.hover-fill-grey-700[type="submit"]:hover, .button.outline.hover-fill-grey-700:hover, form.regular input.outline.hover-fill-grey-700[type="submit"]:hover, .button.borderless.hover-fill-grey-700:hover, form.regular input.borderless.hover-fill-grey-700[type="submit"]:hover {
+    background: #5F6C75;
+    color: #FFF;
+    border: solid 0.0625rem #5F6C75; }
+  .button.borderless.button-color-grey-700, form.regular input.borderless.button-color-grey-700[type="submit"] {
+    color: #5F6C75; }
+  .button.outline.button-color-grey-800, form.regular input.outline.button-color-grey-800[type="submit"] {
+    color: #464F56;
+    border: solid 0.0625rem #464F56; }
+  .button.solid.button-color-grey-800, form.regular input.solid.button-color-grey-800[type="submit"], .button.solid.hover-fill-grey-800:hover, form.regular input.solid.hover-fill-grey-800[type="submit"]:hover, .button.outline.hover-fill-grey-800:hover, form.regular input.outline.hover-fill-grey-800[type="submit"]:hover, .button.borderless.hover-fill-grey-800:hover, form.regular input.borderless.hover-fill-grey-800[type="submit"]:hover {
+    background: #464F56;
+    color: #FFF;
+    border: solid 0.0625rem #464F56; }
+  .button.borderless.button-color-grey-800, form.regular input.borderless.button-color-grey-800[type="submit"] {
+    color: #464F56; }
+  .button.outline.button-color-grey-900, form.regular input.outline.button-color-grey-900[type="submit"] {
+    color: #31383D;
+    border: solid 0.0625rem #31383D; }
+  .button.solid.button-color-grey-900, form.regular input.solid.button-color-grey-900[type="submit"], .button.solid.hover-fill-grey-900:hover, form.regular input.solid.hover-fill-grey-900[type="submit"]:hover, .button.outline.hover-fill-grey-900:hover, form.regular input.outline.hover-fill-grey-900[type="submit"]:hover, .button.borderless.hover-fill-grey-900:hover, form.regular input.borderless.hover-fill-grey-900[type="submit"]:hover {
+    background: #31383D;
+    color: #FFF;
+    border: solid 0.0625rem #31383D; }
+  .button.borderless.button-color-grey-900, form.regular input.borderless.button-color-grey-900[type="submit"] {
+    color: #31383D; }
+  .button.outline.button-color-orange-100, form.regular input.outline.button-color-orange-100[type="submit"] {
+    color: #FFEEE0;
+    border: solid 0.0625rem #FFEEE0; }
+  .button.solid.button-color-orange-100, form.regular input.solid.button-color-orange-100[type="submit"], .button.solid.hover-fill-orange-100:hover, form.regular input.solid.hover-fill-orange-100[type="submit"]:hover, .button.outline.hover-fill-orange-100:hover, form.regular input.outline.hover-fill-orange-100[type="submit"]:hover, .button.borderless.hover-fill-orange-100:hover, form.regular input.borderless.hover-fill-orange-100[type="submit"]:hover {
+    background: #FFEEE0;
+    color: #FFF;
+    border: solid 0.0625rem #FFEEE0; }
+  .button.borderless.button-color-orange-100, form.regular input.borderless.button-color-orange-100[type="submit"] {
+    color: #FFEEE0; }
+  .button.outline.button-color-orange-200, form.regular input.outline.button-color-orange-200[type="submit"] {
+    color: #FFCFA6;
+    border: solid 0.0625rem #FFCFA6; }
+  .button.solid.button-color-orange-200, form.regular input.solid.button-color-orange-200[type="submit"], .button.solid.hover-fill-orange-200:hover, form.regular input.solid.hover-fill-orange-200[type="submit"]:hover, .button.outline.hover-fill-orange-200:hover, form.regular input.outline.hover-fill-orange-200[type="submit"]:hover, .button.borderless.hover-fill-orange-200:hover, form.regular input.borderless.hover-fill-orange-200[type="submit"]:hover {
+    background: #FFCFA6;
+    color: #FFF;
+    border: solid 0.0625rem #FFCFA6; }
+  .button.borderless.button-color-orange-200, form.regular input.borderless.button-color-orange-200[type="submit"] {
+    color: #FFCFA6; }
+  .button.outline.button-color-orange-300, form.regular input.outline.button-color-orange-300[type="submit"] {
+    color: #FFBC84;
+    border: solid 0.0625rem #FFBC84; }
+  .button.solid.button-color-orange-300, form.regular input.solid.button-color-orange-300[type="submit"], .button.solid.hover-fill-orange-300:hover, form.regular input.solid.hover-fill-orange-300[type="submit"]:hover, .button.outline.hover-fill-orange-300:hover, form.regular input.outline.hover-fill-orange-300[type="submit"]:hover, .button.borderless.hover-fill-orange-300:hover, form.regular input.borderless.hover-fill-orange-300[type="submit"]:hover {
+    background: #FFBC84;
+    color: #FFF;
+    border: solid 0.0625rem #FFBC84; }
+  .button.borderless.button-color-orange-300, form.regular input.borderless.button-color-orange-300[type="submit"] {
+    color: #FFBC84; }
+  .button.outline.button-color-orange-400, form.regular input.outline.button-color-orange-400[type="submit"] {
+    color: #F7A15A;
+    border: solid 0.0625rem #F7A15A; }
+  .button.solid.button-color-orange-400, form.regular input.solid.button-color-orange-400[type="submit"], .button.solid.hover-fill-orange-400:hover, form.regular input.solid.hover-fill-orange-400[type="submit"]:hover, .button.outline.hover-fill-orange-400:hover, form.regular input.outline.hover-fill-orange-400[type="submit"]:hover, .button.borderless.hover-fill-orange-400:hover, form.regular input.borderless.hover-fill-orange-400[type="submit"]:hover {
+    background: #F7A15A;
+    color: #FFF;
+    border: solid 0.0625rem #F7A15A; }
+  .button.borderless.button-color-orange-400, form.regular input.borderless.button-color-orange-400[type="submit"] {
+    color: #F7A15A; }
+  .button.outline.button-color-orange-500, form.regular input.outline.button-color-orange-500[type="submit"] {
+    color: #FF8A29;
+    border: solid 0.0625rem #FF8A29; }
+  .button.solid.button-color-orange-500, form.regular input.solid.button-color-orange-500[type="submit"], .button.solid.hover-fill-orange-500:hover, form.regular input.solid.hover-fill-orange-500[type="submit"]:hover, .button.outline.hover-fill-orange-500:hover, form.regular input.outline.hover-fill-orange-500[type="submit"]:hover, .button.borderless.hover-fill-orange-500:hover, form.regular input.borderless.hover-fill-orange-500[type="submit"]:hover {
+    background: #FF8A29;
+    color: #FFF;
+    border: solid 0.0625rem #FF8A29; }
+  .button.borderless.button-color-orange-500, form.regular input.borderless.button-color-orange-500[type="submit"] {
+    color: #FF8A29; }
+  .button.outline.button-color-orange-600, form.regular input.outline.button-color-orange-600[type="submit"] {
+    color: #FF8117;
+    border: solid 0.0625rem #FF8117; }
+  .button.solid.button-color-orange-600, form.regular input.solid.button-color-orange-600[type="submit"], .button.solid.hover-fill-orange-600:hover, form.regular input.solid.hover-fill-orange-600[type="submit"]:hover, .button.outline.hover-fill-orange-600:hover, form.regular input.outline.hover-fill-orange-600[type="submit"]:hover, .button.borderless.hover-fill-orange-600:hover, form.regular input.borderless.hover-fill-orange-600[type="submit"]:hover {
+    background: #FF8117;
+    color: #FFF;
+    border: solid 0.0625rem #FF8117; }
+  .button.borderless.button-color-orange-600, form.regular input.borderless.button-color-orange-600[type="submit"] {
+    color: #FF8117; }
+  .button.outline.button-color-orange-700, form.regular input.outline.button-color-orange-700[type="submit"] {
+    color: #FF7400;
+    border: solid 0.0625rem #FF7400; }
+  .button.solid.button-color-orange-700, form.regular input.solid.button-color-orange-700[type="submit"], .button.solid.hover-fill-orange-700:hover, form.regular input.solid.hover-fill-orange-700[type="submit"]:hover, .button.outline.hover-fill-orange-700:hover, form.regular input.outline.hover-fill-orange-700[type="submit"]:hover, .button.borderless.hover-fill-orange-700:hover, form.regular input.borderless.hover-fill-orange-700[type="submit"]:hover {
+    background: #FF7400;
+    color: #FFF;
+    border: solid 0.0625rem #FF7400; }
+  .button.borderless.button-color-orange-700, form.regular input.borderless.button-color-orange-700[type="submit"] {
+    color: #FF7400; }
+  .button.outline.button-color-orange-800, form.regular input.outline.button-color-orange-800[type="submit"] {
+    color: #FF5E00;
+    border: solid 0.0625rem #FF5E00; }
+  .button.solid.button-color-orange-800, form.regular input.solid.button-color-orange-800[type="submit"], .button.solid.hover-fill-orange-800:hover, form.regular input.solid.hover-fill-orange-800[type="submit"]:hover, .button.outline.hover-fill-orange-800:hover, form.regular input.outline.hover-fill-orange-800[type="submit"]:hover, .button.borderless.hover-fill-orange-800:hover, form.regular input.borderless.hover-fill-orange-800[type="submit"]:hover {
+    background: #FF5E00;
+    color: #FFF;
+    border: solid 0.0625rem #FF5E00; }
+  .button.borderless.button-color-orange-800, form.regular input.borderless.button-color-orange-800[type="submit"] {
+    color: #FF5E00; }
+  .button.outline.button-color-orange-900, form.regular input.outline.button-color-orange-900[type="submit"] {
+    color: #A13B00;
+    border: solid 0.0625rem #A13B00; }
+  .button.solid.button-color-orange-900, form.regular input.solid.button-color-orange-900[type="submit"], .button.solid.hover-fill-orange-900:hover, form.regular input.solid.hover-fill-orange-900[type="submit"]:hover, .button.outline.hover-fill-orange-900:hover, form.regular input.outline.hover-fill-orange-900[type="submit"]:hover, .button.borderless.hover-fill-orange-900:hover, form.regular input.borderless.hover-fill-orange-900[type="submit"]:hover {
+    background: #A13B00;
+    color: #FFF;
+    border: solid 0.0625rem #A13B00; }
+  .button.borderless.button-color-orange-900, form.regular input.borderless.button-color-orange-900[type="submit"] {
+    color: #A13B00; }
   .button.outline.button-color-red-100, form.regular input.outline.button-color-red-100[type="submit"] {
-    background: none;
-    color: #601B1B;
-    border: solid 1px #601B1B;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-red-100.fill-on-hover:hover, form.regular input.outline.button-color-red-100.fill-on-hover[type="submit"]:hover {
-      background: #601B1B;
-      color: #FFF;
-      border: solid 1px #601B1B; }
+    color: #FFF6F2;
+    border: solid 0.0625rem #FFF6F2; }
+  .button.solid.button-color-red-100, form.regular input.solid.button-color-red-100[type="submit"], .button.solid.hover-fill-red-100:hover, form.regular input.solid.hover-fill-red-100[type="submit"]:hover, .button.outline.hover-fill-red-100:hover, form.regular input.outline.hover-fill-red-100[type="submit"]:hover, .button.borderless.hover-fill-red-100:hover, form.regular input.borderless.hover-fill-red-100[type="submit"]:hover {
+    background: #FFF6F2;
+    color: #FFF;
+    border: solid 0.0625rem #FFF6F2; }
+  .button.borderless.button-color-red-100, form.regular input.borderless.button-color-red-100[type="submit"] {
+    color: #FFF6F2; }
+  .button.outline.button-color-red-200, form.regular input.outline.button-color-red-200[type="submit"] {
+    color: #FFD3C0;
+    border: solid 0.0625rem #FFD3C0; }
+  .button.solid.button-color-red-200, form.regular input.solid.button-color-red-200[type="submit"], .button.solid.hover-fill-red-200:hover, form.regular input.solid.hover-fill-red-200[type="submit"]:hover, .button.outline.hover-fill-red-200:hover, form.regular input.outline.hover-fill-red-200[type="submit"]:hover, .button.borderless.hover-fill-red-200:hover, form.regular input.borderless.hover-fill-red-200[type="submit"]:hover {
+    background: #FFD3C0;
+    color: #FFF;
+    border: solid 0.0625rem #FFD3C0; }
+  .button.borderless.button-color-red-200, form.regular input.borderless.button-color-red-200[type="submit"] {
+    color: #FFD3C0; }
   .button.outline.button-color-red-300, form.regular input.outline.button-color-red-300[type="submit"] {
-    background: none;
-    color: #B22929;
-    border: solid 1px #B22929;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-red-300.fill-on-hover:hover, form.regular input.outline.button-color-red-300.fill-on-hover[type="submit"]:hover {
-      background: #B22929;
-      color: #FFF;
-      border: solid 1px #B22929; }
+    color: #FF8474;
+    border: solid 0.0625rem #FF8474; }
+  .button.solid.button-color-red-300, form.regular input.solid.button-color-red-300[type="submit"], .button.solid.hover-fill-red-300:hover, form.regular input.solid.hover-fill-red-300[type="submit"]:hover, .button.outline.hover-fill-red-300:hover, form.regular input.outline.hover-fill-red-300[type="submit"]:hover, .button.borderless.hover-fill-red-300:hover, form.regular input.borderless.hover-fill-red-300[type="submit"]:hover {
+    background: #FF8474;
+    color: #FFF;
+    border: solid 0.0625rem #FF8474; }
+  .button.borderless.button-color-red-300, form.regular input.borderless.button-color-red-300[type="submit"] {
+    color: #FF8474; }
+  .button.outline.button-color-red-400, form.regular input.outline.button-color-red-400[type="submit"] {
+    color: #FF7361;
+    border: solid 0.0625rem #FF7361; }
+  .button.solid.button-color-red-400, form.regular input.solid.button-color-red-400[type="submit"], .button.solid.hover-fill-red-400:hover, form.regular input.solid.hover-fill-red-400[type="submit"]:hover, .button.outline.hover-fill-red-400:hover, form.regular input.outline.hover-fill-red-400[type="submit"]:hover, .button.borderless.hover-fill-red-400:hover, form.regular input.borderless.hover-fill-red-400[type="submit"]:hover {
+    background: #FF7361;
+    color: #FFF;
+    border: solid 0.0625rem #FF7361; }
+  .button.borderless.button-color-red-400, form.regular input.borderless.button-color-red-400[type="submit"] {
+    color: #FF7361; }
   .button.outline.button-color-red-500, form.regular input.outline.button-color-red-500[type="submit"] {
-    background: none;
-    color: #C93D3D;
-    border: solid 1px #C93D3D;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-red-500.fill-on-hover:hover, form.regular input.outline.button-color-red-500.fill-on-hover[type="submit"]:hover {
-      background: #C93D3D;
-      color: #FFF;
-      border: solid 1px #C93D3D; }
+    color: #FF6057;
+    border: solid 0.0625rem #FF6057; }
+  .button.solid.button-color-red-500, form.regular input.solid.button-color-red-500[type="submit"], .button.solid.hover-fill-red-500:hover, form.regular input.solid.hover-fill-red-500[type="submit"]:hover, .button.outline.hover-fill-red-500:hover, form.regular input.outline.hover-fill-red-500[type="submit"]:hover, .button.borderless.hover-fill-red-500:hover, form.regular input.borderless.hover-fill-red-500[type="submit"]:hover {
+    background: #FF6057;
+    color: #FFF;
+    border: solid 0.0625rem #FF6057; }
+  .button.borderless.button-color-red-500, form.regular input.borderless.button-color-red-500[type="submit"] {
+    color: #FF6057; }
+  .button.outline.button-color-red-600, form.regular input.outline.button-color-red-600[type="submit"] {
+    color: #FF4D4D;
+    border: solid 0.0625rem #FF4D4D; }
+  .button.solid.button-color-red-600, form.regular input.solid.button-color-red-600[type="submit"], .button.solid.hover-fill-red-600:hover, form.regular input.solid.hover-fill-red-600[type="submit"]:hover, .button.outline.hover-fill-red-600:hover, form.regular input.outline.hover-fill-red-600[type="submit"]:hover, .button.borderless.hover-fill-red-600:hover, form.regular input.borderless.hover-fill-red-600[type="submit"]:hover {
+    background: #FF4D4D;
+    color: #FFF;
+    border: solid 0.0625rem #FF4D4D; }
+  .button.borderless.button-color-red-600, form.regular input.borderless.button-color-red-600[type="submit"] {
+    color: #FF4D4D; }
   .button.outline.button-color-red-700, form.regular input.outline.button-color-red-700[type="submit"] {
-    background: none;
-    color: #D87171;
-    border: solid 1px #D87171;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-red-700.fill-on-hover:hover, form.regular input.outline.button-color-red-700.fill-on-hover[type="submit"]:hover {
-      background: #D87171;
-      color: #FFF;
-      border: solid 1px #D87171; }
+    color: #E93536;
+    border: solid 0.0625rem #E93536; }
+  .button.solid.button-color-red-700, form.regular input.solid.button-color-red-700[type="submit"], .button.solid.hover-fill-red-700:hover, form.regular input.solid.hover-fill-red-700[type="submit"]:hover, .button.outline.hover-fill-red-700:hover, form.regular input.outline.hover-fill-red-700[type="submit"]:hover, .button.borderless.hover-fill-red-700:hover, form.regular input.borderless.hover-fill-red-700[type="submit"]:hover {
+    background: #E93536;
+    color: #FFF;
+    border: solid 0.0625rem #E93536; }
+  .button.borderless.button-color-red-700, form.regular input.borderless.button-color-red-700[type="submit"] {
+    color: #E93536; }
+  .button.outline.button-color-red-800, form.regular input.outline.button-color-red-800[type="submit"] {
+    color: #D82C29;
+    border: solid 0.0625rem #D82C29; }
+  .button.solid.button-color-red-800, form.regular input.solid.button-color-red-800[type="submit"], .button.solid.hover-fill-red-800:hover, form.regular input.solid.hover-fill-red-800[type="submit"]:hover, .button.outline.hover-fill-red-800:hover, form.regular input.outline.hover-fill-red-800[type="submit"]:hover, .button.borderless.hover-fill-red-800:hover, form.regular input.borderless.hover-fill-red-800[type="submit"]:hover {
+    background: #D82C29;
+    color: #FFF;
+    border: solid 0.0625rem #D82C29; }
+  .button.borderless.button-color-red-800, form.regular input.borderless.button-color-red-800[type="submit"] {
+    color: #D82C29; }
   .button.outline.button-color-red-900, form.regular input.outline.button-color-red-900[type="submit"] {
-    background: none;
-    color: #E8ADAD;
-    border: solid 1px #E8ADAD;
-    font-weight: bold;
-    box-shadow: none; }
-    .button.outline.button-color-red-900.fill-on-hover:hover, form.regular input.outline.button-color-red-900.fill-on-hover[type="submit"]:hover {
-      background: #E8ADAD;
-      color: #FFF;
-      border: solid 1px #E8ADAD; }
+    color: #9B0C00;
+    border: solid 0.0625rem #9B0C00; }
+  .button.solid.button-color-red-900, form.regular input.solid.button-color-red-900[type="submit"], .button.solid.hover-fill-red-900:hover, form.regular input.solid.hover-fill-red-900[type="submit"]:hover, .button.outline.hover-fill-red-900:hover, form.regular input.outline.hover-fill-red-900[type="submit"]:hover, .button.borderless.hover-fill-red-900:hover, form.regular input.borderless.hover-fill-red-900[type="submit"]:hover {
+    background: #9B0C00;
+    color: #FFF;
+    border: solid 0.0625rem #9B0C00; }
+  .button.borderless.button-color-red-900, form.regular input.borderless.button-color-red-900[type="submit"] {
+    color: #9B0C00; }
+  .button.outline.button-color-green-100, form.regular input.outline.button-color-green-100[type="submit"] {
+    color: #DFFFE2;
+    border: solid 0.0625rem #DFFFE2; }
+  .button.solid.button-color-green-100, form.regular input.solid.button-color-green-100[type="submit"], .button.solid.hover-fill-green-100:hover, form.regular input.solid.hover-fill-green-100[type="submit"]:hover, .button.outline.hover-fill-green-100:hover, form.regular input.outline.hover-fill-green-100[type="submit"]:hover, .button.borderless.hover-fill-green-100:hover, form.regular input.borderless.hover-fill-green-100[type="submit"]:hover {
+    background: #DFFFE2;
+    color: #FFF;
+    border: solid 0.0625rem #DFFFE2; }
+  .button.borderless.button-color-green-100, form.regular input.borderless.button-color-green-100[type="submit"] {
+    color: #DFFFE2; }
+  .button.outline.button-color-green-200, form.regular input.outline.button-color-green-200[type="submit"] {
+    color: #D1FFD6;
+    border: solid 0.0625rem #D1FFD6; }
+  .button.solid.button-color-green-200, form.regular input.solid.button-color-green-200[type="submit"], .button.solid.hover-fill-green-200:hover, form.regular input.solid.hover-fill-green-200[type="submit"]:hover, .button.outline.hover-fill-green-200:hover, form.regular input.outline.hover-fill-green-200[type="submit"]:hover, .button.borderless.hover-fill-green-200:hover, form.regular input.borderless.hover-fill-green-200[type="submit"]:hover {
+    background: #D1FFD6;
+    color: #FFF;
+    border: solid 0.0625rem #D1FFD6; }
+  .button.borderless.button-color-green-200, form.regular input.borderless.button-color-green-200[type="submit"] {
+    color: #D1FFD6; }
+  .button.outline.button-color-green-300, form.regular input.outline.button-color-green-300[type="submit"] {
+    color: #A9FFC9;
+    border: solid 0.0625rem #A9FFC9; }
+  .button.solid.button-color-green-300, form.regular input.solid.button-color-green-300[type="submit"], .button.solid.hover-fill-green-300:hover, form.regular input.solid.hover-fill-green-300[type="submit"]:hover, .button.outline.hover-fill-green-300:hover, form.regular input.outline.hover-fill-green-300[type="submit"]:hover, .button.borderless.hover-fill-green-300:hover, form.regular input.borderless.hover-fill-green-300[type="submit"]:hover {
+    background: #A9FFC9;
+    color: #FFF;
+    border: solid 0.0625rem #A9FFC9; }
+  .button.borderless.button-color-green-300, form.regular input.borderless.button-color-green-300[type="submit"] {
+    color: #A9FFC9; }
+  .button.outline.button-color-green-400, form.regular input.outline.button-color-green-400[type="submit"] {
+    color: #13ef8f;
+    border: solid 0.0625rem #13ef8f; }
+  .button.solid.button-color-green-400, form.regular input.solid.button-color-green-400[type="submit"], .button.solid.hover-fill-green-400:hover, form.regular input.solid.hover-fill-green-400[type="submit"]:hover, .button.outline.hover-fill-green-400:hover, form.regular input.outline.hover-fill-green-400[type="submit"]:hover, .button.borderless.hover-fill-green-400:hover, form.regular input.borderless.hover-fill-green-400[type="submit"]:hover {
+    background: #13ef8f;
+    color: #FFF;
+    border: solid 0.0625rem #13ef8f; }
+  .button.borderless.button-color-green-400, form.regular input.borderless.button-color-green-400[type="submit"] {
+    color: #13ef8f; }
+  .button.outline.button-color-green-500, form.regular input.outline.button-color-green-500[type="submit"] {
+    color: #00E47F;
+    border: solid 0.0625rem #00E47F; }
+  .button.solid.button-color-green-500, form.regular input.solid.button-color-green-500[type="submit"], .button.solid.hover-fill-green-500:hover, form.regular input.solid.hover-fill-green-500[type="submit"]:hover, .button.outline.hover-fill-green-500:hover, form.regular input.outline.hover-fill-green-500[type="submit"]:hover, .button.borderless.hover-fill-green-500:hover, form.regular input.borderless.hover-fill-green-500[type="submit"]:hover {
+    background: #00E47F;
+    color: #FFF;
+    border: solid 0.0625rem #00E47F; }
+  .button.borderless.button-color-green-500, form.regular input.borderless.button-color-green-500[type="submit"] {
+    color: #00E47F; }
+  .button.outline.button-color-green-600, form.regular input.outline.button-color-green-600[type="submit"] {
+    color: #00CB71;
+    border: solid 0.0625rem #00CB71; }
+  .button.solid.button-color-green-600, form.regular input.solid.button-color-green-600[type="submit"], .button.solid.hover-fill-green-600:hover, form.regular input.solid.hover-fill-green-600[type="submit"]:hover, .button.outline.hover-fill-green-600:hover, form.regular input.outline.hover-fill-green-600[type="submit"]:hover, .button.borderless.hover-fill-green-600:hover, form.regular input.borderless.hover-fill-green-600[type="submit"]:hover {
+    background: #00CB71;
+    color: #FFF;
+    border: solid 0.0625rem #00CB71; }
+  .button.borderless.button-color-green-600, form.regular input.borderless.button-color-green-600[type="submit"] {
+    color: #00CB71; }
+  .button.outline.button-color-green-700, form.regular input.outline.button-color-green-700[type="submit"] {
+    color: #009554;
+    border: solid 0.0625rem #009554; }
+  .button.solid.button-color-green-700, form.regular input.solid.button-color-green-700[type="submit"], .button.solid.hover-fill-green-700:hover, form.regular input.solid.hover-fill-green-700[type="submit"]:hover, .button.outline.hover-fill-green-700:hover, form.regular input.outline.hover-fill-green-700[type="submit"]:hover, .button.borderless.hover-fill-green-700:hover, form.regular input.borderless.hover-fill-green-700[type="submit"]:hover {
+    background: #009554;
+    color: #FFF;
+    border: solid 0.0625rem #009554; }
+  .button.borderless.button-color-green-700, form.regular input.borderless.button-color-green-700[type="submit"] {
+    color: #009554; }
+  .button.outline.button-color-green-800, form.regular input.outline.button-color-green-800[type="submit"] {
+    color: #007743;
+    border: solid 0.0625rem #007743; }
+  .button.solid.button-color-green-800, form.regular input.solid.button-color-green-800[type="submit"], .button.solid.hover-fill-green-800:hover, form.regular input.solid.hover-fill-green-800[type="submit"]:hover, .button.outline.hover-fill-green-800:hover, form.regular input.outline.hover-fill-green-800[type="submit"]:hover, .button.borderless.hover-fill-green-800:hover, form.regular input.borderless.hover-fill-green-800[type="submit"]:hover {
+    background: #007743;
+    color: #FFF;
+    border: solid 0.0625rem #007743; }
+  .button.borderless.button-color-green-800, form.regular input.borderless.button-color-green-800[type="submit"] {
+    color: #007743; }
+  .button.outline.button-color-green-900, form.regular input.outline.button-color-green-900[type="submit"] {
+    color: #034528;
+    border: solid 0.0625rem #034528; }
+  .button.solid.button-color-green-900, form.regular input.solid.button-color-green-900[type="submit"], .button.solid.hover-fill-green-900:hover, form.regular input.solid.hover-fill-green-900[type="submit"]:hover, .button.outline.hover-fill-green-900:hover, form.regular input.outline.hover-fill-green-900[type="submit"]:hover, .button.borderless.hover-fill-green-900:hover, form.regular input.borderless.hover-fill-green-900[type="submit"]:hover {
+    background: #034528;
+    color: #FFF;
+    border: solid 0.0625rem #034528; }
+  .button.borderless.button-color-green-900, form.regular input.borderless.button-color-green-900[type="submit"] {
+    color: #034528; }
+  .button.outline.button-color-blue-100, form.regular input.outline.button-color-blue-100[type="submit"] {
+    color: #ECF5FF;
+    border: solid 0.0625rem #ECF5FF; }
+  .button.solid.button-color-blue-100, form.regular input.solid.button-color-blue-100[type="submit"], .button.solid.hover-fill-blue-100:hover, form.regular input.solid.hover-fill-blue-100[type="submit"]:hover, .button.outline.hover-fill-blue-100:hover, form.regular input.outline.hover-fill-blue-100[type="submit"]:hover, .button.borderless.hover-fill-blue-100:hover, form.regular input.borderless.hover-fill-blue-100[type="submit"]:hover {
+    background: #ECF5FF;
+    color: #FFF;
+    border: solid 0.0625rem #ECF5FF; }
+  .button.borderless.button-color-blue-100, form.regular input.borderless.button-color-blue-100[type="submit"] {
+    color: #ECF5FF; }
+  .button.outline.button-color-blue-200, form.regular input.outline.button-color-blue-200[type="submit"] {
+    color: #DEEEFF;
+    border: solid 0.0625rem #DEEEFF; }
+  .button.solid.button-color-blue-200, form.regular input.solid.button-color-blue-200[type="submit"], .button.solid.hover-fill-blue-200:hover, form.regular input.solid.hover-fill-blue-200[type="submit"]:hover, .button.outline.hover-fill-blue-200:hover, form.regular input.outline.hover-fill-blue-200[type="submit"]:hover, .button.borderless.hover-fill-blue-200:hover, form.regular input.borderless.hover-fill-blue-200[type="submit"]:hover {
+    background: #DEEEFF;
+    color: #FFF;
+    border: solid 0.0625rem #DEEEFF; }
+  .button.borderless.button-color-blue-200, form.regular input.borderless.button-color-blue-200[type="submit"] {
+    color: #DEEEFF; }
+  .button.outline.button-color-blue-300, form.regular input.outline.button-color-blue-300[type="submit"] {
+    color: #A9D3FF;
+    border: solid 0.0625rem #A9D3FF; }
+  .button.solid.button-color-blue-300, form.regular input.solid.button-color-blue-300[type="submit"], .button.solid.hover-fill-blue-300:hover, form.regular input.solid.hover-fill-blue-300[type="submit"]:hover, .button.outline.hover-fill-blue-300:hover, form.regular input.outline.hover-fill-blue-300[type="submit"]:hover, .button.borderless.hover-fill-blue-300:hover, form.regular input.borderless.hover-fill-blue-300[type="submit"]:hover {
+    background: #A9D3FF;
+    color: #FFF;
+    border: solid 0.0625rem #A9D3FF; }
+  .button.borderless.button-color-blue-300, form.regular input.borderless.button-color-blue-300[type="submit"] {
+    color: #A9D3FF; }
+  .button.outline.button-color-blue-400, form.regular input.outline.button-color-blue-400[type="submit"] {
+    color: #8DC1F9;
+    border: solid 0.0625rem #8DC1F9; }
+  .button.solid.button-color-blue-400, form.regular input.solid.button-color-blue-400[type="submit"], .button.solid.hover-fill-blue-400:hover, form.regular input.solid.hover-fill-blue-400[type="submit"]:hover, .button.outline.hover-fill-blue-400:hover, form.regular input.outline.hover-fill-blue-400[type="submit"]:hover, .button.borderless.hover-fill-blue-400:hover, form.regular input.borderless.hover-fill-blue-400[type="submit"]:hover {
+    background: #8DC1F9;
+    color: #FFF;
+    border: solid 0.0625rem #8DC1F9; }
+  .button.borderless.button-color-blue-400, form.regular input.borderless.button-color-blue-400[type="submit"] {
+    color: #8DC1F9; }
+  .button.outline.button-color-blue-500, form.regular input.outline.button-color-blue-500[type="submit"] {
+    color: #68B0FF;
+    border: solid 0.0625rem #68B0FF; }
+  .button.solid.button-color-blue-500, form.regular input.solid.button-color-blue-500[type="submit"], .button.solid.hover-fill-blue-500:hover, form.regular input.solid.hover-fill-blue-500[type="submit"]:hover, .button.outline.hover-fill-blue-500:hover, form.regular input.outline.hover-fill-blue-500[type="submit"]:hover, .button.borderless.hover-fill-blue-500:hover, form.regular input.borderless.hover-fill-blue-500[type="submit"]:hover {
+    background: #68B0FF;
+    color: #FFF;
+    border: solid 0.0625rem #68B0FF; }
+  .button.borderless.button-color-blue-500, form.regular input.borderless.button-color-blue-500[type="submit"] {
+    color: #68B0FF; }
+  .button.outline.button-color-blue-600, form.regular input.outline.button-color-blue-600[type="submit"] {
+    color: #5AA5F7;
+    border: solid 0.0625rem #5AA5F7; }
+  .button.solid.button-color-blue-600, form.regular input.solid.button-color-blue-600[type="submit"], .button.solid.hover-fill-blue-600:hover, form.regular input.solid.hover-fill-blue-600[type="submit"]:hover, .button.outline.hover-fill-blue-600:hover, form.regular input.outline.hover-fill-blue-600[type="submit"]:hover, .button.borderless.hover-fill-blue-600:hover, form.regular input.borderless.hover-fill-blue-600[type="submit"]:hover {
+    background: #5AA5F7;
+    color: #FFF;
+    border: solid 0.0625rem #5AA5F7; }
+  .button.borderless.button-color-blue-600, form.regular input.borderless.button-color-blue-600[type="submit"] {
+    color: #5AA5F7; }
+  .button.outline.button-color-blue-700, form.regular input.outline.button-color-blue-700[type="submit"] {
+    color: #3988DF;
+    border: solid 0.0625rem #3988DF; }
+  .button.solid.button-color-blue-700, form.regular input.solid.button-color-blue-700[type="submit"], .button.solid.hover-fill-blue-700:hover, form.regular input.solid.hover-fill-blue-700[type="submit"]:hover, .button.outline.hover-fill-blue-700:hover, form.regular input.outline.hover-fill-blue-700[type="submit"]:hover, .button.borderless.hover-fill-blue-700:hover, form.regular input.borderless.hover-fill-blue-700[type="submit"]:hover {
+    background: #3988DF;
+    color: #FFF;
+    border: solid 0.0625rem #3988DF; }
+  .button.borderless.button-color-blue-700, form.regular input.borderless.button-color-blue-700[type="submit"] {
+    color: #3988DF; }
+  .button.outline.button-color-blue-800, form.regular input.outline.button-color-blue-800[type="submit"] {
+    color: #1B69BF;
+    border: solid 0.0625rem #1B69BF; }
+  .button.solid.button-color-blue-800, form.regular input.solid.button-color-blue-800[type="submit"], .button.solid.hover-fill-blue-800:hover, form.regular input.solid.hover-fill-blue-800[type="submit"]:hover, .button.outline.hover-fill-blue-800:hover, form.regular input.outline.hover-fill-blue-800[type="submit"]:hover, .button.borderless.hover-fill-blue-800:hover, form.regular input.borderless.hover-fill-blue-800[type="submit"]:hover {
+    background: #1B69BF;
+    color: #FFF;
+    border: solid 0.0625rem #1B69BF; }
+  .button.borderless.button-color-blue-800, form.regular input.borderless.button-color-blue-800[type="submit"] {
+    color: #1B69BF; }
+  .button.outline.button-color-blue-900, form.regular input.outline.button-color-blue-900[type="submit"] {
+    color: #003B7C;
+    border: solid 0.0625rem #003B7C; }
+  .button.solid.button-color-blue-900, form.regular input.solid.button-color-blue-900[type="submit"], .button.solid.hover-fill-blue-900:hover, form.regular input.solid.hover-fill-blue-900[type="submit"]:hover, .button.outline.hover-fill-blue-900:hover, form.regular input.outline.hover-fill-blue-900[type="submit"]:hover, .button.borderless.hover-fill-blue-900:hover, form.regular input.borderless.hover-fill-blue-900[type="submit"]:hover {
+    background: #003B7C;
+    color: #FFF;
+    border: solid 0.0625rem #003B7C; }
+  .button.borderless.button-color-blue-900, form.regular input.borderless.button-color-blue-900[type="submit"] {
+    color: #003B7C; }
+  .button.outline.button-color-purple-100, form.regular input.outline.button-color-purple-100[type="submit"] {
+    color: #F9F3FF;
+    border: solid 0.0625rem #F9F3FF; }
+  .button.solid.button-color-purple-100, form.regular input.solid.button-color-purple-100[type="submit"], .button.solid.hover-fill-purple-100:hover, form.regular input.solid.hover-fill-purple-100[type="submit"]:hover, .button.outline.hover-fill-purple-100:hover, form.regular input.outline.hover-fill-purple-100[type="submit"]:hover, .button.borderless.hover-fill-purple-100:hover, form.regular input.borderless.hover-fill-purple-100[type="submit"]:hover {
+    background: #F9F3FF;
+    color: #FFF;
+    border: solid 0.0625rem #F9F3FF; }
+  .button.borderless.button-color-purple-100, form.regular input.borderless.button-color-purple-100[type="submit"] {
+    color: #F9F3FF; }
+  .button.outline.button-color-purple-200, form.regular input.outline.button-color-purple-200[type="submit"] {
+    color: #EEE8FF;
+    border: solid 0.0625rem #EEE8FF; }
+  .button.solid.button-color-purple-200, form.regular input.solid.button-color-purple-200[type="submit"], .button.solid.hover-fill-purple-200:hover, form.regular input.solid.hover-fill-purple-200[type="submit"]:hover, .button.outline.hover-fill-purple-200:hover, form.regular input.outline.hover-fill-purple-200[type="submit"]:hover, .button.borderless.hover-fill-purple-200:hover, form.regular input.borderless.hover-fill-purple-200[type="submit"]:hover {
+    background: #EEE8FF;
+    color: #FFF;
+    border: solid 0.0625rem #EEE8FF; }
+  .button.borderless.button-color-purple-200, form.regular input.borderless.button-color-purple-200[type="submit"] {
+    color: #EEE8FF; }
+  .button.outline.button-color-purple-300, form.regular input.outline.button-color-purple-300[type="submit"] {
+    color: #396afc;
+    border: solid 0.0625rem #396afc; }
+  .button.solid.button-color-purple-300, form.regular input.solid.button-color-purple-300[type="submit"], .button.solid.hover-fill-purple-300:hover, form.regular input.solid.hover-fill-purple-300[type="submit"]:hover, .button.outline.hover-fill-purple-300:hover, form.regular input.outline.hover-fill-purple-300[type="submit"]:hover, .button.borderless.hover-fill-purple-300:hover, form.regular input.borderless.hover-fill-purple-300[type="submit"]:hover {
+    background: #396afc;
+    color: #FFF;
+    border: solid 0.0625rem #396afc; }
+  .button.borderless.button-color-purple-300, form.regular input.borderless.button-color-purple-300[type="submit"] {
+    color: #396afc; }
+  .button.outline.button-color-purple-400, form.regular input.outline.button-color-purple-400[type="submit"] {
+    color: #A17CFF;
+    border: solid 0.0625rem #A17CFF; }
+  .button.solid.button-color-purple-400, form.regular input.solid.button-color-purple-400[type="submit"], .button.solid.hover-fill-purple-400:hover, form.regular input.solid.hover-fill-purple-400[type="submit"]:hover, .button.outline.hover-fill-purple-400:hover, form.regular input.outline.hover-fill-purple-400[type="submit"]:hover, .button.borderless.hover-fill-purple-400:hover, form.regular input.borderless.hover-fill-purple-400[type="submit"]:hover {
+    background: #A17CFF;
+    color: #FFF;
+    border: solid 0.0625rem #A17CFF; }
+  .button.borderless.button-color-purple-400, form.regular input.borderless.button-color-purple-400[type="submit"] {
+    color: #A17CFF; }
+  .button.outline.button-color-purple-500, form.regular input.outline.button-color-purple-500[type="submit"] {
+    color: #8356F5;
+    border: solid 0.0625rem #8356F5; }
+  .button.solid.button-color-purple-500, form.regular input.solid.button-color-purple-500[type="submit"], .button.solid.hover-fill-purple-500:hover, form.regular input.solid.hover-fill-purple-500[type="submit"]:hover, .button.outline.hover-fill-purple-500:hover, form.regular input.outline.hover-fill-purple-500[type="submit"]:hover, .button.borderless.hover-fill-purple-500:hover, form.regular input.borderless.hover-fill-purple-500[type="submit"]:hover {
+    background: #8356F5;
+    color: #FFF;
+    border: solid 0.0625rem #8356F5; }
+  .button.borderless.button-color-purple-500, form.regular input.borderless.button-color-purple-500[type="submit"] {
+    color: #8356F5; }
+  .button.outline.button-color-purple-600, form.regular input.outline.button-color-purple-600[type="submit"] {
+    color: #742CD5;
+    border: solid 0.0625rem #742CD5; }
+  .button.solid.button-color-purple-600, form.regular input.solid.button-color-purple-600[type="submit"], .button.solid.hover-fill-purple-600:hover, form.regular input.solid.hover-fill-purple-600[type="submit"]:hover, .button.outline.hover-fill-purple-600:hover, form.regular input.outline.hover-fill-purple-600[type="submit"]:hover, .button.borderless.hover-fill-purple-600:hover, form.regular input.borderless.hover-fill-purple-600[type="submit"]:hover {
+    background: #742CD5;
+    color: #FFF;
+    border: solid 0.0625rem #742CD5; }
+  .button.borderless.button-color-purple-600, form.regular input.borderless.button-color-purple-600[type="submit"] {
+    color: #742CD5; }
+  .button.outline.button-color-purple-700, form.regular input.outline.button-color-purple-700[type="submit"] {
+    color: #6F1DC9;
+    border: solid 0.0625rem #6F1DC9; }
+  .button.solid.button-color-purple-700, form.regular input.solid.button-color-purple-700[type="submit"], .button.solid.hover-fill-purple-700:hover, form.regular input.solid.hover-fill-purple-700[type="submit"]:hover, .button.outline.hover-fill-purple-700:hover, form.regular input.outline.hover-fill-purple-700[type="submit"]:hover, .button.borderless.hover-fill-purple-700:hover, form.regular input.borderless.hover-fill-purple-700[type="submit"]:hover {
+    background: #6F1DC9;
+    color: #FFF;
+    border: solid 0.0625rem #6F1DC9; }
+  .button.borderless.button-color-purple-700, form.regular input.borderless.button-color-purple-700[type="submit"] {
+    color: #6F1DC9; }
+  .button.outline.button-color-purple-800, form.regular input.outline.button-color-purple-800[type="submit"] {
+    color: #49009A;
+    border: solid 0.0625rem #49009A; }
+  .button.solid.button-color-purple-800, form.regular input.solid.button-color-purple-800[type="submit"], .button.solid.hover-fill-purple-800:hover, form.regular input.solid.hover-fill-purple-800[type="submit"]:hover, .button.outline.hover-fill-purple-800:hover, form.regular input.outline.hover-fill-purple-800[type="submit"]:hover, .button.borderless.hover-fill-purple-800:hover, form.regular input.borderless.hover-fill-purple-800[type="submit"]:hover {
+    background: #49009A;
+    color: #FFF;
+    border: solid 0.0625rem #49009A; }
+  .button.borderless.button-color-purple-800, form.regular input.borderless.button-color-purple-800[type="submit"] {
+    color: #49009A; }
+  .button.outline.button-color-purple-900, form.regular input.outline.button-color-purple-900[type="submit"] {
+    color: #360073;
+    border: solid 0.0625rem #360073; }
+  .button.solid.button-color-purple-900, form.regular input.solid.button-color-purple-900[type="submit"], .button.solid.hover-fill-purple-900:hover, form.regular input.solid.hover-fill-purple-900[type="submit"]:hover, .button.outline.hover-fill-purple-900:hover, form.regular input.outline.hover-fill-purple-900[type="submit"]:hover, .button.borderless.hover-fill-purple-900:hover, form.regular input.borderless.hover-fill-purple-900[type="submit"]:hover {
+    background: #360073;
+    color: #FFF;
+    border: solid 0.0625rem #360073; }
+  .button.borderless.button-color-purple-900, form.regular input.borderless.button-color-purple-900[type="submit"] {
+    color: #360073; }
+  .button.outline.button-color-white, form.regular input.outline.button-color-white[type="submit"] {
+    color: #FFFFFF;
+    border: solid 0.0625rem #FFFFFF; }
+  .button.solid.button-color-white, form.regular input.solid.button-color-white[type="submit"], .button.solid.hover-fill-white:hover, form.regular input.solid.hover-fill-white[type="submit"]:hover, .button.outline.hover-fill-white:hover, form.regular input.outline.hover-fill-white[type="submit"]:hover, .button.borderless.hover-fill-white:hover, form.regular input.borderless.hover-fill-white[type="submit"]:hover {
+    background: #FFFFFF;
+    color: #FFF;
+    border: solid 0.0625rem #FFFFFF; }
+  .button.borderless.button-color-white, form.regular input.borderless.button-color-white[type="submit"] {
+    color: #FFFFFF; }
   .button.small, form.regular input.small[type="submit"] {
     font-size: .82rem;
-    padding: .3rem .7rem;
-    border-radius: .18rem;
-    vertical-align: .15rem; }
+    padding: 0.5275rem 0.7rem;
+    border-radius: 0.18rem;
+    height: 2rem;
+    line-height: .82rem; }
+
+.btn-grp {
+  display: inline-flex; }
+  .btn-grp .button, .btn-grp form.regular input[type="submit"], form.regular .btn-grp input[type="submit"], .btn-grp button {
+    border-radius: 0; }
+    .btn-grp .button.outline, .btn-grp form.regular input.outline[type="submit"], form.regular .btn-grp input.outline[type="submit"], .btn-grp button.outline {
+      border-left-style: none; }
+    .btn-grp .button:first-child, .btn-grp form.regular input[type="submit"]:first-child, form.regular .btn-grp input[type="submit"]:first-child, .btn-grp button:first-child {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px; }
+      .btn-grp .button:first-child.outline, .btn-grp form.regular input[type="submit"]:first-child.outline, form.regular .btn-grp input[type="submit"]:first-child.outline, .btn-grp button:first-child.outline {
+        border-left-style: solid; }
+    .btn-grp .button:last-child, .btn-grp form.regular input[type="submit"]:last-child, form.regular .btn-grp input[type="submit"]:last-child, .btn-grp button:last-child {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px; }
+  .btn-grp .button.small, .btn-grp form.regular input.small[type="submit"], form.regular .btn-grp input.small[type="submit"],
+  .btn-grp button.small {
+    border-radius: 0; }
+    .btn-grp .button.small:first-child, .btn-grp form.regular input.small[type="submit"]:first-child, form.regular .btn-grp input.small[type="submit"]:first-child,
+    .btn-grp button.small:first-child {
+      border-top-left-radius: 0.18rem;
+      border-bottom-left-radius: 0.18rem; }
+    .btn-grp .button.small:last-child, .btn-grp form.regular input.small[type="submit"]:last-child, form.regular .btn-grp input.small[type="submit"]:last-child,
+    .btn-grp button.small:last-child {
+      border-top-right-radius: 0.18rem;
+      border-bottom-right-radius: 0.18rem; }
+
+button.no-appearance {
+  border: none;
+  background: none;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0; }
 
 /*
 To change this license header, choose License Headers in Project Properties.
@@ -1481,10 +2029,81 @@ THE SOFTWARE.
     Created on : May 22, 2019, 9:47:20 AM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
+.list {
+  display: block; }
+  .list .list-item {
+    display: block;
+    width: 100%;
+    background: #FFF;
+    text-align: left;
+    font-family: inherit;
+    height: 3.2rem;
+    line-height: 2.2rem;
+    padding: .5rem .75rem;
+    border: solid 0.0625rem #E6E8EA;
+    border-top-style: none; }
+    .list .list-item:first-child {
+      border-top-style: solid;
+      border-radius: .3rem .3rem 0 0; }
+    .list .list-item:last-child {
+      border-radius: 0 0 .3rem .3rem; }
+  .list > a.list-item, .list > button.list-item {
+    transition: background-color .3s ease; }
+    .list > a.list-item:hover, .list > button.list-item:hover {
+      background-color: #F6F9FA;
+      text-decoration: none; }
+    .list > a.list-item.active, .list > button.list-item.active {
+      color: #FFFFFF;
+      background-color: #3988DF;
+      border-color: #1B69BF; }
+    .list > a.list-item.disabled, .list > button.list-item.disabled {
+      background-color: #F6F9FA;
+      color: #8D99A3; }
+  .list.borderless .list-item {
+    border-left-style: none;
+    border-right-style: none;
+    border-radius: 0; }
+    .list.borderless .list-item:first-child {
+      border-top-style: none; }
+    .list.borderless .list-item:last-child {
+      border-bottom-style: none; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : May 22, 2019, 9:47:20 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
 .navigation .navigation-item {
   display: inline-block;
   padding: .8em 1em;
-  font-size: 1em; }
+  font-size: 1em;
+  color: #333333;
+  text-decoration: none;
+  transition: background-color .15s ease; }
+  .navigation .navigation-item:hover {
+    background: #F6F9FA; }
 .navigation.tabs {
   border-bottom: solid 1px #DDD; }
   .navigation.tabs .navigation-item {
@@ -1543,8 +2162,8 @@ THE SOFTWARE.
   position: relative; }
   .message.error {
     border-color: #732c2c;
-    color: #632626;
-    background-color: #f09797; }
+    color: #601B1B;
+    background-color: #F8A8A8; }
   .message.warn {
     border-color: #2f3014;
     color: #2f3014;
@@ -1637,12 +2256,27 @@ textarea {
   resize: vertical; }
 
 input[type="text"],
+input[type="url"],
+input[type="tel"],
+input[type="search"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
 textarea {
   border-radius: 3px;
   border: solid 1px #CCC;
   box-shadow: 0 0 0 transparent;
-  transition: box-shadow .15s ease; }
+  transition: box-shadow .15s ease;
+  line-height: 1.3rem;
+  padding: .55rem .4rem;
+  height: calc(2.4rem + 2px); }
   input[type="text"]:focus,
+  input[type="url"]:focus,
+  input[type="tel"]:focus,
+  input[type="search"]:focus,
+  input[type="number"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus,
   textarea:focus {
     border-color: #279af1;
     box-shadow: 0px 0px 2px #279af1;
@@ -1653,7 +2287,10 @@ select {
   border: solid 1px #CCC;
   box-shadow: 0 0 0 transparent;
   transition: box-shadow .15s ease;
-  background: #FFF; }
+  background: #FFF;
+  line-height: 1.3rem;
+  padding: .55rem .4rem;
+  height: calc(2.4rem + 2px); }
   select:focus {
     border-color: #279af1;
     box-shadow: 0px 0px 2px #279af1;
@@ -1668,7 +2305,8 @@ legend {
   font-size: 1.3rem;
   margin-bottom: .3rem; }
 
-input[type="submit"]:not(.disabled), button:not(.disabled) {
+input[type="submit"]:not([disabled]),
+button:not([disabled]) {
   cursor: pointer; }
 
 /*
@@ -1698,55 +2336,192 @@ THE SOFTWARE.
     Created on : Jun 17, 2019, 11:59:07 AM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
-.frm-ctrl {
+/*
+ * A form control is anything the user can interact with when filling out a form,
+ * this includes inputs, textareas and selects.
+ */
+.frm-ctrl, .shadow-input.outer {
   display: block;
   width: 100%; }
-  .frm-ctrl.right {
-    text-align: right; }
-
-.frm-group {
-  margin-bottom: 1rem; }
-
-.frm-inline {
-  display: flex;
-  flex-flow: row wrap; }
-  .frm-inline .frm-ctrl {
-    display: inline-block;
-    width: auto; }
+  .frm-ctrl.ctrl-borderless, .ctrl-borderless.shadow-input.outer {
+    border: solid 1px #F0F0F0;
+    background-color: #F0F0F0; }
+    .frm-ctrl.ctrl-borderless:active, .ctrl-borderless.shadow-input.outer:active, .frm-ctrl.ctrl-borderless:focus, .ctrl-borderless.shadow-input.outer:focus {
+      border: solid 1px #F0F0F0;
+      box-shadow: none; }
+  .frm-ctrl.ctrl-android, .ctrl-android.shadow-input.outer {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: solid .2rem #BBB;
+    border-radius: 0;
+    background-color: #F0F0F0; }
+    .frm-ctrl.ctrl-android:active, .ctrl-android.shadow-input.outer:active, .frm-ctrl.ctrl-android:focus, .ctrl-android.shadow-input.outer:focus {
+      box-shadow: none;
+      border-bottom: solid .2rem #1470b3; }
 
 .frm-lbl {
   padding: .75rem .4rem;
   color: #444;
   font-size: .9rem; }
 
+input:not([type]).frm-ctrl, input.shadow-input.outer:not([type]),
 input[type="text"].frm-ctrl,
-textarea.frm-ctrl {
-  padding: .75rem .5rem; }
+input[type="text"].shadow-input.outer,
+input[type="url"].frm-ctrl,
+input[type="url"].shadow-input.outer,
+input[type="tel"].frm-ctrl,
+input[type="tel"].shadow-input.outer,
+input[type="search"].frm-ctrl,
+input[type="search"].shadow-input.outer,
+input[type="number"].frm-ctrl,
+input[type="number"].shadow-input.outer,
+input[type="password"].frm-ctrl,
+input[type="password"].shadow-input.outer,
+input[type="email"].frm-ctrl,
+input[type="email"].shadow-input.outer,
+textarea.frm-ctrl,
+textarea.shadow-input.outer {
+  border: solid 1px #CCC;
+  height: 2.9rem;
+  padding: 0.6rem 0.75rem; }
+  input:not([type]).frm-ctrl.ctrl-borderless, input.shadow-input.outer:not([type]).ctrl-borderless,
+  input[type="text"].frm-ctrl.ctrl-borderless,
+  input[type="text"].ctrl-borderless.shadow-input.outer,
+  input[type="url"].frm-ctrl.ctrl-borderless,
+  input[type="url"].ctrl-borderless.shadow-input.outer,
+  input[type="tel"].frm-ctrl.ctrl-borderless,
+  input[type="tel"].ctrl-borderless.shadow-input.outer,
+  input[type="search"].frm-ctrl.ctrl-borderless,
+  input[type="search"].ctrl-borderless.shadow-input.outer,
+  input[type="number"].frm-ctrl.ctrl-borderless,
+  input[type="number"].ctrl-borderless.shadow-input.outer,
+  input[type="password"].frm-ctrl.ctrl-borderless,
+  input[type="password"].ctrl-borderless.shadow-input.outer,
+  input[type="email"].frm-ctrl.ctrl-borderless,
+  input[type="email"].ctrl-borderless.shadow-input.outer,
+  textarea.frm-ctrl.ctrl-borderless,
+  textarea.ctrl-borderless.shadow-input.outer {
+    border: solid 1px #F0F0F0;
+    background-color: #F0F0F0; }
+    input:not([type]).frm-ctrl.ctrl-borderless:active, input.shadow-input.outer:not([type]).ctrl-borderless:active, input:not([type]).frm-ctrl.ctrl-borderless:focus, input.shadow-input.outer:not([type]).ctrl-borderless:focus,
+    input[type="text"].frm-ctrl.ctrl-borderless:active,
+    input[type="text"].ctrl-borderless.shadow-input.outer:active,
+    input[type="text"].frm-ctrl.ctrl-borderless:focus,
+    input[type="text"].ctrl-borderless.shadow-input.outer:focus,
+    input[type="url"].frm-ctrl.ctrl-borderless:active,
+    input[type="url"].ctrl-borderless.shadow-input.outer:active,
+    input[type="url"].frm-ctrl.ctrl-borderless:focus,
+    input[type="url"].ctrl-borderless.shadow-input.outer:focus,
+    input[type="tel"].frm-ctrl.ctrl-borderless:active,
+    input[type="tel"].ctrl-borderless.shadow-input.outer:active,
+    input[type="tel"].frm-ctrl.ctrl-borderless:focus,
+    input[type="tel"].ctrl-borderless.shadow-input.outer:focus,
+    input[type="search"].frm-ctrl.ctrl-borderless:active,
+    input[type="search"].ctrl-borderless.shadow-input.outer:active,
+    input[type="search"].frm-ctrl.ctrl-borderless:focus,
+    input[type="search"].ctrl-borderless.shadow-input.outer:focus,
+    input[type="number"].frm-ctrl.ctrl-borderless:active,
+    input[type="number"].ctrl-borderless.shadow-input.outer:active,
+    input[type="number"].frm-ctrl.ctrl-borderless:focus,
+    input[type="number"].ctrl-borderless.shadow-input.outer:focus,
+    input[type="password"].frm-ctrl.ctrl-borderless:active,
+    input[type="password"].ctrl-borderless.shadow-input.outer:active,
+    input[type="password"].frm-ctrl.ctrl-borderless:focus,
+    input[type="password"].ctrl-borderless.shadow-input.outer:focus,
+    input[type="email"].frm-ctrl.ctrl-borderless:active,
+    input[type="email"].ctrl-borderless.shadow-input.outer:active,
+    input[type="email"].frm-ctrl.ctrl-borderless:focus,
+    input[type="email"].ctrl-borderless.shadow-input.outer:focus,
+    textarea.frm-ctrl.ctrl-borderless:active,
+    textarea.ctrl-borderless.shadow-input.outer:active,
+    textarea.frm-ctrl.ctrl-borderless:focus,
+    textarea.ctrl-borderless.shadow-input.outer:focus {
+      border: solid 1px #F0F0F0;
+      box-shadow: none; }
+  input:not([type]).frm-ctrl.ctrl-android, input.shadow-input.outer:not([type]).ctrl-android,
+  input[type="text"].frm-ctrl.ctrl-android,
+  input[type="text"].ctrl-android.shadow-input.outer,
+  input[type="url"].frm-ctrl.ctrl-android,
+  input[type="url"].ctrl-android.shadow-input.outer,
+  input[type="tel"].frm-ctrl.ctrl-android,
+  input[type="tel"].ctrl-android.shadow-input.outer,
+  input[type="search"].frm-ctrl.ctrl-android,
+  input[type="search"].ctrl-android.shadow-input.outer,
+  input[type="number"].frm-ctrl.ctrl-android,
+  input[type="number"].ctrl-android.shadow-input.outer,
+  input[type="password"].frm-ctrl.ctrl-android,
+  input[type="password"].ctrl-android.shadow-input.outer,
+  input[type="email"].frm-ctrl.ctrl-android,
+  input[type="email"].ctrl-android.shadow-input.outer,
+  textarea.frm-ctrl.ctrl-android,
+  textarea.ctrl-android.shadow-input.outer {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: solid .2rem #BBB;
+    border-radius: 0;
+    background-color: #F0F0F0; }
+    input:not([type]).frm-ctrl.ctrl-android:active, input.shadow-input.outer:not([type]).ctrl-android:active, input:not([type]).frm-ctrl.ctrl-android:focus, input.shadow-input.outer:not([type]).ctrl-android:focus,
+    input[type="text"].frm-ctrl.ctrl-android:active,
+    input[type="text"].ctrl-android.shadow-input.outer:active,
+    input[type="text"].frm-ctrl.ctrl-android:focus,
+    input[type="text"].ctrl-android.shadow-input.outer:focus,
+    input[type="url"].frm-ctrl.ctrl-android:active,
+    input[type="url"].ctrl-android.shadow-input.outer:active,
+    input[type="url"].frm-ctrl.ctrl-android:focus,
+    input[type="url"].ctrl-android.shadow-input.outer:focus,
+    input[type="tel"].frm-ctrl.ctrl-android:active,
+    input[type="tel"].ctrl-android.shadow-input.outer:active,
+    input[type="tel"].frm-ctrl.ctrl-android:focus,
+    input[type="tel"].ctrl-android.shadow-input.outer:focus,
+    input[type="search"].frm-ctrl.ctrl-android:active,
+    input[type="search"].ctrl-android.shadow-input.outer:active,
+    input[type="search"].frm-ctrl.ctrl-android:focus,
+    input[type="search"].ctrl-android.shadow-input.outer:focus,
+    input[type="number"].frm-ctrl.ctrl-android:active,
+    input[type="number"].ctrl-android.shadow-input.outer:active,
+    input[type="number"].frm-ctrl.ctrl-android:focus,
+    input[type="number"].ctrl-android.shadow-input.outer:focus,
+    input[type="password"].frm-ctrl.ctrl-android:active,
+    input[type="password"].ctrl-android.shadow-input.outer:active,
+    input[type="password"].frm-ctrl.ctrl-android:focus,
+    input[type="password"].ctrl-android.shadow-input.outer:focus,
+    input[type="email"].frm-ctrl.ctrl-android:active,
+    input[type="email"].ctrl-android.shadow-input.outer:active,
+    input[type="email"].frm-ctrl.ctrl-android:focus,
+    input[type="email"].ctrl-android.shadow-input.outer:focus,
+    textarea.frm-ctrl.ctrl-android:active,
+    textarea.ctrl-android.shadow-input.outer:active,
+    textarea.frm-ctrl.ctrl-android:focus,
+    textarea.ctrl-android.shadow-input.outer:focus {
+      box-shadow: none;
+      border-bottom: solid .2rem #1470b3; }
 
 /*
  * Checkbox specific styling
  */
-input[type="checkbox"].frm-ctrl {
+input[type="checkbox"].frm-ctrl, input[type="checkbox"].shadow-input.outer {
   display: none; }
 
 span.frm-ctrl-chk {
   display: inline-block;
-  width: 1.3rem;
-  height: 1.3rem;
+  width: 1.2rem;
+  height: 1.2rem;
   border-radius: .25rem;
   border: solid 1px #CCC;
   background-color: #DDD;
   position: relative;
   margin-right: .2rem;
-  vertical-align: -.4rem;
+  vertical-align: -.2rem;
   transition: background-color .3s ease; }
   span.frm-ctrl-chk:before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    height: 1.3rem;
-    width: 1.3rem;
+    height: 1.2rem;
+    width: 1.2rem;
     background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%228%22%20height%3D%228%22%20viewBox%3D%220%200%208%208%22%3E%3Cpath%20fill%3D%22%23FFF%22%20d%3D%22M6.41%200l-.69.72-2.78%202.78-.81-.78-.72-.72-1.41%201.41.72.72%201.5%201.5.69.72.72-.72%203.5-3.5.72-.72-1.44-1.41z%22%2F%3E%3C%2Fsvg%3E%0A");
     background-position: center center;
     background-repeat: no-repeat;
@@ -1776,57 +2551,152 @@ span.frm-ctrl-chk.toggle {
     border-radius: 50%;
     transition: left .3s ease; }
 
-input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk {
+input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk, input[type="checkbox"].shadow-input.outer:checked + span.frm-ctrl-chk {
   background-color: #56a1d6;
   border: solid 1px #56a1d6; }
-  input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk:before {
-    background-size: .8rem .8rem; }
-  input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk.toggle {
+  input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk:before, input[type="checkbox"].shadow-input.outer:checked + span.frm-ctrl-chk:before {
+    background-size: .7rem .7rem; }
+  input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk.toggle, input[type="checkbox"].shadow-input.outer:checked + span.frm-ctrl-chk.toggle {
     border: none; }
-    input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk.toggle:before {
+    input[type="checkbox"].frm-ctrl:checked + span.frm-ctrl-chk.toggle:before, input[type="checkbox"].shadow-input.outer:checked + span.frm-ctrl-chk.toggle:before {
       left: .9rem; }
 
 /*
  * Radio specific styling
  */
-input[type="radio"].frm-ctrl {
+input[type="radio"].frm-ctrl, input[type="radio"].shadow-input.outer {
   display: none; }
 
 span.frm-ctrl-rad {
   display: inline-block;
-  border: solid .05rem #777;
+  border: solid 0.05rem #74838E;
   width: 1.3rem;
   height: 1.3rem;
   border-radius: .65rem;
-  background-color: #DDD;
+  background-color: #FFFFFF;
   position: relative;
   margin-right: .2rem;
   vertical-align: -.4rem;
   transition: background-color .3s ease; }
   span.frm-ctrl-rad:before {
-    position: absolute;
-    background: #FFF;
-    top: .65rem;
-    left: .65rem;
-    height: .0rem;
-    width: .0rem;
     content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.3rem;
+    width: 1.3rem;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%228%22%20height%3D%228%22%20viewBox%3D%220%200%208%208%22%3E%3Cpath%20fill%3D%22%23FFF%22%20d%3D%22M6.41%200l-.69.72-2.78%202.78-.81-.78-.72-.72-1.41%201.41.72.72%201.5%201.5.69.72.72-.72%203.5-3.5.72-.72-1.44-1.41z%22%2F%3E%3C%2Fsvg%3E%0A");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 0 0;
     border-radius: 50%;
-    transition: left .3s ease, top .3s ease, width .3s ease, height .3s ease, opacity .3s ease; }
+    transition: background-size .15s ease, border-color .30s ease; }
 
-input[type="radio"].frm-ctrl:checked + span.frm-ctrl-rad {
-  background-color: #56a1d6; }
-  input[type="radio"].frm-ctrl:checked + span.frm-ctrl-rad:before {
-    top: .3rem;
-    left: .3rem;
-    height: .6rem;
-    width: .6rem;
-    background-color: #FFF;
-    color: #FFF;
-    line-height: .9rem;
-    font-size: .9rem;
-    text-align: center;
-    font-weight: bold; }
+input[type="radio"].frm-ctrl:checked + span.frm-ctrl-rad, input[type="radio"].shadow-input.outer:checked + span.frm-ctrl-rad {
+  border: solid 0.05rem #396afc;
+  background-color: #396afc; }
+  input[type="radio"].frm-ctrl:checked + span.frm-ctrl-rad:before, input[type="radio"].shadow-input.outer:checked + span.frm-ctrl-rad:before {
+    background-size: .8rem .8rem; }
+
+/*
+ * The outer wrappers for form controls allow the system to style form controls
+ * in a very interactive way that makes the label behave like a placeholder and 
+ * but does not lose the context of the input.
+ */
+.frm-ctrl-outer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 2.9rem; }
+
+/*
+ * When the outer control wraps around an input, select, textarea, or label, the 
+ * application should reset their styles to a state that we can manage.
+ */
+.frm-ctrl-outer label,
+.frm-ctrl-outer input[type="text"].frm-ctrl,
+.frm-ctrl-outer input[type="text"].shadow-input.outer,
+.frm-ctrl-outer input[type="password"].frm-ctrl,
+.frm-ctrl-outer input[type="password"].shadow-input.outer,
+.frm-ctrl-outer textarea.frm-ctrl,
+.frm-ctrl-outer textarea.shadow-input.outer,
+.frm-ctrl-outer select.frm-ctrl,
+.frm-ctrl-outer select.shadow-input.outer {
+  display: inline-block;
+  height: 3.275rem;
+  font-size: 1.1rem;
+  line-height: 1.54rem;
+  /*
+   * The padding of these inputs needs to be carefully managed, unlike the regular HTML elements
+   * where the text should be centered, these offset the text slightly in order to make it fit 
+   * together with the label in the input.
+   */
+  padding: 0.9rem 0.75rem 0.6rem;
+  outline: none;
+  -moz-appearance: none;
+  appearance: none; }
+
+.frm-ctrl-outer input[type="text"].frm-ctrl, .frm-ctrl-outer input[type="text"].shadow-input.outer,
+.frm-ctrl-outer input[type="password"].frm-ctrl,
+.frm-ctrl-outer input[type="password"].shadow-input.outer,
+.frm-ctrl-outer select,
+.frm-ctrl-outer textarea {
+  min-width: 10rem;
+  border-radius: .3rem;
+  transition: .2s ease all; }
+  .frm-ctrl-outer input[type="text"].frm-ctrl.ctrl-android, .frm-ctrl-outer input[type="text"].ctrl-android.shadow-input.outer,
+  .frm-ctrl-outer input[type="password"].frm-ctrl.ctrl-android,
+  .frm-ctrl-outer input[type="password"].ctrl-android.shadow-input.outer,
+  .frm-ctrl-outer select.ctrl-android,
+  .frm-ctrl-outer textarea.ctrl-android {
+    border-radius: 0; }
+
+.frm-ctrl-outer label {
+  transform-origin: top left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: .2s ease all;
+  color: #444;
+  background-color: transparent;
+  cursor: text;
+  user-select: none;
+  padding: 0.6rem 0rem 0rem 0rem;
+  left: 0.75rem; }
+
+.frm-ctrl-outer input[type="text"].frm-ctrl:placeholder-shown + label, .frm-ctrl-outer input[type="text"].shadow-input.outer:placeholder-shown + label,
+.frm-ctrl-outer input[type="password"].frm-ctrl:placeholder-shown + label,
+.frm-ctrl-outer input[type="password"].shadow-input.outer:placeholder-shown + label {
+  transform: scale(1);
+  top: .3rem; }
+
+.frm-ctrl-outer input[type="text"].frm-ctrl + label, .frm-ctrl-outer input[type="text"].shadow-input.outer + label,
+.frm-ctrl-outer input[type="password"].frm-ctrl + label,
+.frm-ctrl-outer input[type="password"].shadow-input.outer + label,
+.frm-ctrl-outer select + label,
+.frm-ctrl-outer input[type="text"].frm-ctrl:focus + label,
+.frm-ctrl-outer input[type="text"].shadow-input.outer:focus + label,
+.frm-ctrl-outer input[type="password"].frm-ctrl:focus + label,
+.frm-ctrl-outer input[type="password"].shadow-input.outer:focus + label {
+  transform: scale(0.6);
+  color: #444;
+  height: 2rem;
+  top: 0; }
+
+.frm-ctrl-outer input[type="text"].frm-ctrl:focus + label, .frm-ctrl-outer input[type="text"].shadow-input.outer:focus + label,
+.frm-ctrl-outer input[type="password"].frm-ctrl:focus + label,
+.frm-ctrl-outer input[type="password"].shadow-input.outer:focus + label {
+  color: #1c89d6; }
+
+.frm-ctrl-outer input[type="text"].frm-ctrl.ctrl-borderless:focus + label, .frm-ctrl-outer input[type="text"].ctrl-borderless.shadow-input.outer:focus + label,
+.frm-ctrl-outer input[type="password"].frm-ctrl.ctrl-borderless:focus + label,
+.frm-ctrl-outer input[type="password"].ctrl-borderless.shadow-input.outer:focus + label {
+  color: #222; }
+
+.frm-ctrl-outer input[type="text"].frm-ctrl.ctrl-android:focus + label, .frm-ctrl-outer input[type="text"].ctrl-android.shadow-input.outer:focus + label,
+.frm-ctrl-outer input[type="password"].frm-ctrl.ctrl-android:focus + label,
+.frm-ctrl-outer input[type="password"].ctrl-android.shadow-input.outer:focus + label {
+  color: #222; }
 
 /*
 The MIT License
@@ -1855,8 +2725,7 @@ THE SOFTWARE.
     Created on : Aug 22, 2019, 4:19:27 PM
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
-select.frm-ctrl {
-  padding: .75rem .4rem;
+select.frm-ctrl, select.shadow-input.outer {
   background-repeat: no-repeat;
   background-position: center right 1.1rem;
   background-size: .8rem .8rem;
@@ -1894,37 +2763,119 @@ THE SOFTWARE.
     Author     : César de la Cal Bretschneider <cesar@magic3w.com>
 */
 .frm-ctrl-grp {
+  transition: .2s ease all;
   display: flex;
   flex-direction: row;
-  width: 100%;
-  transition: box-shadow .2s ease; }
-  .frm-ctrl-grp .frm-ctrl {
-    width: 1px;
-    flex-grow: 1;
-    flex-shrink: 1;
+  justify-content: space-around;
+  /*
+   * Form controls directly embedded into the group will be sized using
+   * flex so they occupy the entire width of the group.
+   */
+  /*
+   * Form controls inside outer groups, should take the entire width.
+   * Usually, the outer wrappers will adjust, but in this case we wish the 
+   * children to adjust to the parent.
+   */ }
+  .frm-ctrl-grp > .frm-ctrl-outer, .frm-ctrl-grp > .frm-ctrl, .frm-ctrl-grp > .shadow-input.outer {
+    flex-grow: 1; }
+  .frm-ctrl-grp .frm-ctrl-outer .frm-ctrl, .frm-ctrl-grp .frm-ctrl-outer .shadow-input.outer {
+    overflow: hidden;
+    width: 100%; }
+    .frm-ctrl-grp .frm-ctrl-outer .frm-ctrl:focus, .frm-ctrl-grp .frm-ctrl-outer .shadow-input.outer:focus {
+      outline: none;
+      color: #1470b3;
+      box-shadow: none; }
+  .frm-ctrl-grp .frm-ctrl-ro {
+    width: 100%;
+    display: inline-block;
+    background: #FFF;
+    border: 1px solid #CCC;
+    height: 3.275rem;
+    font-size: 1rem;
+    line-height: 2.175rem;
+    overflow: hidden;
+    padding: 0.75rem 0.6rem 0.75rem; }
+    .frm-ctrl-grp .frm-ctrl-ro.ctrl-borderless {
+      border: none;
+      background: #F0F0F0; }
+    .frm-ctrl-grp .frm-ctrl-ro.ctrl-android {
+      border-radius: 0;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: solid .2rem #BBB;
+      background: #F0F0F0; }
+  .frm-ctrl-grp > .frm-ctrl-outer .frm-ctrl-ro,
+  .frm-ctrl-grp > .frm-ctrl-outer .frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer .shadow-input.outer,
+  .frm-ctrl-grp > .frm-ctrl-outer input[type="text"].frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer input[type="text"].shadow-input.outer,
+  .frm-ctrl-grp > .frm-ctrl-outer input[type="password"].frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer input[type="password"].shadow-input.outer {
     border-radius: 0;
     border-left-style: none;
     border-right-style: none; }
-    .frm-ctrl-grp .frm-ctrl:first-child {
-      border-radius: 3px 0 0 3px;
-      border-left-style: solid; }
-    .frm-ctrl-grp .frm-ctrl:last-child {
-      border-radius: 0 3px 3px 0;
-      border-right-style: solid; }
-    .frm-ctrl-grp .frm-ctrl.fixed-width {
-      flex-grow: 0;
-      flex-shrink: 0; }
-    .frm-ctrl-grp .frm-ctrl.narrow {
-      width: 7rem; }
-    .frm-ctrl-grp .frm-ctrl.medium {
-      width: 12rem; }
-    .frm-ctrl-grp .frm-ctrl:focus {
-      box-shadow: none;
-      border-color: #CCC; }
-  .frm-ctrl-grp:focus-within {
-    box-shadow: 0px 0px 2px #279af1; }
-    .frm-ctrl-grp:focus-within .frm-ctrl {
-      border-color: #279af1; }
+  .frm-ctrl-grp > .frm-ctrl-outer:first-child .frm-ctrl-ro,
+  .frm-ctrl-grp > .frm-ctrl-outer:first-child .frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer:first-child .shadow-input.outer,
+  .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="text"].frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="text"].shadow-input.outer,
+  .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="password"].frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="password"].shadow-input.outer {
+    border-radius: .3rem 0 0 .3rem;
+    border-left-style: solid; }
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child .frm-ctrl-ro.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child .frm-ctrl.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child .ctrl-borderless.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="text"].frm-ctrl.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="text"].ctrl-borderless.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="password"].frm-ctrl.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="password"].ctrl-borderless.shadow-input.outer {
+      border-style: none; }
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child .frm-ctrl-ro.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child .frm-ctrl.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child .ctrl-android.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="text"].frm-ctrl.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="text"].ctrl-android.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="password"].frm-ctrl.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:first-child input[type="password"].ctrl-android.shadow-input.outer {
+      border-left-style: none;
+      border-right-style: none;
+      border-radius: 0; }
+  .frm-ctrl-grp > .frm-ctrl-outer:last-child .frm-ctrl-ro,
+  .frm-ctrl-grp > .frm-ctrl-outer:last-child .frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer:last-child .shadow-input.outer,
+  .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="text"].frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="text"].shadow-input.outer,
+  .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="password"].frm-ctrl,
+  .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="password"].shadow-input.outer {
+    border-radius: 0 .3rem .3rem 0;
+    border-right-style: solid; }
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child .frm-ctrl-ro.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child .frm-ctrl.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child .ctrl-borderless.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="text"].frm-ctrl.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="text"].ctrl-borderless.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="password"].frm-ctrl.ctrl-borderless,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="password"].ctrl-borderless.shadow-input.outer {
+      border-style: none; }
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child .frm-ctrl-ro.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child .frm-ctrl.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child .ctrl-android.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="text"].frm-ctrl.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="text"].ctrl-android.shadow-input.outer,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="password"].frm-ctrl.ctrl-android,
+    .frm-ctrl-grp > .frm-ctrl-outer:last-child input[type="password"].ctrl-android.shadow-input.outer {
+      border-left-style: none;
+      border-right-style: none;
+      border-radius: 0; }
+  .frm-ctrl-grp > .frm-ctrl-outer.fixed-width {
+    flex-grow: 0;
+    flex-shrink: 0; }
+  .frm-ctrl-grp > .frm-ctrl-outer.narrow {
+    width: 7rem; }
+  .frm-ctrl-grp > .frm-ctrl-outer.medium {
+    width: 12rem; }
 
 /*
 The MIT License
@@ -2021,6 +2972,729 @@ THE SOFTWARE.
     width: 3rem; }
   .horizontal-spacer.huge {
     width: 4rem; }
+
+.horizontal-divider {
+  display: block;
+  width: 100%;
+  border-top: solid 0.0625rem #C1C8CD; }
+
+.badge {
+  font-size: .75em;
+  border: solid 1px #360073;
+  padding: .1em .3em;
+  border-radius: .25em;
+  vertical-align: .1em;
+  font-weight: bold;
+  color: #FFF;
+  background: #6F1DC9;
+  box-shadow: -1px -2px 3px rgba(255, 255, 255, 0.2) inset; }
+  .badge.bg-red {
+    background-color: #E93536;
+    border-color: #9B0C00; }
+  .badge.bg-green {
+    background-color: #009554;
+    border-color: #034528; }
+  .badge.bg-blue {
+    background-color: #1B69BF;
+    border-color: #003B7C; }
+  .badge.bg-orange {
+    background-color: #FF7400;
+    border-color: #A13B00; }
+  .badge.bg-grey {
+    background-color: #5F6C75;
+    border-color: #31383D; }
+  .badge.bg-grey-050 {
+    background-color: #F6F9FA;
+    border-color: #b4cdd6; }
+  .badge.border-grey-050 {
+    border-color: #F6F9FA; }
+  .badge.bg-grey-100 {
+    background-color: #F1F2F3;
+    border-color: #babfc4; }
+  .badge.border-grey-100 {
+    border-color: #F1F2F3; }
+  .badge.bg-grey-200 {
+    background-color: #E6E8EA;
+    border-color: #afb5bb; }
+  .badge.border-grey-200 {
+    border-color: #E6E8EA; }
+  .badge.bg-grey-300 {
+    background-color: #C1C8CD;
+    border-color: #89969f; }
+  .badge.border-grey-300 {
+    border-color: #C1C8CD; }
+  .badge.bg-grey-400 {
+    background-color: #A9B3B9;
+    border-color: #71818b; }
+  .badge.border-grey-400 {
+    border-color: #A9B3B9; }
+  .badge.bg-grey-500 {
+    background-color: #8D99A3;
+    border-color: #5a6670; }
+  .badge.border-grey-500 {
+    border-color: #8D99A3; }
+  .badge.bg-grey-600 {
+    background-color: #74838E;
+    border-color: #464f56; }
+  .badge.border-grey-600 {
+    border-color: #74838E; }
+  .badge.bg-grey-700 {
+    background-color: #5F6C75;
+    border-color: #31383d; }
+  .badge.border-grey-700 {
+    border-color: #5F6C75; }
+  .badge.bg-grey-800 {
+    background-color: #464F56;
+    border-color: #181b1e; }
+  .badge.border-grey-800 {
+    border-color: #464F56; }
+  .badge.bg-grey-900 {
+    background-color: #31383D;
+    border-color: #040404; }
+  .badge.border-grey-900 {
+    border-color: #31383D; }
+  .badge.bg-orange-100 {
+    background-color: #FFEEE0;
+    border-color: #ffb67a; }
+  .badge.border-orange-100 {
+    border-color: #FFEEE0; }
+  .badge.bg-orange-200 {
+    background-color: #FFCFA6;
+    border-color: #ff9840; }
+  .badge.border-orange-200 {
+    border-color: #FFCFA6; }
+  .badge.bg-orange-300 {
+    background-color: #FFBC84;
+    border-color: #ff841e; }
+  .badge.border-orange-300 {
+    border-color: #FFBC84; }
+  .badge.bg-orange-400 {
+    background-color: #F7A15A;
+    border-color: #e06b0b; }
+  .badge.border-orange-400 {
+    border-color: #F7A15A; }
+  .badge.bg-orange-500 {
+    background-color: #FF8A29;
+    border-color: #c25800; }
+  .badge.border-orange-500 {
+    border-color: #FF8A29; }
+  .badge.bg-orange-600 {
+    background-color: #FF8117;
+    border-color: #b05000; }
+  .badge.border-orange-600 {
+    border-color: #FF8117; }
+  .badge.bg-orange-700 {
+    background-color: #FF7400;
+    border-color: #994600; }
+  .badge.border-orange-700 {
+    border-color: #FF7400; }
+  .badge.bg-orange-800 {
+    background-color: #FF5E00;
+    border-color: #993800; }
+  .badge.border-orange-800 {
+    border-color: #FF5E00; }
+  .badge.bg-orange-900 {
+    background-color: #A13B00;
+    border-color: #3b1600; }
+  .badge.border-orange-900 {
+    border-color: #A13B00; }
+  .badge.bg-red-100 {
+    background-color: #FFF6F2;
+    border-color: #ffaf8c; }
+  .badge.border-red-100 {
+    border-color: #FFF6F2; }
+  .badge.bg-red-200 {
+    background-color: #FFD3C0;
+    border-color: #ff8c5a; }
+  .badge.border-red-200 {
+    border-color: #FFD3C0; }
+  .badge.bg-red-300 {
+    background-color: #FF8474;
+    border-color: #ff2a0e; }
+  .badge.border-red-300 {
+    border-color: #FF8474; }
+  .badge.bg-red-400 {
+    background-color: #FF7361;
+    border-color: #fa1c00; }
+  .badge.border-red-400 {
+    border-color: #FF7361; }
+  .badge.bg-red-500 {
+    background-color: #FF6057;
+    border-color: #f00d00; }
+  .badge.border-red-500 {
+    border-color: #FF6057; }
+  .badge.bg-red-600 {
+    background-color: #FF4D4D;
+    border-color: #e60000; }
+  .badge.border-red-600 {
+    border-color: #FF4D4D; }
+  .badge.bg-red-700 {
+    background-color: #E93536;
+    border-color: #a61213; }
+  .badge.border-red-700 {
+    border-color: #E93536; }
+  .badge.bg-red-800 {
+    background-color: #D82C29;
+    border-color: #831a18; }
+  .badge.border-red-800 {
+    border-color: #D82C29; }
+  .badge.bg-red-900 {
+    background-color: #9B0C00;
+    border-color: #350400; }
+  .badge.border-red-900 {
+    border-color: #9B0C00; }
+  .badge.bg-green-100 {
+    background-color: #DFFFE2;
+    border-color: #79ff86; }
+  .badge.border-green-100 {
+    border-color: #DFFFE2; }
+  .badge.bg-green-200 {
+    background-color: #D1FFD6;
+    border-color: #6bff7b; }
+  .badge.border-green-200 {
+    border-color: #D1FFD6; }
+  .badge.bg-green-300 {
+    background-color: #A9FFC9;
+    border-color: #43ff89; }
+  .badge.border-green-300 {
+    border-color: #A9FFC9; }
+  .badge.bg-green-400 {
+    background-color: #13ef8f;
+    border-color: #0a9257; }
+  .badge.border-green-400 {
+    border-color: #13ef8f; }
+  .badge.bg-green-500 {
+    background-color: #00E47F;
+    border-color: #007e46; }
+  .badge.border-green-500 {
+    border-color: #00E47F; }
+  .badge.bg-green-600 {
+    background-color: #00CB71;
+    border-color: #006538; }
+  .badge.border-green-600 {
+    border-color: #00CB71; }
+  .badge.bg-green-700 {
+    background-color: #009554;
+    border-color: #002f1a; }
+  .badge.border-green-700 {
+    border-color: #009554; }
+  .badge.bg-green-800 {
+    background-color: #007743;
+    border-color: #00110a; }
+  .badge.border-green-800 {
+    border-color: #007743; }
+  .badge.bg-green-900 {
+    background-color: #034528;
+    border-color: black; }
+  .badge.border-green-900 {
+    border-color: #034528; }
+  .badge.bg-blue-100 {
+    background-color: #ECF5FF;
+    border-color: #86bfff; }
+  .badge.border-blue-100 {
+    border-color: #ECF5FF; }
+  .badge.bg-blue-200 {
+    background-color: #DEEEFF;
+    border-color: #78b9ff; }
+  .badge.border-blue-200 {
+    border-color: #DEEEFF; }
+  .badge.bg-blue-300 {
+    background-color: #A9D3FF;
+    border-color: #439fff; }
+  .badge.border-blue-300 {
+    border-color: #A9D3FF; }
+  .badge.bg-blue-400 {
+    background-color: #8DC1F9;
+    border-color: #2c8cf4; }
+  .badge.border-blue-400 {
+    border-color: #8DC1F9; }
+  .badge.bg-blue-500 {
+    background-color: #68B0FF;
+    border-color: #027bff; }
+  .badge.border-blue-500 {
+    border-color: #68B0FF; }
+  .badge.bg-blue-600 {
+    background-color: #5AA5F7;
+    border-color: #0b71e0; }
+  .badge.border-blue-600 {
+    border-color: #5AA5F7; }
+  .badge.bg-blue-700 {
+    background-color: #3988DF;
+    border-color: #195699; }
+  .badge.border-blue-700 {
+    border-color: #3988DF; }
+  .badge.bg-blue-800 {
+    background-color: #1B69BF;
+    border-color: #0e3866; }
+  .badge.border-blue-800 {
+    border-color: #1B69BF; }
+  .badge.bg-blue-900 {
+    background-color: #003B7C;
+    border-color: #000a16; }
+  .badge.border-blue-900 {
+    border-color: #003B7C; }
+  .badge.bg-purple-100 {
+    background-color: #F9F3FF;
+    border-color: #c68dff; }
+  .badge.border-purple-100 {
+    border-color: #F9F3FF; }
+  .badge.bg-purple-200 {
+    background-color: #EEE8FF;
+    border-color: #a382ff; }
+  .badge.border-purple-200 {
+    border-color: #EEE8FF; }
+  .badge.bg-purple-300 {
+    background-color: #396afc;
+    border-color: #0336cc; }
+  .badge.border-purple-300 {
+    border-color: #396afc; }
+  .badge.bg-purple-400 {
+    background-color: #A17CFF;
+    border-color: #5816ff; }
+  .badge.border-purple-400 {
+    border-color: #A17CFF; }
+  .badge.bg-purple-500 {
+    background-color: #8356F5;
+    border-color: #460dd8; }
+  .badge.border-purple-500 {
+    border-color: #8356F5; }
+  .badge.bg-purple-600 {
+    background-color: #742CD5;
+    border-color: #461a81; }
+  .badge.border-purple-600 {
+    border-color: #742CD5; }
+  .badge.bg-purple-700 {
+    background-color: #6F1DC9;
+    border-color: #3e1070; }
+  .badge.border-purple-700 {
+    border-color: #6F1DC9; }
+  .badge.bg-purple-800 {
+    background-color: #49009A;
+    border-color: #190034; }
+  .badge.border-purple-800 {
+    border-color: #49009A; }
+  .badge.bg-purple-900 {
+    background-color: #360073;
+    border-color: #06000d; }
+  .badge.border-purple-900 {
+    border-color: #360073; }
+  .badge.bg-white {
+    background-color: #FFFFFF;
+    border-color: #cccccc; }
+  .badge.border-white {
+    border-color: #FFFFFF; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Aug 30, 2019, 4:28:26 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+/*
+ * I am a bit dissatisfied with the fact that the burgers do have a different
+ * sizing to all the other elements (and the lack of consistency within _SCSS overall)
+ * but in this case it should be fine, since the elements will, most likely, never
+ * mingle with the burgers.
+ */
+/*
+ * A burger describes a component that is usually placed on the left top hand corner
+ * of the screen to provide a cue for the user to understand that clicking or tapping
+ * on this element will extend a menu that provides overall application options.
+ */
+.burger {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  cursor: pointer;
+  width: 1.6rem;
+  height: 2rem;
+  padding: 0px;
+  background-image: linear-gradient(180deg, #FFF 0.25rem, transparent 0.25rem, transparent 0.5rem, #FFF 0.5rem, #FFF 0.75rem, transparent 0.75rem, transparent 1rem, #FFF 1rem);
+  background-size: 1.5rem 1.25rem;
+  background-position: center center;
+  background-repeat: no-repeat; }
+  .burger.hidden {
+    display: none; }
+  .burger.dark {
+    background-image: linear-gradient(180deg, #777 0.25rem, transparent 0.25rem, transparent 0.5rem, #777 0.5rem, #777 0.75rem, transparent 0.75rem, transparent 1rem, #777 1rem); }
+    .burger.dark:after, .burger.dark:before {
+      background: #242424; }
+  .burger.narrow {
+    background-size: 3px 17px;
+    width: 20px; }
+
+.box {
+  border: solid 1px #C1C8CD;
+  overflow: hidden;
+  transition: box-shadow .3s ease; }
+  .box.padded {
+    padding: 0.8rem 0.8rem; }
+  .box .padded {
+    padding: 0.8rem 0.8rem; }
+  .box.box-soft {
+    border-radius: .3rem; }
+  .box.box-very-soft {
+    border-radius: .6rem; }
+  .box.box-drop-shadow, .box.box-drop-shadow-on-hover:hover {
+    box-shadow: 0 0 0.3rem #E6E8EA, 0 0 0.6rem #F1F2F3; }
+
+.caret {
+  display: inline-block;
+  width: 1em;
+  height: 1.2em;
+  vertical-align: -.15em;
+  color: inherit;
+  text-align: center; }
+  .caret::after {
+    border-width: .35em;
+    border-style: solid solid none solid;
+    border-color: currentColor transparent transparent transparent;
+    content: "";
+    display: inline-block;
+    height: 0;
+    width: 0;
+    vertical-align: .35em; }
+  .caret.caret-point-up::after {
+    border-style: none solid solid solid;
+    border-color: transparent transparent currentColor transparent; }
+  .caret.caret-point-left::after {
+    vertical-align: .20em;
+    border-style: solid solid solid none;
+    border-color: transparent currentColor transparent transparent; }
+  .caret.caret-point-right::after {
+    vertical-align: .20em;
+    border-style: solid none solid solid;
+    border-color: transparent transparent transparent currentColor; }
+
+/*
+The MIT License
+
+Copyright 2019 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+    Created on : Dec 9, 2019, 4:28:07 PM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.text\:grey-050 {
+  color: #F6F9FA; }
+
+.text\:grey-100 {
+  color: #F1F2F3; }
+
+.text\:grey-200 {
+  color: #E6E8EA; }
+
+.text\:grey-300 {
+  color: #C1C8CD; }
+
+.text\:grey-400 {
+  color: #A9B3B9; }
+
+.text\:grey-500 {
+  color: #8D99A3; }
+
+.text\:grey-600 {
+  color: #74838E; }
+
+.text\:grey-700 {
+  color: #5F6C75; }
+
+.text\:grey-800 {
+  color: #464F56; }
+
+.text\:grey-900 {
+  color: #31383D; }
+
+.text\:orange-100 {
+  color: #FFEEE0; }
+
+.text\:orange-200 {
+  color: #FFCFA6; }
+
+.text\:orange-300 {
+  color: #FFBC84; }
+
+.text\:orange-400 {
+  color: #F7A15A; }
+
+.text\:orange-500 {
+  color: #FF8A29; }
+
+.text\:orange-600 {
+  color: #FF8117; }
+
+.text\:orange-700 {
+  color: #FF7400; }
+
+.text\:orange-800 {
+  color: #FF5E00; }
+
+.text\:orange-900 {
+  color: #A13B00; }
+
+.text\:red-100 {
+  color: #FFF6F2; }
+
+.text\:red-200 {
+  color: #FFD3C0; }
+
+.text\:red-300 {
+  color: #FF8474; }
+
+.text\:red-400 {
+  color: #FF7361; }
+
+.text\:red-500 {
+  color: #FF6057; }
+
+.text\:red-600 {
+  color: #FF4D4D; }
+
+.text\:red-700 {
+  color: #E93536; }
+
+.text\:red-800 {
+  color: #D82C29; }
+
+.text\:red-900 {
+  color: #9B0C00; }
+
+.text\:green-100 {
+  color: #DFFFE2; }
+
+.text\:green-200 {
+  color: #D1FFD6; }
+
+.text\:green-300 {
+  color: #A9FFC9; }
+
+.text\:green-400 {
+  color: #13ef8f; }
+
+.text\:green-500 {
+  color: #00E47F; }
+
+.text\:green-600 {
+  color: #00CB71; }
+
+.text\:green-700 {
+  color: #009554; }
+
+.text\:green-800 {
+  color: #007743; }
+
+.text\:green-900 {
+  color: #034528; }
+
+.text\:blue-100 {
+  color: #ECF5FF; }
+
+.text\:blue-200 {
+  color: #DEEEFF; }
+
+.text\:blue-300 {
+  color: #A9D3FF; }
+
+.text\:blue-400 {
+  color: #8DC1F9; }
+
+.text\:blue-500 {
+  color: #68B0FF; }
+
+.text\:blue-600 {
+  color: #5AA5F7; }
+
+.text\:blue-700 {
+  color: #3988DF; }
+
+.text\:blue-800 {
+  color: #1B69BF; }
+
+.text\:blue-900 {
+  color: #003B7C; }
+
+.text\:purple-100 {
+  color: #F9F3FF; }
+
+.text\:purple-200 {
+  color: #EEE8FF; }
+
+.text\:purple-300 {
+  color: #396afc; }
+
+.text\:purple-400 {
+  color: #A17CFF; }
+
+.text\:purple-500 {
+  color: #8356F5; }
+
+.text\:purple-600 {
+  color: #742CD5; }
+
+.text\:purple-700 {
+  color: #6F1DC9; }
+
+.text\:purple-800 {
+  color: #49009A; }
+
+.text\:purple-900 {
+  color: #360073; }
+
+.text\:white {
+  color: #FFFFFF; }
+
+/*
+ * While this may be a potentially controversial setting when we design interfaces that
+ * are focused on long text output, specially for carefully crafted and designed experiences,
+ * we'd rather use explicit spacer elements that we can control rather than default behavior
+ * for text output.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0; }
+
+h1 {
+  font-size: 2.4em; }
+
+h2 {
+  font-size: 2.0em; }
+
+h3 {
+  font-size: 1.7em; }
+
+h4 {
+  font-size: 1.5em; }
+
+h5 {
+  font-size: 1.5em;
+  color: #464F56; }
+
+h6 {
+  font-size: 1.5em;
+  color: #5F6C75; }
+
+p {
+  line-height: 1.3; }
+
+p.font-large {
+  font-size: 1.1em; }
+
+p.font-xlarge {
+  font-size: 1.2em; }
+
+p.font-small {
+  font-size: .9em; }
+
+p.font-xsmall {
+  font-size: .8em; }
+
+.text-bold {
+  font-weight: bold; }
+
+small {
+  font-size: .8rem; }
+
+.no-decoration {
+  text-decoration: none; }
+
+/*
+ * It's a safe default to assume that images that are within a column of a
+ * grid are taking in the entire width of the parent.
+ */
+.span > img,
+.span > picture,
+.span > svg {
+  display: block;
+  width: 100%;
+  height: auto; }
+
+img.inline,
+svg.inline,
+picture.inline {
+  height: 1.20em;
+  vertical-align: -.2em;
+  width: auto;
+  display: inline-block; }
+  img.inline.cap-height,
+  svg.inline.cap-height,
+  picture.inline.cap-height {
+    height: 1em;
+    vertical-align: -.2em; }
+
+svg.img-round,
+picture.img-round,
+img.img-round {
+  border-radius: 50%; }
+
+img.img-soft-corners,
+svg.img-soft-corners,
+picture.img-soft-corners {
+  border-radius: .4rem; }
+
+img.img-soft-corners-bottom {
+  border-bottom-left-radius: .4rem;
+  border-bottom-right-radius: .4rem; }
+
+img.img-soft-corners-top {
+  border-top-left-radius: .4rem;
+  border-top-right-radius: .4rem; }
+
+img.img-soft-corner-top-left {
+  border-top-left-radius: .4rem; }
+
+img.img-soft-corner-top-right {
+  border-top-right-radius: .4rem; }
+
+img.img-soft-corner-bottom-left {
+  border-bottom-left-radius: .4rem; }
+
+img.img-soft-corner-bottom-right {
+  border-bottom-right-radius: .4rem; }
 
 /*
 To change this license header, choose License Headers in Project Properties.
@@ -2613,5 +4287,54 @@ ul.pagination {
   .styled-select option {
     padding: 3px;
     border: none; }
+
+/*
+The MIT License
+
+Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/*
+	We're using a set of icons from heroicons.com, an icon set by the amazingly
+	talented and inspiring Steve Schoger. The set is licensed under MIT and looks awesome.
+
+	These four icons allow our application to report back to the user what kind of
+	device was used to authenticate the sessions. This will make it easier for a 
+	user to detect any activity on their account that they did not aqgree with.
+	
+    Created on : Aug 31, 2020, 10:18:47 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+.device-icon {
+  background-size: 1em 1em;
+  width: 1em;
+  height: 1em;
+  vertical-align: -.1em;
+  display: inline-block; }
+  .device-icon.mobile, .device-icon.smartphone {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNMTIgMThoLjAxTTggMjFoOGEyIDIgMCAwMDItMlY1YTIgMiAwIDAwLTItMkg4YTIgMiAwIDAwLTIgMnYxNGEyIDIgMCAwMDIgMnoiIC8+Cjwvc3ZnPg==); }
+  .device-icon.tablet {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNMTIgMThoLjAxTTcgMjFoMTBhMiAyIDAgMDAyLTJWNWEyIDIgMCAwMC0yLTJIN2EyIDIgMCAwMC0yIDJ2MTRhMiAyIDAgMDAyIDJ6IiAvPgo8L3N2Zz4=); }
+  .device-icon.desktop {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNOS43NSAxN0w5IDIwbC0xIDFoOGwtMS0xLS43NS0zTTMgMTNoMThNNSAxN2gxNGEyIDIgMCAwMDItMlY1YTIgMiAwIDAwLTItMkg1YTIgMiAwIDAwLTIgMnYxMGEyIDIgMCAwMDIgMnoiIC8+Cjwvc3ZnPg==); }
+  .device-icon.bot, .device-icon.robot {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiPgogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNNSAxMmgxNE01IDEyYTIgMiAwIDAxLTItMlY2YTIgMiAwIDAxMi0yaDE0YTIgMiAwIDAxMiAydjRhMiAyIDAgMDEtMiAyTTUgMTJhMiAyIDAgMDAtMiAydjRhMiAyIDAgMDAyIDJoMTRhMiAyIDAgMDAyLTJ2LTRhMiAyIDAgMDAtMi0ybS0yLTRoLjAxTTE3IDE2aC4wMSIgLz4KPC9zdmc+); }
 
 /*# sourceMappingURL=app.css.map */

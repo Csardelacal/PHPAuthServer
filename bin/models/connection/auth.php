@@ -21,6 +21,7 @@ use UserModel;
  * @property int           $created Timestamp of the creation of this record
  * @property int           $expires The record may expire, this will contain that information
  * 
+ * @deprecated since version 0.1-dev
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  */
 class AuthModel extends Model

@@ -1,12 +1,11 @@
 <?php
 
-use app\AttributeLock;
 use mail\spam\domain\implementation\SpamDomainModelReader;
 use mail\spam\domain\SpamDomainValidationRule;
+use spitfire\core\http\URL;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
-use spitfire\validation\EmptyValidationRule;
 use spitfire\validation\rules\FilterValidationRule;
 use spitfire\validation\rules\MaxLengthValidationRule;
 use spitfire\validation\rules\MinLengthValidationRule;
@@ -84,7 +83,12 @@ class EditController extends BaseController
 			throw new PublicException('Account has been limited. Reason given: ' . $s->reason);
 		}
 		
-		if ($this->request->isPost() && $this->user->checkPassword($_POST['password'])) {
+		if (!$this->level->count()) {
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('auth', 'add', 1, ['returnto' => strval(URL::current())]));
+			return;
+		}
+		
+		if ($this->request->isPost()) {
 			#Read the email from Post
 			$email = _def($_POST['email'], '');
 			
@@ -113,32 +117,38 @@ class EditController extends BaseController
 		
 		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
 		
+		if ($this->level->count() < 1) {
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('auth', 'add', 1, ['returnto' => strval(URL::current())]));
+			return;
+		}
+		
 		if ($this->request->isPost()) {
 			#Read the email from Post
 			$passNew = _def($_POST['password'], '');
-			$passVer = _def($_POST['password_verify'], '');
-			$passOld = _def($_POST['password_old'], '');
 			
 			#Check if the email is actually an email
 			$v = validate()->addRule(new MinLengthValidationRule(8, 'Your password needs to be at least 8 characters'));
 			validate($v->setValue($passNew));
 			
-			#Check if the verification and Password match
-			if ($passNew !== $passVer) { throw new PublicException('Passwords do not match', 400); }
-			
-			#Check if the old password is correct
-			if (!$this->user->checkPassword($passOld)) {
-				throw new PublicException('Old password is incorrect', 401);
-			}
-			
 			#Store the new email and de-verify the account.
-			$this->user->setPassword($passNew);
-			$this->user->store();
+			$oldpass = db()->table('authentication\provider')->get('user', $this->user)->where('type', \authentication\ProviderModel::TYPE_PASSWORD)->where('expires', null)->first();
+			$oldpass->expires = time();
+			$oldpass->store();
+			
+			$newpass = db()->table('authentication\provider')->newRecord();
+			$newpass->user = $this->user;
+			$newpass->type = \authentication\ProviderModel::TYPE_PASSWORD;
+			$newpass->content = password_hash($_POST['password'], PASSWORD_DEFAULT);
+			$newpass->expires = null;
+			$newpass->store();
+			
+			#TODO: Notify the user that the password was changed
+			
 			
 			#Notify the webhook about the change
 			$this->hook && $this->hook->trigger('user.update', ['type' => 'user', 'id' => $this->user->_id]);
 			
-			return $this->response->getHeaders()->redirect(url());
+			return $this->response->getHeaders()->redirect(url('edit', 'password', ['result' => 'success']));
 		}
 	}
 	

@@ -1,0 +1,30 @@
+{
+	"name": "magic3w/phpauth-server",
+	"description": "Authentication server for micro service networks",
+	"type": "project",
+	"license": "MIT",
+	"minimum-stability": "dev",
+	"prefer-stable" : true,
+	"authors": [
+		{
+			"name": "cesar",
+			"email": "cesar@magic3w.com"
+		}
+	],
+	"require": {
+		"magic3w/permission-php-sdk": "dev-master",
+		"spitfire/defer": "dev-master",
+		"squizlabs/php_codesniffer": "^3.5",
+		"magic3w/cptn-h00k-sdk-php": "dev-master"
+	},
+	"require-dev": {
+		"phpstan/phpstan": "^0.12.64"
+	},
+	"scripts" : {
+		"test" : [
+			"./vendor/bin/phpstan analyse --level 5 .",
+			"./vendor/bin/phpcs ."
+		],
+		"baseline" : "./vendor/bin/phpstan analyse --level 5 . --generate-baseline"
+	}
+}

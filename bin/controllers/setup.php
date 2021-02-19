@@ -49,8 +49,29 @@ class SetupController extends Controller
 			$membership->role  = 'owner';
 			$membership->store();
 			
+			/*
+			 * Create the application for the SSO server itself
+			 * 
+			 * SSO can use this to authenticate itself against other applications whenever needed
+			 * Originally, SSO would sign as the receiving application when sending 
+			 * requests. While this is technically possible, it makes many behaviors
+			 * confusing and log files unnecesarily convoluted.
+			 * 
+			 * Instead, we can now have SSO identify itself as the application sending
+			 * the requests. Reducing the complexity of the system considerably.
+			 */
+			$app = db()->table('authapp')->newRecord();
+			$app->name      = 'PHPAS - Single-sign-on server';
+			#Usually we check for collissions, but it's technically not possible since it's the first
+			$app->appID     = mt_rand(); 
+			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(35)));
+			$app->drawer    = false;
+			$app->icon      = storage()->get('app://assets/img/app.png')->uri();
+			$app->store();
 			
-			$this->response->getHeaders()->redirect(new URL());
+			SysSettingModel::setValue('app.self', $app->_id);
+			
+			$this->response->getHeaders()->redirect(url());
 		}
 		
 		//Render the view to create a new user

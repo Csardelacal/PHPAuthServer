@@ -7,6 +7,10 @@ use spitfire\Model;
 use spitfire\storage\database\Schema;
 use TokenModel;
 
+/**
+ * 
+ * @deprecated since version 0.1-dev
+ */
 class UsageModel extends Model
 {
 	

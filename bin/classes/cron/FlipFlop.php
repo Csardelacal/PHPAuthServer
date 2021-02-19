@@ -29,9 +29,17 @@ use spitfire\exceptions\PrivateException;
 class FlipFlop
 {
 	
+	/**
+	 * 
+	 * @var string
+	 */
+	private $id;
+	
 	private $queue;
 	
-	public function __construct($filename) {
+	private const MSG_TYPE = 1;
+	
+	public function __construct($filename, $id = 'i') {
 		
 		if (!function_exists('msg_get_queue')) {
 			throw new PrivateException('Flip-flop requires SystemV Semaphores to work', 1806061928);
@@ -41,7 +49,8 @@ class FlipFlop
 			fclose(fopen($filename, 'w'));
 		}
 		
-		$this->queue = msg_get_queue(ftok($filename, 1));
+		$this->id = $id;
+		$this->queue = msg_get_queue(ftok($filename, $this->id));
 	}
 	
 	public function notify() {
@@ -49,7 +58,7 @@ class FlipFlop
 		$message = '';
 		
 		msg_receive($this->queue, 0, $type, 4096, $message, true, MSG_IPC_NOWAIT);
-		msg_send($this->queue, 1, time());
+		msg_send($this->queue, self::MSG_TYPE, time());
 	}
 	
 	public function wait() {

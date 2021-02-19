@@ -1,0 +1,72 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Oct 14, 2019, 9:21:34 AM
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+
+
+
+
+.dropdownlist-list .dropdownlist-hidden {
+	display: none;
+}
+
+.dropdownlist-list .dropdownlist-entry {
+	white-space: nowrap;
+	color: #555;
+	padding: .5rem .5rem;
+	font-size: .8rem;
+	cursor: pointer;
+	border-radius: 5px;
+	overflow: hidden;
+	
+	&.active, &:hover {
+		color: #FFF;
+		background-color: #44a5eb;
+	}
+}
+
+@media all and (max-width: 600px) {
+	
+
+	.dropdownlist-list {
+		position: absolute;
+		width: 95%;
+		box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+		border-radius: 5px;
+		padding: .5rem 0;
+		left: 2.5%;
+		z-index: 5;
+		background: #FFF;
+		margin-top: 5px;
+	}
+
+	.autocomplete-results-anchor {
+		width: 100%;
+	}
+}
+
+@media all and (min-width: 601px) {
+	
+	.dropdownlist-list {
+		position: absolute;
+		width: 100%;
+		min-width: 300px;
+		box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+		border-radius: 5px;
+		padding: 0;
+		top: 5px;
+		left: 0;
+		z-index: 5;
+		background: #FFF;
+	}
+
+	.autocomplete-results-anchor {
+		position: relative;
+		width: 100%;
+	}
+}

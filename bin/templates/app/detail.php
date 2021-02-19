@@ -1,121 +1,98 @@
 
 <div class="row l1">
 	<div class="span">
-		<div class="heading" data-sticky="top">
-			<div class="row l5">
-				<div class="span l4">
-					<h1 class="unpadded">Application Details</h1>
-				</div>
-				<div class="span l1" style="text-align: right">
-					<a class="button error" style="font-size:.6em; display: inline-block" href="<?= url('app', 'delete', $app->_id) ?>">Delete App</a>
-				</div>
+		<div class="row l5">
+			<div class="span l4">
+				<h1>
+					<img src="<?= url('image','app', $app->_id, 128, ['nonce' => time()]) ?>" class="user-icon square medium">
+					<?= __($app->name) ?>
+				</h1>
+			</div>
+			<div class="span l1" style="text-align: right">
+				<a class="button small solid button-color-purple-600" href="<?= url('app', 'delete', $app->_id) ?>">Delete App</a>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="spacer" style="height: 20px"></div>
+<div class="spacer medium"></div>
 
 <div class="row l1">
 	<div class="span l1">
-		<p class="secondary small">
+		<p class="text:grey-600">
 			These are the oAuth codes and settings for your application. You can use
 			them to generate secure tokens for your app and authenticate users.
 		</p>
 	</div>
 </div>
 
-<div class="spacer" style="height: 40px"></div>
+<div class="spacer medium"></div>
 
-<form class="regular" method="POST" enctype="multipart/form-data">
-	<!-- App Name -->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<div style="font-size: .75em; color: #555">
-				Name
+<!-- App ID -->
+<div class="row l1">
+	<div class="span l1">
+		<div class="box padded box-soft box-drop-shadow bg-white" style="background: #FFF">
+			<div class="spacer small"></div>
+			<div class="text:grey-400">
+				<small>ID</small>
 			</div>
-			
-			<div class="property-value" id="name-container">
-				<span id="name-display" class="fake-field-ph"><?= __($app->name) ?></span>
-				<div class="edit-field hidden"><input type="text" name="name" id="name-input" disabled></div>
+
+			<div>
+				<span style="font-size: 3.1rem"><strong><?= __($app->appID) ?></strong></span>
+				<span title="Copy to clipboard" data-clipboard="<?= __($app->appID) ?>" class="text:grey-500" style=" cursor: pointer; white-space: nowrap">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="height: 1.1rem; vertical-align: -.15rem">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+					</svg>
+					<span data-caption>Copy</span>
+				</span>
 			</div>
+
+			<div class="spacer medium"></div>
+
+			<div class="text:grey-400">
+				<small>Secrets</small>
+			</div>
+
+			<?php foreach ($app->credentials as $credential): ?>
+			<div>
+				<div class="spacer small"></div>
+				<div>
+					<span class="toggle-blur blurred"><?= __($app->appSecret) ?></span>
+					<div class="horizontal-spacer"></div>
+					<span title="Copy to clipboard" data-clipboard="<?= __($app->appSecret) ?>" class="text:grey-500" style=" cursor: pointer; white-space: nowrap">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="height: 1.1rem; vertical-align: -.15rem">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+						</svg>
+						<span data-caption>Copy</span>
+					</span>
+				</div>
+			</div>
+			<?php endforeach; ?>
+			<div class="spacer small"></div>
 		</div>
-		<div class="span l1 dials">
-			<ul>
-				<li>
-					<a href="#change" id="change-name">Change</a>
-					<a href="#change" id="cancel-name" class="hidden cancel">Cancel</a>
-				</li>
-			</ul>
-		</div>
-	</div>
-	
-	<div class="separator large light"></div>
-	
-	<!-- App URL -->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<div style="font-size: .75em; color: #555">
-				Public URL (users can click this to be directed to the app)
-			</div>
-			
-			<div class="field">
-				<input type="text" name="url" value="<?= __($app->url) ?>">
-			</div>
-		</div>
-		<div class="span l1 dials">
-			<ul>
-				<li>
-					<!-- No dials yet-->
-				</li>
-			</ul>
-		</div>
-	</div>
-	
-	<div class="separator large light"></div>
-	
-	<!-- App ID -->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<div style="font-size: .85em; color: #555">
-				App ID
-			</div>
-			
-			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<div class="property-value" id="id-container"><span class="fake-field"><?= __($app->appID) ?></span></div>
-			</div>
-		</div>
-		<div class="span l1 dials">
-			<ul>
-				<li>
-					<a id="id-copy" href="#copy">Copy</a>
-				</li>
-			</ul>
+		<div class="align-right">
+			<div class="spacer small"></div>
+			<a href="" class="button small borderless button-color-grey-600">Expire a secret</a>
+			<div class="horizontal-spacer"></div>
+			<a href="" class="button small outline" style="font-weight: bold">Add another secret</a>
 		</div>
 	</div>
-	
-	<div class="separator large light"></div>
-	
-	<!-- App Secret -->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<div style="font-size: .85em; color: #555">
-				App Secret
-			</div>
-			
-			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<div class="property-value" id="secret-container" data-actual="<?= __($app->appSecret) ?>"><em class="fake-field-ph">Hidden</em></div>
-			</div>
-		</div>
-		<div class="span l1 dials">
-			<ul>
-				<li><a id="secret-copy" href="#copy">Copy</a></li>
-				<li><a id="secret-hidden" href="#reveal">Reveal</a><a id="secret-visible" class="hidden" href="#hide">Hide</a></li>
-			</ul>
-		</div>
+</div>
+
+<div class="spacer medium"></div>
+
+<div class="row l1">
+	<div class="span l1">
+		<p class="text:grey-500" style="font-size: .8rem">
+			You must never share your secret with any other person. If you suspect somebody 
+			received access to your secret, plase use the expire secret button to remove 
+			the secret. If you suspect that your secret has been leaked, please proceed to 
+			evict all tokens generated by your application.
+		</p>
 	</div>
-	
-	<div class="separator large light"></div>
+</div>
+
+<div class="spacer large"></div>
 	
 	<!-- Icon -->
 	<div class="row l5 has-dials">
@@ -143,31 +120,6 @@
 	<div class="separator"></div>
 	
 	
-	<!-- System app-->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<input type="checkbox" name="system" id="chk_system" <?= $app->system? 'checked' : '' ?>>
-			<label for="chk_system">System application</label>
-		</div>
-		<div class="span l1 dials">
-		</div>
-	</div>
-	
-	<!-- Show in app drawer-->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<input type="checkbox" name="drawer" id="chk_system" <?= $app->drawer? 'checked' : '' ?>>
-			<label for="chk_drawer">Show in drawer</label>
-		</div>
-		<div class="span l1 dials">
-		</div>
-	</div>
-	
-	<div class="row l1">
-		<div class="span l1" style="text-align: right">
-			<input type="submit" class="button success" value="Save changes">
-		</div>
-	</div>
 </form>
 
 <div class="spacer" style="height: 100px"></div>
@@ -230,45 +182,96 @@
 </div>
 <?php endif; ?>
 
+<div class="spacer" style="height: 30px"></div>
 
 <!-- Go on about the contexts defined by this application-->
 <div class="spacer" style="height: 50px"></div>
 
-<div class="row">
-	<div class="span">
-		<div class="heading" data-sticky="top">
-			<h1 class="unpadded">Contexts</h1>
+<div class="row l1">
+	<div class="span l1">
+		<h1>Scopes</h1>
+	</div>
+</div>
+
+<div class="spacer small"></div>
+
+<div class="row l1">
+	<div class="span l1">
+		<p class="text:grey-600">
+			<small>
+			This is the list of scopes that your application has defined. Scopes fence off
+			some components of your application in order to let users decide with more
+			granularity wether they wish to grant access to other applications to the 
+			data your application contains and provides through it's API.
+			
+			You can't edit the scopes from the user interface, please refer to the 
+			SDK or API documentation to see how this data is managed.
+			</small>
+		</p>
+	</div>
+</div>
+
+<div class="spacer medium"></div>
+
+<?php $scopes = db()->table('client\scope')->getAll()->where('identifier', 'LIKE', $app->appID . '.%')->all(); ?>
+<?php foreach ($scopes as $scope): ?>
+<div class="row l1">
+	<div class="span l1">
+		<div class="box padded box-soft">
+			<div class="row s6 l9">
+				<div class="span s1 l1">
+					<img src="<?= url('image', 'icon', $scope->icon->_id) ?>" height="128" width="128">
+				</div>
+				<div class="span s5 l6">
+					<div><span class="text:grey-500"><?= __($scope->identifier, 200) ?></span></div>
+					<div class="spacer minuscule"></div>
+					<div class="text:grey-700"><strong><?= __($scope->caption) ?></strong></div>
+					<div class="text:grey-500"><?= __($scope->description, 200) ?></div>
+				</div>
+				<div class="span l2 align-right not-mobile">
+					<span title="Copy to clipboard" data-clipboard="<?= __($scope->identifier) ?>" class="text:grey-500" style=" cursor: pointer; white-space: nowrap">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="height: 1.1rem; vertical-align: -.15rem">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+						</svg>
+						<span data-caption>Copy</span>
+					</span>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
-
-<div class="spacer" style="height: 20px"></div>
- 
-<?php $contexts = db()->table('connection\context')->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup()->fetchAll(); ?>
-<?php foreach ($contexts as $context): ?>
-<div class="row l5 has-dials">
-	<div class="span l4">
-		<div style="font-size: .85em; color: #000"><?= __($context->title) ?></div>
-		<div style="font-size: .75em; color: #555"><?= __($context->descr, 200) ?></div>
-	</div>
-	<div class="span l1 dials">
-		<ul>
-			<li><a href="<?= url('context', 'edit', $context->_id) ?>">Edit</a></li>
-			<li><a href="<?= url('context', 'destroy', $context->_id) ?>">Destroy</a></li>
-			<li><a href="<?= url('context', 'granted', $context->_id) ?>">Applications</a></li>
-		</ul>
-	</div>
-</div>
 	
-<div class="separator large light"></div>
+<div class="spacer medium"></div>
 <?php endforeach; ?>
 
-<?php if ($contexts->isEmpty()): ?>
-<div style="padding: 50px; text-align: center; font-style: italic; color: #666">
-	This application has defined no contexts
+<?php if ($scopes->isEmpty()): ?>
+<div class="align-center text:grey-500" style="padding: 50px; font-style: italic;">
+	This application has defined no scopes
 </div>
 <?php endif; ?>
 
 <div class="spacer" style="height: 50px"></div>
 
 <script src="<?= spitfire\core\http\URL::asset('js/app-detail.min.js')?>"></script>
+
+<script>
+(function () {
+	document.querySelectorAll('.toggle-blur').forEach(function (e) {
+		e.addEventListener('click', function () { this.classList.toggle('blurred'); });
+	});
+	
+	document.querySelectorAll('[data-clipboard]').forEach(function (e) {
+		e.addEventListener('click', async function () { 
+			var self = this;
+			if (!navigator.clipboard) { throw "Clipboard unavailable"; }
+			await navigator.clipboard.writeText(this.dataset.clipboard);
+			self.classList.add('text:green-600');
+			self.querySelector('[data-caption]').innerHTML = 'Copied!'
+			setTimeout(function () { 
+				self.classList.remove('text:green-600'); 
+				self.querySelector('[data-caption]').innerHTML = 'Copy'
+			}, 800);
+		});
+	});
+}());
+</script>

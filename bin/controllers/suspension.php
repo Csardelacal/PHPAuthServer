@@ -11,7 +11,7 @@ use user\SuspensionModel;
  * and open the template in the editor.
  */
 
-class SuspensionController extends AppController
+class SuspensionController extends BaseController
 {
 	
 	

@@ -5,9 +5,18 @@ $errors = ob_get_clean();
 ob_start();
 
 $payload = Array(
-	 'location'=> (string)url('auth', 'oauth', $token->token)->absolute(),
-	 'token'   => $token->token,
-	 'expires' => $token->expires
+	'tokens'   => [
+		'access' => [
+			'type'  => 'Bearer',
+			'token' => $token->token,
+			'expires' => $token->expires
+		],
+		'refresh' => [
+			'type'  => 'Bearer',
+			'token' => $refresh->token,
+			'expires' => $refresh->expires
+		]
+	]
 );
 
 if (!empty($errors) && \spitfire\core\Environment::get('debug_mode')) {

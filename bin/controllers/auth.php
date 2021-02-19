@@ -23,30 +23,11 @@ class AuthController extends BaseController
 	 */
 	public function index($tokenid = null) {
 		if ($this->token) { $token = $this->token; }
-		elseif ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->where('expires', '>', time())->first(); }
+		elseif ($tokenid) { $token = db()->table('access\token')->get('token', $tokenid)->where('expires', '>', time())->first(); }
 		else              { $token = null; }
 		
 		#Check if the user has been either banned or suspended
 		$suspension = $token? db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch() : null;
-		
-		#Check if the application grants generous TTLs
-		$generous = Environment::get('phpAuth.token.extraTTL');
-		
-		#If the token does auto-extend, do so now.
-		if ($token && $token->extends && $token->expires < (time() + $token->ttl) ) {
-			$token->expires = time() + ($generous? $token->ttl * 1.15 : $token->ttl);
-			$token->store();
-		}
-		
-		#Check whether the app has signed the package, and whether it has been registered
-		$usage = db()->table('token\usage')->get('token', $token)->where('app', $this->authapp)->first();
-		
-		if (!$usage) {
-			$usage = db()->table('token\usage')->newRecord();
-			$usage->token = $token;
-			$usage->app   = $this->authapp;
-			$usage->store();
-		}
 		
 		$this->view->set('token', $token);
 		$this->view->set('suspension', $suspension);
@@ -54,76 +35,154 @@ class AuthController extends BaseController
 	
 	/**
 	 * 
+	 * @validate GET#response_type (string required)
+	 * @validate GET#client (string required)
+	 * @validate GET#state (string required)
+	 * @validate GET#redirect (string required)
+	 * @validate GET#challenge (string required)
+	 * 
 	 * @param type $tokenid
-	 * @return type
+	 * @return void
 	 * @layout minimal.php
 	 * @throws PublicException
 	 */
-	public function oauth($tokenid) {
+	public function oauth() {
 		
-		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : url('auth', 'invalidReturn');
-		$failureURL = isset($_GET['cancelurl'])? $_GET['cancelurl'] : $successURL;
+		/*
+		 * We're going to need the session to provide it's ID to the code challenge
+		 * model.
+		 */
+		$session = Session::getInstance();
 		
-		$token      = db()->table('token')->get('token', $tokenid)->fetch();
-		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
-		$session    = Session::getInstance();
+		/*
+		 * The response type used to be code or token for applications implementing
+		 * oAuth2 whenever the server and/or client does not support PKCE. Since our
+		 * server is implemented right from the start with PKCE in mind, we can 
+		 * enforce the use of the response_type of code and deny any requests with
+		 * token.
+		 */
+		if ($_GET['response_type'] !== 'code') {
+			throw new PublicException('This server does only accept a response_type of code. Please refer to the manual', 400);
+		}
 		
-		#Check whether the user was banned. If the account is disabled due to administrative
-		#action, we inform the user that the account was disabled and why.
-		$banned     = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
-		if ($banned) { throw new PublicException('Your account was banned, login was disabled. ' . $banned->reason, 401); }
+		if (!$session->getUser()) { 
+			$this->response->setBody('Redirecting...');
+			return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); 
+		}
+		
+		
+		/*
+		 * Check whether the user was banned. If the account is disabled due to administrative
+		 * action, we inform the user that the account was disabled and why.
+		 */
+		$banned = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
+		
+		if ($banned) { 
+			throw new LoginDisabledException($banned);
+		}
 		
 		#Check whether the user was disabled
 		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }
 		
-		#If the user already automatically grants the application in, then we continue
-		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
-		
-		#Only administrators are allowed to authorize tokens to system applications.
-		#This imposes a restriction to encourage administrators to be open about the 
-		#applications accessing user data. System applications are not required to
-		#disclose what data they have access to.
-		if ($token->app->system && !$this->isAdmin) { $grant = false; }
-		
-		#No token, no access
-		if (!$token) { throw new PublicException('No token', 404); }
-		
-		$this->view->set('token',     $token);
-		$this->view->set('cancelURL', $failureURL);
-		$this->view->set('continue',  (string) url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
-		
-		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); }
-		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
+		/*
+		 * Find the application intending to authenticate this request.
+		 */
+		$client = db()->table('authapp')->get('appID', $_GET['client'])->first(true);
 		
 		/*
-		 * If the user allowed the token to exist and granted the application access,
-		 * then we record the user's setting whether he wishes to be automatically
-		 * logged in next time.
-		 */
-		if ($grant === true) { 
-			
-			if (isset($_POST['authorize']) && !db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch()) {
-				$authorization = db()->table('user\authorizedapp')->newRecord();
-				$authorization->user = $this->user;
-				$authorization->app  = $token->app;
-				$authorization->store();
-			}
-			
-			/*
-			 * Retrieve the IP information from the client. This should allow the 
-			 * application to provide the user with data where they connected from.
-			 */
-			$ip = \IP::makeLocation();
-			if ($ip) {
-				$token->country = $ip->country_code;
-				$token->city    = substr($ip->city, 0, 20);
-			}
-			
-			$token->user = $this->user;
-			$token->store();
-			
-			return $this->response->getHeaders()->redirect($successURL); 
+		 * Check if the user needs to be strongly authenticated for this app
+		 */	
+		if ($client->twofactor && $this->level->count() < 2) {
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('auth', 'add', 2, ['returnto' => strval(URL::current())]));
+			return;
 		}
+		
+		/*
+		 * Start of by assuming that the client is not intended to be given the application's
+		 * data. We will later check whether the application was granted access and
+		 * will then flip this flag.
+		 */
+		$grant = false;
+		
+		#TODO: verify the challenge is not malformed
+		#TODO: Verify the scopes exist
+		
+		/*
+		 * Extract the redirect, and make sure that it points to a URL that the client
+		 * is authorized to send the user to.
+		 */
+		$redirect = $_GET['redirect'];
+		#TODO: Check the redirect is pointing to the application we intent to authenticate
+		
+		
+		if (false) {
+			#TODO: Check whether policy or permission disables the login for this application
+		}
+		
+		/*
+		 * Check if the user is approving the request to provide the application access
+		 * to their account, given the information they have.
+		 */
+		elseif ($this->request->isPost()) {
+			
+			#TODO: Verify that the resource owner is not being tricked into allowing
+			# the client access using XSRF
+			
+			#TODO: Check if permission allows this user to authenticate codes for this
+			# application. Important for elevated privileges apps
+			
+			$grant = $_POST['grant'] === 'grant';
+			
+		}
+		
+		/*
+		 * Check if the client is granted access to the application by policy, this
+		 * would allow the application to bypass the authentication flow.
+		 */
+		elseif (false) {
+			#TODO: Check whether the application is granted access by policy
+		}
+		
+		if ($grant) {
+			
+
+			/*
+			 * Record the code challenge, and the user approving this challenge, together
+			 * with the state the application passed.
+			 */
+			$challenge = db()->table('access\code')->newRecord();
+			$challenge->code = str_replace(['-', '/', '='], '', base64_encode(random_bytes(64)));
+			$challenge->client = $client;
+			$challenge->user = $this->user;
+			$challenge->state = $_GET['state'];
+			$challenge->challenge = $_GET['challenge'];
+			$challenge->scope = $_GET['scope'];
+			$challenge->redirect = $_GET['redirect'];
+			$challenge->created = time();
+			$challenge->expires = time() + 180;
+			$challenge->session = db()->table('session')->get('_id', $session->sessionId())->first();
+			$challenge->store();
+			
+			#TODO: Use url-reflection to create the URL instead of jsut appending the params
+			
+			$this->response->setBody('Redirect')->getHeaders()->redirect($challenge->redirect . '?' . http_build_query(['code' => $challenge->code, 'state' => $challenge->state]));
+		}
+		
+		/*
+		 * If the request was posted, the user selected to deny the application access
+		 */
+		elseif ($this->request->isPost()) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect($challenge->redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+		}
+		
+		/*
+		 * If the user has not been able to allow or deny the request, the server
+		 * should request their permission.
+		 */
+		
+		$this->view->set('client', $client);
+		$this->view->set('cancel', $_GET['redirect'] . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+		#TODO: If a target was defined, we would like to know that
 		
 	}
 	
@@ -314,6 +373,114 @@ class AuthController extends BaseController
 		$this->view->set('signatures', $signatures);
 		$this->view->set('confirm', $xsrf->getValue());
 		
+	}
+	
+	public function threshold($expect = 0) 
+	{
+		
+		
+		if (!$this->user) {
+			$this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(URL::current())]));
+			return;
+		}
+		
+		/*
+		 * Create a list of the available authentication providers for each level.
+		 * Depending on the expected threshold, the application will require a different
+		 * combination of providers:
+		 * 
+		 * For level 0, the application will check whether the user has a properly 
+		 * authenticated session, if this is not the case, the user will have to 
+		 * provide a primary authentication provider.
+		 * 
+		 * For level 1, the application will require the user to either confirm their
+		 * password, if the password wasn't confirmed in a given amount of time, 
+		 * or use any other primary provider.
+		 * 
+		 * For level 2, the application will require a secondary provider to be 
+		 * available.
+		 * 
+		 * Subsequent levels will only ask for additional providers to be given.
+		 */
+		$primary = Environment::get('phpauth.mfa.providers.primary')? explode(',', Environment::get('phpauth.mfa.providers.primary')) : ['email', 'password'];
+		$secondary = Environment::get('phpauth.mfa.providers.secondary')? explode(',', Environment::get('phpauth.mfa.providers.secondary')) : ['phone', 'rfc6238', 'backup', 'webauthn'];
+		
+		$levels = [
+			0 => [],
+			1 => $primary,
+			1 => $secondary,
+			3 => array_merge($primary, $secondary),
+			4 => array_merge($primary, $secondary),
+			5 => array_merge($primary, $secondary)
+		];
+		
+		/*
+		 * Create list of challenges that the user has already passed.
+		 */
+		$passed = db()->table('authentication\challenge')->get('session', $this->session)->where('cleared', '!=', null)->where('expires', '>', time())->all();
+		
+		/*
+		 * Fetch a list of all the authentication providers this user has available,
+		 * these can then be used to challenge the user
+		 */
+		$providers = db()->table('authentication\provider')
+			->get('expires', null)
+			->where('user', $this->user)
+			->all();
+		
+		/*
+		 * Check whether the sessin has been locked to this user and we're certain 
+		 * that they've logged in (even though their verification may have expired)
+		 */
+		if (!$this->user) {
+			#TODO: The user is not authenticated at all, this means we need to verify 
+			#their password or some other provider for sure.
+		}
+		
+		foreach ($levels as $level => $required) 
+		{
+			/*
+			 * We do not need to perform verification that is stronger than the app
+			 * requested us to do.
+			 */
+			if ($level > $expect) { continue; }
+			
+			/*
+			 * Create a list of accepted providers for this level.
+			 */
+			$accepted = collect($providers)->filter(function ($e) use ($required) {
+				return array_search($e->type, $required);
+			});
+			
+			/*
+			 * Check if any of the providers the user has passed recently was a 
+			 * primary provider
+			 */
+			$success = $passed->filter(function ($challenge) use ($accepted) {
+				return ($accepted->extract('_id')->contains($challenge->provider->_id));
+			})->rewind();
+			
+			/*
+			 * When successfully authenticating using a certain provider, the provider 
+			 * cannot be used again. Otherwise a properly typed password could let 
+			 * the user authenticate themselves to level 5 without any issue.
+			 */
+			if ($success) {
+				$providers = $providers->filter(function ($e) use ($success) { return $success->_id != $e->_id; });
+			}
+			else {
+				return $this->response->setBody('Redirect')->getHeaders()->redirect(url(['mfa', $accepted[0]->type], 'challenge', $accepted[0]->_id));
+			}
+		}
+		
+		/*
+		 * Redirect to where the user was headed since they passed all the trials 
+		 * in order to access this resource.
+		 * 
+		 * TODO: Check the user is trying to get redirected to a URL within this
+		 * application and not somewhere else.
+		 */
+		$this->response->setBody('Redirecting')->getHeaders()->redirect($_GET['returnto']);
 	}
 	
 }

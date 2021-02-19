@@ -15,32 +15,40 @@
 
 <div class="row">
 	<div class="span">
-		<div class="heading"><h1>Select webhook manager.</h1></div>
+		<h2>Select webhook manager.</h2>
 		
-		<div class="spacer" style="height: 10px"></div>
+		<div class="spacer medium"></div>
+		<p>
+			<small>
+				Select the application to send webhooks to. This application should be
+				able to distribute the webhooks to the applications in your network that
+				need them.
+				
+				Webhooks notify applications in your network of updates that occurred
+				to user accounts. These include user account updates, creation, deletion,
+				suspensions; token expiration and revocation; and application creation,
+				updates and deletions.
+			</small>
+		</p>
+		
+		<div class="spacer medium"></div>
 		
 		<form method="POST" action="">
-			<div class="row l3">
-				<div class="span l1">
-					Application
-				</div>
+			<div class="row l4">
+				<div class="span l1"></div>
 				<div class="span l2">
-					<div class="styled-select">
-						<select name="app">
-							<option value="">---</option>
-							<?php foreach($apps as $app): ?>
-							<option value="<?= $app->_id ?>" <?= $selected === $app->_id? 'selected' : '' ?>><?= $app->name ?></option>
-							<?php endforeach; ?>
-						</select>
+					<select class="frm-ctrl" name="app">
+						<option value="">---</option>
+						<?php foreach($apps as $app): ?>
+						<option value="<?= $app->_id ?>" <?= $selected === $app->_id? 'selected' : '' ?>><?= $app->name ?></option>
+						<?php endforeach; ?>
+					</select>
+					
+					<div class="spacer small"></div>
+					
+					<div class="align-right">
+						<input type="submit" class="button" value="Store">
 					</div>
-				</div>
-			</div>
-			
-			<div class="spacer" style="height: 20px"></div>
-			
-			<div class="row">
-				<div class="span" style="text-align: right">
-					<input type="submit" class="button" value="Store">
 				</div>
 			</div>
 		</form>

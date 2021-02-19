@@ -15,34 +15,34 @@ use spitfire\storage\database\pagination\Paginator;
 class AppController extends BaseController
 {
 		
-	public function _onload() {
+	public function _onload() 
+	{
 		parent::_onload();
 		
 		#Get the user model
 		if (!$this->user) { throw new PublicException('Not logged in', 403); }
 		
-		#Check if he's an admin
-		if (!$this->isAdmin) { throw new PublicException('Not an admin', 401); }
-		
 	}
 	
-	public function index() {
+	public function index() 
+	{
 		
-		$query = db()->table('authapp')->getAll();
+		$query = db()->table('authapp')->get('owner', $this->user);
 		$pag   = new Paginator($query);
 		
 		$this->view->set('pagination', $pag);
 		
 	}
 	
-	public function create() {
+	public function create() 
+	{
 		
 		if ($this->request->isPost()) {
 			$app = db()->table('authapp')->newRecord();
+			$app->owner = $this->user;
 			$app->name      = $_POST['name'];
+			#TODO: Replace with the proper app secret generation
 			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(35)));
-			$app->system    = false;
-			$app->drawer    = false;
 			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->validate()->store()->uri();
@@ -60,7 +60,12 @@ class AppController extends BaseController
 		
 	}
 	
-	public function detail(AuthAppModel$app) {
+	public function detail(AuthAppModel$app) 
+	{
+		
+		if ($app->owner->_id != $this->user->_id) {
+			throw new PublicException('Not allowed', 403);
+		}
 		
 		if ($this->request->isPost()) {
 			
@@ -69,17 +74,9 @@ class AppController extends BaseController
 				$app->name = trim($_POST['name']);
 			}
 			
-			#The URL users can use to access the app
-			if (isset($_POST['url'])) {
-				$app->url = trim($_POST['url']);
-			}
-			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->store()->uri();
 			}
-			
-			$app->system = isset($_POST['system']);
-			$app->drawer = isset($_POST['drawer']);
 			
 			$app->store();
 		}
@@ -88,17 +85,22 @@ class AppController extends BaseController
 		
 		try {
 			$hookapp = db()->table('authapp')->get('_id', SysSettingModel::getValue('cptn.h00k'))->first(true)->appID;
-			$this->view->set('webhooks', $this->hook->on($hookapp, $app->appID)->listeners);
+			//$this->view->set('webhooks', $this->hook->on($hookapp, $app->appID)->listeners);
 		} catch (Exception $ex) {
 			$this->view->set('webhooks', []);
 		}
 	}
 	
-	public function delete($appID) {
+	public function delete($appID) 
+	{
 		$xsrf = new \spitfire\io\XSSToken();
+		$app = db()->table('authapp')->get('_id', $appID)->fetch();
+		
+		if ($app->owner->_id != $this->user->_id) {
+			throw new PublicException('Not allowed', 403);
+		}
 		
 		if (isset($_GET['confirm']) && $xsrf->verify($_GET['confirm'])) {
-			$app = db()->table('authapp')->get('_id', $appID)->fetch();
 			$app->delete();
 			
 			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'deleted')));
