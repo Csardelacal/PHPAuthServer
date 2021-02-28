@@ -134,6 +134,9 @@ class ScopeController extends BaseController
 				$scope->icon->expires = time();
 				$scope->icon->store();
 				
+				#Create a task to incinerate the old icon
+				async(\defer\incinerate\IconTask::class, $scope->icon->_id);
+				
 				#Set the new one
 				$scope->icon = $icon;
 			}
