@@ -86,6 +86,43 @@ class ImageController extends Controller
 		
 	}
 	
+	public function icon ($id, $size = 32) 
+	{
+		$dbicon  = db()->table(IconModel::class)->get('_id', $id)->fetch(true);
+		
+		try { $icon = storage()->retrieve($dbicon->icon); }
+		catch (\Exception$e) { $icon = storage()->retrieve(self::DEFAULT_APP_ICON); }
+		
+		if(!in_array($size, self::$thumbSizes)) {
+			throw new PublicException('Invalid size', 1604272250);
+		}
+		
+		/*
+		 * Define the filename of the target, we store the thumbs for the objects
+		 * inside the same directory they get stored to.
+		 */
+		$name = pathinfo($icon->uri(), PATHINFO_BASENAME);
+		$file = storage()->retrieve(spitfire\core\Environment::get('uploads.directory') . $size . '_' . $name());
+		
+		if (!$file->exists()) {
+			$img = media()->load($icon);
+			$img->fit($size, $size);
+			$img->store($file);
+		}
+		
+		$responseHeaders = $this->response->getHeaders();
+		$responseHeaders->set('Content-type', $file->mime());
+		$responseHeaders->set('Cache-Control', 'no-transform,public,max-age=3600');
+		$responseHeaders->set('Expires', date('r', time() + 3600));
+		
+		if (ob_get_length() !== 0) {
+			throw new PrivateException('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
+		}
+		
+		return $this->response->setBody($file);
+		
+	}
+	
 	public function user($id, $size = 32) {
 		$user  = db()->table('user')->get('_id', $id)->fetch();
 		
