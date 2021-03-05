@@ -97,8 +97,12 @@ class PassportModel extends spitfire\Model
 		 * Passports can expire. This allows the system to exclude emails that have
 		 * been recently used from being abused to generate invalid accounts. It also
 		 * prevents usernames that have been used recently to be recycled.
+		 * 
+		 * This causes applications to potentially behave differently depending on
+		 * the expiration. For example, the login will treat passports with an expiration
+		 * date as revoked and not consider them. Meanwhile, the user registration
+		 * will consider expired passports to be reserved and not reuse them.
 		 */
-		$schema->verified = new IntegerField();
 		$schema->expires = new IntegerField();
 		
 		$schema->index($schema->type, $schema->content);
