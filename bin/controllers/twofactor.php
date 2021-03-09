@@ -44,6 +44,11 @@ class TwofactorController extends BaseController
 		
 		$this->view->set('enabled', $this->user->mfa);
 		
+		$this->view->set('emails', db()->table('authentication\provider')
+			->get('user', $this->user)->where('type', ProviderModel::TYPE_EMAIL)
+			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
+			->all());
+		
 		$this->view->set('phones', db()->table('authentication\provider')
 			->get('user', $this->user)->where('type', ProviderModel::TYPE_PHONE)
 			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
