@@ -202,9 +202,7 @@ class UserController extends BaseController
 		
 		$dbsession = db()->table('session')->get('_id', $s->sessionId())->first();
 		$token = isset($_GET['token'])? db()->table('access\token')->get('_id', $_GET['token'])->first() : null;
-		$rtt = URLReflection::fromURL($_GET['returnto']?? null);
-		
-		$s->destroy();
+		$rtt = $_GET['returnto']?? (string)url();
 		
 		if ($dbsession) {
 			$dbsession->expires = time();
@@ -226,16 +224,16 @@ class UserController extends BaseController
 			async()->defer(time(), new defer\notify\EndSessionTask($dbsession->_id));
 		}
 		
+		/**
+		 * If a token is provided, we can redirect the user to a target destination
+		 * within the application.
+		 */
 		if ($token) {
 			$locations = db()->table('client\location')->get('client', $token->client)->all();
-			#TODO: This should be extracted to a function with a proper name
+			
 			$accept = $locations->filter(function (LocationModel $e) use ($rtt) {
-				if ($rtt->getPassword() || $rtt->getUser()) { return false; }
-				if ($rtt->getProtocol() !== $e->protocol) { return false; }
-				if ($rtt->getServer() !== $e->hostname) { return false; }
-				if (!Strings::startsWith($rtt->getPath(), $e->path)) { return false; }
-				return true;
-			});
+				return $e->matches($rtt);
+			})->rewind();
 			
 			if (!$accept) { $rtt = false; }
 		}
@@ -244,11 +242,6 @@ class UserController extends BaseController
 		}
 		
 		$this->response->setBody('Redirect...');
-		#TODO: Actually the system should be redirecting to a location that waits for the
-		#session to be properly terminated before continuing.
-		#At that stage leaking the OIDC session id would be irrelevant, since it's already
-		#been terminated and therefore cannot be used for anything but checking whether
-		#the response was successful.
 		return $this->response->getHeaders()->redirect($rtt? strval($rtt) : url());
 	}
 	

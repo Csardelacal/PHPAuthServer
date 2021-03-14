@@ -60,5 +60,15 @@ class LocationModel extends Model
 		$schema->hostname = new StringField(255);
 		$schema->path     = new StringField(255);
 	}
+	
+	public function matches($url) {
+		$ref = \magic3w\http\url\reflection\URLReflection::fromURL($url);
+		
+		if ($ref->getPassword() || $ref->getUser()) { return false; }
+		if ($ref->getProtocol() !== $this->protocol) { return false; }
+		if ($ref->getServer() !== $$this->hostname) { return false; }
+		if (!Strings::startsWith($ref->getPath(), $this->path)) { return false; }
+		return true;
+	}
 
 }
