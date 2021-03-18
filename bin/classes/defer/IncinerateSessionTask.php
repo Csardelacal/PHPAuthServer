@@ -60,7 +60,17 @@ class IncinerateSessionTask extends Task
 		$tokens = db()->table('access\token')->get('session', $session)->range(0, 100);
 		
 		if (!$tokens->isEmpty()) {
-			$tokens->each(function ($token) { $this->defer->defer(max($token->expires, time()), new IncinerateAccessTokenTask($token->_id)); });
+			/*
+			 * The token is separated from the session when the user logs out. This
+			 * allows the application to keep the access token if needed. The application
+			 * is informed that the session was ended in a separate notify/endsession
+			 * task.
+			 */
+			$tokens->each(function ($token) { 
+				$token->session = null;
+				$token->store();
+			});
+			
 			$this->defer->defer(time() + 3600, $this);
 			return new Result('Session has dependant access tokens.');
 		}
@@ -72,7 +82,17 @@ class IncinerateSessionTask extends Task
 		$refresh = db()->table('access\refresh')->get('session', $session)->where('host', null)->range(0, 100);
 		
 		if (!$refresh->isEmpty()) {
-			$refresh->each(function ($token) { $this->defer->defer(max($token->expires, time()), new IncinerateRefreshTokenTask($token->_id)); });
+			/*
+			 * Separate the tokens from the session. They are no directly connected,
+			 * since the user requested the session to be terminated. This does not
+			 * revoke the authorization the application was given. It just allows the
+			 * user to signal they wish to no longer have this token active.
+			 */
+			$tokens->each(function ($token) { 
+				$token->session = null;
+				$token->store();
+			});
+			
 			$this->defer->defer(time() + 3600, $this);
 			return new Result('Session has dependant refresh tokens.');
 		}
