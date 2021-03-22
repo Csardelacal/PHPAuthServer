@@ -1,13 +1,18 @@
 <?php namespace access;
 
 use AuthAppModel;
+use DateTimeImmutable;
 use IntegerField;
+use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Reference;
 use SessionModel;
 use spitfire\exceptions\PrivateException;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 use StringField;
+use SysSettingModel;
 use UserModel;
 use function db;
 
@@ -101,6 +106,30 @@ class TokenModel extends Model
 		if (!$this->expires) {
 			$this->expires = time() + self::TOKEN_TTL;
 		}
+	}
+	
+	public function __toString() 
+	{
+		/*@var $jwt Configuration*/
+		$credential = db()->table('client\credential')->get('expires', null)->where('client', $this->client)->first(true);
+		$issuer     = db()->table('authapp')->get('_id', SysSettingModel::getValue('app.self'))->first(true);
+		
+		$time = new DateTimeImmutable();
+		$jwt = Configuration::forSymmetricSigner(
+			new Sha256(), 
+			InMemory::base64Encoded($credential->secret)
+		);
+		
+		return $jwt->builder()
+			->issuedBy($issuer->appID)
+			->withClaim('for', $this->client->appID)
+			->permittedFor($this->audience->appID)
+			->issuedAt($time->setTimestamp($this->created))
+			->identifiedBy($this->token)
+			->expiresAt($time->setTimestamp($this->expires))
+			->withClaim('uid', $this->owner->_id)
+			->getToken($jwt->signer(), $jwt->signingKey())
+			->toString();
 	}
 
 }

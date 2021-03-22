@@ -8,7 +8,7 @@ $payload = Array(
 	'tokens'   => [
 		'access' => [
 			'type'  => 'Bearer',
-			'token' => $token->token,
+			'token' => (string)$token,
 			'expires' => $token->expires
 		],
 		'refresh' => [
