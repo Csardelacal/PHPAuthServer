@@ -7,7 +7,7 @@ use spitfire\storage\database\Schema;
 
 /**
  * 
-@property UserModel $owner The user that created the client and manages it
+ * @property UserModel $owner The user that created the client and manages it
  * @todo Add ownership to the apps. So a certain user can administrate his own apps
  */
 class AuthAppModel extends Model

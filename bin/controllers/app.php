@@ -1,5 +1,6 @@
 <?php
 
+use client\CredentialModel;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
 use spitfire\storage\database\pagination\Paginator;
@@ -41,9 +42,6 @@ class AppController extends BaseController
 			$app = db()->table('authapp')->newRecord();
 			$app->owner = $this->user;
 			$app->name      = $_POST['name'];
-			#TODO: Replace with the proper app secret generation
-			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(35)));
-			$app->twofactor = false;
 			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->validate()->store()->uri();
@@ -55,6 +53,16 @@ class AppController extends BaseController
 			} while ($count !== 0);
 			
 			$app->store();
+			
+			/**
+			 * Generate a credential for the application. We default to generating a credential
+			 * that has no expiration (meaning the the user will never be requested to refresh
+			 * the credential), since generally credentials do offer a good level of security.
+			 */
+			$secret = db()->table(CredentialModel::class)->newRecord();
+			$secret->client = $app;
+			$secret->store();
+			
 			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'success')));
 			return;
 		}
