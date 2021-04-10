@@ -16,6 +16,9 @@ $payload = Array(
 			'token' => $refresh->token,
 			'expires' => $refresh->expires
 		]
+	],
+	'session' => [
+		'id' => $session->_id
 	]
 );
 

@@ -181,6 +181,7 @@ class TokenController extends BaseController
 		//Send the token to the view so it can render it
 		$this->view->set('token', $token);
 		$this->view->set('refresh', $refresh);
+		$this->view->set('session', $provided->session);
 	}
 	
 	/**
