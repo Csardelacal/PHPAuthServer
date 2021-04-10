@@ -121,7 +121,11 @@ class EmailController extends BaseController
 		
 		$twofactor = \authentication\ChallengeModel::make($email);
 		$to = ':' . $email->user->_id;
-
+		
+		/**
+		 * @todo This code needs to be refactored to conform with proper standards. Right now it would not
+		 * work appropriately.
+		 */
 		$request = request($url . '/message/create.json');
 		$request->get('signature', (string)$this->signature->make($self->appID, $self->appSecret, $relay->appID));
 		$request->post('to', $to);

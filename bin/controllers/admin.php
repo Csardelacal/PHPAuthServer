@@ -1,5 +1,6 @@
 <?php
 
+use magic3w\hook\sdk\Hook;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Image;
@@ -56,7 +57,7 @@ class AdminController extends BaseController
 			
 			#Record the setting, validating that CptnH00k works.
 			$app  = db()->table('authapp')->get('_id', $_POST['app'])->first(true);
-			$hook = new hook\Hook($app->url, $this->signature->make($app->appID, $app->appSecret, $app->appID));
+			$hook = new Hook(null, null); #TODO: Dependency injection must be used here.
 			
 			if (!$hook->authenticate()->authenticated) {
 				throw new ValidationException('Hook rejected the connection', 1807111058, ['Cannot connect to hook server']);

@@ -229,66 +229,6 @@ class AuthController extends BaseController
 	}
 	
 	/**
-	 * Allows third party applications to test whether a certain application 
-	 * exists within PHPAS. It expects the application to provide a series of 
-	 * _GET parameters that need to be properly provided for it to return a 
-	 * positive match.
-	 * 
-	 * * Application id
-	 * * A signature that authorizes the application.
-	 * 
-	 * The signature is composed of the application's id, the target application's
-	 * id, a random salt and a hash composed of these and the application's secret.
-	 * 
-	 * The signature should therefore prevent the application from forging requests
-	 * on behalf of third parties.
-	 * 
-	 * @todo For legacy purposes, this will accept an app id and secret combo 
-	 * which is no longer supported and will be removed in future versions.
-	 */
-	public function app() {
-		
-		if ($this->token && $this->token->expires < time()) { 
-			throw new PublicException('Invalid token: ' . __($_GET['token']), 400); 
-		}
-		
-		$remote  = isset($_GET['remote'])? $this->signature->verify($_GET['remote']) : null;
-		$context = isset($_GET['context'])? $_GET->toArray('context') : [];
-		
-		if ($remote) {
-			list($sig, $src, $tgt) = $remote;
-
-			if (!$tgt || $tgt->appID != $this->authapp->appID) {
-				throw new PublicException('Invalid remote signature. Target did not authorize itself properly', 401);
-			}
-
-			if ($sig->getContext()) {
-				throw new PublicException('Invalid signature. Context should be provided via _GET', 400);
-			}
-
-			$contexts = [];
-			$grant    = [];
-
-			foreach ($context as $ctx) {
-				$contexts[]  = $tgt->getContext($ctx);
-				$grant[$ctx] = $tgt->canAccess($src, $this->token? $this->token->user : null, $ctx);
-			}
-
-			$this->view->set('context', $contexts);
-			$this->view->set('grant', $grant);
-		}
-		else {
-			$this->view->set('context', null);
-			$this->view->set('grant', null);
-		}
-
-		$this->view->set('authenticated', !!$this->authapp);
-		$this->view->set('src', $this->authapp);
-		$this->view->set('remote', $src);
-		$this->view->set('token', $this->token);
-	}
-	
-	/**
 	 * 
 	 * @validate GET#signatures (required)
 	 * @param string $confirm

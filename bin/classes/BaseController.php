@@ -1,10 +1,8 @@
 <?php
 
 use magic3w\hook\sdk\Hook;
-use signature\Helper;
 use spitfire\core\Collection;
 use spitfire\exceptions\PrivateException;
-use spitfire\exceptions\PublicException;
 use spitfire\io\session\Session;
 
 abstract class BaseController extends Controller
@@ -16,11 +14,6 @@ abstract class BaseController extends Controller
 	protected $isAdmin = false;
 	protected $session;
 	
-	/**
-	 *
-	 * @var Helper
-	 */
-	protected $signature;
 	protected $authapp;
 	
 	/**
@@ -74,19 +67,6 @@ abstract class BaseController extends Controller
 			$this->level = collect();
 			$this->user  = null;
 			$isAdmin = false;
-		}
-		
-		$this->signature = new Helper(db());
-		
-		/*
-		 * Check if the request is being sent by an application that wishes to 
-		 * directly interact with the SSO Server.
-		 */
-		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
-		
-		if ($t && $self && $t->owner === null && $t->audience->_id === $self->_id) {
-			$this->authapp = $t->client;
-			$this->level   = collect();
 		}
 		
 		/*
