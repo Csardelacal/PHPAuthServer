@@ -1,5 +1,6 @@
 <?php namespace defer\notify;
 
+use magic3w\hook\sdk\Hook;
 use spitfire\defer\Result;
 use spitfire\defer\Task;
 
@@ -37,6 +38,17 @@ use spitfire\defer\Task;
 class EndSessionTask implements Task
 {
 	
+	/**
+	 * 
+	 * @var Hook
+	 */
+	private $hook;
+	
+	public function __construct(Hook $hook)
+	{
+		$this->hook = $hook;
+	}
+	
 	public function body($settings): Result 
 	{
 		/*
@@ -50,8 +62,6 @@ class EndSessionTask implements Task
 		/*
 		 * Create a hook client that can send the notification out.
 		 */
-		#TODO: The hook needs to be found via IOC
-		$hook = null;
 		$count = 0;
 		
 		/*
@@ -64,7 +74,7 @@ class EndSessionTask implements Task
 		foreach ($tokens as $token) {
 			/*@var $token \access\TokenModel*/
 			$payload = ['token' => $token->token, 'session' => $session->_id];
-			$hook->trigger(sprintf('app%s.session.logout', $token->client->appID), $payload);
+			$this->hook->trigger(sprintf('app%s.session.logout', $token->client->appID), $payload);
 			
 			$count++;
 		}
@@ -78,7 +88,7 @@ class EndSessionTask implements Task
 		foreach ($refresh as $token) {
 			/*@var $token \access\TokenModel*/
 			$payload = ['token' => $token->token, 'session' => $session->_id];
-			$hook->trigger(sprintf('app%s.session.logout', $token->client->appID), $payload);
+			$this->hook->trigger(sprintf('app%s.session.logout', $token->client->appID), $payload);
 			
 			$count++;
 		}
