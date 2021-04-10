@@ -133,6 +133,17 @@ class UserController extends BaseController
 		else {
 			$returnto = (string)url();
 		}
+		
+		if ($this->session && $this->level->count() < 1) {
+			return $this->response->setBody('Redirect')->getHeaders()->redirect(url('auth', 'threshold', 1, ['returnto' => strval(\spitfire\core\http\URL::current())]));
+		}
+		
+		if ($this->session && $this->level->count() > 0) {
+			$this->session->user = $this->session->candidate;
+			$this->session->store();
+			
+			return $this->response->setBody('Redirect')->getHeaders()->redirect($returnto);
+		}
 					
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			
@@ -153,12 +164,10 @@ class UserController extends BaseController
 			if ($user && $user->disabled !== null) {
 				throw new PublicException('This account has been disabled permanently.', 401);
 			}
-			elseif ($user && $user->checkPassword($_POST['password'])) {
-				$session = Session::getInstance();
-				$session->lock($user->_id);
-				
-				$dbsession = db()->table('session')->get('_id', $session->sessionId(false))->first(true);
-				$dbsession->user = $user;
+			elseif ($user) {
+				$dbsession = db()->table('session')->newRecord();
+				$dbsession->user   = null;
+				$dbsession->candidate  = $user;
 				$dbsession->device = DeviceModel::makeFromRequest();
 				$dbsession->ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])? $_SERVER['HTTP_X_FORWARDED_FOR']: $_SERVER['REMOTE_ADDR'];
 				
@@ -172,9 +181,14 @@ class UserController extends BaseController
 				}
 				
 				$dbsession->store();
-				async()->defer(time() + 86400 * 90, new IncinerateSessionTask($dbsession->_id));
 				
-				return $this->response->getHeaders()->redirect($returnto);
+				$session = Session::getInstance();
+				$session->lock($dbsession->_id);
+				
+				//async()->defer(time() + 86400 * 90, new IncinerateSessionTask($dbsession->_id));
+				
+				return $this->response->setBody('Redirect')->getHeaders()->redirect(url('auth', 'threshold', 1, ['returnto' => strval(\spitfire\core\http\URL::current())]));
+				
 			} else {
 				$this->view->set('message', 'Username or password did not match');
 			}
@@ -185,11 +199,12 @@ class UserController extends BaseController
 	
 	public function logout() {
 		$s = Session::getInstance();
-		$s->destroy();
 		
 		$dbsession = db()->table('session')->get('_id', $s->sessionId())->first();
 		$token = isset($_GET['token'])? db()->table('access\token')->get('_id', $_GET['token'])->first() : null;
-		$rtt = new URLReflection($_GET['returnto']?? null);
+		$rtt = URLReflection::fromURL($_GET['returnto']?? null);
+		
+		$s->destroy();
 		
 		if ($dbsession) {
 			$dbsession->expires = time();

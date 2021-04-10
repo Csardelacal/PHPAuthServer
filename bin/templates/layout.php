@@ -56,7 +56,7 @@
 						</div>
 					</div>
 				<?php else: ?>
-					<a class="menu-item" href="<?= url('account', 'login') ?>">Login</a>
+					<a class="menu-item" href="<?= url('user', 'login') ?>">Login</a>
 				<?php endif; ?>
 			</div>
 			<div class="center align-center">

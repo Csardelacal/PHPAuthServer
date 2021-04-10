@@ -49,12 +49,6 @@ class AuthController extends BaseController
 	public function oauth() {
 		
 		/*
-		 * We're going to need the session to provide it's ID to the code challenge
-		 * model.
-		 */
-		$session = Session::getInstance();
-		
-		/*
 		 * The response type used to be code or token for applications implementing
 		 * oAuth2 whenever the server and/or client does not support PKCE. Since our
 		 * server is implemented right from the start with PKCE in mind, we can 
@@ -65,7 +59,11 @@ class AuthController extends BaseController
 			throw new PublicException('This server does only accept a response_type of code. Please refer to the manual', 400);
 		}
 		
-		if (!$session->getUser()) { 
+		/*
+		 * When generating an oAuth session we do require the user to be fully 
+		 * authenticated.
+		 */
+		if (!$this->user) { 
 			$this->response->setBody('Redirecting...');
 			return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); 
 		}
@@ -160,7 +158,7 @@ class AuthController extends BaseController
 			$challenge->redirect = $_GET['redirect'];
 			$challenge->created = time();
 			$challenge->expires = time() + 180;
-			$challenge->session = db()->table('session')->get('_id', $session->sessionId())->first();
+			$challenge->session = $this->session;
 			$challenge->store();
 			
 			#TODO: Use url-reflection to create the URL instead of jsut appending the params
@@ -379,7 +377,7 @@ class AuthController extends BaseController
 	{
 		
 		
-		if (!$this->user) {
+		if (!$this->session) {
 			$this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(URL::current())]));
 			return;
 		}
@@ -388,10 +386,6 @@ class AuthController extends BaseController
 		 * Create a list of the available authentication providers for each level.
 		 * Depending on the expected threshold, the application will require a different
 		 * combination of providers:
-		 * 
-		 * For level 0, the application will check whether the user has a properly 
-		 * authenticated session, if this is not the case, the user will have to 
-		 * provide a primary authentication provider.
 		 * 
 		 * For level 1, the application will require the user to either confirm their
 		 * password, if the password wasn't confirmed in a given amount of time, 
@@ -406,9 +400,8 @@ class AuthController extends BaseController
 		$secondary = Environment::get('phpauth.mfa.providers.secondary')? explode(',', Environment::get('phpauth.mfa.providers.secondary')) : ['phone', 'rfc6238', 'backup', 'webauthn'];
 		
 		$levels = [
-			0 => [],
 			1 => $primary,
-			1 => $secondary,
+			2 => $secondary,
 			3 => array_merge($primary, $secondary),
 			4 => array_merge($primary, $secondary),
 			5 => array_merge($primary, $secondary)
@@ -425,17 +418,9 @@ class AuthController extends BaseController
 		 */
 		$providers = db()->table('authentication\provider')
 			->get('expires', null)
-			->where('user', $this->user)
+			->where('user', $this->session->candidate)
+			->setOrder('preferred', 'DESC')
 			->all();
-		
-		/*
-		 * Check whether the sessin has been locked to this user and we're certain 
-		 * that they've logged in (even though their verification may have expired)
-		 */
-		if (!$this->user) {
-			#TODO: The user is not authenticated at all, this means we need to verify 
-			#their password or some other provider for sure.
-		}
 		
 		foreach ($levels as $level => $required) 
 		{
@@ -451,6 +436,10 @@ class AuthController extends BaseController
 			$accepted = collect($providers)->filter(function ($e) use ($required) {
 				return array_search($e->type, $required);
 			});
+			
+			if ($accepted->isEmpty()) {
+				throw new PrivateException('Authentication provider for level ' . $level . ' is unavailable');
+			}
 			
 			/*
 			 * Check if any of the providers the user has passed recently was a 
@@ -469,7 +458,8 @@ class AuthController extends BaseController
 				$providers = $providers->filter(function ($e) use ($success) { return $success->_id != $e->_id; });
 			}
 			else {
-				return $this->response->setBody('Redirect')->getHeaders()->redirect(url(['mfa', $accepted[0]->type], 'challenge', $accepted[0]->_id));
+				$provider = $accepted->rewind();
+				return $this->response->setBody('Redirect')->getHeaders()->redirect(url('mfa', $provider->type, 'challenge', $provider->_id, ['returnto' => (string)URL::current()]));
 			}
 		}
 		

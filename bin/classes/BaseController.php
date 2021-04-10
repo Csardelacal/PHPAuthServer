@@ -13,8 +13,8 @@ abstract class BaseController extends Controller
 	 * @var UserModel|null 
 	 */
 	protected $user = null;
-	protected $token = null;
 	protected $isAdmin = false;
+	protected $session;
 	
 	/**
 	 *
@@ -41,7 +41,6 @@ abstract class BaseController extends Controller
 		#The user could also check the token
 		$s = Session::getInstance();
 		$u = $s->getUser();
-		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
 		
 		try {
 			#Check if the user is an administrator
@@ -51,33 +50,42 @@ abstract class BaseController extends Controller
 			$admingroupid = null;
 		}
 		
-		if ($u || $t) { 
+		#Find the application for the SSO Server
+		$self = db()->table(AuthAppModel::class)->get('_id', SysSettingModel::getValue('app.self'))->first();
+		
+		try { 
 		
 			#Export the user to the controllers that may need it.
-			$user = $u? db()->table('user')->get('_id', $u)->fetch() : $t->user;
+			$sess = db()->table('session')->get('_id', $u)->fetch(true);
+			$user = $sess->user;
 			$this->user  = $user;
-			$this->token = $t;
 			
 			#Retrieve the user's authentication level
 			$this->level = db()->table('authentication\challenge')
-				->get('session', db()->table('session')->get('_id', $s->sessionId())->first())
+				->get('session', $sess)
 				->where('cleared', '!=', null)
 				->where('expires', '>', time())
 				->all();
 			
 			$isAdmin = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
 		}
+		catch (\spitfire\exceptions\PrivateException $ex) {
+			#There was a problem loading the session
+			$this->level = collect();
+			$this->user  = null;
+			$isAdmin = false;
+		}
 		
 		$this->signature = new Helper(db());
 		
-		if (isset($_GET['signature']) && is_string($_GET['signature'])) {
-			list($signature, $src, $target) = $this->signature->verify();
-			
-			if ($target) {
-				throw new PublicException('_GET[signature] must not have remotes', 401);
-			}
-			
-			$this->authapp = $src;
+		/*
+		 * Check if the request is being sent by an application that wishes to 
+		 * directly interact with the SSO Server.
+		 */
+		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
+		
+		if ($t && $self && $t->owner === null && $t->audience->_id === $self->_id) {
+			$this->authapp = $t->client;
 			$this->level   = collect();
 		}
 		
@@ -91,6 +99,7 @@ abstract class BaseController extends Controller
 		}
 		
 		$this->isAdmin = $isAdmin?? false;
+		$this->session = $sess?? null;
 		
 		$this->view->set('level', $this->level);
 		$this->view->set('authUser', $this->user);

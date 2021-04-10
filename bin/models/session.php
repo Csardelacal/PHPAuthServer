@@ -33,6 +33,7 @@ use spitfire\storage\database\Schema;
  * tokens that have not been granted as offline will be terminated.
  * 
  * @property UserModel     $user     Session owner
+ * @property UserModel     $claim    When a user is logging in, they can claim to be a certain person. This is not a valid user authentication.
  * @property LocationModel $location The location from where the session was authorized
  * @property DeviceModel   $device   The device from which the session was authorized
  * 
@@ -44,6 +45,9 @@ use spitfire\storage\database\Schema;
 class SessionModel extends Model
 {
 	
+	protected const TOKEN_PREFIX = 's_';
+	const TOKEN_LENGTH = 50;
+	
 	/**
 	 * 
 	 * @param Schema $schema
@@ -52,7 +56,8 @@ class SessionModel extends Model
 	public function definitions(Schema $schema) {
 		#The session ID will be retrieved from the Session
 		unset($schema->_id);
-		$schema->_id      = new StringField(70);
+		$schema->_id      = new StringField(self::TOKEN_LENGTH);
+		$schema->candidate= new Reference(UserModel::class);
 		$schema->user     = new Reference(UserModel::class);
 		$schema->location = new Reference(LocationModel::class);
 		$schema->device   = new Reference(DeviceModel::class);
@@ -77,14 +82,17 @@ class SessionModel extends Model
 		$schema->created  = new IntegerField(true);
 		$schema->expires  = new IntegerField(true);
 		
-		$schema->payload  = new TextField();
-		
 		$schema->index($schema->_id)->setPrimary(true);
 		$schema->index($schema->expires);
 	}
 	
 	public function onbeforesave(): void {
 		parent::onbeforesave();
+		
+		if (!$this->_id) {
+			do { $this->_id = substr(self::TOKEN_PREFIX . bin2hex(random_bytes(25)), 0, self::TOKEN_LENGTH); } 
+			while (db()->table('session')->get('_id', $this->_id)->first());
+		}
 		
 		if (!$this->created) { $this->created = time();	}
 		$this->expires = time() + 86400 * 90;

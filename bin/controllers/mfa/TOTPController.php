@@ -165,9 +165,10 @@ class TOTPController extends BaseController
 			if ( intval($_POST['challenge']) !== intval($totp)) { throw new ValidationException('Code failed', 0, []); }
 			
 			$challenge = db()->table('authentication\challenge')->newRecord();
-			#TODO: $challenge->session = ;
+			$challenge->session = $this->session;
 			$challenge->provider = $provider;
 			$challenge->cleared = time();
+			$challenge->expires = time() + 1200;
 			$challenge->store();
 			
 			#TODO: Add flag for whether the provider is active

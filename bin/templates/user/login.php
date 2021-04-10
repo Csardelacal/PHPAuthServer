@@ -36,7 +36,7 @@
 
 			<div class="spacer small"></div>
 			
-			<div class="frm-ctrl-grp">
+			<!--<div class="frm-ctrl-grp">
 				<div class="frm-ctrl-outer">
 					<input class="frm-ctrl" placeholder="" type="password" name="password" id="password" autocomplete="current-password" required aria-describedby="password-constraints" minlength="8" style="height: 3.275rem">
 					<label for="password">Password</label>
@@ -58,7 +58,7 @@
 						</button>
 					</span>
 				</div>
-			</div>
+			</div>-->
 			
 			<div class="spacer small"></div>
 			

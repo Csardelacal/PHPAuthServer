@@ -2,9 +2,11 @@
 
 use authentication\ProviderModel;
 use BaseController;
+use spitfire\core\http\URL;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PrivateException;
 use spitfire\validation\ValidationException;
+use Strings;
 use function db;
 use function url;
 
@@ -50,10 +52,16 @@ class PasswordController extends BaseController
 		 * a stolen session cannot hijack an account.
 		 */
 		if (!$this->user) {
-			#TODO: Redirect to login
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', ['returnto' => (string) URL::current()]));
 		}
 		
-		#TODO: Require the user to be strongly authenticated to perform this action
+		/*
+		 * If the user has multi factor authentication enabled, we check that they
+		 * are indeed strongly authenticated before continuing.
+		 */
+		if ($this->level->count() < ($this->user->mfa? 2 : 1)) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('auth', 'threshold', ($this->user->mfa? 2 : 1), ['returnto' => (string)URL::current()]));
+		}
 		
 		/*
 		 * Fetch the authentication provider for the password. The user can only
@@ -118,8 +126,15 @@ class PasswordController extends BaseController
 	public function challenge() 
 	{
 		
-		#TODO: This needs to work with session candidates
-		$user = $this->user;
+		if (!$this->session) {
+			$this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(URL2::current())]));
+			return;
+		}
+		
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { $returnto = $_GET['returnto']; }
+		else { $returnto = (string)url('twofactor'); }
+		
+		$user = $this->session->candidate;
 		
 		/*
 		 * Fetch the authentication provider for the password. The user can only
@@ -129,7 +144,7 @@ class PasswordController extends BaseController
 		 * could be given if the administrator created an account for a user on
 		 * a server that has no sign-up method)
 		 */
-		$provider = db()->table('authentication\provider')->get('user', $user)->where('type', ProviderModel::TYPE_PASSWORD)->first();
+		$provider = db()->table('authentication\provider')->get('user', $user)->where('expires', null)->where('type', ProviderModel::TYPE_PASSWORD)->first();
 		
 		/*
 		 * If there is no password hashing mechanism, we should abort ASAP. Since 
@@ -163,10 +178,9 @@ class PasswordController extends BaseController
 			}
 			
 			$challenge = db()->table('authentication\challenge')->newRecord();
-			$challenge->user = $user;
-			$challenge->type = ProviderModel::TYPE_PASSWORD;
-			#TODO: The challenge needs to be locked to the session authenticating the user
-			//$challenge->session = ;
+			$challenge->provider = $provider;
+			$challenge->session = $this->session;
+			$challenge->expires = time() + 1200;
 			$challenge->cleared = time();
 			$challenge->store();
 			
@@ -174,7 +188,7 @@ class PasswordController extends BaseController
 			 * Once the password has been properly set, redirect the user to a success
 			 * page.
 			 */
-			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('twofactor'));
+			$this->response->setBody('Redirect...')->getHeaders()->redirect($returnto);
 		}
 		catch (HTTPMethodException $ex) {
 			/*Show the form*/
