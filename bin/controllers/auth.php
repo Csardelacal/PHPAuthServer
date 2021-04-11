@@ -215,7 +215,18 @@ class AuthController extends BaseController
 		 * If the request was posted, the user selected to deny the application access
 		 */
 		elseif ($this->request->isPost()) {
-			$this->response->setBody('Redirect')->getHeaders()->redirect($challenge->redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+			$this->response->setBody('Redirect')->getHeaders()->redirect($redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+		}
+		
+		/**
+		 * If the application requested a silent authentication, we do not continue to seek permission
+		 * from the resource owner, since the application is explicitly asking us not to do so.
+		 * 
+		 * While the application has the option to ask us to not prompt the user, this will not change the
+		 * server's decision and will just result in a denied error being issued immediately.
+		 */
+		elseif (($_GET['prompt']?? false) === 'none') {
+			$this->response->setBody('Redirect')->getHeaders()->redirect($redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
 		}
 		
 		/*
