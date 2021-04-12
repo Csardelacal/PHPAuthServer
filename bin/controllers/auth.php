@@ -196,11 +196,12 @@ class AuthController extends BaseController
 			 */
 			$challenge = db()->table('access\code')->newRecord();
 			$challenge->code = str_replace(['-', '/', '='], '', base64_encode(random_bytes(64)));
+			$challenge->audience = $audience;
 			$challenge->client = $client;
 			$challenge->user = $this->user;
 			$challenge->state = $_GET['state'];
 			$challenge->challenge = sprintf('%s:%s', $code_challenge_method, $code_challenge);
-			$challenge->scope = $_GET['scope'];
+			$challenge->scope = $scopes->extract('identifier')->join(' ');
 			$challenge->redirect = (string)$redirect;
 			$challenge->created = time();
 			$challenge->expires = time() + 180;

@@ -42,6 +42,18 @@ class CodeModel extends Model
 	 */
 	public function definitions(Schema $schema) {
 		$schema->client    = new \Reference('authapp');
+		
+		/**
+		 * The audience needs to be defined in the code section of the authentication
+		 * process so the usr can make an informed decision about whether they wish to 
+		 * grant access to a specific application for a specific audience.
+		 */
+		$schema->audience  = new \Reference('authapp');
+		
+		/**
+		 * The resource owner. This user is left unpopulated until the application can 
+		 * authenticate the user and collect their consent.
+		 */
 		$schema->user      = new \Reference('user');
 		
 		$schema->code      = new \StringField(255);
