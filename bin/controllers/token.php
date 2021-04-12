@@ -34,7 +34,18 @@ class TokenController extends BaseController
 		$type    = $_POST['grant_type']?? 'code';
 		$appid   = isset($_POST['client'])? $_POST['client'] : $_GET['client'];
 		$secret  = $_POST['secret']?? null;
-		$expires = Environment::get('phpas.token.expiration')?: 14400;
+		
+		/*
+		 * We define the algorithms that the server understands. Since the oauth
+		 * spec defines a different name for sha256, we will make our server translates
+		 * the hashing algo back.
+		 * 
+		 * We currently do not service anything but sha256.
+		 */
+		$hash_algos = [
+			's256' => 'sha256',
+			'sha256' => 'sha256'
+		];
 		
 		/*
 		 * Check if an app with the provided ID does indeed exist.
@@ -88,10 +99,18 @@ class TokenController extends BaseController
 			}
 
 			/*
-			 * Check the code verifier
+			 * Check the code verifier. We need to make sure that the algorhithm
+			 * exists, so we don't pass invalid data into the hasing function.
 			 */
 			list($algo, $hash) = explode(':', $code->challenge);
-
+			
+			if (isset($hash_algos[strtolower($algo)])) {
+				$algo = $hash_algos[strtolower($algo)];
+			}
+			else {
+				throw new PublicException('Invalid hashing algorhithm specified.', 400);
+			}
+			
 			if (hash($algo, $_POST['verifier']) !== $hash) {
 				throw new PublicException('Hash failed', 403);
 			}
@@ -101,9 +120,26 @@ class TokenController extends BaseController
 			 */
 			$code->expires = time();
 			$code->store();
-
-			$token = TokenModel::create($code->session, $app, null, $code->user, $expires);
-			$refresh = RefreshModel::create($app, null, $code->user, time() + 86400 * 365 * 5);
+			
+			#TODO: This code could be extracted into an helper that could be pulled 
+			#in via service providers to reduce the amount of code duplication.
+			/*
+			 * Instance a token that can be sent to the client to provide them access
+			 * to the resources of the owner.
+			 */
+			$token = db()->table(TokenModel::class)->newRecord();
+			$token->session = $code->session;
+			$token->owner   = $code->user;
+			$token->audience = $code->audience;
+			$token->client  = $app;
+			$token->store();
+			
+			$refresh = db()->table(RefreshModel::class)->newRecord();
+			$refresh->session = $code->session;
+			$refresh->owner   = $code->user;
+			$refresh->audience = $code->audience;
+			$refresh->client  = $app;
+			$refresh->store();
 		}
 		elseif ($type === 'refresh_token') {
 			/**
@@ -118,8 +154,25 @@ class TokenController extends BaseController
 				throw new PublicException('Tried refreshing a token owned by a different client', 403);
 			}
 			
-			$token = TokenModel::create($provided->session, $app, null, $provided->owner, $expires);
-			$refresh = RefreshModel::create($app, null, $provided->owner, time() + 86400 * 365 * 5);
+			#TODO: This code could be extracted into an helper that could be pulled 
+			#in via service providers to reduce the amount of code duplication.
+			/*
+			 * Instance a token that can be sent to the client to provide them access
+			 * to the resources of the owner.
+			 */
+			$token = db()->table(TokenModel::class)->newRecord();
+			$token->session = $provided->session;
+			$token->owner   = $provided->owner;
+			$token->audience = $provided->audience;
+			$token->client  = $provided->client;
+			$token->store();
+			
+			$refresh = db()->table(RefreshModel::class)->newRecord();
+			$refresh->session = $provided->session;
+			$refresh->owner   = $provided->owner;
+			$refresh->audience = $provided->audience;
+			$refresh->client  = $provided->client;
+			$refresh->store();
 		}
 		else {
 			throw new PublicException('Invalid grant_type selected', 400);

@@ -43,6 +43,7 @@ class AppController extends BaseController
 			$app->name      = $_POST['name'];
 			#TODO: Replace with the proper app secret generation
 			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(35)));
+			$app->twofactor = false;
 			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->validate()->store()->uri();

@@ -117,8 +117,7 @@ class EmailController extends BaseController
 			throw new PublicException('Login required to remove email addresses', 401);
 		}
 		
-		#TODO: Replace that OIDC Session placeholder
-		$strength = db()->table('authentication\challenge')->get('session', '[OIDC Session goes here]')->where('cleared', '>', time() - 1200)->all();
+		$strength = $this->level;
 		$expected = $this->user->mfa? 2 : 1;
 		
 		if ($strength->count() < $expected) {

@@ -53,13 +53,14 @@ class TokenModel extends Model
 	
 	const TOKEN_PREFIX = 't_';
 	const TOKEN_LENGTH = 50;
+	const TOKEN_TTL = 1800;
 	
 	public function definitions(Schema $schema) {
 		$schema->token   = new StringField(self::TOKEN_LENGTH);
 		
 		$schema->owner   = new Reference('user');
 		$schema->client  = new Reference('authapp');
-		$schema->host    = new Reference('authapp');
+		$schema->audience = new Reference('authapp');
 		
 		$schema->scopes  = new StringField(255);
 		
@@ -73,32 +74,6 @@ class TokenModel extends Model
 		
 	}
 	
-	/**
-	 * There's only one endpoint generating tokens, and the function's signature is 
-	 * getting very unwieldy. So we're moving best this to the controller.
-	 * 
-	 * @deprecated since version 0.2-dev
-	 * @param SessionModel $session
-	 * @param type $client
-	 * @param type $server
-	 * @param type $owner
-	 * @param type $expires
-	 * @return type
-	 * @throws PrivateException
-	 */
-	public static function create(SessionModel $session, $client, $server = null, $owner = null, $expires = 14400) {
-		$record = db()->table('access\token')->newRecord();
-		$record->created = time();
-		$record->owner   = $owner;
-		$record->host    = $server?: $client;
-		$record->client  = $client;
-		$record->session = $session;
-		$record->expires = time() + $expires;
-		$record->ttl     = $expires;
-		$record->store();
-		return $record;
-	}
-	
 	public function onbeforesave(): void {
 		parent::onbeforesave();
 		
@@ -109,6 +84,22 @@ class TokenModel extends Model
 		if (!$this->token) {
 			do { $this->token = substr(self::TOKEN_PREFIX . bin2hex(random_bytes(25)), 0, self::TOKEN_LENGTH); } 
 			while (db()->table('access\token')->get('token', $this->token)->first());
+		}
+		
+		/*
+		 * If the token has no creation date we assume that it has never been stored
+		 * before and record the creation time.
+		 */
+		if (!$this->created) {
+			$this->created = time();
+		}
+		
+		/*
+		 * Set the expiration time to a timestamp in the future (by default 30 minutes)
+		 * if the expiration was not explicitly set before.
+		 */
+		if (!$this->expires) {
+			$this->expires = time() + self::TOKEN_TTL;
 		}
 	}
 

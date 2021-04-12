@@ -1,7 +1,11 @@
 <?php
 
 use app\AuthLock;
+use client\LocationModel;
+use client\ScopeModel;
 use connection\AuthModel;
+use exceptions\suspension\LoginDisabledException;
+use magic3w\http\url\reflection\URLReflection;
 use signature\Signature;
 use spitfire\core\Environment;
 use spitfire\core\http\URL;
@@ -39,7 +43,8 @@ class AuthController extends BaseController
 	 * @validate GET#client (string required)
 	 * @validate GET#state (string required)
 	 * @validate GET#redirect (string required)
-	 * @validate GET#challenge (string required)
+	 * @validate GET#code_challenge (string required)
+	 * @validate GET#code_challenge_method (string required)
 	 * 
 	 * @param type $tokenid
 	 * @return void
@@ -47,6 +52,30 @@ class AuthController extends BaseController
 	 * @throws PublicException
 	 */
 	public function oauth() {
+		
+		$code_challenge = $_GET['code_challenge'];
+		$code_challenge_method = $_GET['code_challenge_method']?? 'plain';
+		$audience = $_GET['audience']? 
+			db()->table(AuthAppModel::class)->get('appID', $_GET['audience'])->first(true) : 
+			db()->table(AuthAppModel::class)->get('_id', SysSettingModel::getValue('app.self'))->first(true);
+		
+		/*
+		 * In order to ensure that the client can be given appropriate access, the 
+		 * server needs to make sure that the application requests the appropriate
+		 * scopes for this application.
+		 * 
+		 * An application must never request access to a scope that doesn't exist,
+		 * granting access to undefined scopes may lead to dangerous behavior.
+		 * 
+		 * Scopes are defined by the audience that receives the token, to make sure
+		 * you request the right scopes, refer to the documentation of the application
+		 * you wish to read data from.
+		 */
+		$scopes = collect(explode(' ', $_GET['scope']))
+			->filter()
+			->each(function ($e) use ($audience) {
+				return db()->table(ScopeModel::class)->get('identifier', sprintf('%s.%s', $audience->appID, $e))->first(true);
+			});
 		
 		/*
 		 * The response type used to be code or token for applications implementing
@@ -102,15 +131,35 @@ class AuthController extends BaseController
 		 */
 		$grant = false;
 		
-		#TODO: verify the challenge is not malformed
-		#TODO: Verify the scopes exist
+		/*
+		 * Our implementation does not accept anything but S256, plain code_challenges
+		 * are going to be rejected. These could be intercepted easily.
+		 */
+		if ($code_challenge_method != 'S256') {
+			throw new PublicException('Invalid code_challenge_method', 400);
+		}
 		
 		/*
 		 * Extract the redirect, and make sure that it points to a URL that the client
 		 * is authorized to send the user to.
 		 */
-		$redirect = $_GET['redirect'];
-		#TODO: Check the redirect is pointing to the application we intent to authenticate
+		$redirect = URLReflection::fromURL($_GET['redirect']);
+		
+		/*
+		 * In order to validate the redirect we make sure that the protocol, hostname
+		 * and paths for the redirect match.
+		 */
+		$valid = db()->table(LocationModel::class)->get('client', $client)->all()->reduce(function ($valid, LocationModel $e) use ($redirect) {
+			if ($e->protocol !== $redirect->getProtocol()) { return $valid; }
+			if ($e->hostname !== $redirect->getServer()) { return $valid; }
+			if (!Strings::startsWith($redirect->getPath(), $e->path)) { return $valid; }
+			
+			return true;
+		}, false);
+		
+		if (!$valid) {
+			throw new PublicException(sprintf('Redirect to %s is invalid', __($redirect)), 401);
+		}
 		
 		
 		if (false) {
@@ -122,9 +171,6 @@ class AuthController extends BaseController
 		 * to their account, given the information they have.
 		 */
 		elseif ($this->request->isPost()) {
-			
-			#TODO: Verify that the resource owner is not being tricked into allowing
-			# the client access using XSRF
 			
 			#TODO: Check if permission allows this user to authenticate codes for this
 			# application. Important for elevated privileges apps
@@ -153,17 +199,16 @@ class AuthController extends BaseController
 			$challenge->client = $client;
 			$challenge->user = $this->user;
 			$challenge->state = $_GET['state'];
-			$challenge->challenge = $_GET['challenge'];
+			$challenge->challenge = sprintf('%s:%s', $code_challenge_method, $code_challenge);
 			$challenge->scope = $_GET['scope'];
-			$challenge->redirect = $_GET['redirect'];
+			$challenge->redirect = (string)$redirect;
 			$challenge->created = time();
 			$challenge->expires = time() + 180;
 			$challenge->session = $this->session;
 			$challenge->store();
 			
-			#TODO: Use url-reflection to create the URL instead of jsut appending the params
-			
-			$this->response->setBody('Redirect')->getHeaders()->redirect($challenge->redirect . '?' . http_build_query(['code' => $challenge->code, 'state' => $challenge->state]));
+			return $this->response->setBody('Redirect')
+				->getHeaders()->redirect((clone $redirect)->setQueryString(['code' => $challenge->code, 'state' => $challenge->state]));
 		}
 		
 		/*
@@ -177,11 +222,10 @@ class AuthController extends BaseController
 		 * If the user has not been able to allow or deny the request, the server
 		 * should request their permission.
 		 */
-		
 		$this->view->set('client', $client);
-		$this->view->set('cancel', $_GET['redirect'] . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
-		#TODO: If a target was defined, we would like to know that
-		
+		$this->view->set('audience', $audience);
+		$this->view->set('redirect', (string)$redirect);
+		$this->view->set('cancel', (string)(clone $redirect)->setQueryString(['error' => 'denied', 'description' => 'Authentication request was denied']));
 	}
 	
 	/**

@@ -44,8 +44,13 @@
             "source": {
                 "type": "git",
                 "url": "https://phabricator.magic3w.com/source/permission-PHP-SDK.git",
-                "reference": "872b399182d83caafdc7c142ac089551356974e1"
+                "reference": "b457f030ac81e8b613b8275f23efc3475f440471"
             },
+            "require": {
+                "magic3w/url-reflection": "dev-master",
+                "spitfire/request": "dev-master"
+            },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -63,7 +68,7 @@
                 }
             ],
             "description": "Allows your application to communicate with a permission server through a simple API",
-            "time": "2020-08-26T15:10:23+00:00"
+            "time": "2020-12-17T09:06:38+00:00"
         },
         {
             "name": "magic3w/url-reflection",
@@ -71,7 +76,7 @@
             "source": {
                 "type": "git",
                 "url": "https://phabricator.magic3w.com/source/url-reflection.git",
-                "reference": "6d7529af43c2cb1ed264e9b88d257ac4066b641c"
+                "reference": "341d1ede12d28159101b77c8ae12b544dba15a8c"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.3"
@@ -94,7 +99,7 @@
                 }
             ],
             "description": "Allows applications to have a URL parsed and retrieve information about it's components",
-            "time": "2020-11-04T12:01:53+00:00"
+            "time": "2021-02-11T13:17:34+00:00"
         },
         {
             "name": "spitfire/defer",
@@ -130,9 +135,10 @@
             "source": {
                 "type": "git",
                 "url": "https://phabricator.magic3w.com/source/spitfire-request.git",
-                "reference": "2567db6a18f287cf33ffc93de1c8aaf7b7c7c3a6"
+                "reference": "cc2a34540bf114d97d269b9c61f37ee983dcc9a5"
             },
             "require": {
+                "ext-curl": "*",
                 "magic3w/url-reflection": "dev-master"
             },
             "require-dev": {
@@ -156,7 +162,7 @@
                 }
             ],
             "description": "Spitfire request mechanism",
-            "time": "2020-12-28T14:18:45+00:00"
+            "time": "2020-12-28T15:14:13+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -218,16 +224,16 @@
     "packages-dev": [
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.64",
+            "version": "0.12.79",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "23eb1cb7ae125f45f1d0e48051bcf67a9a9b08aa"
+                "reference": "dd7769915648b704b9bd12925994457f1c2c8442"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/23eb1cb7ae125f45f1d0e48051bcf67a9a9b08aa",
-                "reference": "23eb1cb7ae125f45f1d0e48051bcf67a9a9b08aa",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/dd7769915648b704b9bd12925994457f1c2c8442",
+                "reference": "dd7769915648b704b9bd12925994457f1c2c8442",
                 "shasum": ""
             },
             "require": {
@@ -258,7 +264,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.64"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.79"
             },
             "funding": [
                 {
@@ -274,7 +280,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-21T11:59:02+00:00"
+            "time": "2021-02-25T16:44:57+00:00"
         }
     ],
     "aliases": [],
