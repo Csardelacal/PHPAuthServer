@@ -208,6 +208,34 @@ class AuthController extends BaseController
 			$challenge->session = $this->session;
 			$challenge->store();
 			
+			foreach ($scopes as $scope) {
+				/**
+				 * Fetch the user's consent, so if we didn't have that on record before, we can record it
+				 * now. This is automatically done, because the user has consented to granting the application
+				 * access to the scopes.
+				 * 
+				 * Please note that the user should be able to revoke the consent to the use of their data
+				 * at any time, but we also acknowledge that asking for consent for the same actions over and
+				 * over does not lead to better security and causes user exhaustion.
+				 * 
+				 * Also, most malicious apps, will have the ability to just cache the data they did receive
+				 * from the user, and they still need the user to be present in order to refresh it.
+				 */
+				$consent = db()->table(\user\ConsentModel::class)
+					->get('client', $client)
+					->where('scope', $scope)
+					->where('user', $this->user)
+					->where('revoked', null)->first();
+				
+				if (!$consent) { 
+					$consent = db()->table(\user\ConsentModel::class)->newRecord();
+					$consent->client = $client;
+					$consent->scope = $scope;
+					$consent->user = $this->user;
+					$consent->store();
+				}
+			}
+			
 			return $this->response->setBody('Redirect')
 				->getHeaders()->redirect((clone $redirect)->setQueryString(['code' => $challenge->code, 'state' => $challenge->state]));
 		}
