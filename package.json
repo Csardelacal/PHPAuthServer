@@ -17,10 +17,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "qrcode-generator": "^1.4.4"
+    "qrcode-generator": "^1.4.4",
+    "spinner-material": "^1.0.0"
   },
   "devDependencies": {
-    "laravel-mix": "^6.0.10",
-    "postcss": "^8.2.4"
+    "laravel-mix": "^6.0.16",
+    "postcss": "^8.2.10"
   }
 }
