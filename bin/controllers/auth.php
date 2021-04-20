@@ -441,7 +441,7 @@ class AuthController extends BaseController
 		 * Subsequent levels will only ask for additional providers to be given.
 		 */
 		$primary = Environment::get('phpauth.mfa.providers.primary')? explode(',', Environment::get('phpauth.mfa.providers.primary')) : ['email', 'password'];
-		$secondary = Environment::get('phpauth.mfa.providers.secondary')? explode(',', Environment::get('phpauth.mfa.providers.secondary')) : ['phone', 'rfc6238', 'backup', 'webauthn'];
+		$secondary = Environment::get('phpauth.mfa.providers.secondary')? explode(',', Environment::get('phpauth.mfa.providers.secondary')) : ['phone', 'rfc6238', 'backup-code', 'webauthn'];
 		
 		$levels = [
 			1 => $primary,
@@ -514,7 +514,7 @@ class AuthController extends BaseController
 		 * TODO: Check the user is trying to get redirected to a URL within this
 		 * application and not somewhere else.
 		 */
-		$this->response->setBody('Redirecting')->getHeaders()->redirect($_GET['returnto']);
+		$this->response->setBody('Redirecting')->getHeaders()->redirect($_GET['returnto']?? url());
 	}
 	
 }

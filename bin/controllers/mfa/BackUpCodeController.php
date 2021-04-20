@@ -3,8 +3,11 @@
 use authentication\ChallengeModel;
 use authentication\ProviderModel;
 use BaseController;
+use spitfire\core\http\URL;
 use spitfire\exceptions\HTTPMethodException;
+use spitfire\validation\ValidationException;
 use function db;
+use function url;
 
 /* 
  * The MIT License
@@ -35,7 +38,8 @@ class BackUpCodeController extends BaseController
 	
 	public function index() 
 	{
-		#TODO: Implement
+		# We don't need this endpoint right now.
+		$this->response->setBody('Redirect...')->getHeaders()->redirect(url('twofactor'));
 	}
 	
 	public function generate() 
@@ -45,10 +49,12 @@ class BackUpCodeController extends BaseController
 		 * cannot continue.
 		 */
 		if (!$this->user) {
-			#TODO: Redirect to login
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', ['returnto' => (string)URL::current()]));
 		}
 		
-		#TODO: Require the user to be strongly authenticated to perform this action
+		if ($this->level->count() < ($this->user->mfa? 2 : 1)) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('auth', 'threshold', ($this->user->mfa? 2 : 1), ['returnto' => (string)URL::current()]));
+		}
 		
 		/*
 		 * Find the backup-code provider for the user. Since a user can only have
@@ -107,12 +113,15 @@ class BackUpCodeController extends BaseController
 	public function challenge()
 	{
 		
+		if (isset($_GET['returnto']) && \Strings::startsWith($_GET['returnto'], '/')) { $returnto = $_GET['returnto']; }
+		else { $returnto = (string)url('twofactor'); }
+		
 		/*
 		 * If the user has not yet locked a session to their name, the application
 		 * cannot continue.
 		 */
-		if (!$this->user) {
-			#TODO: Redirect to login
+		if (!$this->session) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', ['returnto' => (string)URL::current()]));
 		}
 		
 		/*
@@ -120,7 +129,7 @@ class BackUpCodeController extends BaseController
 		 * it means that the user had the backup code functionality disabled, and 
 		 * therefore they cannot be used to authenticate the user.
 		 */
-		$provider = db()->table('authentication\provider')->get('user', $this->user)->where('type', ProviderModel::TYPE_CODES)->first(true);
+		$provider = db()->table('authentication\provider')->get('user', $this->session->candidate)->where('type', ProviderModel::TYPE_CODES)->first(true);
 		
 		
 		try {
@@ -130,17 +139,19 @@ class BackUpCodeController extends BaseController
 				->get('provider', $provider)
 				->where('secret', trim($_POST['secret']))
 				->where('cleared', null)
-				->first(function () { throw new \spitfire\validation\ValidationException('Validation failed', 0, []); });
+				->first(function () { throw new ValidationException('Validation failed', 0, []); });
 			
+			$challenge->expires = time() + 3600;
 			$challenge->cleared = time();
+			$challenge->session = $this->session;
 			$challenge->store();
 			
-			#TODO: Redirect to the return location.
+			$this->response->setBody('Redirect...')->getHeaders()->redirect($returnto);
 		} 
 		catch (HTTPMethodException $ex) {
 			/* The form can be rendered for get requests */
 		}
-		catch (\spitfire\validation\ValidationException $e) {
+		catch (ValidationException $e) {
 			/* The user didn't manage to enter a code that was considered to be valid */
 			$this->view->set('error', 'Code was not valid');
 		}
@@ -161,7 +172,13 @@ class BackUpCodeController extends BaseController
 			return $this->response->setBody('Redirect...')->getHeaders()->redirect(url('user', 'login'));
 		}
 		
-		#TODO: Require the user to be strongly authenticated to perform this action
+		
+		/**
+		 * Check the user's authentication level.
+		 */
+		if ($this->level->count() < ($this->user->mfa? 2 : 1)) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('auth', 'threshold', ($this->user->mfa? 2 : 1), ['returnto' => (string)URL::current()]));
+		}
 		
 		/*
 		 * Find the backup-code provider for the user. Since a user can only have
