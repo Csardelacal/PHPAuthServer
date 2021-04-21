@@ -150,10 +150,6 @@ class EmailController extends BaseController
 		$this->response->setBody('Redirect...')->getHeaders()->redirect(url('twofactor', 'check', $email->_id, ['returnto' => $_GET['returnto']?? '/']));
 		
 	}
-
-	public function verify(PassportModel$email, $token = null) {
-		
-	}
 	
 	/**
 	 * Redirects the request to relay. This allows old applications to send messages

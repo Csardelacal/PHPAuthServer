@@ -1,5 +1,6 @@
 <?php namespace mfa;
 
+use authentication\ChallengeModel;
 use authentication\ProviderModel;
 use BaseController;
 use passport\PhoneUtils;
@@ -202,10 +203,76 @@ class EmailController extends BaseController
 		 * Send the user to a location where they can verify their challenge
 		 */
 		if ($stat->deliver($payload)) {
-			$this->response->setBody('Redirect...')->getHeaders()->redirect(url(['mfa', 'email'], 'verify'));
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url(['mfa', 'email'], 'verify', $twofactor->_id));
 		}
 		else {
 			throw new PublicException('Email Delivery error', 500);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param ChallengeModel $challenge
+	 * @param string $solution
+	 */
+	public function verify(ChallengeModel $challenge, string $secret = null)
+	{
+		/**
+		 * Check if the user trying to solve the challenge is actually the person they
+		 * claim to be.
+		 */
+		if ($challenge->provider->user->_id !== $this->session->candidate->_id) {
+			throw new \spitfire\exceptions\PublicException('Not allowed', 403);
+		}
+		
+		try {
+			/**
+			 * If the user is submitting the challenge, we attempt to check
+			 * whether they succeeded at doing so.
+			 */
+			if (!$this->request->isPost() || $secret) { throw new HTTPMethodException(); }
+			
+			$secret = $secret || $_POST['secret']?? false;
+			
+			/**
+			 * If the user could not solve the challenge, we throw an exception so
+			 * the user interface can print an error message.
+			 */
+			if ($challenge->secret !== $secret) { 
+				throw new ValidationException('Challenge failed. The code is not valid', 0, []);
+			}
+			
+			/**
+			 * If the email address was not yet verified by the user, we can do that now.
+			 * This will remove the expiration and ensure that the user can log into the 
+			 * application with this email whenever they want.
+			 */
+			if ($challenge->provider->expires) {
+				$challenge->provider->expires = null;
+				$challenge->provider->store();
+			}
+			
+			if ($challenge->provider->passport && $challenge->provider->passport->expires) {
+				$challenge->provider->passport->expires = null;
+				$challenge->provider->passport->store();
+			}
+			
+			$challenge->cleared = time();
+			$challenge->expires = time() + 3600;
+			$challenge->session = $this->session;
+			$challenge->store();
+			
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']?? url());
+			return;
+		}
+		catch (HTTPMethodException $e) {
+			/**
+			 * We do nothing about this exception, just show the user the form to enter 
+			 * the data.
+			 */
+		}
+		catch (ValidationException $e) {
+			$this->view->set('messages', [$e->getMessage()]);
 		}
 	}
 	
