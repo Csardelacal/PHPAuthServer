@@ -190,14 +190,7 @@ class TwofactorController extends BaseController
 			 * Since the user managed to successfully authenticate this provider, we
 			 * assume that the user wishes to use this for further authentication.
 			 */
-			$preferred = db()->table('authentication\provider')->get('user', $provider->user)->where('preferred', true)->first();
-			
-			if ($preferred && $preferred->_id != $provider->_id) {
-				$preferred->preferred = false;
-				$preferred->store();
-			}
-			
-			$provider->preferred = true;
+			$provider->lastUsed = time();
 			$provider->store();
 			
 			/*

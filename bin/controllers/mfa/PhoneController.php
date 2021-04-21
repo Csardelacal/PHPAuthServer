@@ -103,7 +103,7 @@ class PhoneController extends BaseController
 			$auth->type = ProviderModel::TYPE_PHONE;
 			$auth->passport = $passport;
 			$auth->content = $canonical;
-			$auth->preferred = false;
+			$auth->lastUsed = time();
 			$auth->expires = time() + 86400 * 30;
 			$auth->store();
 			

@@ -87,7 +87,7 @@ class EmailController extends BaseController
 			$auth->type = \authentication\ProviderModel::TYPE_EMAIL;
 			$auth->passport = $passport;
 			$auth->content = $_POST['email'];
-			$auth->preferred = false;
+			$auth->lastUsed = null;
 			$auth->expires = time() + 86400 * 30;
 			$auth->store();
 			

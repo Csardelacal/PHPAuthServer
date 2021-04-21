@@ -77,7 +77,7 @@ class PasswordController extends BaseController
 			$provider = db()->table('authentication\provider')->newRecord();
 			$provider->user = $this->user;
 			$provider->type = ProviderModel::TYPE_PASSWORD;
-			$provider->preferred = true;
+			$provider->lastUsed = time();
 			$provider->created = time();
 			$provider->store();
 		}

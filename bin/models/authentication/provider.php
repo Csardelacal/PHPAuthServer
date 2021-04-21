@@ -80,9 +80,10 @@ class ProviderModel extends Model
 		$schema->content = new StringField(150);
 		
 		/*
-		 * Indicates whether it's the user's default 2FA mechanism.
+		 * Allows the application to resort to the last used mechanism whenever choosing
+		 * a default, and to remind a user if a provider is becoming stale.
 		 */
-		$schema->preferred = new BooleanField();
+		$schema->lastUsed  = new IntegerField(true);
 		
 		
 		$schema->created   = new IntegerField(true);

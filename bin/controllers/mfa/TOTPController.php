@@ -88,7 +88,7 @@ class TOTPController extends BaseController
 			$provider->user = $this->user;
 			$provider->type = ProviderModel::TYPE_TOTP;
 			$provider->content = base64_encode($secret);
-			$provider->preferred = true;
+			$provider->lastUsed = time();
 			$provider->created = time();
 			$provider->expires = time() + 86400 * 30;
 			$provider->store();

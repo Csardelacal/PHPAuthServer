@@ -93,7 +93,7 @@ class EmailController extends BaseController
 			$auth->type = ProviderModel::TYPE_EMAIL;
 			$auth->passport = $passport;
 			$auth->content = $canonical;
-			$auth->preferred = false;
+			$auth->lastUsed = null;
 			$auth->expires = time() + 86400 * 30;
 			$auth->store();
 			
