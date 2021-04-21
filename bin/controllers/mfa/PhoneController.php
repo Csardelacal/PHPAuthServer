@@ -4,6 +4,9 @@ use authentication\ProviderModel;
 use BaseController;
 use passport\PhoneUtils;
 use PassportModel;
+use ReflectionClass;
+use twofactor\sms\Message;
+use spitfire\core\Environment;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\validation\ValidationException;
@@ -205,14 +208,102 @@ class PhoneController extends BaseController
 		}
 		
 		$instance = new $provider($settings);
-		$payload = new twofactor\sms\Message($phone->content, 'Your authentication code is: ' . $twofactor->secret);
+		$payload = new Message($phone->content, 'Your authentication code is: ' . $twofactor->secret);
 		
 		if ($instance->deliver($payload)) {
-			$this->response->setBody('Redirect...')->getHeaders()->redirect(url('twofactor', 'check', $phone->_id, ['returnto' => $_GET['returnto']?? '/']));
+			$this->response->setBody('Redirect...')->getHeaders()->redirect(url(['mfa', 'phone'], 'verify', $phone->_id, ['returnto' => $_GET['returnto']?? '/']));
 		}
 		else {
 			throw new PublicException('SMS Delivery error', 500);
 		}
 	}
+	/**
+	 * This method verifies the response from a SMS verification attempt. This method 
+	 * is invoked after the user requested a challenge to attempt to verify that 
+	 * the message has arrived.
+	 * 
+	 * @param ProviderModel $provider
+	 * @param type $_secret
+	 * @return type
+	 * @throws HTTPMethodException
+	 * @throws PublicException
+	 * @throws ValidationException
+	 */
+	public function verify(ProviderModel$provider, $_secret = null) 
+	{
+		
+		
+		if ($provider->type != ProviderModel::TYPE_PHONE) {
+			throw new PublicException('Invalid provider', 400);
+		}
+		
+		try {
+			if (!$this->request->isPost() && !$_secret) { throw new HTTPMethodException('Not posted'); }
+			if ($provider->expires !== null && $provider->expires < time()) { throw new PublicException('This provider has already expired', 403); }
+			
+			sleep(2);
+			
+			$secret = db()->table('authentication\challenge')->get('provider', $provider)->where('secret', $_secret?: $_POST['secret'])->where('expires', '>', time())->first(true);
+			if ($secret->secret != ($_secret?: $_POST['secret'])) { throw new ValidationException('Invalid secret', 0, ['Invalid secret']); }
+			
+			/*
+			 * Check if the passport was already recorded. If this is the case, the 
+			 * user cannot confirm this as their own.
+			 */
+			$exists = db()->table('passport')
+				->get('canonical', $provider->canonical)
+				->where('user', '!=', $provider->user)
+				->first();
+			
+			if ($provider->expires && $provider->passport && $exists) {
+				throw new PublicException('The provider is already reserved for another user', 403);
+			}
+			
+			/*
+			 * Since the user managed to successfully authenticate this provider, we
+			 * assume that the user wishes to use this for further authentication.
+			 */
+			$preferred = db()->table('authentication\provider')->get('user', $provider->user)->where('preferred', true)->first();
+			
+			if ($preferred && $preferred->_id != $provider->_id) {
+				$preferred->preferred = false;
+				$preferred->store();
+			}
+			
+			$provider->preferred = true;
+			$provider->store();
+			
+			/*
+			 * If the provider happened to not be verified yet, we will continue and 
+			 * do so now.
+			 */
+			if ($provider->expires) {
+				$provider->expires = null;
+				$provider->store();
+			}
+			
+			/*
+			 * If the passport was flagged to be expiring, then we remove the flag.
+			 * This happens unless the passport was already expired.
+			 */
+			if ($provider->passport && $provider->passport->expires && $provider->passport->expires > time()) {
+				$provider->passport->expires = null;
+				$provider->passport->store();
+			}
+			
+			$secret->cleared = time();
+			$secret->store();
+			
+			
+			$this->response->setBody('Redirect')->getHeaders()->redirect($_GET['returnto']?? url());
+			return;
+		} 
+		catch (HTTPMethodException $ex) {
+
+		}
+		
+		$this->view->set('provider', $provider);
+	}
+	
 	
 }
