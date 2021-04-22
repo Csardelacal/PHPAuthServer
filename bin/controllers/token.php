@@ -34,18 +34,7 @@ class TokenController extends BaseController
 		$type    = $_POST['grant_type']?? 'code';
 		$appid   = isset($_POST['client'])? $_POST['client'] : $_GET['client'];
 		$secret  = $_POST['secret']?? null;
-		
-		/*
-		 * We define the algorithms that the server understands. Since the oauth
-		 * spec defines a different name for sha256, we will make our server translates
-		 * the hashing algo back.
-		 * 
-		 * We currently do not service anything but sha256.
-		 */
-		$hash_algos = [
-			's256' => 'sha256',
-			'sha256' => 'sha256'
-		];
+		$expires = Environment::get('phpas.token.expiration')?: 14400;
 		
 		/*
 		 * Check if an app with the provided ID does indeed exist.
@@ -99,18 +88,10 @@ class TokenController extends BaseController
 			}
 
 			/*
-			 * Check the code verifier. We need to make sure that the algorhithm
-			 * exists, so we don't pass invalid data into the hasing function.
+			 * Check the code verifier
 			 */
 			list($algo, $hash) = explode(':', $code->challenge);
-			
-			if (isset($hash_algos[strtolower($algo)])) {
-				$algo = $hash_algos[strtolower($algo)];
-			}
-			else {
-				throw new PublicException('Invalid hashing algorhithm specified.', 400);
-			}
-			
+
 			if (hash($algo, $_POST['verifier']) !== $hash) {
 				throw new PublicException('Hash failed', 403);
 			}
@@ -120,7 +101,7 @@ class TokenController extends BaseController
 			 */
 			$code->expires = time();
 			$code->store();
-			
+
 			#TODO: This code could be extracted into an helper that could be pulled 
 			#in via service providers to reduce the amount of code duplication.
 			/*
@@ -140,6 +121,30 @@ class TokenController extends BaseController
 			$refresh->audience = $code->audience;
 			$refresh->client  = $app;
 			$refresh->store();
+		}
+		/**
+		 * Applications can request a token for themselves. When they do so, we call this token client
+		 * credentials. This means the token will have no user claim. When the application uses this token,
+		 * servers will know that the application is acting on it's own behalf.
+		 */
+		elseif ($type === 'client_credentials') {
+			
+			$audience = $_GET['audience']? 
+				db()->table(AuthAppModel::class)->get('appID', $_GET['audience'])->first(true) : 
+				db()->table(AuthAppModel::class)->get('_id', SysSettingModel::getValue('app.self'))->first(true);
+			
+			$token = db()->table(TokenModel::class)->newRecord();
+			$token->session  = null;
+			$token->owner    = null;
+			$token->client   = $app;
+			$token->audience = $audience;
+			$token->store();
+			
+			/**
+			 * Client credentials do not provide refresh tokens, since applications are not 
+			 * inconvenienced by the need to reauthenticate the token.
+			 */
+			$refresh = null;
 		}
 		elseif ($type === 'refresh_token') {
 			/**
