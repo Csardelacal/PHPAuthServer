@@ -458,7 +458,7 @@ class AuthController extends BaseController
 			 * Create a list of accepted providers for this level.
 			 */
 			$accepted = collect($providers)->filter(function ($e) use ($required) {
-				return array_search($e->type, $required);
+				return array_search($e->type, $required) !== false;
 			});
 			
 			if ($accepted->isEmpty()) {
