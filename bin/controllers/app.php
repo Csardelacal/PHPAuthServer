@@ -75,10 +75,6 @@ class AppController extends BaseController
 				$app->name = trim($_POST['name']);
 			}
 			
-			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->store()->uri();
-			}
-			
 			$app->store();
 		}
 		
@@ -90,6 +86,45 @@ class AppController extends BaseController
 		} catch (Exception $ex) {
 			$this->view->set('webhooks', []);
 		}
+	}
+	
+	public function putIcon(AuthAppModel $app) 
+	{
+		
+		if ($app->owner->_id != $this->user->_id) {
+			throw new PublicException('Not allowed', 403);
+		}
+		
+		$handle = storage()->retrieve('tmp://' . uniqid());
+		$target = storage()->retrieve('uploads://' . uniqid('icon-', true) . '.jpg');
+		
+		$handle->write(file_get_contents('php://input'));
+		
+		#Compress the file to a more manageable size
+		#This allows the application to quickly create thumbs on demand.
+		$media = media()->load($handle);
+		$media->poster()->fit(512, 512);
+		$media->store($target);
+		
+		$icon = db()->table('icon')->newRecord();
+		$icon->file = $target->uri();
+		$icon->store();
+
+		#Expire the old icon
+		if ($app->icon) {
+			$app->icon->expires = time();
+			$app->icon->store();
+		}
+		
+		#Queue the incineration of the old icon.
+		defer(\defer\incinerate\IconTask::class, $app->icon->_id);
+
+		#Set the new one
+		$app->icon = $icon;
+		$app->store();
+		
+		#This endpoint responds mainly by using status codes.
+		$this->response->setBody('Success');
 	}
 	
 	public function delete($appID) 

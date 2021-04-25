@@ -4,7 +4,7 @@
 		<div class="row l5">
 			<div class="span l4">
 				<h1>
-					<img src="<?= url('image','app', $app->_id, 128, ['nonce' => time()]) ?>" class="user-icon square medium">
+					<img src="<?= url('image', 'icon', $app->icon->_id, ['nonce' => time()]) ?>" class="user-icon square medium">
 					<?= __($app->name) ?>
 				</h1>
 			</div>
@@ -94,35 +94,28 @@
 
 <div class="spacer large"></div>
 	
-	<!-- Icon -->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<div style="font-size: .85em; color: #555">
-				Icon
-			</div>
-			
-			<div style="border-left: solid 2px #2a912e; padding: 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<div class="property-value">
-					<img src="<?= url('image','app', $app->_id, 128, ['nonce' => time()]) ?>" class="user-icon square big" id="icon-display">
-					<div class="edit-field hidden" id="icon-upload-wrap">
-						<input type="file" name="icon" id="icon-input" accept="image/png,image/jpeg,image/gif" disabled>
-					</div>
+<!-- Icon -->
+<div class="row l1">
+	<div class="span l1">
+		<div class="box padded box-soft">
+			<div class="row l5">
+				<div class="span l1">
+					<img src="<?= url('image','icon', $app->icon->_id, 128, ['nonce' => time()]) ?>" class="user-icon square big" id="icon-display">
+					<div style="display: none"><input type="file" name="icon" id="icon-input" accept="image/png,image/jpeg,image/gif" data-submit-url="<?= url('app', 'putIcon', $app->_id) ?>"></div>
+				</div>
+				
+				<div class="span l4">
+					<!-- TODO: We could put the options here to change the application's name-->
+					<a class="button small" id="app-icon-button">Change the application icon</a>
 				</div>
 			</div>
 		</div>
-		<div class="span l1 dials">
-			<ul>
-				<li><a href="#change" id="change-icon">Change</a><a href="#change" id="cancel-icon" class="hidden cancel">Cancel</a></li>
-			</ul>
-		</div>
 	</div>
-	
-	<div class="separator"></div>
-	
-	
-</form>
+</div>
 
-<div class="spacer" style="height: 100px"></div>
+<div class="separator"></div>
+
+<div class="spacer large"></div>
 
 
 <div class="row">
@@ -252,7 +245,7 @@
 
 <div class="spacer" style="height: 50px"></div>
 
-<script src="<?= spitfire\core\http\URL::asset('js/app-detail.min.js')?>"></script>
+<script src="<?= spitfire\core\http\URL::asset('js/app-detail.js')?>"></script>
 
 <script>
 (function () {

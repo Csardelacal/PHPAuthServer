@@ -25,7 +25,7 @@ class AuthAppModel extends Model
 		$schema->owner  = new Reference(UserModel::class);
 		
 		$schema->name   = new StringField(20);
-		$schema->icon   = new FileField();
+		$schema->icon   = new Reference(IconModel::class);
 		
 		/*
 		 * Whether the application requires two factor authentication to log into it.

@@ -22,3 +22,6 @@ spitfire\core\router\Router::getInstance()->request('/mfa/rfc6238/:action?', ['c
 spitfire\core\router\Router::getInstance()->request('/mfa/phone/:action?', ['controller' => ['mfa', 'Phone'], 'action' => ':action']);
 spitfire\core\router\Router::getInstance()->request('/mfa/email/:action?', ['controller' => ['mfa', 'Email'], 'action' => ':action']);
 spitfire\core\router\Router::getInstance()->request('/session/:action?', ['controller' => ['Session'], 'action' => ':action']);
+
+
+spitfire\core\router\Router::getInstance()->put('/app/:id/icon', ['controller' => ['app'], 'action' => 'putIcon', 'object' => [':id']]);

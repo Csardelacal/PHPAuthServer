@@ -3,8 +3,8 @@
 	url = https://github.com/Csardelacal/SpitfireEngine
 	branch = develop
 [submodule "unserscoreSCSS"]
-	path = assets/scss/_
+	path = assets/src/scss/_
 	url = https://github.com/Csardelacal/underscoreSCSS.git
 [submodule "m3.js"]
-	path = assets/js/m3
+	path = assets/src/js/m3
 	url = https://github.com/Csardelacal/m3.js.git
