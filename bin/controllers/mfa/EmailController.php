@@ -5,6 +5,9 @@ use authentication\ProviderModel;
 use BaseController;
 use passport\PhoneUtils;
 use PassportModel;
+use Postal\Client as PostalClient;
+use Postal\Error as PostalError;
+use Postal\SendMessage as PostalMessage;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\validation\ValidationException;
@@ -157,7 +160,7 @@ class EmailController extends BaseController
 	 * @throws PublicException
 	 * @throws PrivateException
 	 */
-	public function challenge(ProviderModel$email) 
+	public function challenge(ProviderModel $email) 
 	{
 		
 		/*
@@ -188,24 +191,38 @@ class EmailController extends BaseController
 		#Sending it with the email potentially leaks codes, tokens, etc that should not get into the wrong hands
 		$twofactor = \authentication\ChallengeModel::make($email);
 		$twofactor->secret = str_replace(['/', '+'], ['_', '-'], base64_encode(random_bytes(16)));
+		$twofactor->store();
 		
 		/**
+		 * Instance a new email transport. This allows PHPAS to send email to the clients.
 		 * 
-		 * @todo Generate a token that can be used to authenticate Auth against orbital station
-		 * @todo Build orbital station SDK and use it to send a message
-		 * @todo Define a payload for the email to be sent
+		 * @todo For the time being, we're directly going to depend on Postal here. Future revisions are
+		 * very welcome to introduce a standard interface for email delivery.
 		 */
-		$token = null;
-		$stat = new \magic3w\orbitalstation\SDK(\spitfire\core\Environment::get('phpas.orbital-station.credentials'), $token);
+		$postal = spitfire()->provider()->get(PostalClient::class);
 		$payload = [];
+		
+		/**
+		 * Create a message to be sent
+		 * 
+		 * @todo This could actually be wrapped in a defer, so the user gets an immediate response from
+		 * us, and the email can be delivered in the background.
+		 * 
+		 * @todo A nicer email template for this would be a major boon.
+		 */
+		$message = new PostalMessage($postal);
+		$message->to($email->content);
+		$message->from(config('email.smtp.from'));
+		$message->htmlBody('Your two factor authentication code is ' . $twofactor->secret . ' or <a href="' . url(EmailController::class, 'verify', $email->_id, $twofactor->secret, ['returnto' => $_GET['returnto']?? '/'])->absolute() . '">click here</a>');
 		
 		/**
 		 * Send the user to a location where they can verify their challenge
 		 */
-		if ($stat->deliver($payload)) {
+		try {
+			$message->send();
 			$this->response->setBody('Redirect...')->getHeaders()->redirect(url(['mfa', 'email'], 'verify', $twofactor->_id));
 		}
-		else {
+		catch (PostalError $e) {
 			throw new PublicException('Email Delivery error', 500);
 		}
 	}

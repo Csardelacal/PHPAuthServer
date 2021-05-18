@@ -14,11 +14,11 @@
 	"require": {
 		"magic3w/permission-php-sdk": "0.1.0-alpha1",
 		"spitfire/defer": "^0.1.0",
-		"squizlabs/php_codesniffer": "^3.5",
-		"magic3w/cptn-h00k-sdk-php": "dev-master",
-		"lcobucci/jwt": "^3.4"
+		"lcobucci/jwt": "^3.4",
+		"postal/postal": "^1.0"
 	},
 	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.5",
 		"phpstan/phpstan": "^0.12.64"
 	},
 	"scripts" : {
