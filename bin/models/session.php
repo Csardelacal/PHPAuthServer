@@ -69,16 +69,6 @@ class SessionModel extends Model
 		 */
 		$schema->ip       = new StringField(128);
 		
-		/*
-		 * This flag gets set to true whenever the user managed to authenticate 
-		 * themselves as the user they claim to be.
-		 * 
-		 * Users with a session that is not marked as authenticated MUST NOT be able
-		 * to issue codes, tokens or anything along those lines. This is obviously
-		 * only relevant to users and not clients generating tokens.
-		 */
-		$schema->authenticated = new BooleanField();
-		
 		$schema->created  = new IntegerField(true);
 		$schema->expires  = new IntegerField(true);
 		

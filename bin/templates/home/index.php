@@ -42,7 +42,7 @@
 </div>
 
 
-<?php $sessions = db()->table('session')->get('user', $user)->addRestriction('expires', time(), '>')->where('authenticated', true)->all(); ?>
+<?php $sessions = db()->table(SessionModel::class)->get('user', $user)->addRestriction('expires', time(), '>')->all(); ?>
 
 <div class="row l1">
 	<div class="span l1">
@@ -66,7 +66,7 @@
 							<?php if ($session->location): ?>
 							<span  class="text:grey-300"><?= $session->location->city ?></span>
 							<?php else: ?>
-							<span  class="text:grey-300"><?= $session->app->name ?></span>
+							<span  class="text:grey-300">Unknown location</span>
 							<?php endif; ?>
 						</strong>
 						
@@ -87,15 +87,6 @@
 						</span>
 						<?php endif ?>
 						<img  src="<?= url('image', 'app', $session->app->_id, 32) ?>" width="24" height="24">
-					</div>
-					
-					<div>
-						<?php $uses = db()->table('token\usage')->get('token', $session)->all(); ?>
-						<?php foreach ($uses as $use) : ?>
-						<span>
-							<img src="<?= url('image', 'app', $use->app->_id, 64) ?>" title="<?= $use->app->name ?>" style="width: 32px">
-						</span>
-						<?php endforeach; ?>
 					</div>
 				</div>
 				<div class="span l4">
