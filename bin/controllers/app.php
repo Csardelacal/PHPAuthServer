@@ -1,6 +1,7 @@
 <?php
 
 use client\CredentialModel;
+use client\ScopeModel;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Upload;
 use spitfire\storage\database\pagination\Paginator;
@@ -41,12 +42,24 @@ class AppController extends BaseController
 		if ($this->request->isPost()) {
 			$app = db()->table('authapp')->newRecord();
 			$app->owner = $this->user;
-			$app->name      = $_POST['name'];
+			$app->name  = $_POST['name'];
 			
-			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->validate()->store()->uri();
+			/**
+			 * If the icon was not uploaded, we cannot continue
+			 */
+			if (!($_POST['icon'] instanceof Upload)) {
+				throw new PublicException('No icon was provided');
 			}
 			
+			$icon = db()->table(IconModel::class)->newRecord();
+			$icon->file = $_POST['icon']->store()->uri();
+			$icon->store();
+			
+			/**
+			 * Generate a random application id. This application id must be unique and cannot
+			 * be used by other applications. Also, the app id is immutable, meaning that once
+			 * an application has received a specific app id it cannot be changed.
+			 */
 			do {
 				$id = $app->appID = mt_rand();
 				$count = db()->table('authapp')->get('appID', $id)->count();
@@ -62,6 +75,40 @@ class AppController extends BaseController
 			$secret = db()->table(CredentialModel::class)->newRecord();
 			$secret->client = $app;
 			$secret->store();
+			
+			/**
+			 * The icon for the standard scope is created by generating a copy of the application's
+			 * icon. Usually this is a sensible approach to take in this situation.
+			 * 
+			 * The storage code here is creating a copy of the application's icon to the same directory
+			 * so we can make sure that the icon is not deleted whenever the user changes the
+			 * icon for the app, or the icon for the app being removed when the user changes this
+			 * icon.
+			 */
+			$icon_scope = db()->table(IconModel::class)->newRecord();
+			$icon_scope->file = storage()
+				->retrieve($_POST['icon']->store()->uri() . '_')
+				->write(storage()->retrieve($_POST['icon']->store()->uri() . '_')->read())
+				->uri();
+			$icon_scope->store();
+			
+			/**
+			 * If we happen to not have a scope for the 'basic' authentication of a user
+			 * on the audience, we cannot continue, since this provides the baseline for 
+			 * the user being logged into the application at all.
+			 * 
+			 * This means that all applications must have a basic scope to authenticate
+			 * the user. Otherwise the application will fail.
+			 * 
+			 * The basic scope is required for applications to create a token. Without it
+			 * the application cannot issue tokens.
+			 */
+			$scope = db()->table(ScopeModel::class)->newRecord();
+			$scope->identifier = sprintf('%s.basic', $app->appID);
+			$scope->icon = $icon_scope;
+			$scope->caption = 'Basic data';
+			$scope->description = 'Access basic data about your account on this application';
+			$scope->store();
 			
 			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'success')));
 			return;

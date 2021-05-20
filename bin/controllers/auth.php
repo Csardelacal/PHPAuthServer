@@ -70,9 +70,15 @@ class AuthController extends BaseController
 		 * Scopes are defined by the audience that receives the token, to make sure
 		 * you request the right scopes, refer to the documentation of the application
 		 * you wish to read data from.
+		 * 
+		 * While we do this, we also put the 'basic' scope on the stack. This allows
+		 * us to check that the user is granting permission to access the application
+		 * with the minimum viable data.
 		 */
 		$scopes = collect(explode(' ', $_GET['scope']))
 			->filter()
+			->push('basic')
+			->unique()
 			->each(function ($e) use ($audience) {
 				return db()->table(ScopeModel::class)->get('identifier', sprintf('%s.%s', $audience->appID, $e))->first(true);
 			});
