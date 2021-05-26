@@ -7,6 +7,7 @@ use PassportModel;
 use ReflectionClass;
 use twofactor\sms\Message;
 use spitfire\core\Environment;
+use spitfire\core\http\URL;
 use spitfire\exceptions\HTTPMethodException;
 use spitfire\exceptions\PublicException;
 use spitfire\validation\ValidationException;
@@ -167,7 +168,27 @@ class PhoneController extends BaseController
 	 * @throws PublicException
 	 * @throws PrivateException
 	 */
-	public function challenge(ProviderModel$phone) {
+	public function challenge(ProviderModel $phone) 
+	{
+		
+		/**
+		 * If the user doesn't have a session, the application should not let
+		 * them continue and instead direct them to a log-in dialog.
+		 */
+		if (!$this->session) {
+			$this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(URL::current())]));
+			return;
+		}
+		
+		$user = $this->session->candidate;
+		
+		/**
+		 * We must make sure that the user is attempting to authenticate their own
+		 * account, and not someone else's.
+		 */
+		if ($user->_id != $phone->user->_id) {
+			throw new PublicException('You are not authorized to use this provider', 401);
+		}
 		
 		/*
 		 * Whenever a user is able to select their provider, the system must make
