@@ -163,6 +163,25 @@ class EmailController extends BaseController
 	public function challenge(ProviderModel $email) 
 	{
 		
+		/**
+		 * If the user doesn't have a session, the application should not let
+		 * them continue and instead direct them to a log-in dialog.
+		 */
+		if (!$this->session) {
+			$this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(URL::current())]));
+			return;
+		}
+		
+		$user = $this->session->candidate;
+		
+		/**
+		 * We must make sure that the user is attempting to authenticate their own
+		 * account, and not someone else's.
+		 */
+		if ($user->_id != $email->user->_id) {
+			throw new PublicException('You are not authorized to use this provider', 401);
+		}
+		
 		/*
 		 * Whenever a user is able to select their provider, the system must make
 		 * sure that the provider type we have is the right one.
