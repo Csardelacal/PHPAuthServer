@@ -108,11 +108,23 @@ class TOTPController extends BaseController
 	public function challenge() 
 	{
 		
+		
 		/*
-		 * If there is already a TOTP provider for this account, the user needs to 
-		 * remove the old one.
+		 * If the user has not yet locked a session to their name, the application
+		 * cannot continue.
 		 */
-		$provider = db()->table('authentication\provider')->get('user', $this->user)->where('type', ProviderModel::TYPE_TOTP)->first();
+		if (!$this->session) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', ['returnto' => (string)URL::current()]));
+		}
+		
+		/*
+		 * Find the totp provider for the user. If the query returns no result
+		 * it means that the user had the totp functionality disabled, and 
+		 * therefore they cannot be used to authenticate the user.
+		 * 
+		 * We only allow ONE TOTP provider per user at this point.
+		 */
+		$provider = db()->table('authentication\provider')->get('user', $this->session->candidate)->where('type', ProviderModel::TYPE_TOTP)->first();
 		
 		if (!$provider) {
 			throw new PublicException('No TOTP pairing found');
