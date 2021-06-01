@@ -21,7 +21,9 @@
     "spinner-material": "^1.0.0"
   },
   "devDependencies": {
-    "laravel-mix": "^6.0.16",
-    "postcss": "^8.2.10"
+    "laravel-mix": "^6.0.19",
+    "postcss": "^8.2.10",
+    "vue": "^2.6.13",
+    "vuex": "^3.6.2"
   }
 }
