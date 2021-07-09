@@ -1,5 +1,7 @@
 <?php
 
+use authentication\ProviderModel;
+
 class SetupController extends Controller
 {
 	
@@ -21,9 +23,13 @@ class SetupController extends Controller
 			$user->email    = $_POST['email'];
 			$user->verified = true;
 			$user->created  = time();
-			$user->setPassword($_POST['password']);
 			$user->store();
 			
+			$password = db()->table('authentication\Provider')->newRecord();
+			$password->user   = $user;
+			$password->type   = ProviderModel::TYPE_PASSWORD;
+			$password->content = password_hash($_POST['password'], PASSWORD_DEFAULT);
+			$password->store();
 			
 			$username = db()->table('username')->newRecord();
 			$username->user = $user;
@@ -49,6 +55,11 @@ class SetupController extends Controller
 			$membership->role  = 'owner';
 			$membership->store();
 			
+			
+			$icon = db()->table('icon')->newRecord();
+			$icon->file = storage()->get('app://assets/src/img/app.png')->uri();
+			$icon->store();
+			
 			/*
 			 * Create the application for the SSO server itself
 			 * 
@@ -61,12 +72,12 @@ class SetupController extends Controller
 			 * the requests. Reducing the complexity of the system considerably.
 			 */
 			$app = db()->table('authapp')->newRecord();
-			$app->name      = 'PHPAS - Single-sign-on server';
+			$app->name      = 'PHPAS - SSO server';
 			#Usually we check for collissions, but it's technically not possible since it's the first
 			$app->appID     = mt_rand(); 
 			$app->appSecret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(35)));
-			$app->drawer    = false;
-			$app->icon      = storage()->get('app://assets/img/app.png')->uri();
+			$app->icon      = $icon;
+			$app->twofactor = false;
 			$app->store();
 			
 			SysSettingModel::setValue('app.self', $app->_id);

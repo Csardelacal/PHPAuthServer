@@ -1,0 +1,20 @@
+version: "3.3"
+services:
+  web:
+    build: .
+    ports:
+      - "8085:80"
+    volumes:
+      - /var/www/html/bin/usr
+    links:
+      - memcached
+      - mysql
+  memcached:
+    image: memcached:latest
+  mysql:
+    image: mariadb:latest
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: www
+      MYSQL_PASSWORD: test
