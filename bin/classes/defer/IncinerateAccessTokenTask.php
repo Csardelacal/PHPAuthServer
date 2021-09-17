@@ -31,7 +31,7 @@ use spitfire\defer\TaskFactory;
  */
 
 
-class IncinerateAccessTokenTask extends Task
+class IncinerateAccessTokenTask implements Task
 {
 
 	private $defer;
@@ -41,9 +41,9 @@ class IncinerateAccessTokenTask extends Task
 		$this->defer = $defer;
 	}
 
-	public function body(): Result
+	public function body($settings): Result
 	{
-		$token = db()->table('access\token')->get('_id', $this->getSettings())->first();
+		$token = db()->table('access\token')->get('_id', $settings)->first();
 
 		if (!$token) {
 			return new Result('Token was already removed.');

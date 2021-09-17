@@ -16,12 +16,7 @@ parameters:
 			path: bin/classes/defer/incinerate/IconTask.php
 
 		-
-			message: "#^Call to method trigger\\(\\) on an unknown class magic3w\\\\hook\\\\sdk\\\\Hook\\.$#"
-			count: 2
-			path: bin/classes/defer/notify/EndSessionTask.php
-
-		-
-			message: "#^Instantiated class magic3w\\\\hook\\\\sdk\\\\Hook not found\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: bin/classes/defer/notify/EndSessionTask.php
 
@@ -29,6 +24,266 @@ parameters:
 			message: "#^Access to an undefined property user\\\\SuspensionModel\\:\\:\\$reason\\.$#"
 			count: 1
 			path: bin/classes/exceptions/suspension/LoginDisabledException.php
+
+		-
+			message: "#^Access to an undefined property SessionModel\\:\\:\\$_id\\.$#"
+			count: 2
+			path: bin/controllers/SessionController.php
+
+		-
+			message: "#^Class defer\\\\notify\\\\EndSessionTask does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: bin/controllers/SessionController.php
+
+		-
+			message: "#^Function async not found\\.$#"
+			count: 2
+			path: bin/controllers/SessionController.php
+
+		-
+			message: "#^Instantiated class PublicException not found\\.$#"
+			count: 1
+			path: bin/controllers/SessionController.php
+
+		-
+			message: "#^Throwing object of an unknown class PublicException\\.$#"
+			count: 1
+			path: bin/controllers/SessionController.php
+
+		-
+			message: "#^Access to an undefined property AuthAppModel\\:\\:\\$icon\\.$#"
+			count: 1
+			path: bin/controllers/app.php
+
+		-
+			message: "#^Access to an undefined property AuthAppModel\\:\\:\\$name\\.$#"
+			count: 1
+			path: bin/controllers/app.php
+
+		-
+			message: "#^Call to an undefined method spitfire\\\\storage\\\\objectStorage\\\\DriveDispatcher\\|spitfire\\\\storage\\\\objectStorage\\\\NodeInterface\\:\\:retrieve\\(\\)\\.$#"
+			count: 4
+			path: bin/controllers/app.php
+
+		-
+			message: "#^Function defer not found\\.$#"
+			count: 1
+			path: bin/controllers/app.php
+
+		-
+			message: "#^Instantiated class PublicException not found\\.$#"
+			count: 1
+			path: bin/controllers/appdrawer.php
+
+		-
+			message: "#^Throwing object of an unknown class PublicException\\.$#"
+			count: 1
+			path: bin/controllers/appdrawer.php
+
+		-
+			message: "#^Access to an undefined property AuthController\\:\\:\\$signature\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Access to an undefined property AuthController\\:\\:\\$token\\.$#"
+			count: 2
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$disabled\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Call to method getContext\\(\\) on an unknown class signature\\\\Signature\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Call to method getSrc\\(\\) on an unknown class signature\\\\Signature\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Call to method getTarget\\(\\) on an unknown class signature\\\\Signature\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Cannot call method toArray\\(\\) on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Elseif condition is always false\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Instantiated class PrivateException not found\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Method AuthController\\:\\:oauth\\(\\) with return type void returns mixed but should not return anything\\.$#"
+			count: 2
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$tokenid$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Parameter \\$e of anonymous function has invalid typehint type signature\\\\Signature\\.$#"
+			count: 2
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Throwing object of an unknown class PrivateException\\.$#"
+			count: 1
+			path: bin/controllers/auth.php
+
+		-
+			message: "#^Access to an undefined property client\\\\CredentialModel\\:\\:\\$_id\\.$#"
+			count: 1
+			path: bin/controllers/client/credential.php
+
+		-
+			message: "#^Function async not found\\.$#"
+			count: 1
+			path: bin/controllers/client/credential.php
+
+		-
+			message: "#^Access to an undefined property AuthAppModel\\:\\:\\$_id\\.$#"
+			count: 2
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property ContextController\\:\\:\\$token\\.$#"
+			count: 2
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property ContextController\\:\\:\\$validation\\.$#"
+			count: 2
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property connection\\\\AuthModel\\:\\:\\$context\\.$#"
+			count: 1
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property connection\\\\ContextModel\\:\\:\\$_id\\.$#"
+			count: 2
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property connection\\\\ContextModel\\:\\:\\$app\\.$#"
+			count: 5
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property connection\\\\ContextModel\\:\\:\\$ctx\\.$#"
+			count: 4
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property connection\\\\ContextModel\\:\\:\\$descr\\.$#"
+			count: 1
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property connection\\\\ContextModel\\:\\:\\$expires\\.$#"
+			count: 1
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property connection\\\\ContextModel\\:\\:\\$title\\.$#"
+			count: 1
+			path: bin/controllers/context.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$ctx with type string is incompatible with native type connection\\\\ContextModel\\.$#"
+			count: 1
+			path: bin/controllers/context.php
+
+		-
+			message: "#^Access to an undefined property EditController\\:\\:\\$hook\\.$#"
+			count: 3
+			path: bin/controllers/edit.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$email\\.$#"
+			count: 1
+			path: bin/controllers/edit.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$picture\\.$#"
+			count: 1
+			path: bin/controllers/edit.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$usernames\\.$#"
+			count: 1
+			path: bin/controllers/edit.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$verified\\.$#"
+			count: 1
+			path: bin/controllers/edit.php
+
+		-
+			message: "#^Instantiated class mail\\\\spam\\\\domain\\\\SpamDomainValidationRule not found\\.$#"
+			count: 1
+			path: bin/controllers/edit.php
+
+		-
+			message: "#^Instantiated class mail\\\\spam\\\\domain\\\\implementation\\\\SpamDomainModelReader not found\\.$#"
+			count: 1
+			path: bin/controllers/edit.php
+
+		-
+			message: "#^Access to an undefined property EmailController\\:\\:\\$signature\\.$#"
+			count: 5
+			path: bin/controllers/email.php
+
+		-
+			message: "#^Access to an undefined property EmailController\\:\\:\\$validation\\.$#"
+			count: 2
+			path: bin/controllers/email.php
+
+		-
+			message: "#^Access to an undefined property PassportModel\\:\\:\\$expires\\.$#"
+			count: 1
+			path: bin/controllers/email.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ProviderModel\\:\\:\\$_id\\.$#"
+			count: 2
+			path: bin/controllers/email.php
+
+		-
+			message: "#^Instantiated class ValidationException not found\\.$#"
+			count: 2
+			path: bin/controllers/email.php
+
+		-
+			message: "#^Throwing object of an unknown class ValidationException\\.$#"
+			count: 2
+			path: bin/controllers/email.php
+
+		-
+			message: "#^Variable \\$group might not be defined\\.$#"
+			count: 1
+			path: bin/controllers/group.php
 
 		-
 			message: "#^Call to an undefined method spitfire\\\\storage\\\\objectStorage\\\\DriveDispatcher\\|spitfire\\\\storage\\\\objectStorage\\\\NodeInterface\\:\\:filename\\(\\)\\.$#"
@@ -69,6 +324,421 @@ parameters:
 			message: "#^Parameter \\#1 \\$uri of function storage expects type\\|null, string given\\.$#"
 			count: 4
 			path: bin/controllers/image.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$mfa\\.$#"
+			count: 2
+			path: bin/controllers/mfa/BackUpCodeController.php
+
+		-
+			message: "#^Access to an undefined property PassportModel\\:\\:\\$expires\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$mfa\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ChallengeModel\\:\\:\\$cleared\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ChallengeModel\\:\\:\\$expires\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ChallengeModel\\:\\:\\$provider\\.$#"
+			count: 8
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ChallengeModel\\:\\:\\$secret\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ChallengeModel\\:\\:\\$session\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ProviderModel\\:\\:\\$_id\\.$#"
+			count: 2
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ProviderModel\\:\\:\\$content\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property mfa\\\\EmailController\\:\\:\\$validation\\.$#"
+			count: 2
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Call to an undefined method spitfire\\\\SpitFire\\:\\:provider\\(\\)\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Call to static method current\\(\\) on an unknown class mfa\\\\URL\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Function config not found\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Left side of \\|\\| is always false\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$solution$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^PHPDoc tag @throws with type mfa\\\\PrivateException\\|spitfire\\\\exceptions\\\\PublicException is not subtype of Throwable$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Parameter \\#3 \\$errors of class spitfire\\\\validation\\\\ValidationException constructor expects array\\<spitfire\\\\validation\\\\ValidationError\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: bin/controllers/mfa/EmailController.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$mfa\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PasswordController.php
+
+		-
+			message: "#^Access to an undefined property mfa\\\\PasswordController\\:\\:\\$validation\\.$#"
+			count: 4
+			path: bin/controllers/mfa/PasswordController.php
+
+		-
+			message: "#^Call to an undefined method mfa\\\\PasswordController\\:\\:store\\(\\)\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PasswordController.php
+
+		-
+			message: "#^Call to static method current\\(\\) on an unknown class mfa\\\\URL2\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PasswordController.php
+
+		-
+			message: "#^Parameter \\#3 \\$errors of class spitfire\\\\validation\\\\ValidationException constructor expects array\\<spitfire\\\\validation\\\\ValidationError\\>, array\\<int, string\\> given\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PasswordController.php
+
+		-
+			message: "#^Access to an undefined property PassportModel\\:\\:\\$expires\\.$#"
+			count: 2
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$mfa\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ProviderModel\\:\\:\\$_id\\.$#"
+			count: 3
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ProviderModel\\:\\:\\$canonical\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ProviderModel\\:\\:\\$content\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Access to an undefined property authentication\\\\ProviderModel\\:\\:\\$preferred\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Access to an undefined property mfa\\\\PhoneController\\:\\:\\$validation\\.$#"
+			count: 2
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Instantiated class mfa\\\\PrivateException not found\\.$#"
+			count: 2
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Left side of && is always true\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Method mfa\\\\PhoneController\\:\\:verify\\(\\) should return mfa\\\\type but empty return statement found\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Method mfa\\\\PhoneController\\:\\:verify\\(\\) should return mfa\\\\type but return statement is missing\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^PHPDoc tag @throws with type mfa\\\\PrivateException\\|spitfire\\\\exceptions\\\\PublicException is not subtype of Throwable$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Parameter \\#3 \\$errors of class spitfire\\\\validation\\\\ValidationException constructor expects array\\<spitfire\\\\validation\\\\ValidationError\\>, array\\<int, string\\> given\\.$#"
+			count: 2
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Parameter \\$_secret of method mfa\\\\PhoneController\\:\\:verify\\(\\) has invalid typehint type mfa\\\\type\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Property authentication\\\\ProviderModel\\:\\:\\$expires \\(int\\) does not accept null\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Return typehint of method mfa\\\\PhoneController\\:\\:verify\\(\\) has invalid type mfa\\\\type\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Static method passport\\\\PhoneUtils\\:\\:canonicalize\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Throwing object of an unknown class mfa\\\\PrivateException\\.$#"
+			count: 2
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Variable \\$passport might not be defined\\.$#"
+			count: 1
+			path: bin/controllers/mfa/PhoneController.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$mfa\\.$#"
+			count: 1
+			path: bin/controllers/mfa/TOTPController.php
+
+		-
+			message: "#^Call to static method current\\(\\) on an unknown class mfa\\\\URL\\.$#"
+			count: 1
+			path: bin/controllers/mfa/TOTPController.php
+
+		-
+			message: "#^Instantiated class PrivateException not found\\.$#"
+			count: 1
+			path: bin/controllers/password.php
+
+		-
+			message: "#^Instantiated class PublicException not found\\.$#"
+			count: 3
+			path: bin/controllers/password.php
+
+		-
+			message: "#^Throwing object of an unknown class PrivateException\\.$#"
+			count: 1
+			path: bin/controllers/password.php
+
+		-
+			message: "#^Throwing object of an unknown class PublicException\\.$#"
+			count: 3
+			path: bin/controllers/password.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: bin/controllers/password.php
+
+		-
+			message: "#^Function async not found\\.$#"
+			count: 1
+			path: bin/controllers/scope.php
+
+		-
+			message: "#^Instantiated class PublicException not found\\.$#"
+			count: 2
+			path: bin/controllers/scope.php
+
+		-
+			message: "#^Throwing object of an unknown class PublicException\\.$#"
+			count: 2
+			path: bin/controllers/scope.php
+
+		-
+			message: "#^Access to an undefined property SuspensionController\\:\\:\\$hook\\.$#"
+			count: 2
+			path: bin/controllers/suspension.php
+
+		-
+			message: "#^Access to an undefined property SuspensionController\\:\\:\\$token\\.$#"
+			count: 1
+			path: bin/controllers/suspension.php
+
+		-
+			message: "#^Access to an undefined property user\\\\SuspensionModel\\:\\:\\$expires\\.$#"
+			count: 1
+			path: bin/controllers/suspension.php
+
+		-
+			message: "#^Access to an undefined property user\\\\SuspensionModel\\:\\:\\$user\\.$#"
+			count: 1
+			path: bin/controllers/suspension.php
+
+		-
+			message: "#^Access to an undefined property AuthAppModel\\:\\:\\$_id\\.$#"
+			count: 1
+			path: bin/controllers/token.php
+
+		-
+			message: "#^Access to an undefined property access\\\\RefreshModel\\:\\:\\$audience\\.$#"
+			count: 2
+			path: bin/controllers/token.php
+
+		-
+			message: "#^Variable \\$provided might not be defined\\.$#"
+			count: 1
+			path: bin/controllers/token.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$mfa\\.$#"
+			count: 3
+			path: bin/controllers/twofactor.php
+
+		-
+			message: "#^Access to an undefined property URLController\\:\\:\\$hook\\.$#"
+			count: 1
+			path: bin/controllers/url.php
+
+		-
+			message: "#^Instantiated class PublicException not found\\.$#"
+			count: 1
+			path: bin/controllers/url.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function rawurldecode expects string, type given\\.$#"
+			count: 1
+			path: bin/controllers/url.php
+
+		-
+			message: "#^Parameter \\$encoded of method URLController\\:\\:redirect\\(\\) has invalid typehint type type\\.$#"
+			count: 1
+			path: bin/controllers/url.php
+
+		-
+			message: "#^Parameter \\$msgid of method URLController\\:\\:redirect\\(\\) has invalid typehint type type\\.$#"
+			count: 1
+			path: bin/controllers/url.php
+
+		-
+			message: "#^Throwing object of an unknown class PublicException\\.$#"
+			count: 1
+			path: bin/controllers/url.php
+
+		-
+			message: "#^Access to an undefined property UserModel\\:\\:\\$email\\.$#"
+			count: 3
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Call to an undefined static method client\\\\LocationModel\\:\\:getLocation\\(\\)\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Call to static method queue\\(\\) on an unknown class EmailModel\\.$#"
+			count: 2
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Cannot access property \\$user on array\\|float\\|int\\|string\\|false\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Class defer\\\\notify\\\\EndSessionTask does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Function async not found\\.$#"
+			count: 2
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Instantiated class mail\\\\spam\\\\domain\\\\SpamDomainValidationRule not found\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Instantiated class mail\\\\spam\\\\domain\\\\implementation\\\\SpamDomainModelReader not found\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Method UserController\\:\\:recover\\(\\) should return type but return statement is missing\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Method UserController\\:\\:register\\(\\) should return type but return statement is missing\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$user UserModel\\)\\: Unexpected token \"\\$user\", expected type at offset 109$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Parameter \\#3 \\$errors of class spitfire\\\\validation\\\\ValidationException constructor expects array\\<spitfire\\\\validation\\\\ValidationError\\>, array\\<int, string\\> given\\.$#"
+			count: 2
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Return typehint of method UserController\\:\\:recover\\(\\) has invalid type type\\.$#"
+			count: 1
+			path: bin/controllers/user.php
+
+		-
+			message: "#^Return typehint of method UserController\\:\\:register\\(\\) has invalid type type\\.$#"
+			count: 1
+			path: bin/controllers/user.php
 
 		-
 			message: "#^Access to constant TYPE_HOSTNAME on an unknown class mail\\\\spam\\\\domain\\\\StorageInterface\\.$#"
@@ -149,6 +819,11 @@ parameters:
 			message: "#^Variable \\$exception might not be defined\\.$#"
 			count: 4
 			path: bin/error_pages/exceptions/suspension/LoginDisabledException/default.php
+
+		-
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$audience\\.$#"
+			count: 1
+			path: bin/models/access/code.php
 
 		-
 			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$challenge\\.$#"
@@ -356,7 +1031,7 @@ parameters:
 			path: bin/models/attribute.php
 
 		-
-			message: "#^Property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$_id \\(spitfire\\\\model\\\\fields\\\\IntegerField\\) does not accept StringField\\.$#"
+			message: "#^Property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$_id \\(IntegerField\\) does not accept StringField\\.$#"
 			count: 1
 			path: bin/models/attribute.php
 
@@ -506,12 +1181,12 @@ parameters:
 			path: bin/models/authentication/provider.php
 
 		-
-			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$passport\\.$#"
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$lastUsed\\.$#"
 			count: 1
 			path: bin/models/authentication/provider.php
 
 		-
-			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$preferred\\.$#"
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$passport\\.$#"
 			count: 1
 			path: bin/models/authentication/provider.php
 
@@ -582,11 +1257,6 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$protocol\\.$#"
-			count: 1
-			path: bin/models/client/location.php
-
-		-
-			message: "#^Call to static method fromURL\\(\\) on an unknown class magic3w\\\\http\\\\url\\\\reflection\\\\URLReflection\\.$#"
 			count: 1
 			path: bin/models/client/location.php
 
@@ -1091,11 +1761,6 @@ parameters:
 			path: bin/models/session.php
 
 		-
-			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$authenticated\\.$#"
-			count: 1
-			path: bin/models/session.php
-
-		-
 			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$candidate\\.$#"
 			count: 1
 			path: bin/models/session.php
@@ -1136,7 +1801,7 @@ parameters:
 			path: bin/models/session.php
 
 		-
-			message: "#^Property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$_id \\(spitfire\\\\model\\\\fields\\\\IntegerField\\) does not accept StringField\\.$#"
+			message: "#^Property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$_id \\(IntegerField\\) does not accept StringField\\.$#"
 			count: 1
 			path: bin/models/session.php
 
@@ -1331,6 +1996,36 @@ parameters:
 			path: bin/models/user/attribute.php
 
 		-
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$client\\.$#"
+			count: 1
+			path: bin/models/user/consent.php
+
+		-
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$created\\.$#"
+			count: 1
+			path: bin/models/user/consent.php
+
+		-
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$revoked\\.$#"
+			count: 1
+			path: bin/models/user/consent.php
+
+		-
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$scope\\.$#"
+			count: 1
+			path: bin/models/user/consent.php
+
+		-
+			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$user\\.$#"
+			count: 1
+			path: bin/models/user/consent.php
+
+		-
+			message: "#^Return type \\(void\\) of method user\\\\ConsentModel\\:\\:definitions\\(\\) should be compatible with return type \\(spitfire\\\\storage\\\\database\\\\Schema\\) of method spitfire\\\\Model\\:\\:definitions\\(\\)$#"
+			count: 1
+			path: bin/models/user/consent.php
+
+		-
 			message: "#^Access to an undefined property spitfire\\\\storage\\\\database\\\\Schema\\:\\:\\$group\\.$#"
 			count: 1
 			path: bin/models/user/group.php
@@ -1406,7 +2101,7 @@ parameters:
 			path: bin/models/username.php
 
 		-
-			message: "#^Parameter \\#2 \\$value of method spitfire\\\\core\\\\Environment\\:\\:set\\(\\) expects string, false given\\.$#"
+			message: "#^Parameter \\#2 \\$value of method spitfire\\\\core\\\\Environment\\:\\:set\\(\\) expects string, true given\\.$#"
 			count: 1
 			path: bin/settings/environments.php
 

@@ -1,6 +1,5 @@
 <?php
 
-use magic3w\hook\sdk\Hook;
 use spitfire\core\Collection;
 use spitfire\exceptions\PrivateException;
 use spitfire\io\session\Session;
@@ -21,12 +20,6 @@ abstract class BaseController extends Controller
 	 * @var Collection
 	 */
 	protected $level;
-	
-	/**
-	 *
-	 * @var Hook
-	 */
-	protected $hook;
 	
 	public function _onload() {
 		
@@ -67,15 +60,6 @@ abstract class BaseController extends Controller
 			$this->level = collect();
 			$this->user  = null;
 			$isAdmin = false;
-		}
-		
-		/*
-		 * Webhook initialization
-		 */
-		if (null !== $hookapp = SysSettingModel::getValue('cptn.h00k')) {
-			$hook = db()->table('authapp')->get('_id', $hookapp)->first();
-			#TODO: Add a token to the webhook
-			//$this->hook = new Hook($hook->url, null);
 		}
 		
 		$this->isAdmin = $isAdmin?? false;

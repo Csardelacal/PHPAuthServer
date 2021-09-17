@@ -28,7 +28,7 @@ use spitfire\defer\TaskFactory;
  * THE SOFTWARE.
  */
 
-class IncinerateSessionTask extends Task
+class IncinerateSessionTask implements Task
 {
 	
 	private $defer;
@@ -38,9 +38,9 @@ class IncinerateSessionTask extends Task
 		$this->defer = $defer;
 	}
 	
-	public function body() : Result 
+	public function body($settings) : Result 
 	{
-		$session = db()->table('session')->get('_id', $this->getSettings())->first();
+		$session = db()->table('session')->get('_id', $settings)->first();
 		
 		if (!$session) { return new Result('Session was already removed.'); }
 		
@@ -49,7 +49,7 @@ class IncinerateSessionTask extends Task
 		 * defer this task for later to ensure that the session is not removed prematurely.
 		 */
 		if ($session->expires > time()) {
-			$this->defer->defer($session->expires, $this);
+			$this->defer->defer($session->expires, __CLASS__, $settings);
 			return new Result('Session was not yet expired.');
 		}
 		
@@ -71,7 +71,7 @@ class IncinerateSessionTask extends Task
 				$token->store();
 			});
 			
-			$this->defer->defer(time() + 3600, $this);
+			$this->defer->defer(time() + 3600, __CLASS__, $settings);
 			return new Result('Session has dependant access tokens.');
 		}
 		
@@ -93,7 +93,7 @@ class IncinerateSessionTask extends Task
 				$token->store();
 			});
 			
-			$this->defer->defer(time() + 3600, $this);
+			$this->defer->defer(time() + 3600, __CLASS__, $settings);
 			return new Result('Session has dependant refresh tokens.');
 		}
 		

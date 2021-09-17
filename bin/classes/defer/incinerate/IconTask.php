@@ -32,7 +32,7 @@ use spitfire\defer\Task;
  * 
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  */
-class IconTask extends Task
+class IconTask implements Task
 {
 	
 	/**
@@ -54,9 +54,9 @@ class IconTask extends Task
 	 * 
 	 * @return Result
 	 */
-	public function body(): Result 
+	public function body($settings): Result 
 	{
-		$icon = db()->table(\IconModel::class)->get('_id', $this->getSettings())->first(true);
+		$icon = db()->table(\IconModel::class)->get('_id', $settings)->first(true);
 		
 		/*
 		 * If the icon was restored from the bin (for no particular reason) the system
@@ -73,7 +73,7 @@ class IconTask extends Task
 		 */
 		if ($icon->expires > time()) 
 		{
-			$this->defer->defer($icon->expires, $this);
+			$this->defer->defer($icon->expires, __CLASS__, $settings);
 			return new Result('Icon was not yet expired. Retrying later.');
 		}
 		

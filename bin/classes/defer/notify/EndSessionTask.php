@@ -31,24 +31,27 @@ use spitfire\defer\Task;
  * This task gets executed whenever the application wishes to let the clients
  * know that a certain session was ended.
  * 
+ * @todo Once orbital station is running, us it's API to perform these tasks
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  */
-class EndSessionTask extends Task
+class EndSessionTask implements Task
 {
 	
-	public function body(): Result 
+	public function body($settings): Result 
 	{
 		/*
 		 * Locate the session first.
 		 */
-		$session = db()->table('session')->get('_id', $this->getSettings())->first();
+		$session = db()->table('session')->get('_id', $settings)->first();
 		if (!$session) { return new Result('The session was already incinerated'); }
+		
+		return new Result('Webhooks are currently disabled');
 		
 		/*
 		 * Create a hook client that can send the notification out.
 		 */
 		#TODO: The hook needs to be found via IOC
-		$hook = new \magic3w\hook\sdk\Hook(\spitfire\core\Environment::get('hook'), null);
+		$hook = null;
 		$count = 0;
 		
 		/*
