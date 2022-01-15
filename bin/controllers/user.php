@@ -82,6 +82,16 @@ class UserController extends BaseController
 				throw new ValidationException('Username is taken', 0, Array('Username is taken'));
 			}
 
+			if (stripos($_POST['email'], 'gmail.com') !== false) {
+				list($euser, $edomain) = explode('@', $_POST['email'], 2);
+				$_POST['email'] = sprintf('%s@gmail.com', str_replace('.', '', $euser));
+			}
+			
+			if (stripos($_POST['email'], '+') !== false) {
+				throw new PublicException('Email containing a plus has been temporarily banned', 400);
+			}
+
+			
 			if (db()->table('user')->get('email', $_POST['email'])->fetch()) {
 				throw new ValidationException('Email is taken', 0, Array('Email is already in use'));
 			}
@@ -133,15 +143,46 @@ class UserController extends BaseController
 	 * @throws PublicException
 	 */
 	public function login() {
+		$session = Session::getInstance();
 
-		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) {
-			$returnto = $_GET['returnto'];
+		if ($session->get('IP') && $session->get('IP') !== $_SERVER['REMOTE_ADDR']) {
+			$session->destroy();
+			return $this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login'));
+		}
+
+		if (!$session->get('IP')) {
+			#Lock the session to the current IP
+			$session->set('IP', $_SERVER['REMOTE_ADDR']);
+			$session->set('locked', time());
+		}
+		
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 
+			$returnto = $_GET['returnto']; 
 		}
 		else {
 			$returnto = (string)url();
 		}
 
-		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		# Check if the application can log the user in at this point
+		$locked = ($session->get('locked')?? time()) > time() - 30;
+
+		$token = new \spitfire\io\XSSToken();
+		$this->view->set('xsrf', $token);
+
+		try {
+			$token->verify($_POST['_xsrf_']);
+			$verified = true;
+		}
+		catch (PublicException $e) { $verified = false; }
+		
+		if ($_SERVER['REQUEST_METHOD'] === 'POST' && $verified) {
+
+
+			if ($session->get('locked') > time() - 30) {
+				$this->view->set('message', 'Server is experiencing capacity issues, please try again in a minute');
+				return;
+			}
+
 
 			$query = db()->table('user')->getAll();
 
@@ -180,6 +221,8 @@ class UserController extends BaseController
 		}
 
 		$this->view->set('returnto', $returnto);
+		$this->view->set('locked', $locked);
+		$this->view->set('xsrf', $token);
 	}
 
 	public function logout() {
@@ -261,6 +304,16 @@ class UserController extends BaseController
 			#Tell the user the email was dispatched
 			$user = isset($_POST['email'])? db()->table('user')->get('email', $_POST['email'])->fetch() : null;
 
+			//If there was no user to be found, try again with the changes we made to search for spam prevention
+			if (!$user) {
+				if (stripos($_POST['email'], 'gmail.com') !== false) {
+					list($euser, $edomain) = explode('@', $_POST['email'], 2);
+						$_POST['email'] = sprintf('%s@gmail.com', str_replace('.', '', $euser));
+				}
+				
+				$user = isset($_POST['email'])? db()->table('user')->get('email', $_POST['email'])->fetch() : null;
+			}
+			
 			if ($user) {
 				$token = TokenModel::create(null, 1800, false);
 				$token->user = $user;
@@ -297,15 +350,17 @@ class UserController extends BaseController
 			$token->user->verified = 1;
 			$token->user->store();
 		}
-		elseif($this->user || $token->user) {
+		elseif($this->user || ($token && $token->user)) {
 			$token = TokenModel::create(null, 1800, false);
 			$token->user = $this->user? : $token->user;
 			$token->store();
 			$url   = url('user', 'activate', $token->token)->absolute();
-			EmailModel::queue($this->user->email, 'Activate your account',
-					  sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url));
+			EmailModel::queue($this->user->email, 'Activate your account', 
+				sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url), 
+				preg_match('/.*[\.\+].*\@.*/', $this->user->email)? time() + 1200 : time() + 300);
 		}
 		else {
+			return $this->response->setBody('Redirect...')->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(url('user', 'activate'))]));
 			throw new PublicException('Not logged in', 403);
 		}
 

@@ -74,7 +74,9 @@ class AuthController extends BaseController
 		if ($banned) { throw new PublicException('Your account was banned, login was disabled. ' . $banned->reason, 401); }
 		
 		#Check whether the user was disabled
+		if (!$session->getUser()) { return $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); }
 		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }
+		if (!$this->user->verified) { $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'activate')); return; }
 		
 		#If the user already automatically grants the application in, then we continue
 		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
