@@ -34,7 +34,6 @@ define ('SESSION_SAVE_PATH',     'bin/usr/sessions/');
 ini_set("log_errors" , "0");
 ini_set("error_log" , "logs/error_log.log");
 ini_set("display_errors" , "0");
-error_reporting(0);
 
 /* Include Spitfire core.
  */
