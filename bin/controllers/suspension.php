@@ -9,7 +9,7 @@ use spitfire\exceptions\PublicException;
  * and open the template in the editor.
  */
 
-class SuspensionController extends AppController
+class SuspensionController extends BaseController
 {
 
 
@@ -21,12 +21,7 @@ class SuspensionController extends AppController
 		}
 	}
 
-	public function create(...$args) {
-		if (count($args) != 1){
-			throw new PublicException('No user found', 404); 
-        }
-
-		$userid = $args[0];
+	public function create($userid) {
 		$user = db()->table('user')->get('_id', $userid)->fetch();
 		if (!$user) { throw new PublicException('No user found', 404); }
 
