@@ -15,26 +15,6 @@
 	<input type="password" name="password" placeholder="Password">
 	<?php if (isset($message) && $message): ?> 
 	<div class="message error"><?= $message ?></div>
-        <?php elseif($locked): ?>
-        <div class="message info" id="capacity">
-                Server is currently experiencing capacity issues. Please wait <span id="capacity-timer"></span> seconds... We apologize for the inconvenience.
-        </div>
-	<script>
-		setTimeout(function () {
-			document.getElementById('capacity').style.display = 'none';
-			document.querySelector('input[type="submit"]').removeAttribute('disabled');
-		}, 60000);
-		
-		setTimeout(function () {
-			document.querySelector('input[type="submit"]').setAttribute('disabled', 'disabled');
-		}, 0);
-
-		var seconds = 60;
-		setInterval(function () {
-			document.getElementById('capacity-timer').innerHTML = seconds;
-			seconds--;
-		}, 1000);
-	</script>
 	<?php else: ?>
 	<div class="message info">
 		Authenticating you requires our application to provide your browser with a 

@@ -163,9 +163,6 @@ class UserController extends BaseController
 			$returnto = (string)url();
 		}
 
-		# Check if the application can log the user in at this point
-		$locked = ($session->get('locked')?? time()) > time() - 30;
-
 		$token = new \spitfire\io\XSSToken();
 		$this->view->set('xsrf', $token);
 
@@ -221,7 +218,6 @@ class UserController extends BaseController
 		}
 
 		$this->view->set('returnto', $returnto);
-		$this->view->set('locked', $locked);
 		$this->view->set('xsrf', $token);
 	}
 
