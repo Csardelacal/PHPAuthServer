@@ -7,3 +7,4 @@ assets/css/*.css.map
 node_modules/
 bin/usr/.cron.lock
 .vs
+logs/*.log
