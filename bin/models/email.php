@@ -63,7 +63,7 @@ class EmailModel extends Model
 	}
 	
 	public static function deliver() {
-		$email = db()->table('email')->get('delivered', null, 'IS')->fetch();
+		$email = db()->table('email')->get('delivered', null, 'IS')->where('scheduled', '<', time())->first();
 		$transport = Environment::get('email.transport');
 		
 		if (!$transport || !$transport instanceof TransportInterface) {

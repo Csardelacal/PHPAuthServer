@@ -4,7 +4,7 @@
 <div class="row l1">
 	<div class="span l1">
 		<div class="message success">
-			Request successful.
+			Request successful, an email has been sent to your email address. <strong>To log into applications you must verify your email address</strong>
 		</div>
 	</div>
 </div>
@@ -136,7 +136,7 @@
 				</div>
 				<div class="span l2">
 					<?php if ($session->country): ?>
-					<img src="https://lipis.github.io/flag-icon-css/flags/4x3/<?= strtolower($session->country) ?>.svg" style="vertical-align: middle; height: 18px;">
+					<img src="https://raw.githubusercontent.com/lipis/flag-icons/main/flags/1x1/<?= strtolower($session->country) ?>.svg" style="vertical-align: middle; height: 18px;">
 					<span><?= $session->city ?></span>
 					<?php endif; ?>
 				</div>
