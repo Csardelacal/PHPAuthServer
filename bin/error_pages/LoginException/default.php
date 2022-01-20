@@ -90,7 +90,7 @@ use spitfire\io\stp\SimpleStackTracePrinter;
 		</div>
         <div class="errordescription wrapper"><p>
                 <small>
-                    Technical Information - <?=str_pad($exception? $exception->getUserID() : '', 10, '0', STR_PAD_LEFT) ?>
+                    Technical Information - <?=str_pad($exception? $exception->getUserID() : '', 10, '0', STR_PAD_LEFT) ?> - <?=date(DATE_ATOM) ?>
                 </small>
             </p>
 		</div>
