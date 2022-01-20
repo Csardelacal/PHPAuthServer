@@ -174,13 +174,6 @@ class UserController extends BaseController
 		
 		if ($_SERVER['REQUEST_METHOD'] === 'POST' && $verified) {
 
-
-			if ($session->get('locked') > time() - 30) {
-				$this->view->set('message', 'Server is experiencing capacity issues, please try again in a minute');
-				return;
-			}
-
-
 			$query = db()->table('user')->getAll();
 
 			$query->group()

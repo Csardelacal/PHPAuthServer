@@ -75,7 +75,7 @@ use spitfire\io\stp\SimpleStackTracePrinter;
 		<div class="errormsg">
 			<div class="wrapper">
 				<h1><?= $code ?>: <?= $message ?></h1>
-				<p><?=$exception?->getReason() ?></p>
+				<p><?= $exception? $exception->getReason() : '' ?></p>
 				<?php if($exception->getExpiry() > 0):?>
                 <p>
                     Your suspension will automatically be lifted in
@@ -90,7 +90,7 @@ use spitfire\io\stp\SimpleStackTracePrinter;
 		</div>
         <div class="errordescription wrapper"><p>
                 <small>
-                    Technical Information - <?=str_pad($exception?->getUserID(), 10, '0', STR_PAD_LEFT) ?>
+                    Technical Information - <?=str_pad($exception? $exception->getUserID() : '', 10, '0', STR_PAD_LEFT) ?>
                 </small>
             </p>
 		</div>
