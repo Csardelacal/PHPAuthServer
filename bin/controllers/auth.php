@@ -51,7 +51,7 @@ class AuthController extends BaseController
 		$this->view->set('token', $token);
 		$this->view->set('suspension', $suspension);
 	}
-	
+
 	/**
 	 * 
 	 * @param type $tokenid
@@ -71,18 +71,28 @@ class AuthController extends BaseController
 		#Check whether the user was banned. If the account is disabled due to administrative
 		#action, we inform the user that the account was disabled and why.
 		$banned     = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
-		if ($banned) { throw new PublicException('Your account was banned, login was disabled. ' . $banned->reason, 401); }
+		if ($banned) {
+			$ex = new LoginException('Your account was banned, login was disabled.', 401);
+			$ex->setUserID($this->user->_id);
+			$ex->setReason($banned->reason);
+			$ex->setExpiry($banned->expires);
+			throw $ex;
+		}
 		
 		#Check whether the user was disabled
 		if (!$session->getUser()) { return $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); }
-		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }
+		if ($this->user->disabled) {
+			$ex = new LoginException('This account has been disabled permanently.', 401);
+			$ex->setUserID($this->user->_id);
+			throw $ex;
+		}
 		if (!$this->user->verified) { $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'activate')); return; }
 		
 		#If the user already automatically grants the application in, then we continue
 		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
 		
 		#Only administrators are allowed to authorize tokens to system applications.
-		#This imposes a restriction to encourage administrators to be open about the 
+		#This imposes a restriction to encourage administrators to be open about the
 		#applications accessing user data. System applications are not required to
 		#disclose what data they have access to.
 		if ($token->app->system && !$this->isAdmin) { $grant = false; }
@@ -102,7 +112,7 @@ class AuthController extends BaseController
 		 * then we record the user's setting whether he wishes to be automatically
 		 * logged in next time.
 		 */
-		if ($grant === true) { 
+		if ($grant === true) {
 			
 			if (isset($_POST['authorize']) && !db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch()) {
 				$authorization = db()->table('user\authorizedapp')->newRecord();
@@ -112,7 +122,7 @@ class AuthController extends BaseController
 			}
 			
 			/*
-			 * Retrieve the IP information from the client. This should allow the 
+			 * Retrieve the IP information from the client. This should allow the
 			 * application to provide the user with data where they connected from.
 			 */
 			$ip = \IP::makeLocation();
@@ -124,15 +134,15 @@ class AuthController extends BaseController
 			$token->user = $this->user;
 			$token->store();
 			
-			return $this->response->getHeaders()->redirect($successURL); 
+			return $this->response->getHeaders()->redirect($successURL);
 		}
 		
 	}
-	
+
 	/**
-	 * Allows third party applications to test whether a certain application 
-	 * exists within PHPAS. It expects the application to provide a series of 
-	 * _GET parameters that need to be properly provided for it to return a 
+	 * Allows third party applications to test whether a certain application
+	 * exists within PHPAS. It expects the application to provide a series of
+	 * _GET parameters that need to be properly provided for it to return a
 	 * positive match.
 	 * 
 	 * * Application id
@@ -144,13 +154,13 @@ class AuthController extends BaseController
 	 * The signature should therefore prevent the application from forging requests
 	 * on behalf of third parties.
 	 * 
-	 * @todo For legacy purposes, this will accept an app id and secret combo 
+	 * @todo For legacy purposes, this will accept an app id and secret combo
 	 * which is no longer supported and will be removed in future versions.
 	 */
 	public function app() {
 		
-		if ($this->token && $this->token->expires < time()) { 
-			throw new PublicException('Invalid token: ' . __($_GET['token']), 400); 
+		if ($this->token && $this->token->expires < time()) {
+			throw new PublicException('Invalid token: ' . __($_GET['token']), 400);
 		}
 		
 		$remote  = isset($_GET['remote'])? $this->signature->verify($_GET['remote']) : null;
@@ -158,23 +168,23 @@ class AuthController extends BaseController
 		
 		if ($remote) {
 			list($sig, $src, $tgt) = $remote;
-
+			
 			if (!$tgt || $tgt->appID != $this->authapp->appID) {
 				throw new PublicException('Invalid remote signature. Target did not authorize itself properly', 401);
 			}
-
+			
 			if ($sig->getContext()) {
 				throw new PublicException('Invalid signature. Context should be provided via _GET', 400);
 			}
-
+			
 			$contexts = [];
 			$grant    = [];
-
+			
 			foreach ($context as $ctx) {
 				$contexts[]  = $tgt->getContext($ctx);
 				$grant[$ctx] = $tgt->canAccess($src, $this->token? $this->token->user : null, $ctx);
 			}
-
+			
 			$this->view->set('context', $contexts);
 			$this->view->set('grant', $grant);
 		}
@@ -182,7 +192,7 @@ class AuthController extends BaseController
 			$this->view->set('context', null);
 			$this->view->set('grant', null);
 		}
-
+		
 		$this->view->set('authenticated', !!$this->authapp);
 		$this->view->set('src', $this->authapp);
 		$this->view->set('remote', $src);
@@ -190,7 +200,7 @@ class AuthController extends BaseController
 	}
 	
 	/**
-	 * 
+	 *
 	 * @validate GET#signatures (required)
 	 * @param string $confirm
 	 * @throws PublicException
@@ -219,16 +229,16 @@ class AuthController extends BaseController
 		}
 		
 		if (!isset($_GET['signatures'])) {
-			throw new PublicException('Invalid signature', 400); 
+			throw new PublicException('Invalid signature', 400);
 		}
 		
 		/*
-		 * Extract all the signatures the system received. The idea is to provide 
+		 * Extract all the signatures the system received. The idea is to provide
 		 * one signature per context piece needed. While this requires the system
-		 * to provide several signatures, it also makes it way more flexible for 
+		 * to provide several signatures, it also makes it way more flexible for
 		 * the receiving application to select which permissions it wishes to request.
 		 */
-		$signatures = collect($_GET->toArray('signatures'))->each(function ($e) { 
+		$signatures = collect($_GET->toArray('signatures'))->each(function ($e) {
 			list($signature, $src, $tgt) = $this->signature->verify($e);
 			
 			/*
@@ -248,7 +258,7 @@ class AuthController extends BaseController
 			}
 			
 			/*
-			 * If the target was already approved access, either by the user or by 
+			 * If the target was already approved access, either by the user or by
 			 * policy, then we skip asking for permission to this context.
 			 */
 			if ($granted === AuthModel::STATE_AUTHORIZED) {
@@ -262,13 +272,13 @@ class AuthController extends BaseController
 		$tgt = db()->table('authapp')->get('appID', $signatures->rewind()->getTarget())->first(true);
 		
 		/*
-		 * To prevent applications from sneaking in requests to permissions that 
+		 * To prevent applications from sneaking in requests to permissions that
 		 * do belong to third parties (by requesting seemingly innocuous requests
 		 * mixed with requests from potentially malicious software), the system
 		 * will verify that there is only a single source signing all the signatures.
 		 */
-		$singlesource = $signatures->reduce(function ($c, Signature$e) use($src, $tgt) { 
-			return $c && $e->getTarget() === $tgt->appID && $e->getSrc() === $src->appID; 
+		$singlesource = $signatures->reduce(function ($c, Signature$e) use($src, $tgt) {
+			return $c && $e->getTarget() === $tgt->appID && $e->getSrc() === $src->appID;
 		}, true);
 		
 		if (!$singlesource) {
@@ -288,7 +298,7 @@ class AuthController extends BaseController
 			
 			foreach ($signatures as $c) {
 				/*
-				 * Create the authorizations. There's no need to check whether the 
+				 * Create the authorizations. There's no need to check whether the
 				 * connection already exists, since it would have been filtered from
 				 * the signatures list at about line 242
 				 */
