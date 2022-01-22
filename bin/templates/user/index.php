@@ -37,15 +37,19 @@
 				<td><?= $user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name ?></td>
 				<td><?= date('m/d/Y', $user->created) ?></td>
 				<td><?=$user->disabled !== null?'<b style="color: #490C0E;">Disabled</b>':'<i style="color: #999;">Active</i>'?></td>
-				<td>
+				<td style="width: 40%;">
 					<?php
 						$banned     = $user? db()->table('user\suspension')->get('user', $user)->addRestriction('expires', time(), '>')->fetch() : false;
 						if ($banned) {
-							echo '<b style="color: #490C0E;">Banned</b></br>';
+                    ?>
+					<b style="color: #490C0E;">Banned</b>
+					<a href="#" onclick="this.nextElementSibling.style.display = 'block'; this.remove(); return false;">[show]</a>
+					<p style="display: none;">
+					<?php
 							echo (new DateTime('now'))->diff(new DateTime('@'.$banned->expires))->format('Expires in: %a days, %h hours and %i minutes').'</br>';
 							echo 'Reason: '.$banned->reason.'</br>';
 							echo 'Notes: '.$banned->notes.'</br>';
-							echo 'Login prevented: '.($banned->preventLogin?'Yes':'No');
+							echo 'Login prevented: '.($banned->preventLogin?'Yes':'No').'</p>';
 						} else {
 							echo '<i style="color: #999;">Not banned</i>';
 						}

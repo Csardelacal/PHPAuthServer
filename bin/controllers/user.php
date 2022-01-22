@@ -26,7 +26,8 @@ class UserController extends BaseController
 
 		if (isset($_GET['q']) && !empty($_GET['q'])) {
 			$query->group()
-				->where('usernames', db()->table('username')->getAll()->where('name', 'LIKE', '%' . implode('%',str_split($_GET['q'])) . '%'))
+				->where('usernames', db()->table('username')->getAll()
+					->where('name', 'LIKE', '%' . implode('%', str_split($_GET['q'])) . '%'))
 				->where('_id', $_GET['q']);
 		}
 
@@ -91,7 +92,7 @@ class UserController extends BaseController
 				list($euser, $edomain) = explode('@', $_POST['email'], 2);
 				$_POST['email'] = sprintf('%s@gmail.com', str_replace('.', '', $euser));
 			}
-
+			
 			if (stripos($_POST['email'], '+') !== false) {
 				throw new PublicException('Email containing a plus has been temporarily banned', 400);
 			}
