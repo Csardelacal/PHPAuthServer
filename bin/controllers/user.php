@@ -17,17 +17,22 @@ class UserController extends BaseController
 {
 
 	public function index() {
+		if (!$this->authapp && !$this->isAdmin) {
+			throw new PublicException('You have no privileges to access this data.', 403);
+		}
+
 		$query = db()->table('user')->get('disabled', null, 'IS');
 		$paginator = new Paginator($query);
 
-		if (isset($_GET['q'])) {
-			$query->where('usernames', db()->table('username')->getAll()->where('name', 'LIKE', $_GET['q'] . '%'));
+		if (isset($_GET['q']) && !empty($_GET['q'])) {
+			$query->group()
+				->where('usernames', db()->table('username')->getAll()->where('name', 'LIKE', '%' . implode('%',str_split($_GET['q'])) . '%'))
+				->where('_id', $_GET['q']);
 		}
 
 		$this->view->set('page.title', 'User list');
 		$this->view->set('users', $paginator->records());
 		$this->view->set('pagination', $paginator);
-
 	}
 
 	/**
@@ -86,12 +91,12 @@ class UserController extends BaseController
 				list($euser, $edomain) = explode('@', $_POST['email'], 2);
 				$_POST['email'] = sprintf('%s@gmail.com', str_replace('.', '', $euser));
 			}
-			
+
 			if (stripos($_POST['email'], '+') !== false) {
 				throw new PublicException('Email containing a plus has been temporarily banned', 400);
 			}
 
-			
+
 			if (db()->table('user')->get('email', $_POST['email'])->fetch()) {
 				throw new ValidationException('Email is taken', 0, Array('Email is already in use'));
 			}
@@ -155,9 +160,9 @@ class UserController extends BaseController
 			$session->set('IP', $_SERVER['REMOTE_ADDR']);
 			$session->set('locked', time());
 		}
-		
-		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) { 
-			$returnto = $_GET['returnto']; 
+
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) {
+			$returnto = $_GET['returnto'];
 		}
 		else {
 			$returnto = (string)url();
@@ -171,7 +176,7 @@ class UserController extends BaseController
 			$verified = true;
 		}
 		catch (PublicException $e) { $verified = false; }
-		
+
 		if ($_SERVER['REQUEST_METHOD'] === 'POST' && $verified) {
 
 			$query = db()->table('user')->getAll();
@@ -299,10 +304,10 @@ class UserController extends BaseController
 					list($euser, $edomain) = explode('@', $_POST['email'], 2);
 						$_POST['email'] = sprintf('%s@gmail.com', str_replace('.', '', $euser));
 				}
-				
+
 				$user = isset($_POST['email'])? db()->table('user')->get('email', $_POST['email'])->fetch() : null;
 			}
-			
+
 			if ($user) {
 				$token = TokenModel::create(null, 1800, false);
 				$token->user = $user;
@@ -344,8 +349,8 @@ class UserController extends BaseController
 			$token->user = $this->user? : $token->user;
 			$token->store();
 			$url   = url('user', 'activate', $token->token)->absolute();
-			EmailModel::queue($this->user->email, 'Activate your account', 
-				sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url), 
+			EmailModel::queue($this->user->email, 'Activate your account',
+				sprintf('Click here to activate your account: <a href="%s">%s</a>', $url, $url),
 				preg_match('/.*[\.\+].*\@.*/', $this->user->email)? time() + 1200 : time() + 300);
 		}
 		else {
