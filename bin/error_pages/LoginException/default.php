@@ -76,7 +76,7 @@ use spitfire\io\stp\SimpleStackTracePrinter;
 			<div class="wrapper">
 				<h1><?= $code ?>: <?= $message ?></h1>
 				<p><?= $exception? $exception->getReason() : '' ?></p>
-				<?php if($exception->getExpiry() > 0):?>
+				<?php if ($exception->getExpiry() > 0 && $exception->getExpiry() < time() + (365 * 86400)) :?>
                 <p>
                     Your suspension will automatically be lifted in
                     <?php
