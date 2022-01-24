@@ -195,8 +195,7 @@ class UserController extends BaseController
 				$ex = new LoginException('Your account was banned, login was disabled.', 401);
 				$ex->setUserID($user->_id);
 				$ex->setReason($banned->reason);
-				if ($banned->expires < (time() + (365 * 86400))) // only show expiry if less than 1 year!
-					$ex->setExpiry($banned->expires);
+				$ex->setExpiry($banned->expires);
 				throw $ex;
             }
 
