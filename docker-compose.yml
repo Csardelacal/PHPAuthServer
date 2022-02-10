@@ -5,7 +5,7 @@ services:
     ports:
       - "8085:80"
     volumes:
-      - .:/var/www/html:ro
+      - .:/var/www/html
       - /var/www/html/bin/usr
     links:
       - memcached
