@@ -14,6 +14,12 @@ RUN pecl install -o -f redis \
     && docker-php-ext-install opcache \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl 
+ 
+# install xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN echo 'xdebug.mode = debug' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.client_port=9000' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/php.ini
 
 RUN a2enmod rewrite
 RUN service apache2 restart
