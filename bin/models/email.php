@@ -52,8 +52,12 @@ class EmailModel extends Model
 		
 		//Notify
 		try {
-			$lock = new cron\FlipFlop(spitfire()->getCWD() . '/bin/usr/.mail.cron.sem');
-			$lock->notify();
+			if (Environment::get('email.cron') === false){
+				self::deliver();self::deliver(); // call twice to make sure nothing gets left unsent
+			} else {
+				$lock = new cron\FlipFlop(spitfire()->getCWD() . '/bin/usr/.mail.cron.sem');
+				$lock->notify();
+			}
 		} 
 		catch (\Exception$e) {
 			spitfire()->log($e->getMessage());

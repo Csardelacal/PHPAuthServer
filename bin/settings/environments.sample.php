@@ -15,4 +15,5 @@ $p->set('phpAuth.token.extraTTL', true);
 
 $p->set('server_name', 'localhost:8085');
 
-$p->set('email.transport', new \mail\MailGunTransport('', ''));
+$p->set('email.cron', false);
+$p->set('email.transport', new \mail\MailhogTransport());

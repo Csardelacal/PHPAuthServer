@@ -10,6 +10,7 @@ services:
     links:
       - memcached
       - mysql
+      - mailhog
   memcached:
     image: memcached:latest
   mysql:
@@ -21,3 +22,8 @@ services:
       MYSQL_PASSWORD: test
     ports:
       - "3385:3306"
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "8025:8025"
+      
