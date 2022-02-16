@@ -48,6 +48,7 @@ class SuspensionController extends BaseController
 		$ban->preventLogin = $blockLogin;
 		$ban->reason = _def($_POST['reason'], '');
 		$ban->notes  = _def($_POST['notes'], '');
+		$ban->blame  = $this->user;
 		$ban->store();
 
 		/*

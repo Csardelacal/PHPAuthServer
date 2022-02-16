@@ -126,8 +126,8 @@
 		<div class="span l2 m2 s1" style="text-align: right">
 			<div class="styled-select">
 				<select name="blockLogin">
-					<option value="n">Restrict the user's functionality</option>
 					<option value="y">Prevent the user from logging in</option>
+					<option value="n">Restrict the user's functionality</option>
 				</select>
 			</div>
 		</div>
@@ -171,26 +171,32 @@
 	<div class="spacer" style="height: 20px"></div>
 	
 	<!--Here goes a suspension-->
-	<div class="row l5 has-dials">
-		<div class="span l4">
-			<div style="font-size: .75em; color: #555">
-				<?= $suspension->preventLogin? 'Banned' : 'Suspended' ?> until <?= date('m/d/Y', $suspension->expires) ?> for:
+	<div class="container mx-auto rounded-md bg-white border-solid border border-slate-100 relative">
+		<div class="p-6 grow">
+			<div class="whitespace-pre-wrap font-bold text-lg"><?= __($suspension->reason) ?></div>
+			<div class="h-1"></div>
+			<div class="whitespace-pre-wrap text-slate-500"><?= __($suspension->notes?: 'No reason given') ?></div>
+			
+			<div class="h-4"></div>
+			
+			<div class="flex gap-8 text-slate-500">
+				<span class="flex items-center text-sm">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
+					<span class="font-semibold"><?= $suspension->blame?: 'Unknown' ?></span>
+				</span>
+				<span class="flex items-center text-sm">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+					<span>Ends <span class="font-semibold"><?= date('m/d/Y', $suspension->expires) ?></span></span>
+				</span>
 			</div>
-
-			<div class="field" style="border-left: solid 2px #2a912e; padding: 8px 0px 8px 15px; font-size: .85em; color: #333; margin: 7px 0;">
-				<p style="white-space: pre-wrap; margin: 0; font-style: italic"><?= __($suspension->reason) ?></p>
-				<div class="spacer" style="height: 10px"></div>
-				<p style="white-space: pre-wrap; margin: 0;"><?= __($suspension->notes) ?></p>
-			</div>
-		</div>
-		
-		<div class="span l1 dials">
-			<ul>
+			<div class="absolute top-3 right-8">
 				<?php if ($suspension->expires > time()): ?>
-				<li><a href="<?= url('suspension', 'end', $suspension->_id) ?>">Lift</a></li>
+				<a class="hover:underline text-sm text-slate-500 hover:text-slate-700 flex items-center" href="<?= url('suspension', 'end', $suspension->_id) ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+					Lift
+				</a>
 				<?php endif; ?>
-				<li><a href="<?= url('suspension', 'edit', $suspension->_id) ?>">Edit notes</a></li>
-			</ul>
+			</div>
 		</div>
 	</div>
 <?php endforeach; ?>
