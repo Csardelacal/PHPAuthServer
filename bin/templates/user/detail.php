@@ -186,7 +186,7 @@
 				</span>
 				<span class="flex items-center text-sm">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-					<span>Ends <span class="font-semibold"><?= date('m/d/Y', $suspension->expires) ?></span></span>
+					<span><?=($suspension->expires > time())?'Ends':'Ended' ?> <span class="font-semibold ban-time" data-ban-time="<?=$suspension->expires?>"><?= date('m/d/Y', $suspension->expires) ?></span></span>
 				</span>
 			</div>
 			<div class="absolute top-3 right-8">
@@ -200,6 +200,9 @@
 		</div>
 	</div>
 <?php endforeach; ?>
+<script type="text/javascript">
+	formatBanTime();
+</script>
 <?php endif; ?>
 
 <div class="spacer" style="height: 50px"></div>

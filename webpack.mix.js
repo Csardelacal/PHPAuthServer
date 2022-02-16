@@ -13,6 +13,7 @@ mix
 		}
 	})
 	.sass('assets/scss/app.scss', deploy + '/css/')
+	.js("assets/src/js/account.js", deploy + '/js/account.min.js')
 	.vue()
 	.tailwind()
 	.setPublicPath('.');
