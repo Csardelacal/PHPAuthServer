@@ -13,4 +13,6 @@ $p->set('db', 'mysqlpdo://www:test@mysql:3306/testdb');
  */
 $p->set('phpAuth.token.extraTTL', true);
 
+$p->set('server_name', 'localhost:8085');
+
 $p->set('email.transport', new \mail\MailGunTransport('', ''));
