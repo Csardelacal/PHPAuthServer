@@ -10,6 +10,10 @@ and open the template in the editor.
 
 $disbled-darken-amount: 30;
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import 'reset/_clearfix.scss';
 
 * {
@@ -18,7 +22,6 @@ $disbled-darken-amount: 30;
 
 body {
 	margin: 0;
-	font-family: sans-serif;
 	background-color: #FAFAFA;
 }
 
@@ -33,32 +36,6 @@ body {
 :disabled, .disabled, [disabled] {
 	pointer-events: none;
 }
-
-a {
-	color: #555;
-	text-decoration: none;
-	
-	&:hover {
-		color: #333;
-	}
-	
-	&.highlighted {
-		color: #2a912e;
-		
-		&:hover {
-			color: #2a912e;
-		}
-	}
-	
-	&.heavy {
-		font-weight: bold;
-	}
-	
-	img {
-		border: none;
-	}
-}
-
 
 h1 {
 	font-size: 20px;
