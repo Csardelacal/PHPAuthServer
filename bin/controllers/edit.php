@@ -147,9 +147,22 @@ class EditController extends BaseController
 		if (!$this->user) { throw new PublicException('Need to be logged in', 403); }
 		
 		if ($this->request->isPost() && $_POST['upload'] instanceof Upload) {
+			$previous = $this->user->picture;
+			
 			$upload = $_POST['upload'];
 			$this->user->picture = $upload->validate()->store()->uri();
 			$this->user->store();
+			
+			/**
+			 * If the user already had an avatar, the application should delete the old one
+			 * to clean up after itself.
+			 * 
+			 * Eventually this should use figure for this, eliminating the risk that a file
+			 * could be lost if it is deleted prematurely. Right now, the moment the file is
+			 * deleted it will be permanently removed.
+			 */
+			try { $previous && storage($previous)->delete(); }
+			catch (Exception $e) {}
 			
 			#Notify the webhook about the change
 			$this->hook && $this->hook->trigger('user.update', ['type' => 'user', 'id' => $this->user->_id]);
@@ -244,8 +257,24 @@ class EditController extends BaseController
 			#Validate the new value
 			validate($v->setValue($value));
 			
+			/**
+			 * Extract the old value from the database, so once it's overridden, the data can be safely
+			 * deleted from the drive.
+			 */
+			$previous = $attributeValue->value;
+			
 			$attributeValue->value = $value instanceof Upload? $value->validate()->store()->uri() : $value;
 			$attributeValue->store();
+			
+			/**
+			 * If the user already had the given attribute, the application should delete the old one
+			 * to clean up after itself.
+			 * 
+			 * The attribute system is getting deprecated in future revisions, please make sure to use
+			 * this sparingly.
+			 */
+			try { $previous && storage($previous)->delete(); }
+			catch (Exception $e) {}
 			
 			#Notify the webhook about the change
 			$this->hook && $this->hook->trigger('user.update', ['type' => 'user', 'id' => $this->user->_id]);
