@@ -7,3 +7,4 @@ bin/usr/
 node_modules/
 logs/*.log
 /vendor/
+local.log
