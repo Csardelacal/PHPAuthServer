@@ -1,6 +1,9 @@
 .DS_Store
 /nbproject/
+.vs
+.idea
 bin/settings/environments.php
 bin/usr/
 node_modules/
+logs/*.log
 /vendor/
