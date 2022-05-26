@@ -6,6 +6,7 @@
 		<meta name="_scss" content="<?= \spitfire\SpitFire::baseUrl() ?>/assets/scss/_/js/">
 		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/app.css') ?>">
 		<link rel="stylesheet" type="text/css" href="<?= spitfire\core\http\URL::asset('css/ui-layout.css') ?>">
+		<script type="text/javascript" src="<?= spitfire\core\http\URL::asset('js/account.min.js') ?>"></script>
 		
 		<script>
 			window.baseURL = <?= json_encode(strval(url())); ?>

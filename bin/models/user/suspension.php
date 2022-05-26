@@ -21,6 +21,7 @@ class SuspensionModel extends Model
 		$schema->reason = new TextField();
 		$schema->notes = new TextField();
 		$schema->preventLogin = new BooleanField();
+		$schema->blame = new Reference('user');
 	}
 
 }

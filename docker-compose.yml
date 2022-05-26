@@ -1,5 +1,12 @@
 version: "3.3"
 services:
+  jsbuild:
+    build:
+      context: .
+      dockerfile: Dockerfile.npm    
+    restart: 'no'
+    volumes:
+      - '.:/code'
   web:
     build: .
     ports:

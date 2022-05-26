@@ -1,0 +1,6 @@
+FROM node:current-bullseye
+
+VOLUME /code
+RUN apt update; apt upgrade -y; apt install npm -y
+
+ENTRYPOINT cd code; npm install; npm run build;
