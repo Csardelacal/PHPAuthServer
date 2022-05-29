@@ -25,8 +25,20 @@ class FileToJson
 		
 		return array(
 			'type'     => 'file',
-			'preview'  => (string) url('image', 'attribute', $this->file->attr->_id, $this->file->user->_id, ['t' => $this->file->modified])->absolute(),
-			'download' => (string) url('download', 'attribute', $this->file->attr->_id, $this->file->user->_id, ['t' => $this->file->modified])->absolute()
+			'preview'  => (string) url(
+				'image',
+				'attribute',
+				$this->file->attr->_id,
+				$this->file->user->_id,
+				['t' => $this->file->modified]
+			)->absolute(),
+			'download' => (string) url(
+				'download',
+				'attribute',
+				$this->file->attr->_id,
+				$this->file->user->_id,
+				['t' => $this->file->modified]
+			)->absolute()
 		);
 	}
 }

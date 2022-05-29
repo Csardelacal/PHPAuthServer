@@ -43,10 +43,12 @@ class ImageController extends Controller
 		$icon = $app->icon? storage()->get($app->icon) : storage()->get(self::DEFAULT_APP_ICON);
 		
 		try {
-			$file = storage()->dir(spitfire\core\Environment::get('uploads.directory'))->open($size . '_' . $icon->basename() . '.jpg');
+			$file = storage()->dir(spitfire\core\Environment::get('uploads.directory'))
+				->open($size . '_' . $icon->basename() . '.jpg');
 		}
 		catch (FileNotFoundException$e) {
-			$file = storage()->dir(spitfire\core\Environment::get('uploads.directory'))->make($size . '_' . $icon->basename() . '.jpg');
+			$file = storage()->dir(spitfire\core\Environment::get('uploads.directory'))
+				->make($size . '_' . $icon->basename() . '.jpg');
 			
 			$img  = media()->load($icon)->poster();
 			$img->fit($size, $size);
