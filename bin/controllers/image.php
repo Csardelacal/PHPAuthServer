@@ -12,11 +12,12 @@ ini_set('memory_limit', '512M');
 class ImageController extends Controller
 {
 	
-	private static $thumbSizes = Array( 32, 48, 64, 128, 256 );
-
+	private static $thumbSizes = array( 32, 48, 64, 128, 256 );
+	
 	const DEFAULT_APP_ICON = BASEDIR . '/assets/img/app.png';
 	
-	public function hero() {
+	public function hero()
+	{
 		$file = SysSettingModel::getValue('page.logo');
 		
 		$responseHeaders = $this->response->getHeaders();
@@ -31,49 +32,30 @@ class ImageController extends Controller
 		return $this->response->setBody(file_get_contents($file));
 	}
 	
-	public function app($id, $size = 32) {
+	public function app($id, $size = 32)
+	{
 		$app  = db()->table('authapp')->get('_id', $id)->fetch();
 		
 		if (!$app) {
 			throw new PublicException('Invalid app id');
 		}
 		
+		$icon = $app->icon? storage()->get($app->icon) : storage()->get(self::DEFAULT_APP_ICON);
+		
 		try {
-			$icon = storage($app->icon)->getPath();
-		} 
-		catch (Exception $ex) {
-			$icon = $app->icon;
+			$file = storage()->dir(spitfire\core\Environment::get('uploads.directory'))->open($size . '_' . $icon->basename() . '.jpg');
 		}
-		
-		if (empty($icon)){
-			$icon = self::DEFAULT_APP_ICON;
-		}
-		
-		/*
-		 * Define the filename of the target, we store the thumbs for the objects
-		 * inside the same directory they get stored to.
-		 */
-		$file = rtrim(dirname($icon), '\/') . DIRECTORY_SEPARATOR . $size . '_' . basename($icon);
-		
-		if(!in_array($size, self::$thumbSizes)) {
-			throw new PublicException('Invalid size', 1604272250);
-		}
-		
-		if (!file_exists($file)) {
-			try {
-				$img = new Image($icon);
-			}
-			catch (PrivateException$e){
-				if (strpos($e->getMessage(), "doesn't exist") === false){ throw $e; }
-
-				$img = new Image(self::DEFAULT_APP_ICON);
-			}
-			$img->fitInto($size, $size);
+		catch (FileNotFoundException$e) {
+			$file = storage()->dir(spitfire\core\Environment::get('uploads.directory'))->make($size . '_' . $icon->basename() . '.jpg');
+			
+			$img  = media()->load($icon)->poster();
+			$img->fit($size, $size);
+			$img->background(255, 255, 255);
 			$img->store($file);
 		}
 		
 		$responseHeaders = $this->response->getHeaders();
-		$responseHeaders->set('Content-type', 'image/png');
+		$responseHeaders->set('Content-type', $file->mime());
 		$responseHeaders->set('Cache-Control', 'no-transform,public,max-age=3600');
 		$responseHeaders->set('Expires', date('r', time() + 3600));
 		
@@ -81,11 +63,11 @@ class ImageController extends Controller
 			throw new PrivateException('Buffer is not empty... Dumping: ' . __(ob_get_contents()), 1604272248);
 		}
 		
-		return $this->response->setBody(file_get_contents($file));
-		
+		return $this->response->setBody($file);
 	}
 	
-	public function user($id, $size = 32) {
+	public function user($id, $size = 32)
+	{
 		$user  = db()->table('user')->get('_id', $id)->fetch();
 		
 		if (!$user) {
@@ -94,7 +76,7 @@ class ImageController extends Controller
 		
 		try {
 			$icon = $user->picture? storage($user->picture) : storage('app://assets/img/user.png');
-		} 
+		}
 		catch (\Exception $ex) {
 			$icon = storage('app://' . $user->picture);
 		}
@@ -103,7 +85,7 @@ class ImageController extends Controller
 			throw new PublicException('Invalid path', 400);
 		}
 		
-		if(!in_array($size, self::$thumbSizes)) {
+		if (!in_array($size, self::$thumbSizes)) {
 			throw new PublicException('Invalid size', 1604272250);
 		}
 		
@@ -132,10 +114,10 @@ class ImageController extends Controller
 		}
 		
 		return $this->response->setBody($file->read());
-		
 	}
 	
-	public function attribute($attribute, $id, $width = 700) {
+	public function attribute($attribute, $id, $width = 700)
+	{
 		$user  = db()->table('user')->get('_id', $id)->fetch();
 		$attr  = db()->table('user\attribute')->get('user', $user)->addRestriction('attr__id', $attribute)->fetch();
 		
@@ -174,7 +156,5 @@ class ImageController extends Controller
 		$this->response->getHeaders()->set('Expires', date('r', time() + 3600));
 		
 		return $this->response->setBody($dir->open($prvw));
-		
 	}
-	
 }

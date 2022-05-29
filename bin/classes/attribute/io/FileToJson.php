@@ -9,19 +9,24 @@ class FileToJson
 	
 	private $file;
 	
-	public function __construct($model) {
+	public function __construct($model)
+	{
 		$this->file = $model;
 	}
 	
-	public function getRaw() {
-		if ($this->file === null) { return null; }
-		if ($this->file->value === null) { return null; }
+	public function getRaw()
+	{
+		if ($this->file === null) {
+			return null;
+		}
+		if ($this->file->value === null) {
+			return null;
+		}
 		
-		return Array(
+		return array(
 			'type'     => 'file',
-			'preview'  => (string) url('image',    'attribute', $this->file->attr->_id, $this->file->user->_id, ['t' => $this->file->modified])->absolute(),
+			'preview'  => (string) url('image', 'attribute', $this->file->attr->_id, $this->file->user->_id, ['t' => $this->file->modified])->absolute(),
 			'download' => (string) url('download', 'attribute', $this->file->attr->_id, $this->file->user->_id, ['t' => $this->file->modified])->absolute()
 		);
 	}
-	
 }
