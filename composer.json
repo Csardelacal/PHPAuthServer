@@ -1,0 +1,49 @@
+{
+	"name": "magic3w/phpauth-server",
+	"description": "Authentication server for micro service networks",
+	"type": "project",
+	"license": "MIT",
+	"minimum-stability": "dev",
+	"prefer-stable" : true,
+	"authors": [
+		{
+			"name": "cesar",
+			"email": "cesar@magic3w.com"
+		}
+	],
+	
+	"require": {
+		"spitfire/defer": "^0.2.1",
+		"postal/postal": "^1.0",
+		"lcobucci/jwt": "^4.1"
+	},
+	
+	"require-dev": {
+		"phpstan/phpstan": "^0.12.64",
+        "magic3w/php-coding-standard": "^1.0"
+	},
+	
+	"scripts" : {
+		"test" : [
+			"./vendor/bin/phpstan analyse --level 5 .",
+			"./vendor/bin/phpcs ."
+		],
+		"baseline" : "./vendor/bin/phpstan analyse --level 5 . --generate-baseline",
+		"sniff" : [
+			"#cp ./vendor/magic3w/php-coding-standard/.phpcs.xml ./.phpcs.xml",
+			"./vendor/bin/phpcs -s --encoding=utf-8 -p $(git diff master --diff-filter=d --cached --name-only | grep -E '\\.php$')"
+		],
+		"style" : [
+			"#cp ./vendor/magic3w/php-coding-standard/.phpcs.xml ./.phpcs.xml",
+			"./vendor/bin/phpcbf --encoding=utf-8 -n -p $(git diff master --diff-filter=d --cached --name-only | grep -E '\\.php$')"
+		]
+	},
+
+	"repositories":
+	[
+			{
+				"type": "vcs",
+				"url": "https://github.com/Csardelacal/PHP_Codesniffer"
+			}
+	]
+}

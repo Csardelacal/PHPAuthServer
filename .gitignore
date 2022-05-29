@@ -4,8 +4,7 @@
 .idea
 bin/settings/environments.php
 bin/usr/
-assets/img/*_app.png
-assets/css/*.css.map
 node_modules/
 bin/usr/.cron.lock
 logs/*.log
+/vendor/
