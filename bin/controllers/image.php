@@ -5,6 +5,7 @@ use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
 use spitfire\io\Image;
 use spitfire\storage\objectStorage\FileInterface;
+use spitfire\storage\objectStorage\NodeInterface;
 
 ini_set('memory_limit', '512M');
 
@@ -142,19 +143,13 @@ class ImageController extends Controller
 			throw new PublicException('Invalid user / attribute id');
 		}
 		
-		try {
-			if (!empty($attr->value)) {
-				/*@var $file \spitfire\storage\drive\File*/
-				$file = storage($attr->value);
-			}
-			else {
-				throw new Exception('No file', 1811031627);
-			}
-		} 
-		catch (Exception $ex) {
-			$file = storage()->get('app://' . $attr->value);
+		if ($attr->value === null) {
+			throw new PublicException('No file', 404);
 		}
 		
+		/*@var $file \spitfire\storage\drive\File*/
+		$file = storage()->get($attr->value);
+		assert($file instanceof NodeInterface);
 		
 		/*
 		 * Define the filename of the target, we store the thumbs for the objects

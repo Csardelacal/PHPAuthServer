@@ -15,6 +15,7 @@ class FileToJson
 	
 	public function getRaw() {
 		if ($this->file === null) { return null; }
+		if ($this->file->value === null) { return null; }
 		
 		return Array(
 			'type'     => 'file',
