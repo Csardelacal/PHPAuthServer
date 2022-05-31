@@ -10,35 +10,25 @@ abstract class BrowserStackTestCase extends TestCase
 {
 	private static $driver;
 	
-	private $caps = [
-		array(
-			"os" => "Windows",
-			"os_version" => "11",
-			"browser" => "chrome",
-			"browser_version" => "101.0",
-			"build" => "browserstack-build-1",
-			"name" => "Parallel test 1",
-			"browserstack.local" => "true"
-		),
-		array(
-		"os" => "Windows",
-		"os_version" => "10",
-		"browser" => "firefox",
-		"browser_version" => "latest",
-		"build" => "browserstack-build-1",
-		"name" => "Parallel test 2",
-		"browserstack.local" => "true"
-		),
-		array(
-		"browserName" => "android",
-		"realMobile" => "true",
-		"device" => "Samsung Galaxy S20",
-		"os_version" => "10.0",
-		"build" => "browserstack-build-1",
-		"name" => "Parallel test 3",
-		"browserstack.local" => "true"
-		)
-	];
+	public function setUp() : void
+	{
+		system('php console database reset');
+		system('php console database init test@test.com test testtest');
+		
+		$username = getenv("BROWSERSTACK_USERNAME");
+		$accessKey = getenv("BROWSERSTACK_ACCESS_KEY");
+		$config = json_decode(getenv('BROWSERSTACK_CAPS'), true);
+			
+		self::$driver = self::$driver?: RemoteWebDriver::create(
+			"https://" . $username . ":" . $accessKey . "@hub-cloud.browserstack.com/wd/hub",
+			$config
+		);
+	}
+	
+	public function tearDown() : void
+	{
+		//self::$driver->quit();
+	}
 	
 	/**
 	 * 
@@ -46,34 +36,9 @@ abstract class BrowserStackTestCase extends TestCase
 	 */
 	public function do(Closure $action) 
 	{
-		foreach ( $this->caps as $cap ) {
-			# Creates an instance of Local
-			$bs_local = new Local();
-			
-			# You can also set an environment variable - "BROWSERSTACK_ACCESS_KEY".
-			$bs_local_args = array("key" => "####");
-			
-			# Starts the Local instance with the required arguments
-			$bs_local->start($bs_local_args);
-			
-			# Check if BrowserStack local instance is running
-			echo $bs_local->isRunning();
-			
-			# Your test code goes here, from creating the driver instance till the end, i.e. $bs_local->stop()
-			self::$driver = $driver = RemoteWebDriver::create(
-				"####",
-				$cap
-			);
-			
-			$action($driver);
-			
-			$driver->quit();
-			
-			# Stop the Local instance
-			$bs_local->stop();
-		}
-		
+		$action(self::$driver);
 	}
+	
 	
 	public static function assertEquals($expected, $actual, string $message = ''): void
 	{

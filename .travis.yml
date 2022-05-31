@@ -1,0 +1,42 @@
+language: php
+php: 
+  - 7.4
+  - 8.1
+services:
+  - mysql
+
+addons:
+  browserstack:
+    username: "cesardelacalbret1"
+    access_key:
+      secure: "bd9wg5Kqt4tYoJZeuRNYJS9nD3z7BryrzsOG6KDYOyCeLoZWgrXHYhQusP4IibbohvDYtu+7GdXN7mgMDyUSRRFWe7iJMMnrfE44hlbpOUIRT5NLF0uNmkHEANs14Ev7aOMq9fj3vGrYJTBEVpfSmQaZBKxIPOfBQjamGfeY0UQWpWSG5RcF7e9Do77viRzmUqJmps9Z8j7HyVckQ3+Wmbg7s+U4OcsP4W5GaMoIyX0QrdCT0d8iz2TSuHkPOPrwWJoDojy59heQvE/62+choYSQkxuFeEp59e1NWzApEO2KSS1o6ugx5sBvspLX/f3LV+ESUz6lrWYrfavevzb137ZRxd1x3Er1niChoLvy4s+Yfwpo20RsRGrd0SDYOESdTw10K5+AQo+KRiDSEkU9DhVWwzwz1cMewjjgmWrrJwDNt81Myu5Hc0aWQmwOHr/I8ZsmaiVNK6fleQUZzX8AYIelPOptLslhwmqHPA45vNKOjyw7np4yXbQhiYU9QS5yyZX2yQpfIxGOOk5vxVvE0t21Myt1cDJ3hAavKbvvnDSMLMaPSPNxHjHJbapXKiaesr5JSX6F4qYribvZa34mMnR1esCEYWTJ8yQ8nFIlAiXZPGL1tJyeQYDYVjVSeMR8Eb2DSfl71MvIZUdl5z4Jp21eEvcLxj1h7MTtxgzR/JM="
+
+before_script: 
+  - LC_ALL=C.UTF-8 sudo add-apt-repository -y ppa:ondrej/php
+
+  # To make sure everything works properly, we need to load ffmpeg, a modern version
+  # of GD (that includes imagewebp functions) and ffmpeg
+  - sudo apt-get update
+  - sudo apt-get install -y ffmpeg
+  - sudo apt-get install -y php$(phpenv version-name)-cli php$(phpenv version-name)-gd php$(phpenv version-name)-xml php$(phpenv version-name)-curl php$(phpenv version-name)-imagick
+  - sudo apt-get install -y php$(phpenv version-name)-zip php$(phpenv version-name)-mbstring php$(phpenv version-name)-mysql  php$(phpenv version-name)-memcached
+  - sudo apt-get install -y php$(phpenv version-name)-memcache php$(phpenv version-name)-xdebug
+
+  # There's a need for a patch in order to make imagewebp work.
+  # The script we pulled this from includes a lot of debugging output
+  # https://travis-ci.community/t/how-to-enable-webp-image-format-support-in-php-7/3209/19
+  - rm -f /home/travis/.phpenv/shims/php
+  - ln -s /usr/bin/php /home/travis/.phpenv/shims/php
+
+  # Initialize the composer stuff.
+  - composer install
+  - composer dump-autoload
+  
+  # Initialize the settings with the known defaults so we can work the database connection.
+  - cp bin/settings/environments.sample.php bin/settings/environments.php
+
+script: php runtests.php
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - if [ -f /tmp/coverage.xml ]; then php ocular.phar code-coverage:upload --format=php-clover /tmp/coverage.xml; fi;

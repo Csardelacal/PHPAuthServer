@@ -7,11 +7,10 @@ use magic3w\phpauth\tests\BrowserStackTestCase;
 class LoginFailureTest extends BrowserStackTestCase
 {
 	
-	public function testDelete() 
+	public function testLoginFailure() 
 	{
 		$this->do(function (RemoteWebDriver $driver) : void {
-			# Searching for 'BrowserStack' on google.com
-			$driver->get("http://localhost:8085");
+			$driver->get("http://localhost:80");
 			
 			$element = $driver->findElement(WebDriverBy::name("username"));
 			$element->sendKeys("nobody");
