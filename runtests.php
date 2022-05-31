@@ -49,11 +49,18 @@ $tunnel = new Local();
 $bs_local_args = array("key" => $accessKey);
 
 # Starts the Local instance with the required arguments
-$tunnel->start($bs_local_args);
+#$tunnel->start($bs_local_args);
+
+var_dump($_ENV);
 
 foreach ($caps as $cap) {
-	$env = $_ENV;
+	$env = [];
+	
+	$env['BROWSERSTACK_USERNAME'] = getenv("BROWSERSTACK_USERNAME");
+	$env['BROWSERSTACK_ACCESS_KEY'] = getenv("BROWSERSTACK_ACCESS_KEY");
 	$env['BROWSERSTACK_CAPS'] = json_encode($cap);
+	
+	var_dump($env);
 	
 	$process = proc_open(
 		'php ./vendor/bin/phpunit tests',
@@ -80,4 +87,4 @@ foreach ($caps as $cap) {
     fclose($pipes[2]);
 }
 
-$tunnel->stop();
+#$tunnel->stop();

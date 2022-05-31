@@ -12,17 +12,24 @@ abstract class BrowserStackTestCase extends TestCase
 	
 	public function setUp() : void
 	{
-		system('php console database reset');
-		system('php console database init test@test.com test testtest');
+		system('docker-compose exec web php console database reset');
+		system('docker-compose exec web php console database init test@test.com test testtest');
 		
 		$username = getenv("BROWSERSTACK_USERNAME");
 		$accessKey = getenv("BROWSERSTACK_ACCESS_KEY");
 		$config = json_decode(getenv('BROWSERSTACK_CAPS'), true);
+		
+		if (!self::$driver) {
 			
-		self::$driver = self::$driver?: RemoteWebDriver::create(
-			"https://" . $username . ":" . $accessKey . "@hub-cloud.browserstack.com/wd/hub",
-			$config
-		);
+			self::$driver = RemoteWebDriver::create(
+				"https://" . $username . ":" . $accessKey . "@hub-cloud.browserstack.com/wd/hub",
+				$config
+			);
+			
+			register_shutdown_function(function () {
+				self::$driver->quit();
+			});
+		}
 	}
 	
 	public function tearDown() : void

@@ -10,7 +10,7 @@ class LoginFailureTest extends BrowserStackTestCase
 	public function testLoginFailure() 
 	{
 		$this->do(function (RemoteWebDriver $driver) : void {
-			$driver->get("http://localhost:80");
+			$driver->get("http://localhost:8085");
 			
 			$element = $driver->findElement(WebDriverBy::name("username"));
 			$element->sendKeys("nobody");
