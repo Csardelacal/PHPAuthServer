@@ -5,6 +5,3 @@
 [submodule "unserscoreSCSS"]
 	path = assets/scss/_
 	url = https://github.com/Csardelacal/underscoreSCSS.git
-[submodule "m3.js"]
-	path = assets/js/m3
-	url = https://github.com/Csardelacal/m3.js.git
