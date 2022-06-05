@@ -14,6 +14,7 @@ mix
 	})
 	.sass('assets/scss/app.scss', deploy + '/css/')
 	.js("assets/src/js/account.js", deploy + '/js/account.min.js')
+	.js("assets/src/js/edit/email.js", deploy + '/js/edit/email.min.js')
 	.vue()
 	.tailwind()
 	.setPublicPath('.');
