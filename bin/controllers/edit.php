@@ -111,7 +111,7 @@ class EditController extends BaseController
 	{
 		if (!$this->user) {
 			return
-				$this->response->setBody('Redirecting')
+			$this->response->setBody('Redirecting')
 					->getHeaders()->redirect(url('user', 'login', ['returnto' => (string)url('edit', 'email')]));
 		}
 		
