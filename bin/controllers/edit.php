@@ -110,7 +110,9 @@ class EditController extends BaseController
 	public function email()
 	{
 		if (!$this->user) {
-			throw new PublicException('Need to be logged in', 403);
+			return
+				$this->response->setBody('Redirecting')
+					->getHeaders()->redirect(url('user', 'login', ['returnto' => (string)url('edit', 'email')]));
 		}
 		
 		if (null != $s = $this->user->isSuspended()) {
