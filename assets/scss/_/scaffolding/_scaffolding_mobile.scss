@@ -1,0 +1,24 @@
+/*
+This are the functions (mixins) used to generate the basic scaffolding for our
+website. Due to the inverted functionality of the grid we rewrote big parts to 
+make them more usable.
+*/
+/*!
+    Created on : Oct 26, 2013, 7:18:16 PM
+    Author     : cesar
+*/
+
+.span.m1,
+.span.m2,
+.span.m3,
+.span.m4,
+.span.m5 {
+	margin-left: $spacer-width / 2;
+		
+	&:first-child {
+		margin-left: $spacer-width / 2;
+	}
+}
+
+
+@include grid('s', 5);

@@ -12,6 +12,18 @@
 		}
 	],
 	
+	"autoload": {
+		"psr-4": {
+			
+		}
+	},
+	
+	"autoload-dev": {
+		"psr-4": {
+			"magic3w\\phpauth\\tests\\" : "./tests"
+		}
+	},
+	
 	"require": {
 		"spitfire/defer": "^0.2.1",
 		"postal/postal": "^1.0",
@@ -20,12 +32,15 @@
 	
 	"require-dev": {
 		"phpstan/phpstan": "^0.12.64",
-        "magic3w/php-coding-standard": "^1.0"
+        "magic3w/php-coding-standard": "^1.0",
+		"php-webdriver/webdriver": "^1.12",
+		"phpunit/phpunit": "^9.5",
+		"browserstack/browserstack-local": "dev-master"
 	},
 	
 	"scripts" : {
 		"test" : [
-			"./vendor/bin/phpstan analyse --level 5 .",
+			"./vendor/bin/phpstan analyse --level 5 bin/",
 			"./vendor/bin/phpcs ."
 		],
 		"baseline" : "./vendor/bin/phpstan analyse --level 5 . --generate-baseline",

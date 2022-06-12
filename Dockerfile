@@ -40,4 +40,8 @@ RUN mkdir -p bin/usr/sessions
 RUN mkdir -p bin/usr/uploads
 RUN chown -R www-data: bin/usr
 
+# For browserstack access we need the machine to be able to listen
+# on port 45691
+EXPOSE 45691
+
 #TODO: Make the storage and public storage directories writable.

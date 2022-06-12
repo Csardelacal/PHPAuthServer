@@ -1,0 +1,94 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 20.04.2018, 16:35:00
+    Author     : César de la Cal Bretschneider <cesar@magic3w.com>
+*/
+
+
+@import "../mixins/_grid.scss";
+
+
+$spacer_width: 20px / 960px * 100%;
+$max_column_count: 10;
+
+.span {
+	display: inline-block;
+	vertical-align: top;
+	overflow-x: hidden;
+	margin-left: $spacer-width / 2;
+	min-height: 1px;
+	
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	padding: 3px;
+	width: 100% - $spacer_width;
+}
+
+div.row {
+	display: block;
+	margin: 0 auto;
+	width: 100%;
+	
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	
+	&.fluid {
+		width: 100%;
+		max-width: 100%;
+	}
+}
+
+
+@import '_scaffolding_mobile';
+
+@media all and (max-width: 960px) and (min-width: 480px){
+	.desktop-only {
+		display: none !important;
+	}
+	
+	.mobile-only {
+		display: none;
+	}
+	
+	.not-tablet {
+		display: none;
+	}
+	
+	@import '_scaffolding_tablet.scss';
+}
+
+@media all and (min-width: 960px) {
+	.mobile-only {
+		display: none;
+	}
+	
+	.tablet-only {
+		display: none;
+	}
+	
+	.not-desktop {
+		display: none;
+	}
+	
+	
+	@import '_scaffolding_desktop.scss';
+}
+
+@media all and (max-width: 480px) {
+	.desktop-only {
+		display: none !important;
+	}
+	
+	.tablet-only {
+		display: none;
+	}
+	
+	.not-mobile {
+		display: none;
+	}
+}

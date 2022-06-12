@@ -1,0 +1,5 @@
+parameters:
+	scanDirectories:
+		- spitfire/
+includes:
+	- phpstan-baseline.neon
