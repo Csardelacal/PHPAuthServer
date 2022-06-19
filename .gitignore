@@ -5,6 +5,7 @@
 bin/settings/environments.php
 bin/usr/
 node_modules/
+bin/usr/.cron.lock
 logs/*.log
 /vendor/
 local.log
