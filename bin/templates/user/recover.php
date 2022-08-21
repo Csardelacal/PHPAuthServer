@@ -5,7 +5,7 @@
 <div class="spacer" style="height: 30px"></div>
 <div class="row1">
 	<div class="span1 message success">
-		<?= __($message) ?>
+		<?= __($success) ?>
 	</div>
 </div>
 
