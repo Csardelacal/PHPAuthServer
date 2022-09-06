@@ -192,7 +192,7 @@ class UserController extends BaseController
 			#Check whether the user was banned
 			$banned     = $user? db()->table('user\suspension')->get('user', $user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->fetch() : false;
 			if ($banned) {
-				$ex = new LoginException('Your account was banned, login was disabled.', 401);
+				$ex = new LoginException('Your account was suspended, login is disabled.', 401);
 				$ex->setUserID($user->_id);
 				$ex->setReason($banned->reason);
 				$ex->setExpiry($banned->expires);
