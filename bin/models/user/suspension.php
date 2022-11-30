@@ -22,6 +22,12 @@ class SuspensionModel extends Model
 		$schema->notes = new TextField();
 		$schema->preventLogin = new BooleanField();
 		$schema->blame = new Reference('user');
+		$schema->created = new IntegerField(true);
+	}
+	
+	public function onbeforesave()
+	{
+		if (!$this->created) { $this->created = time(); }
 	}
 
 }

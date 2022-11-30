@@ -186,6 +186,10 @@
 				</span>
 				<span class="flex items-center text-sm">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+					<span><span class="font-semibold ban-time" data-ban-time="<?=$suspension->created?>"><?= date('m/d/Y', $suspension->created) ?></span></span>
+				</span>
+				<span class="flex items-center text-sm">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
 					<span><?=($suspension->expires > time())?'Ends':'Ended' ?> <span class="font-semibold ban-time" data-ban-time="<?=$suspension->expires?>"><?= date('m/d/Y', $suspension->expires) ?></span></span>
 				</span>
 			</div>
