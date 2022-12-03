@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eef5d3a0af2f8505233a7d6cb76debe5",
+    "content-hash": "f195f5499dfdc08c5d8a7b9da8aecb2e",
     "packages": [
         {
             "name": "andrewbreksa/rsmq",
@@ -200,6 +200,51 @@
                 }
             ],
             "time": "2023-01-02T13:28:00+00:00"
+        },
+        {
+            "name": "magic3w/url-reflection",
+            "version": "0.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Magic3W/url-reflection.git",
+                "reference": "a54457004330e3b8f08709603371e37082056167"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Magic3W/url-reflection/zipball/a54457004330e3b8f08709603371e37082056167",
+                "reference": "a54457004330e3b8f08709603371e37082056167",
+                "shasum": ""
+            },
+            "require": {
+                "psr/http-message": "^1.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.8",
+                "phpunit/phpunit": "^9.3",
+                "squizlabs/php_codesniffer": "dev-dev/scope-indent-blank-lines"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "magic3w\\http\\url\\reflection\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "César de la Cal Bretschneider",
+                    "email": "cesar@magic3w.com"
+                }
+            ],
+            "description": "Allows applications to have a URL parsed and retrieve information about it's components",
+            "support": {
+                "issues": "https://github.com/Magic3W/url-reflection/issues",
+                "source": "https://github.com/Magic3W/url-reflection/tree/0.3.1"
+            },
+            "time": "2022-12-03T08:50:47+00:00"
         },
         {
             "name": "postal/postal",
@@ -413,6 +458,59 @@
                 "source": "https://github.com/php-fig/container/tree/2.0.2"
             },
             "time": "2021-11-05T16:47:00+00:00"
+        },
+        {
+            "name": "psr/http-message",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/master"
+            },
+            "time": "2016-08-06T14:39:51+00:00"
         },
         {
             "name": "rmccue/requests",

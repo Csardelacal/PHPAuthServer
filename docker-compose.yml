@@ -18,6 +18,8 @@ services:
       - memcached
       - mysql
       - mailhog
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   memcached:
     image: memcached:latest
   mysql:

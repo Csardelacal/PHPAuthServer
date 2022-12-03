@@ -1,7 +1,9 @@
 <?php
 
 use app\AuthLock;
+use client\LocationModel;
 use connection\AuthModel;
+use magic3w\http\url\reflection\URLReflection;
 use signature\Signature;
 use spitfire\core\Environment;
 use spitfire\core\http\URL;
@@ -53,6 +55,8 @@ class AuthController extends BaseController
 	}
 
 	/**
+	 * oAuth here should actually stand for oldAuth - it's not technically oAuth we're
+	 * doing here and it's a very cumbersome implementation.
 	 * 
 	 * @param type $tokenid
 	 * @return type
@@ -327,6 +331,286 @@ class AuthController extends BaseController
 		$this->view->set('signatures', $signatures);
 		$this->view->set('confirm', $xsrf->getValue());
 		
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @validate GET#response_type (string required)
+	 * @validate GET#client_id (string required)
+	 * @validate GET#state (string required)
+	 * @validate GET#redirect_uri (string required)
+	 * @validate GET#code_challenge (string required)
+	 * @validate GET#code_challenge_method (string required)
+	 * 
+	 * @todo This endpoint should verify that a user actually is authorized to issue this token
+	 * by using ABAC or a similar mechanism. This could allow operators of the Authentication
+	 * server to block certain users from accessing certain applications (or parts of them).
+	 * 
+	 * @param type $tokenid
+	 * @return void
+	 * @layout minimal.php
+	 * @throws PublicException
+	 */
+	public function oauth2() {
+		
+		$code_challenge = $_GET['code_challenge'];
+		$code_challenge_method = $_GET['code_challenge_method']?? 'plain';
+		$audience = $_GET['audience']? 
+			db()->table(AuthAppModel::class)->get('appID', $_GET['audience'])->first(true) : 
+			null;
+		
+		/*
+		 * Find the application intending to authenticate this request.
+		 */
+		$client = db()->table('authapp')->get('appID', $_GET['client_id'])->first(true);
+		
+		/*
+		 * In order to ensure that the client can be given appropriate access, the 
+		 * server needs to make sure that the application requests the appropriate
+		 * scopes for this application.
+		 * 
+		 * An application must never request access to a scope that doesn't exist,
+		 * granting access to undefined scopes may lead to dangerous behavior.
+		 * 
+		 * Scopes are defined by the audience that receives the token, to make sure
+		 * you request the right scopes, refer to the documentation of the application
+		 * you wish to read data from.
+		 * 
+		 * While we do this, we also put the 'basic' scope on the stack. This allows
+		 * us to check that the user is granting permission to access the application
+		 * with the minimum viable data.
+		 * 
+		 * @todo Implement scope checking. Right now PHPAS does not validate the list of
+		 * scopes the client has passed. This means that PHPAS is unable to inform the 
+		 * user what the scope does and will just regurgitate the list of scopes it received.
+		 * 
+		 * This used to have a database table attached which would provide icons and captions
+		 * that users should understand when interacting with the authentication dialog.
+		 */
+		$scopes = collect(explode(' ', $_GET['scope']))
+			->filter()
+			->add(['basic'])
+			->unique();
+		
+		/*
+		 * We now check which scopes we have already received consent for, this means that the
+		 * user has either already given their consent or the server implies that they are 
+		 * consenting due to policy.
+		 * 
+		 * Policy based consent is generally used when handling internal applications where the
+		 * developer can assume that the consent is already given.
+		 */
+		$consent_implied = db()->table('user\consent')
+			->get('client', $client)
+			->where('scope', $scopes->toArray())
+			->where('user', null)
+			->where('revoked', null)
+			->all()
+			->add(
+				db()->table('user\consent')
+					->get('client', $client)
+					->where('scope', $scopes->toArray())
+					->where('user', $this->user)
+					->where('revoked', null)
+					->all()
+			)
+			->extract('scope')
+			->unique();
+		
+		$consent_needed = array_diff(
+			$scopes->toArray(),
+			$consent_implied->toArray()
+		);
+		
+		/*
+		 * The response type used to be code or token for applications implementing
+		 * oAuth2 whenever the server and/or client does not support PKCE. Since our
+		 * server is implemented right from the start with PKCE in mind, we can 
+		 * enforce the use of the response_type of code and deny any requests with
+		 * token.
+		 * 
+		 * Since the result of this request is handled by the user agent, it should
+		 * never return a token directly. Instead, the user agent should be handed an
+		 * access_code that the application (potentially running inside the UA) can
+		 * exchange for a token.
+		 */
+		if ($_GET['response_type'] !== 'code') {
+			throw new PublicException('This server does only accept a response_type of code. Please refer to the manual', 400);
+		}
+		
+		/*
+		 * When generating an oAuth session we do require the user to be fully 
+		 * authenticated.
+		 */
+		if (!$this->user) { 
+			$this->response->setBody('Redirecting...');
+			return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); 
+		}
+		
+		
+		/*
+		 * Check whether the user was banned. If the account is disabled due to administrative
+		 * action, we inform the user that the account was disabled and why.
+		 */
+		$banned = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
+		
+		if ($banned) { 
+			$ex = new LoginException('Your account was suspended, login is disabled.', 401);
+			$ex->setUserID($this->user->_id);
+			$ex->setReason($banned->reason);
+			$ex->setExpiry($banned->expires);
+			throw $ex;
+		}
+		
+		#Check whether the user was disabled
+		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }
+		
+		/**
+		 * Check if the user needs to be strongly authenticated for this app
+		 * 
+		 * @todo Perform MFA check here
+		 */	
+		
+		/*
+		 * Start of by assuming that the client is not intended to be given the application's
+		 * data. We will later check whether the application was granted access and
+		 * will then flip this flag.
+		 */
+		$grant = empty($consent_needed);
+		
+		/*
+		 * Our implementation does not accept anything but S256, plain code_challenges
+		 * are going to be rejected. These could be intercepted easily.
+		 */
+		if ($code_challenge_method != 'S256') {
+			throw new PublicException('Invalid code_challenge_method', 400);
+		}
+		
+		/*
+		 * Extract the redirect, and make sure that it points to a URL that the client
+		 * is authorized to send the user to.
+		 */
+		$redirect = URLReflection::fromURL($_GET['redirect_uri']);
+		
+		/**
+		 * In order to validate the redirect we make sure that the protocol, hostname
+		 * and paths for the redirect match.
+		 * 
+		 * @todo Actually check the redirect
+		 */
+		$valid = true || db()->table(LocationModel::class)->get('client', $client)->all()->reduce(function ($valid, LocationModel $e) use ($redirect) {
+			if ($e->hostname !== $redirect->getHost()) { return $valid; }
+			if (!Strings::startsWith($redirect->getPath(), $e->path)) { return $valid; }
+			
+			return true;
+		}, false);
+		
+		if (!$valid) {
+			throw new PublicException(sprintf('Redirect to %s is invalid', __($redirect)), 401);
+		}
+		
+		/*
+		 * Check if the user is approving the request to provide the application access
+		 * to their account, given the information they have.
+		 */
+		elseif ($this->request->isPost()) {
+			
+			#TODO: Check if permission allows this user to authenticate codes for this
+			# application. Important for elevated privileges apps
+			
+			$grant = $_POST['grant'] === 'grant';
+			
+		}
+		
+		/*
+		 * Check if the client is granted access to the application by policy, this
+		 * would allow the application to bypass the authentication flow.
+		 */
+		elseif (false) {
+			#TODO: Check whether the application is granted access by policy
+		}
+		
+		if ($grant) {
+			
+
+			/*
+			 * Record the code challenge, and the user approving this challenge, together
+			 * with the state the application passed.
+			 */
+			$challenge = db()->table('access\code')->newRecord();
+			$challenge->code = str_replace(['-', '/', '='], '', base64_encode(random_bytes(64)));
+			$challenge->audience = $audience;
+			$challenge->client = $client;
+			$challenge->user = $this->user;
+			$challenge->state = $_GET['state'];
+			$challenge->challenge = sprintf('%s:%s', $code_challenge_method, $code_challenge);
+			$challenge->scopes = $scopes->join(' ');
+			$challenge->redirect = (string)$redirect;
+			$challenge->created = time();
+			$challenge->expires = time() + 180;
+			$challenge->session = $this->session;
+			$challenge->store();
+			
+			foreach ($scopes as $scope) {
+				/**
+				 * Fetch the user's consent, so if we didn't have that on record before, we can record it
+				 * now. This is automatically done, because the user has consented to granting the application
+				 * access to the scopes.
+				 * 
+				 * Please note that the user should be able to revoke the consent to the use of their data
+				 * at any time, but we also acknowledge that asking for consent for the same actions over and
+				 * over does not lead to better security and causes user exhaustion.
+				 * 
+				 * Also, most malicious apps, will have the ability to just cache the data they did receive
+				 * from the user, and they still need the user to be present in order to refresh it.
+				 */
+				$consent = db()->table('user\consent')
+					->get('client', $client)
+					->where('scope', $scope)
+					->where('user', $this->user)
+					->where('revoked', null)->first();
+				
+				if (!$consent) { 
+					$consent = db()->table('user\consent')->newRecord();
+					$consent->client = $client;
+					$consent->scope = $scope;
+					$consent->user = $this->user;
+					$consent->store();
+				}
+			}
+			
+			return $this->response->setBody('Redirect')
+				->getHeaders()->redirect((clone $redirect)->setQueryString(['code' => $challenge->code, 'state' => $challenge->state]));
+		}
+		
+		/*
+		 * If the request was posted, the user selected to deny the application access
+		 */
+		elseif ($this->request->isPost()) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect($redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+		}
+		
+		/**
+		 * If the application requested a silent authentication, we do not continue to seek permission
+		 * from the resource owner, since the application is explicitly asking us not to do so.
+		 * 
+		 * While the application has the option to ask us to not prompt the user, this will not change the
+		 * server's decision and will just result in a denied error being issued immediately.
+		 */
+		elseif (($_GET['prompt']?? false) === 'none') {
+			$this->response->setBody('Redirect')->getHeaders()->redirect($redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+		}
+		
+		/*
+		 * If the user has not been able to allow or deny the request, the server
+		 * should request their permission.
+		 */
+		$this->view->set('client', $client);
+		$this->view->set('audience', $audience);
+		$this->view->set('redirect', (string)$redirect);
+		$this->view->set('cancel', (string)(clone $redirect)->setQueryString(['error' => 'denied', 'description' => 'Authentication request was denied']));
 	}
 	
 }

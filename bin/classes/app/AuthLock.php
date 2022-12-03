@@ -42,13 +42,13 @@ class AuthLock
 	private $context;
 	
 	public function __construct(AuthAppModel$scope, UserModel$user, $context) {
-		$this->scope   = $scope;
+		$this->scopes   = $scope;
 		$this->user    = $user;
 		$this->context = $context;
 	}
 	
 	public function unlock(AuthAppModel$app) {
-		$db = $this->scope->getTable()->getDb();
+		$db = $this->scopes->getTable()->getDb();
 		$q  = $db->table('connection\auth')->getAll();
 		
 		$q->where('target', $this->scope);

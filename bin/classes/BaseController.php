@@ -11,6 +11,8 @@ abstract class BaseController extends Controller
 	protected $token = null;
 	protected $isAdmin = false;
 	
+	protected ?SessionModel $session;
+	
 	/**
 	 *
 	 * @var \signature\Helper
@@ -38,6 +40,16 @@ abstract class BaseController extends Controller
 		}
 		catch (PrivateException$e) {
 			$admingroupid = null;
+		}
+		
+		if ($u) {
+			$this->session = db()->table('session')->get('_id', SessionModel::TOKEN_PREFIX . Session::sessionId())->first();
+			
+			if ($this->session === null) {
+				$this->session = db()->table('session')->newRecord();
+				$this->session->_id = SessionModel::TOKEN_PREFIX . Session::sessionId();
+				$this->session->store();
+			}
 		}
 		
 		if ($u || $t) { 

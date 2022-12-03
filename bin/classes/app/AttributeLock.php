@@ -45,12 +45,12 @@ class AttributeLock
 	private $user;
 	
 	public function __construct(AttributeModel$scope, UserModel$user = null) {
-		$this->scope   = $scope;
+		$this->scopes   = $scope;
 		$this->user    = $user;
 	}
 	
 	public function unlock(AuthAppModel$app, $mode = self::MODE_R) {
-		$db = $this->scope->getTable()->getDb();
+		$db = $this->scopes->getTable()->getDb();
 		$q  = $db->table('attribute\appgrant')->getAll();
 		
 		$q->where('attribute', $this->scope);
@@ -72,11 +72,11 @@ class AttributeLock
 	public function def($mode) {
 		switch($mode) {
 			case self::MODE_R:
-				return $this->scope->readable === 'public';
+				return $this->scopes->readable === 'public';
 			case self::MODE_W:
-				return $this->scope->writable === 'public';
+				return $this->scopes->writable === 'public';
 			case self::MODE_R | self::MODE_W:
-				return $this->scope->readable === 'public' && $this->context->writable === 'public';
+				return $this->scopes->readable === 'public' && $this->context->writable === 'public';
 		}
 	}
 	
