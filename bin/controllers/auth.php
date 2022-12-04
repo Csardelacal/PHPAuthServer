@@ -607,6 +607,7 @@ class AuthController extends BaseController
 		 * If the user has not been able to allow or deny the request, the server
 		 * should request their permission.
 		 */
+		$this->view->set('user', $this->user);
 		$this->view->set('client', $client);
 		$this->view->set('audience', $audience);
 		$this->view->set('redirect', (string)$redirect);

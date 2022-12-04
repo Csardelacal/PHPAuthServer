@@ -96,7 +96,7 @@ class AppController extends BaseController
 			}
 			
 			if ($_POST['icon'] instanceof Upload) {
-				$app->icon = $_POST['icon']->store();
+				$app->icon = $_POST['icon']->store()->uri();
 			}
 			
 			$app->system = isset($_POST['system']);
