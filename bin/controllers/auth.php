@@ -130,7 +130,7 @@ class AuthController extends BaseController
 			 * interface that allows using a different vendor for location detection.
 			 */
 			$token->country = $_SERVER["HTTP_CF_IPCOUNTRY"];
-			$token->city    = $_SERVER["HTTP_CF_IPCITY"];
+			$token->city    = substr($_SERVER["HTTP_CF_IPCITY"], 0, 20);
 			
 			$token->user = $this->user;
 			$token->store();
