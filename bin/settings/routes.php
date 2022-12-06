@@ -14,3 +14,8 @@
  */
 
 spitfire\core\router\Router::getInstance()->request('/app/permissions/:action?', ['controller' => ['permissions'], 'action' => ':action']);
+
+spitfire\core\router\Router::getInstance()->request(
+	'/.well-known/openid-configuration', 
+	['controller' => ['wellknown'], 'action' => 'openid']
+);

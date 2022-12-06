@@ -61,26 +61,6 @@ class AppController extends BaseController
 		
 	}
 	
-	public function keygen(AuthAppModel $app)
-	{
-		[$private, $public] = KeyModel::generate();
-		
-		$existing = db()->table('client\key')->get('client', $app)->where('expires', null)->first();
-		
-		if ($existing) {
-			$existing->expires = time() + 14 * 86400;
-			$existing->store();
-		}
-		
-		$key = db()->table('client\key')->newRecord();
-		$key->client = $app;
-		$key->public = $public;
-		$key->private = $private;
-		$key->store();
-		
-		return $this->response->setBody('Redirect')->getHeaders()->redirect(url('app', 'detail', $app->_id));
-	}
-	
 	public function detail(AuthAppModel$app) {
 		
 		if ($this->request->isPost()) {

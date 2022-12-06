@@ -148,7 +148,7 @@ class TokenModel extends Model
 	public function jwtrs256() : string
 	{
 		
-		$credential = db()->table('client\key')->get('expires', null)->where('client', $this->client)->first(true);
+		$credential = db()->table('key')->get('expires', null)->first(true);
 		#TODO
 		# $issuer     = db()->table('authapp')->get('_id', SysSettingModel::getValue('app.self'))->first(true);
 		

@@ -1,8 +1,7 @@
-<?php namespace client;
+<?php 
 
 use spitfire\Model;
 use spitfire\storage\database\Schema;
-use StringField;
 use TextField;
 
 /* 
