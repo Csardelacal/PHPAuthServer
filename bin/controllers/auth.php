@@ -124,12 +124,13 @@ class AuthController extends BaseController
 			/*
 			 * Retrieve the IP information from the client. This should allow the
 			 * application to provide the user with data where they connected from.
+			 * 
+			 * @todo While Cloudflare is very convenient. It's definitely not a generic
+			 * protocol and produces vendor lock-in. This should be replaced with an
+			 * interface that allows using a different vendor for location detection.
 			 */
-			$ip = \IP::makeLocation();
-			if ($ip) {
-				$token->country = $ip->country_code;
-				$token->city    = substr($ip->city, 0, 20);
-			}
+			$token->country = $_SERVER["HTTP_CF_IPCOUNTRY"];
+			$token->city    = $_SERVER["HTTP_CF_IPCITY"];
 			
 			$token->user = $this->user;
 			$token->store();
