@@ -27,6 +27,7 @@ ini_set("display_errors" , 0);
 /* Include Spitfire core.
  */
 include './spitfire/bootstrap.php';
+include './vendor/autoload.php';
 
 ini_set('memory_limit', '4G');/**/
 

@@ -22,6 +22,11 @@ services:
       - "host.docker.internal:host-gateway"
   memcached:
     image: memcached:latest
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_data:/data
+
   mysql:
     image: mariadb:latest
     environment:
@@ -36,3 +41,6 @@ services:
     ports:
       - "8025:8025"
       
+
+volumes:
+  redis_data:

@@ -28,7 +28,9 @@
 		"spitfire/defer": "master",
 		"postal/postal": "^1.0",
 		"lcobucci/jwt": "^4.2",
-		"magic3w/url-reflection": "^0.3.0"
+		"magic3w/url-reflection": "^0.3.0",
+		"andrewbreksa/rsmq": "^2.0",
+		"spitfire/dependency-provider": "^0.2.8"
 	},
 	
 	"require-dev": {

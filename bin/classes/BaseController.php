@@ -1,5 +1,9 @@
 <?php
 
+use AndrewBreksa\RSMQ\RSMQClient;
+use defer\TaskFactory;
+use jwt\Base64URL;
+use Predis\Client;
 use spitfire\exceptions\PrivateException;
 use spitfire\io\session\Session;
 use spitfire\exceptions\PublicException;
@@ -20,6 +24,8 @@ abstract class BaseController extends Controller
 	protected $signature;
 	protected $authapp;
 	
+	protected TaskFactory $defer;
+	
 	/**
 	 *
 	 * @var hook\Hook
@@ -27,6 +33,11 @@ abstract class BaseController extends Controller
 	protected $hook;
 	
 	public function _onload() {
+		
+		$this->defer = new TaskFactory(
+			new RSMQClient(new Client(['host' => 'redis', 'port' => 6379])),
+			Base64URL::fromString(spitfire()->getCWD())
+		);
 		
 		#Get the user session, if no session is given - we skip all of the processing
 		#The user could also check the token

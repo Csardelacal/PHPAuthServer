@@ -1,5 +1,7 @@
 <?php
 
+use defer\tasks\IncinerateSessionTask;
+
 class SessionController extends BaseController
 {
 	
@@ -27,6 +29,13 @@ class SessionController extends BaseController
 		unlink($path . '/' . $filename);
 		$session->expires = time();
 		$session->store();
+		
+		/**
+		 * Mark the session to be incinerated
+		 * 
+		 * @todo Add task to kill any tokens that are connected with the session and notify the clients
+		 */
+		$this->defer->defer(15 * 86400, IncinerateSessionTask::class, $this->session->_id);
 		
 		$this->response->setBody('Redirect')->getHeaders()->redirect(url());
 	}
