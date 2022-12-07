@@ -13,28 +13,28 @@ use function db;
 
 /**
  * While structurally extremely similar to regular access tokens, the refresh token
- * has no ability to provide direct access to a resource, instead it needs to be 
+ * has no ability to provide direct access to a resource, instead it needs to be
  * traded for an access token.
- * 
+ *
  * Since a refresh token must never be used in a context where the regular access
- * token is accepted, and vice-versa, the system is way more stable whenever we 
+ * token is accepted, and vice-versa, the system is way more stable whenever we
  * use two separate models, making it easier for the DBMS and providing powerful
  * isolation between the access and refresh tokens.
- * 
+ *
  * @property string $type Either access or refresh
  * @property string $token The token identifier
- * 
+ *
  * @property UserModel $owner The resource owner
  * @property AuthAppModel $client The application requesting access to the owner's information
  * @property AuthAppModel $server The application containing the application owner's information
  * @property string $scopes A comma separated list of contexts the client wishes to have access to
- * 
+ *
  * @property int $created The time the token was created
  * @property int $expires The time the token is no longer valid
  * @property int $ttl The amount of seconds this token was set to be valid
- * 
+ *
  * @property SessionModel $session The session that spawned this token
- * 
+ *
  * @todo Make an array adapter for contexts so they get automatically separated
  */
 class RefreshModel extends Model
@@ -44,7 +44,7 @@ class RefreshModel extends Model
 	const TOKEN_LENGTH = 50;
 	const TOKEN_TTL = 63072000;
 	
-	public function definitions(Schema $schema) 
+	public function definitions(Schema $schema)
 	{
 		$schema->token   = new StringField(self::TOKEN_LENGTH);
 		
@@ -60,9 +60,9 @@ class RefreshModel extends Model
 		
 		/**
 		 * When a refresh token is used, a new one is issued and the old one is marked
-		 * as used. If an application tries to recycle the old one, the system will 
+		 * as used. If an application tries to recycle the old one, the system will
 		 * invalidate the entire chain of tokens.
-		 * 
+		 *
 		 * @todo Mark tokens as used and expired when issuing a new one
 		 * @todo Fail if used token was used again
 		 * @todo Discard tokens that were used in the event of a collission
@@ -72,10 +72,10 @@ class RefreshModel extends Model
 		$schema->session = new Reference(SessionModel::class);
 		
 		$schema->token->setUnique(true);
-		
 	}
 	
-	public function onbeforesave(): void {
+	public function onbeforesave(): void
+	{
 		parent::onbeforesave();
 		
 		/*
@@ -83,7 +83,9 @@ class RefreshModel extends Model
 		 * we generate a new, unique token identifier for this one.
 		 */
 		if (!$this->token) {
-			do { $this->token = substr(self::TOKEN_PREFIX . bin2hex(random_bytes(25)), 0, self::TOKEN_LENGTH); } 
+			do {
+				$this->token = substr(self::TOKEN_PREFIX . bin2hex(random_bytes(25)), 0, self::TOKEN_LENGTH);
+			}
 			while (db()->table('access\token')->get('token', $this->token)->first());
 		}
 		
@@ -103,5 +105,4 @@ class RefreshModel extends Model
 			$this->expires = time() + self::TOKEN_TTL;
 		}
 	}
-
 }

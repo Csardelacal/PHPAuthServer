@@ -9,7 +9,7 @@ use Predis\Client;
 use spitfire\mvc\Director;
 use spitfire\provider\Container;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -36,7 +36,8 @@ use spitfire\provider\Container;
 class CronDirector extends Director
 {
 	
-	public function email() {
+	public function email()
+	{
 		
 		console()->success('Initiating cron...')->ln();
 		$started   = time();
@@ -46,9 +47,9 @@ class CronDirector extends Director
 		$file = spitfire()->getCWD() . '/bin/usr/.mail.cron.sem';
 		$fh = fopen($file, file_exists($file)? 'r' : 'w+');
 		
-		if (!flock($fh, LOCK_EX)) { 
+		if (!flock($fh, LOCK_EX)) {
 			console()->error('Could not acquire lock')->ln();
-			return 1; 
+			return 1;
 		}
 		
 		console()->success('Acquired lock!')->ln();
@@ -60,7 +61,7 @@ class CronDirector extends Director
 			$flipflop = new cron\TimerFlipFlop($file);
 		}
 		
-		while(($delivered = EmailModel::deliver()) || $flipflop->wait()) {
+		while (($delivered = EmailModel::deliver()) || $flipflop->wait()) {
 			if ($delivered) {
 				console()->success('Email delivered!')->ln();
 			}
@@ -75,7 +76,6 @@ class CronDirector extends Director
 		flock($fh, LOCK_UN);
 		
 		return 0;
-		
 	}
 	
 	public function defer()
@@ -84,9 +84,9 @@ class CronDirector extends Director
 		$file = spitfire()->getCWD() . '/bin/usr/.defer.cron.sem';
 		$fh = fopen($file, file_exists($file)? 'r' : 'w+');
 		
-		if (!flock($fh, LOCK_EX)) { 
+		if (!flock($fh, LOCK_EX)) {
 			console()->error('Could not acquire lock')->ln();
-			return 1; 
+			return 1;
 		}
 		
 		console()->success('Acquired lock!')->ln();
@@ -114,5 +114,4 @@ class CronDirector extends Director
 		
 		$workerFactory->make()->work();
 	}
-	
 }

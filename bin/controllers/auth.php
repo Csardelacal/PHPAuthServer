@@ -17,16 +17,23 @@ class AuthController extends BaseController
 	/**
 	 * The auth/index endpoint provides an application with the means to retrieve
 	 * information about a token they authorized.
-	 * 
+	 *
 	 * If the token is expired it will act as if there was no token and return an
 	 * unathorized as result.
-	 * 
+	 *
 	 * @param string $tokenid
 	 */
-	public function index($tokenid = null) {
-		if ($this->token) { $token = $this->token; }
-		elseif ($tokenid) { $token = db()->table('token')->get('token', $tokenid)->where('expires', '>', time())->first(); }
-		else              { $token = null; }
+	public function index($tokenid = null)
+	{
+		if ($this->token) {
+			$token = $this->token;
+		}
+		elseif ($tokenid) {
+			$token = db()->table('token')->get('token', $tokenid)->where('expires', '>', time())->first();
+		}
+		else {
+			$token = null;
+		}
 		
 		#Check if the user has been either banned or suspended
 		$suspension = $token? db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch() : null;
@@ -35,7 +42,7 @@ class AuthController extends BaseController
 		$generous = Environment::get('phpAuth.token.extraTTL');
 		
 		#If the token does auto-extend, do so now.
-		if ($token && $token->extends && $token->expires < (time() + $token->ttl) ) {
+		if ($token && $token->extends && $token->expires < (time() + $token->ttl)) {
 			$token->expires = time() + ($generous? $token->ttl * 1.15 : $token->ttl);
 			$token->store();
 		}
@@ -53,17 +60,18 @@ class AuthController extends BaseController
 		$this->view->set('token', $token);
 		$this->view->set('suspension', $suspension);
 	}
-
+	
 	/**
 	 * oAuth here should actually stand for oldAuth - it's not technically oAuth we're
 	 * doing here and it's a very cumbersome implementation.
-	 * 
+	 *
 	 * @param type $tokenid
 	 * @return type
 	 * @layout minimal.php
 	 * @throws PublicException
 	 */
-	public function oauth($tokenid) {
+	public function oauth($tokenid)
+	{
 		
 		$successURL = isset($_GET['returnurl'])? $_GET['returnurl'] : url('auth', 'invalidReturn');
 		$failureURL = isset($_GET['cancelurl'])? $_GET['cancelurl'] : $successURL;
@@ -84,32 +92,47 @@ class AuthController extends BaseController
 		}
 		
 		#Check whether the user was disabled
-		if (!$session->getUser()) { return $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); }
+		if (!$session->getUser()) {
+			return $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
+		}
 		if ($this->user->disabled) {
 			$ex = new LoginException('This account has been disabled permanently.', 401);
 			$ex->setUserID($this->user->_id);
 			throw $ex;
 		}
-		if (!$this->user->verified) { $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'activate')); return; }
+		if (!$this->user->verified) {
+			$this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'activate'));
+			return;
+		}
 		
 		#If the user already automatically grants the application in, then we continue
-		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch())  { $grant = true; }
+		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch()) {
+			$grant = true;
+		}
 		
 		#Only administrators are allowed to authorize tokens to system applications.
 		#This imposes a restriction to encourage administrators to be open about the
 		#applications accessing user data. System applications are not required to
 		#disclose what data they have access to.
-		if ($token->app->system && !$this->isAdmin) { $grant = false; }
+		if ($token->app->system && !$this->isAdmin) {
+			$grant = false;
+		}
 		
 		#No token, no access
-		if (!$token) { throw new PublicException('No token', 404); }
+		if (!$token) {
+			throw new PublicException('No token', 404);
+		}
 		
-		$this->view->set('token',     $token);
+		$this->view->set('token', $token);
 		$this->view->set('cancelURL', $failureURL);
-		$this->view->set('continue',  (string) url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), Array('grant' => 1))));
+		$this->view->set('continue', (string) url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), array('grant' => 1))));
 		
-		if (!$session->getUser()) { return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); }
-		if ($grant === false)     { return $this->response->getHeaders()->redirect($failureURL); }
+		if (!$session->getUser()) {
+			return $this->response->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
+		}
+		if ($grant === false) {
+			return $this->response->getHeaders()->redirect($failureURL);
+		}
 		
 		/*
 		 * If the user allowed the token to exist and granted the application access,
@@ -117,7 +140,6 @@ class AuthController extends BaseController
 		 * logged in next time.
 		 */
 		if ($grant === true) {
-			
 			if (isset($_POST['authorize']) && !db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch()) {
 				$authorization = db()->table('user\authorizedapp')->newRecord();
 				$authorization->user = $this->user;
@@ -141,28 +163,28 @@ class AuthController extends BaseController
 			
 			return $this->response->getHeaders()->redirect($successURL);
 		}
-		
 	}
-
+	
 	/**
 	 * Allows third party applications to test whether a certain application
 	 * exists within PHPAS. It expects the application to provide a series of
 	 * _GET parameters that need to be properly provided for it to return a
 	 * positive match.
-	 * 
+	 *
 	 * * Application id
 	 * * A signature that authorizes the application.
-	 * 
+	 *
 	 * The signature is composed of the application's id, the target application's
 	 * id, a random salt and a hash composed of these and the application's secret.
-	 * 
+	 *
 	 * The signature should therefore prevent the application from forging requests
 	 * on behalf of third parties.
-	 * 
+	 *
 	 * @todo For legacy purposes, this will accept an app id and secret combo
 	 * which is no longer supported and will be removed in future versions.
 	 */
-	public function app() {
+	public function app()
+	{
 		
 		if ($this->token && $this->token->expires < time()) {
 			throw new PublicException('Invalid token: ' . __($_GET['token']), 400);
@@ -211,7 +233,8 @@ class AuthController extends BaseController
 	 * @throws PublicException
 	 * @layout minimal.php
 	 */
-	public function connect($confirm = null) {
+	public function connect($confirm = null)
+	{
 		
 		#Make the confirmation signature
 		$xsrf = new XSSToken();
@@ -230,7 +253,7 @@ class AuthController extends BaseController
 		 * first to ensure that they can create the connection.
 		 */
 		if (!$this->user) {
-			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current())));
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
 		}
 		
 		if (!isset($_GET['signatures'])) {
@@ -282,7 +305,7 @@ class AuthController extends BaseController
 		 * mixed with requests from potentially malicious software), the system
 		 * will verify that there is only a single source signing all the signatures.
 		 */
-		$singlesource = $signatures->reduce(function ($c, Signature$e) use($src, $tgt) {
+		$singlesource = $signatures->reduce(function ($c, Signature$e) use ($src, $tgt) {
 			return $c && $e->getTarget() === $tgt->appID && $e->getSrc() === $src->appID;
 		}, true);
 		
@@ -296,7 +319,6 @@ class AuthController extends BaseController
 		 * the user from any illegitimate requests to provide data by XSRF.
 		 */
 		if ($confirm) {
-			
 			if (!$xsrf->verify($confirm)) {
 				throw new PublicException('Invalid confirmation hash', 403);
 			}
@@ -330,36 +352,36 @@ class AuthController extends BaseController
 		$this->view->set('tgt', $src);
 		$this->view->set('signatures', $signatures);
 		$this->view->set('confirm', $xsrf->getValue());
-		
 	}
 	
 	
 	
 	/**
-	 * 
+	 *
 	 * @validate GET#response_type (string required)
 	 * @validate GET#client_id (string required)
 	 * @validate GET#state (string required)
 	 * @validate GET#redirect_uri (string required)
 	 * @validate GET#code_challenge (string required)
 	 * @validate GET#code_challenge_method (string required)
-	 * 
+	 *
 	 * @todo This endpoint should verify that a user actually is authorized to issue this token
 	 * by using ABAC or a similar mechanism. This could allow operators of the Authentication
 	 * server to block certain users from accessing certain applications (or parts of them).
-	 * 
+	 *
 	 * @param type $tokenid
 	 * @return void
 	 * @layout minimal.php
 	 * @throws PublicException
 	 */
-	public function oauth2() {
+	public function oauth2()
+	{
 		
 		$code_challenge = $_GET['code_challenge'];
 		$code_challenge_method = $_GET['code_challenge_method']?? 'plain';
-		$audience = $_GET['audience']? 
-			db()->table(AuthAppModel::class)->get('appID', $_GET['audience'])->first(true) : 
-			null;
+		$audience = $_GET['audience']?
+		db()->table(AuthAppModel::class)->get('appID', $_GET['audience'])->first(true) :
+		null;
 		
 		/*
 		 * Find the application intending to authenticate this request.
@@ -367,25 +389,25 @@ class AuthController extends BaseController
 		$client = db()->table('authapp')->get('appID', $_GET['client_id'])->first(true);
 		
 		/*
-		 * In order to ensure that the client can be given appropriate access, the 
+		 * In order to ensure that the client can be given appropriate access, the
 		 * server needs to make sure that the application requests the appropriate
 		 * scopes for this application.
-		 * 
+		 *
 		 * An application must never request access to a scope that doesn't exist,
 		 * granting access to undefined scopes may lead to dangerous behavior.
-		 * 
+		 *
 		 * Scopes are defined by the audience that receives the token, to make sure
 		 * you request the right scopes, refer to the documentation of the application
 		 * you wish to read data from.
-		 * 
+		 *
 		 * While we do this, we also put the 'basic' scope on the stack. This allows
 		 * us to check that the user is granting permission to access the application
 		 * with the minimum viable data.
-		 * 
+		 *
 		 * @todo Implement scope checking. Right now PHPAS does not validate the list of
-		 * scopes the client has passed. This means that PHPAS is unable to inform the 
+		 * scopes the client has passed. This means that PHPAS is unable to inform the
 		 * user what the scope does and will just regurgitate the list of scopes it received.
-		 * 
+		 *
 		 * This used to have a database table attached which would provide icons and captions
 		 * that users should understand when interacting with the authentication dialog.
 		 */
@@ -396,9 +418,9 @@ class AuthController extends BaseController
 		
 		/*
 		 * We now check which scopes we have already received consent for, this means that the
-		 * user has either already given their consent or the server implies that they are 
+		 * user has either already given their consent or the server implies that they are
 		 * consenting due to policy.
-		 * 
+		 *
 		 * Policy based consent is generally used when handling internal applications where the
 		 * developer can assume that the consent is already given.
 		 */
@@ -427,10 +449,10 @@ class AuthController extends BaseController
 		/*
 		 * The response type used to be code or token for applications implementing
 		 * oAuth2 whenever the server and/or client does not support PKCE. Since our
-		 * server is implemented right from the start with PKCE in mind, we can 
+		 * server is implemented right from the start with PKCE in mind, we can
 		 * enforce the use of the response_type of code and deny any requests with
 		 * token.
-		 * 
+		 *
 		 * Since the result of this request is handled by the user agent, it should
 		 * never return a token directly. Instead, the user agent should be handed an
 		 * access_code that the application (potentially running inside the UA) can
@@ -441,12 +463,12 @@ class AuthController extends BaseController
 		}
 		
 		/*
-		 * When generating an oAuth session we do require the user to be fully 
+		 * When generating an oAuth session we do require the user to be fully
 		 * authenticated.
 		 */
-		if (!$this->user) { 
+		if (!$this->user) {
 			$this->response->setBody('Redirecting...');
-			return $this->response->getHeaders()->redirect(url('user', 'login', Array('returnto' => (string) URL::current()))); 
+			return $this->response->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
 		}
 		
 		
@@ -456,7 +478,7 @@ class AuthController extends BaseController
 		 */
 		$banned = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
 		
-		if ($banned) { 
+		if ($banned) {
 			$ex = new LoginException('Your account was suspended, login is disabled.', 401);
 			$ex->setUserID($this->user->_id);
 			$ex->setReason($banned->reason);
@@ -465,13 +487,15 @@ class AuthController extends BaseController
 		}
 		
 		#Check whether the user was disabled
-		if ($this->user->disabled) { throw new PublicException('Your account was disabled', 401); }
+		if ($this->user->disabled) {
+			throw new PublicException('Your account was disabled', 401);
+		}
 		
 		/**
 		 * Check if the user needs to be strongly authenticated for this app
-		 * 
+		 *
 		 * @todo Perform MFA check here
-		 */	
+		 */
 		
 		/*
 		 * Start of by assuming that the client is not intended to be given the application's
@@ -497,12 +521,16 @@ class AuthController extends BaseController
 		/**
 		 * In order to validate the redirect we make sure that the protocol, hostname
 		 * and paths for the redirect match.
-		 * 
+		 *
 		 * @todo Actually check the redirect
 		 */
 		$valid = true || db()->table(LocationModel::class)->get('client', $client)->all()->reduce(function ($valid, LocationModel $e) use ($redirect) {
-			if ($e->hostname !== $redirect->getHost()) { return $valid; }
-			if (!Strings::startsWith($redirect->getPath(), $e->path)) { return $valid; }
+			if ($e->hostname !== $redirect->getHost()) {
+				return $valid;
+			}
+			if (!Strings::startsWith($redirect->getPath(), $e->path)) {
+				return $valid;
+			}
 			
 			return true;
 		}, false);
@@ -516,12 +544,10 @@ class AuthController extends BaseController
 		 * to their account, given the information they have.
 		 */
 		elseif ($this->request->isPost()) {
-			
 			#TODO: Check if permission allows this user to authenticate codes for this
 			# application. Important for elevated privileges apps
 			
 			$grant = $_POST['grant'] === 'grant';
-			
 		}
 		
 		/*
@@ -533,8 +559,6 @@ class AuthController extends BaseController
 		}
 		
 		if ($grant) {
-			
-
 			/*
 			 * Record the code challenge, and the user approving this challenge, together
 			 * with the state the application passed.
@@ -558,11 +582,11 @@ class AuthController extends BaseController
 				 * Fetch the user's consent, so if we didn't have that on record before, we can record it
 				 * now. This is automatically done, because the user has consented to granting the application
 				 * access to the scopes.
-				 * 
+				 *
 				 * Please note that the user should be able to revoke the consent to the use of their data
 				 * at any time, but we also acknowledge that asking for consent for the same actions over and
 				 * over does not lead to better security and causes user exhaustion.
-				 * 
+				 *
 				 * Also, most malicious apps, will have the ability to just cache the data they did receive
 				 * from the user, and they still need the user to be present in order to refresh it.
 				 */
@@ -572,7 +596,7 @@ class AuthController extends BaseController
 					->where('user', $this->user)
 					->where('revoked', null)->first();
 				
-				if (!$consent) { 
+				if (!$consent) {
 					$consent = db()->table('user\consent')->newRecord();
 					$consent->client = $client;
 					$consent->scope = $scope;
@@ -595,7 +619,7 @@ class AuthController extends BaseController
 		/**
 		 * If the application requested a silent authentication, we do not continue to seek permission
 		 * from the resource owner, since the application is explicitly asking us not to do so.
-		 * 
+		 *
 		 * While the application has the option to ask us to not prompt the user, this will not change the
 		 * server's decision and will just result in a denied error being issued immediately.
 		 */
@@ -613,5 +637,4 @@ class AuthController extends BaseController
 		$this->view->set('redirect', (string)$redirect);
 		$this->view->set('cancel', (string)(clone $redirect)->setQueryString(['error' => 'denied', 'description' => 'Authentication request was denied']));
 	}
-	
 }

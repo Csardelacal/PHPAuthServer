@@ -4,7 +4,7 @@ use spitfire\Model;
 use spitfire\storage\database\Schema;
 use StringField;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -29,10 +29,10 @@ use StringField;
  */
 
 /**
- * A credential for an application is a secret that it can use to authenticate 
- * itself against PHPAS and request an access token to log the user into an 
+ * A credential for an application is a secret that it can use to authenticate
+ * itself against PHPAS and request an access token to log the user into an
  * account.
- * 
+ *
  * @property \AuthAppModel $client The client that this credential authenticates
  * @property string $secret The secret the application can use to authenticate itself
  * @property integer $created The timestamp the secret was created, it's recommended to phase out old secrets regularly
@@ -42,11 +42,12 @@ class CredentialModel extends Model
 {
 	
 	/**
-	 * 
+	 *
 	 * @param Schema $schema
 	 * @return Schema
 	 */
-	public function definitions(Schema $schema) {
+	public function definitions(Schema $schema)
+	{
 		$schema->client = new \Reference(\AuthAppModel::class);
 		$schema->secret  = new StringField(255);
 		$schema->created = new \IntegerField(true);
@@ -55,12 +56,13 @@ class CredentialModel extends Model
 	
 	/**
 	 * In case the credentials were just created, we enrich them with a creation
-	 * timestamp. This ensures we know how long the credential has been available 
+	 * timestamp. This ensures we know how long the credential has been available
 	 * and allows the application to warn the user about old and risky credentials.
-	 * 
+	 *
 	 * @return void
 	 */
-	public function onbeforesave(): void {
+	public function onbeforesave(): void
+	{
 		parent::onbeforesave();
 		
 		if (!$this->created) {
@@ -71,5 +73,4 @@ class CredentialModel extends Model
 			$this->secret = preg_replace('/[^a-z\d]/i', '', base64_encode(random_bytes(64)));
 		}
 	}
-
 }

@@ -3,7 +3,7 @@
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -31,15 +31,15 @@ use spitfire\storage\database\Schema;
  * A session connects a user with a device from which they logged in, when the user
  * logs in, a session is started for them. When a user ends a session, all related
  * tokens that have not been granted as offline will be terminated.
- * 
+ *
  * @property UserModel     $user     Session owner
  * @property UserModel     $claim    When a user is logging in, they can claim to be a certain person. This is not a valid user authentication.
  * @property LocationModel $location The location from where the session was authorized
  * @property DeviceModel   $device   The device from which the session was authorized
- * 
+ *
  * @property int $created The timestamp of creation
  * @property int $expires The timestamp this record expires
- * 
+ *
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  */
 class SessionModel extends Model
@@ -49,11 +49,12 @@ class SessionModel extends Model
 	const TOKEN_LENGTH = 50;
 	
 	/**
-	 * 
+	 *
 	 * @param Schema $schema
 	 * @return Schema
 	 */
-	public function definitions(Schema $schema) {
+	public function definitions(Schema $schema)
+	{
 		#The session ID will be retrieved from the Session
 		unset($schema->_id);
 		$schema->_id      = new StringField(self::TOKEN_LENGTH);
@@ -79,16 +80,22 @@ class SessionModel extends Model
 		$schema->index($schema->expires);
 	}
 	
-	public function onbeforesave(): void {
+	public function onbeforesave(): void
+	{
 		parent::onbeforesave();
 		
 		if (!$this->_id) {
-			do { $this->_id = substr(self::TOKEN_PREFIX . bin2hex(random_bytes(25)), 0, self::TOKEN_LENGTH); } 
+			do {
+				$this->_id = substr(self::TOKEN_PREFIX . bin2hex(random_bytes(25)), 0, self::TOKEN_LENGTH);
+			}
 			while (db()->table('session')->get('_id', $this->_id)->first());
 		}
 		
-		if (!$this->created) { $this->created = time();	}
-		if (!$this->expires) { $this->expires = time() + 86400 * 365; }
+		if (!$this->created) {
+			$this->created = time();
+		}
+		if (!$this->expires) {
+			$this->expires = time() + 86400 * 365;
+		}
 	}
-
 }

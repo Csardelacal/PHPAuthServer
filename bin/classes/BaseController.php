@@ -1,7 +1,7 @@
 <?php
 
 use AndrewBreksa\RSMQ\RSMQClient;
-use defer\TaskFactory;
+use spitfire\defer\TaskFactory;
 use jwt\Base64URL;
 use Predis\Client;
 use spitfire\exceptions\PrivateException;
@@ -32,7 +32,8 @@ abstract class BaseController extends Controller
 	 */
 	protected $hook;
 	
-	public function _onload() {
+	public function _onload()
+	{
 		
 		$this->defer = new TaskFactory(
 			new RSMQClient(new Client(['host' => 'redis', 'port' => 6379])),
@@ -54,7 +55,7 @@ abstract class BaseController extends Controller
 		}
 		
 		/**
-		 * 
+		 *
 		 * @todo The session mechanism is getting rather big and would benefit from
 		 * being extracted from here.
 		 */
@@ -70,7 +71,7 @@ abstract class BaseController extends Controller
 				/*
 				* Retrieve the IP information from the client. This should allow the
 				* application to provide the user with data where they connected from.
-				* 
+				*
 				* @todo While Cloudflare is very convenient. It's definitely not a generic
 				* protocol and produces vendor lock-in. This should be replaced with an
 				* interface that allows using a different vendor for location detection.
@@ -86,13 +87,12 @@ abstract class BaseController extends Controller
 			}
 		}
 		
-		if ($u || $t) { 
-		
+		if ($u || $t) {
 			#Export the user to the controllers that may need it.
 			$user = $u? db()->table('user')->get('_id', $u)->fetch() : $t->user;
 			$this->user  = $user;
 			$this->token = $t;
-
+			
 			$isAdmin = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
 		}
 		
@@ -119,9 +119,8 @@ abstract class BaseController extends Controller
 		
 		$this->isAdmin = $isAdmin?? false;
 		$this->view->set('authUser', $this->user);
-		$this->view->set('authApp',  $this->app);
+		$this->view->set('authApp', $this->app);
 		$this->view->set('userIsAdmin', $isAdmin ?? false);
 		$this->view->set('administrativeGroup', $admingroupid);
 	}
-	
 }

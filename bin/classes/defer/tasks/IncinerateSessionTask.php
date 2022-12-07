@@ -1,9 +1,9 @@
 <?php namespace defer\tasks;
 
-use defer\Task;
-use defer\TaskFactory;
+use spitfire\defer\Task;
+use spitfire\defer\TaskFactory;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -37,14 +37,16 @@ class IncinerateSessionTask implements Task
 		$this->defer = $defer;
 	}
 	
-	public function body($settings) : void 
+	public function body($settings) : void
 	{
 		$session = db()->table('session')->get('_id', $settings)->first();
 		
 		/**
 		 * No session exists anymore
 		 */
-		if (!$session) { return; }
+		if (!$session) {
+			return;
+		}
 		
 		/*
 		 * If the session was not yet expired when the incinerator started, we will
@@ -68,7 +70,7 @@ class IncinerateSessionTask implements Task
 			 * is informed that the session was ended in a separate notify/endsession
 			 * task.
 			 */
-			$tokens->each(function ($token) { 
+			$tokens->each(function ($token) {
 				$token->session = null;
 				$token->store();
 			});
@@ -90,7 +92,7 @@ class IncinerateSessionTask implements Task
 			 * revoke the authorization the application was given. It just allows the
 			 * user to signal they wish to no longer have this token active.
 			 */
-			$tokens->each(function ($token) { 
+			$tokens->each(function ($token) {
 				$token->session = null;
 				$token->store();
 			});

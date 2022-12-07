@@ -4,7 +4,7 @@ use spitfire\Model;
 use Reference;
 use spitfire\storage\database\Schema;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -29,30 +29,30 @@ use spitfire\storage\database\Schema;
  */
 
 /**
- * 
+ *
  * @see https://www.oauth.com/oauth2-servers/accessing-data/authorization-request/
  */
 class CodeModel extends Model
 {
 	
 	/**
-	 * 
+	 *
 	 * @param Schema $schema
 	 * @return Schema
 	 */
-	public function definitions(Schema $schema) 
+	public function definitions(Schema $schema)
 	{
 		$schema->client    = new \Reference('authapp');
 		
 		/**
 		 * The audience needs to be defined in the code section of the authentication
-		 * process so the usr can make an informed decision about whether they wish to 
+		 * process so the usr can make an informed decision about whether they wish to
 		 * grant access to a specific application for a specific audience.
 		 */
 		$schema->audience  = new \Reference('authapp');
 		
 		/**
-		 * The resource owner. This user is left unpopulated until the application can 
+		 * The resource owner. This user is left unpopulated until the application can
 		 * authenticate the user and collect their consent.
 		 */
 		$schema->user      = new \Reference('user');
@@ -63,11 +63,11 @@ class CodeModel extends Model
 		 * The state is a known oAuth parameter used to prevent a user from being
 		 * attacked by CSRF. An attacker cannot mislead a victim to a authentication
 		 * dialog that provides them access to resources they did not intend to access.
-		 * 
+		 *
 		 * In the documentation this is explained as a scenario in which an attacker
 		 * directs the user to a link that authenticates them to the wrong account in
 		 * an application that requires them to enter their banking details to buy
-		 * goods, allowing the attacker to log into the account and retrieve the 
+		 * goods, allowing the attacker to log into the account and retrieve the
 		 * credentials.
 		 */
 		$schema->state = new \StringField(255);
@@ -95,5 +95,4 @@ class CodeModel extends Model
 		$schema->created = new \IntegerField(true);
 		$schema->expires = new \IntegerField(true);
 	}
-
 }

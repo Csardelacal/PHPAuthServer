@@ -4,7 +4,7 @@ use AttributeModel;
 use AuthAppModel;
 use UserModel;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -44,12 +44,14 @@ class AttributeLock
 	
 	private $user;
 	
-	public function __construct(AttributeModel$scope, UserModel$user = null) {
+	public function __construct(AttributeModel$scope, UserModel$user = null)
+	{
 		$this->scopes   = $scope;
 		$this->user    = $user;
 	}
 	
-	public function unlock(AuthAppModel$app, $mode = self::MODE_R) {
+	public function unlock(AuthAppModel$app, $mode = self::MODE_R)
+	{
 		$db = $this->scopes->getTable()->getDb();
 		$q  = $db->table('attribute\appgrant')->getAll();
 		
@@ -58,9 +60,9 @@ class AttributeLock
 		
 		$q->group()->where('user', $this->user)->where('user', null);
 		
-		$grant = $q->all()->reduce(function ($carry, $i) use ($mode) { 
+		$grant = $q->all()->reduce(function ($carry, $i) use ($mode) {
 			/*
-			 * The user setting will override any previously set state. App based 
+			 * The user setting will override any previously set state. App based
 			 * rules will override the standard setting
 			 */
 			return $carry === null || $i->user? ((int)$i->grant) & $mode : $carry;
@@ -69,8 +71,9 @@ class AttributeLock
 		return $grant !== null? !!$grant : $this->def($mode);
 	}
 	
-	public function def($mode) {
-		switch($mode) {
+	public function def($mode)
+	{
+		switch ($mode) {
 			case self::MODE_R:
 				return $this->scopes->readable === 'public';
 			case self::MODE_W:
@@ -79,5 +82,4 @@ class AttributeLock
 				return $this->scopes->readable === 'public' && $this->context->writable === 'public';
 		}
 	}
-	
 }

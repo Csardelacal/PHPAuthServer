@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 use TextField;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -29,10 +29,10 @@ use TextField;
  */
 
 /**
- * A credential for an application is a secret that it can use to authenticate 
- * itself against PHPAS and request an access token to log the user into an 
+ * A credential for an application is a secret that it can use to authenticate
+ * itself against PHPAS and request an access token to log the user into an
  * account.
- * 
+ *
  * @property \AuthAppModel $client The client that this credential authenticates
  * @property string $public The key to detect whether the application signed the token
  * @property string $private The secret the application can use to authenticate itself
@@ -43,7 +43,7 @@ class KeyModel extends Model
 {
 	
 	/**
-	 * 
+	 *
 	 * @param Schema $schema
 	 * @return Schema
 	 */
@@ -56,7 +56,7 @@ class KeyModel extends Model
 		$schema->expires = new \IntegerField(true);
 	}
 	
-	public static function generate() 
+	public static function generate()
 	{
 		/*
 		 * Define the basic settings for the key being generated.
@@ -73,5 +73,4 @@ class KeyModel extends Model
 		
 		return [$private, $public];
 	}
-
 }

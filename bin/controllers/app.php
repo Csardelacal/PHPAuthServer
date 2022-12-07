@@ -9,34 +9,39 @@ use spitfire\storage\database\pagination\Paginator;
  * This controller allows administrators (and only those) to manage the applications
  * that can connect to the server and manage their preferences and default
  * access level settings.
- * 
+ *
  * Only admins receive access since this is the strongest vector for a malicious
  * application to raise it's privileges and access data it's not supposed to have.
  */
 class AppController extends BaseController
 {
-		
-	public function _onload() {
+	
+	public function _onload()
+	{
 		parent::_onload();
 		
 		#Get the user model
-		if (!$this->user) { throw new PublicException('Not logged in', 403); }
+		if (!$this->user) {
+			throw new PublicException('Not logged in', 403);
+		}
 		
 		#Check if he's an admin
-		if (!$this->isAdmin) { throw new PublicException('Not an admin', 401); }
-		
+		if (!$this->isAdmin) {
+			throw new PublicException('Not an admin', 401);
+		}
 	}
 	
-	public function index() {
+	public function index()
+	{
 		
 		$query = db()->table('authapp')->getAll();
 		$pag   = new Paginator($query);
 		
 		$this->view->set('pagination', $pag);
-		
 	}
 	
-	public function create() {
+	public function create()
+	{
 		
 		if ($this->request->isPost()) {
 			$app = db()->table('authapp')->newRecord();
@@ -55,16 +60,15 @@ class AppController extends BaseController
 			} while ($count !== 0);
 			
 			$app->store();
-			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'success')));
+			$this->response->getHeaders()->redirect(url('app', 'index', array('message' => 'success')));
 			return;
 		}
-		
 	}
 	
-	public function detail(AuthAppModel$app) {
+	public function detail(AuthAppModel$app)
+	{
 		
 		if ($this->request->isPost()) {
-			
 			#The name of the application
 			if (isset($_POST['name'])) {
 				$app->name = trim($_POST['name']);
@@ -95,18 +99,18 @@ class AppController extends BaseController
 		}
 	}
 	
-	public function delete($appID) {
+	public function delete($appID)
+	{
 		$xsrf = new \spitfire\io\XSSToken();
 		
 		if (isset($_GET['confirm']) && $xsrf->verify($_GET['confirm'])) {
 			$app = db()->table('authapp')->get('_id', $appID)->fetch();
 			$app->delete();
 			
-			$this->response->getHeaders()->redirect(url('app', 'index', Array('message' => 'deleted')));
+			$this->response->getHeaders()->redirect(url('app', 'index', array('message' => 'deleted')));
 			return;
 		}
 		
-		$this->view->set('confirm', url('app', 'delete', $appID, Array('confirm' => $xsrf->getValue())));
+		$this->view->set('confirm', url('app', 'delete', $appID, array('confirm' => $xsrf->getValue())));
 	}
-	
 }

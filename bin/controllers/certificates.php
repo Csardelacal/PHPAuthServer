@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class CertificatesController extends BaseController
 {
@@ -7,10 +7,14 @@ class CertificatesController extends BaseController
 	{
 		
 		#Get the user model
-		if (!$this->user) { throw new PublicException('Not logged in', 403); }
+		if (!$this->user) {
+			throw new PublicException('Not logged in', 403);
+		}
 		
 		#Check if he's an admin
-		if (!$this->isAdmin) { throw new PublicException('Not an admin', 401); }
+		if (!$this->isAdmin) {
+			throw new PublicException('Not an admin', 401);
+		}
 		
 		$keys = db()->table('key')->getAll()->all();
 		$this->view->set('keys', $keys);
@@ -19,10 +23,14 @@ class CertificatesController extends BaseController
 	public function keygen()
 	{
 		#Get the user model
-		if (!$this->user) { throw new PublicException('Not logged in', 403); }
+		if (!$this->user) {
+			throw new PublicException('Not logged in', 403);
+		}
 		
 		#Check if he's an admin
-		if (!$this->isAdmin) { throw new PublicException('Not an admin', 401); }
+		if (!$this->isAdmin) {
+			throw new PublicException('Not an admin', 401);
+		}
 		
 		[$private, $public] = KeyModel::generate();
 		
@@ -41,10 +49,9 @@ class CertificatesController extends BaseController
 		return $this->response->setBody('Redirect')->getHeaders()->redirect(url('certificates'));
 	}
 	
-	public function public_key() 
+	public function public_key()
 	{
 		$keys = db()->table('key')->getAll()->where('expires', null)->all();
 		$this->view->set('keys', $keys);
-		
 	}
 }

@@ -3,7 +3,7 @@
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2021 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -30,31 +30,31 @@ use spitfire\storage\database\Schema;
 /**
  * The consent model allows applications to record whether a user consented to a
  * certain application / client to access a certain scope within another application.
- * 
+ *
  * This model refers specifically to user consent. Using permission server, an administrator
  * can override the consent in this file to make sure that certain policy is satisfied.
- * 
+ *
  * This creates a 3 way connection between a user, an application and a scope within
  * another application so the client requesting access is granted access to the
  * user's resources that match the scope within the resource provider application.
- * 
+ *
  * @property \UserModel $user The user granting access
  * @property \AuthAppModel $client The application receiving access
  * @property \client\ScopeModel $scope The scope being granted access to
  * @property int $created When the consent was given
  * @property int $revoked When the consent was revoked
- * 
+ *
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  */
 class ConsentModel extends Model
 {
 	
 	/**
-	 * 
+	 *
 	 * @param Schema $schema
 	 * @return void
 	 */
-	public function definitions(Schema $schema) 
+	public function definitions(Schema $schema)
 	{
 		
 		/**
@@ -84,16 +84,16 @@ class ConsentModel extends Model
 		$schema->revoked = new \IntegerField(true);
 	}
 	
-	public function onbeforesave(): void {
+	public function onbeforesave(): void
+	{
 		parent::onbeforesave();
 		
 		/*
-		 * Check if the timestamp of creation is provided, and if not, default to 
+		 * Check if the timestamp of creation is provided, and if not, default to
 		 * the current time.
 		 */
 		if (!$this->created) {
 			$this->created = time();
 		}
 	}
-
 }

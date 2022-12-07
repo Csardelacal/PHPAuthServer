@@ -4,7 +4,7 @@ use UserModel;
 use AuthAppModel;
 use connection\AuthModel;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2018 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -41,31 +41,34 @@ class AuthLock
 	
 	private $context;
 	
-	public function __construct(AuthAppModel$scope, UserModel$user, $context) {
+	public function __construct(AuthAppModel$scope, UserModel$user, $context)
+	{
 		$this->scopes   = $scope;
 		$this->user    = $user;
 		$this->context = $context;
 	}
 	
-	public function unlock(AuthAppModel$app) {
+	public function unlock(AuthAppModel$app)
+	{
 		$db = $this->scopes->getTable()->getDb();
 		$q  = $db->table('connection\auth')->getAll();
 		
 		$q->where('target', $this->scope);
 		$q->where('source', $app);
 		
-		if ($this->context) { $q->where('context', $this->context); }
+		if ($this->context) {
+			$q->where('context', $this->context);
+		}
 		
 		$q->group()->where('user', $this->user)->where('user', null);
 		$q->group()->where('expires', null)->where('expires', '>', time());
 		
-		return $q->all()->reduce(function ($c, $i) { 
+		return $q->all()->reduce(function ($c, $i) {
 			/*
-			 * The user setting will override any previously set state. App based 
+			 * The user setting will override any previously set state. App based
 			 * rules will override the standard PENDING setting
 			 */
 			return $c === null || $i->user? (int)$i->state : $c;
 		}, null)? : AuthModel::STATE_PENDING;
 	}
-	
 }

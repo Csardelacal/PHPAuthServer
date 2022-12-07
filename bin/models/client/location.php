@@ -6,7 +6,7 @@ use spitfire\storage\database\Schema;
 use StringField;
 use Strings;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2020 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -31,16 +31,16 @@ use Strings;
  */
 
 /**
- * An application can define locations to whitelist so redirections can be checked 
- * and validated. This prevents the login form from becoming a wildcard redirect 
+ * An application can define locations to whitelist so redirections can be checked
+ * and validated. This prevents the login form from becoming a wildcard redirect
  * to potentially harmful applications.
- * 
+ *
  * If the application defines a return URL that does not match any of the application's
  * paths, we will inform the user about an invalid URL.
- * 
+ *
  * Should the application provide no return path, the system will attempt to find
  * a default location to redirect the user to.
- * 
+ *
  * @property string $protocol If the protocol is defined, the protocol must match the redirect
  * @property string $hostname If the hostname is provided, the hostname must match
  * @property string $path     If the path is not null, the path must start with the provided string.
@@ -50,11 +50,12 @@ class LocationModel extends Model
 {
 	
 	/**
-	 * 
+	 *
 	 * @param Schema $schema
 	 * @return Schema
 	 */
-	public function definitions(Schema $schema) {
+	public function definitions(Schema $schema)
+	{
 		$schema->client   = new \Reference('authapp');
 		$schema->default  = new BooleanField();
 		$schema->protocol = new StringField(255);
@@ -62,14 +63,22 @@ class LocationModel extends Model
 		$schema->path     = new StringField(255);
 	}
 	
-	public function matches($url) {
+	public function matches($url)
+	{
 		$ref = \magic3w\http\url\reflection\URLReflection::fromURL($url);
 		
-		if ($ref->getPassword() || $ref->getUser()) { return false; }
-		if ($ref->getProtocol() !== $this->protocol) { return false; }
-		if ($ref->getServer() !== $$this->hostname) { return false; }
-		if (!Strings::startsWith($ref->getPath(), $this->path)) { return false; }
+		if ($ref->getPassword() || $ref->getUser()) {
+			return false;
+		}
+		if ($ref->getProtocol() !== $this->protocol) {
+			return false;
+		}
+		if ($ref->getServer() !== $$this->hostname) {
+			return false;
+		}
+		if (!Strings::startsWith($ref->getPath(), $this->path)) {
+			return false;
+		}
 		return true;
 	}
-
 }
