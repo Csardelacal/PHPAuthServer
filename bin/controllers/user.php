@@ -206,8 +206,37 @@ class UserController extends BaseController
 				throw $ex;
 			}
 			elseif ($user && $user->checkPassword($_POST['password'])) {
+				
+				/**
+				 * Create a fresh session whenever a user logs in.
+				 */
+				session_regenerate_id();
+				
+				/**
+				 * 
+				 * @todo The session mechanism is getting rather big and would benefit from
+				 * being extracted from here.
+				 */
 				$session = Session::getInstance();
 				$session->lock($user->_id);
+				
+				$this->session = $this->session?: db()->table('session')->newRecord();
+				$this->session->_id = SessionModel::TOKEN_PREFIX . Session::sessionId();
+				
+				$this->session->expires = time() + 365 * 86400;
+				
+				/*
+				* Retrieve the IP information from the client. This should allow the
+				* application to provide the user with data where they connected from.
+				* 
+				* @todo While Cloudflare is very convenient. It's definitely not a generic
+				* protocol and produces vendor lock-in. This should be replaced with an
+				* interface that allows using a different vendor for location detection.
+				*/
+				$this->session->country = $_SERVER["HTTP_CF_IPCOUNTRY"];
+				$this->session->city    = substr($_SERVER["HTTP_CF_IPCITY"], 0, 20);
+				$this->session->user = $user;
+				$this->session->store();
 
 				return $this->response->getHeaders()->redirect($returnto);
 			} else {

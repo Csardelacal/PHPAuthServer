@@ -66,6 +66,12 @@ class SessionModel extends Model
 		 */
 		$schema->ip       = new StringField(128);
 		
+		/**
+		 * Location information for the session. Where did the user connect from.
+		 */
+		$schema->country  = new StringField(02);
+		$schema->city     = new StringField(20);
+		
 		$schema->created  = new IntegerField(true);
 		$schema->expires  = new IntegerField(true);
 		
@@ -82,7 +88,7 @@ class SessionModel extends Model
 		}
 		
 		if (!$this->created) { $this->created = time();	}
-		$this->expires = time() + 86400 * 365;
+		if (!$this->expires) { $this->expires = time() + 86400 * 365; }
 	}
 
 }
