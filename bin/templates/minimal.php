@@ -10,7 +10,7 @@
 			window.baseURL = <?= json_encode(strval(url())); ?>
 		</script>
 	</head>
-	<body>
+	<body class="bg-slate-100">
 		
 		<div class="auto-extend">
 			<?php if (isset($authUser) && $authUser && !$authUser->verified): ?> 
@@ -36,14 +36,8 @@
 			</div>
 		</div>
 		
-		<footer>
-			<div class="row1">
-				<div class="span1">
-					<span style="font-size: .8em; color: #777">
-						&copy; <?= date('Y') ?> Magic3W - This software is licensed under MIT License
-					</span>
-				</div>
-			</div>
+		<footer class="py-3 text-xs text-gray-600 text-center">
+			&copy; <?= date('Y') ?> Magic3W - This software is licensed under MIT License
 		</footer>
 		
 		<script type="text/javascript">

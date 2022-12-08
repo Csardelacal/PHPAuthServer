@@ -131,7 +131,7 @@ class UserModel extends spitfire\Model
 	{
 		$suspensions = db()->table('user\suspension')
 			->get('user', $this)
-			->where('expires', time(), '>')
+			->where('expires', '>', time())
 			->fetch();
 		
 		return $suspensions;

@@ -8,23 +8,39 @@ and open the template in the editor.
     Author     : cesaradelacalbretschneider
 */
 
+/**
+ * @todo Remove
+ */
 $disbled-darken-amount: 30;
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
+/**
+ * @todo Remove
+ */
 @import 'reset/_clearfix.scss';
 
+/**
+ * @todo Remove
+ */
 * {
 	box-sizing: border-box;
 }
 
+/**
+ * @todo Remove
+ */
 body {
 	margin: 0;
 	background-color: #FAFAFA;
 }
 
+/**
+ * @todo Remove
+ */
 .hidden {
 	display: none !important;
 }
@@ -32,11 +48,16 @@ body {
 /*
  * Disabled items should be unable to receive mouse pointer events. When clicked
  * or interacted with, these items should be unresponsive.
+ * 
+ * @todo Remove
  */
 :disabled, .disabled, [disabled] {
 	pointer-events: none;
 }
 
+/**
+ * @todo Remove
+ */
 h1 {
 	font-size: 20px;
 	color:  #2a912e;
@@ -49,11 +70,17 @@ h1 {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 h2 {
 	color: #353535;
 	font-size: 18px;
 }
 
+/**
+ * @todo Remove
+ */
 p {
 	color: #555;
 	line-height: 1.6em;
@@ -75,6 +102,9 @@ p {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 blockquote {
 	margin-left :                  0;
 	padding:      15px 5px 15px 15px;
@@ -84,6 +114,9 @@ blockquote {
 	font-size:                  .9em;
 }
 
+/**
+ * @todo Remove
+ */
 table {
 	width: 100%;
 	border-radius:        3px;
@@ -127,6 +160,9 @@ table {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 form.regular {
 	
 	.field {
@@ -190,6 +226,9 @@ form.regular {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .material-form {
 	input[type="text"], .fake-field, .fake-field-ph {
 		display: inline-block;
@@ -213,10 +252,16 @@ form.regular {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .no-selection {
 	user-select: none;
 }
 
+/**
+ * @todo Remove
+ */
 .button {
 	$bg: #3191f1;
 	$boxshadow: #3167f1;
@@ -262,6 +307,9 @@ form.regular {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .menubar {
 	background: #FEFEFE;
 	vertical-align: top;
@@ -291,6 +339,9 @@ form.regular {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .badge {
 	width: 100%;
 	padding: .5em;
@@ -299,16 +350,6 @@ form.regular {
 	border: solid 1px #CCC;
 	display: block;
 	border-radius: 3px;
-}
-
-footer {
-	background: #FFF;
-	color: #555;
-	text-align: center;
-	padding: 5px;
-	line-height: 20px;
-	font-size: 12px;
-	border-top: solid 1px #CCC;
 }
 
 .material {
@@ -341,6 +382,9 @@ footer {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .login-logo {
 	text-align: center;
 	
@@ -349,6 +393,9 @@ footer {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 %icon-sizing {
 	
 	&.extra-small {
@@ -381,6 +428,9 @@ footer {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .user-name {
 	vertical-align: middle;
 	display: inline-block;
@@ -389,6 +439,9 @@ footer {
 	text-decoration: none;
 }
 
+/**
+ * @todo Remove
+ */
 .user-icon {
 	border-radius: 50%;
 	display: inline-block;
@@ -423,6 +476,9 @@ footer {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .validation-errors
 {
 	color: #900;
@@ -447,6 +503,9 @@ footer {
 	}
 }
 
+/**
+ * @todo Remove
+ */
 .heading {
 	display: block;
 	padding: 10px 5px;
@@ -458,14 +517,58 @@ footer {
 }
 
 
+
+/**
+ * @todo Remove
+ */
 @import '_vars.scss';
+
+/**
+ * @todo Remove
+ */
 @import '_/_.scss';
+
+/**
+ * @todo Remove
+ */
 @import 'ui/_ui.scss';
+
+/**
+ * @todo Remove
+ */
 @import '_navbar';
+
+/**
+ * @todo Remove
+ */
 @import '_admin.scss';
+
+/**
+ * @todo Remove
+ */
 @import '_pagination';
+
+/**
+ * @todo Remove
+ */
 @import '_properties';
+
+/**
+ * @todo Remove
+ */
 @import '_messages';
+
+/**
+ * @todo Remove
+ */
 @import '_icon-upload';
+
+/**
+ * @todo Remove
+ */
 @import '_dials';
+
+/**
+ * @todo Remove
+ */
 @import '_styledSelect.scss';
