@@ -22,5 +22,5 @@ echo json_encode([
 	'issuer' => $_SERVER["SERVER_NAME"],
 	'authorization_endpoint' => (string)(url('auth', 'oauth2')->absolute()),
 	'token_endpoint' => (string)(url('token', 'access')->absolute()),
-	'jwks_uri' => (string)(url('certificates', 'public_key')->setExtension('json')->absolute())
+	'jwks_uri' => (string)(url('certificates', 'publickey')->setExtension('json')->absolute())
 ]);

@@ -35,8 +35,12 @@ use StringField;
  *
  * @property \AuthAppModel $client The client that this credential authenticates
  * @property string $secret The secret the application can use to authenticate itself
- * @property integer $created The timestamp the secret was created, it's recommended to phase out old secrets regularly
- * @property integer $expires The timestamp this secret expires at. This allows PHPAS to provide the clients with a grace period
+ *
+ * @property integer $created The timestamp the secret was created, it's recommended to
+ * phase out old secrets regularly
+ *
+ * @property integer $expires The timestamp this secret expires at. This allows PHPAS to
+ * provide the clients with a grace period
  */
 class CredentialModel extends Model
 {

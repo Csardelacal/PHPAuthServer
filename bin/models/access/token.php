@@ -6,15 +6,12 @@ use IntegerField;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Encoding\ChainedFormatter;
 use Lcobucci\JWT\Encoding\JoseEncoder;
-use Lcobucci\JWT\Signer\Ecdsa\SignatureConverter;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
-use Lcobucci\JWT\Signer\Rsa\Sha512;
 use Lcobucci\JWT\Token\Builder;
 use Reference;
 use SessionModel;
-use spitfire\exceptions\PrivateException;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 use StringField;
@@ -26,9 +23,11 @@ use function db;
  * An access token connects up to three parties in a relationship that authenticates
  * the following:
  *
- * * A resource owner, who owns the resources on the server, and wishes to grant access to the client. This is generally a human.
+ * * A resource owner, who owns the resources on the server, and wishes to grant access
+ *   to the client. This is generally a human.
  * * A client, an application that wishes to retrieve data or issue commands to the server.
- * * A server. An application that holds the owner's information and wishes to authenticate the client's requests.
+ * * A server. An application that holds the owner's information and wishes to authenticate
+ *   the client's requests.
  *
  * These tokens can be of two kinds, access tokens or refresh tokens. When a "public"
  * application issues an access token, no refresh token is generated. A private
@@ -38,8 +37,10 @@ use function db;
  * scenarios.
  *
  * * A token may have no owner, which means that the owner is implied to be the server.
- * * A token may have no client nor owner, making it a client-credential so that an application can rate limit clients
- * * If the client and server are the same app, the token is a session token and used to log the user into the application.
+ * * A token may have no client nor owner, making it a client-credential so that an
+ *   application can rate limit clients
+ * * If the client and server are the same app, the token is a session token and used to
+ *   log the user into the application.
  *
  *
  *
@@ -129,8 +130,10 @@ class TokenModel extends Model
 		
 		
 		/*@var $jwt Configuration*/
-		$credential = db()->table('client\credential')->get('expires', null)->where('client', $this->client)->first(true);
-		$issuer     = db()->table('authapp')->get('_id', SysSettingModel::getValue('app.self'))->first(true);
+		$credential = db()->table('client\credential')
+			->get('expires', null)
+			->where('client', $this->client)
+			->first(true);
 		
 		$time = new DateTimeImmutable();
 		$jwt = Configuration::forSymmetricSigner(
@@ -139,7 +142,6 @@ class TokenModel extends Model
 		);
 		
 		return $jwt->builder()
-			->issuedBy($issuer->appID)
 			->withClaim('for', $this->client->appID)
 			->permittedFor($this->audience->appID)
 			->issuedAt($time->setTimestamp($this->created))

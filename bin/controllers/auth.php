@@ -3,6 +3,7 @@
 use app\AuthLock;
 use client\LocationModel;
 use connection\AuthModel;
+use magic3w\http\url\reflection\QueryString;
 use magic3w\http\url\reflection\URLReflection;
 use signature\Signature;
 use spitfire\core\Environment;
@@ -36,7 +37,7 @@ class AuthController extends BaseController
 		}
 		
 		#Check if the user has been either banned or suspended
-		$suspension = $token? db()->table('user\suspension')->get('user', $token->user)->addRestriction('expires', time(), '>')->fetch() : null;
+		$suspension = $token? $token->user->isSuspended() : null;
 		
 		#Check if the application grants generous TTLs
 		$generous = Environment::get('phpAuth.token.extraTTL');
@@ -82,7 +83,8 @@ class AuthController extends BaseController
 		
 		#Check whether the user was banned. If the account is disabled due to administrative
 		#action, we inform the user that the account was disabled and why.
-		$banned     = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
+		$banned = $this->user->isSuspended();
+		
 		if ($banned) {
 			$ex = new LoginException('Your account was banned, login was disabled.', 401);
 			$ex->setUserID($this->user->_id);
@@ -93,7 +95,8 @@ class AuthController extends BaseController
 		
 		#Check whether the user was disabled
 		if (!$session->getUser()) {
-			return $this->response->setBody('Redirect')->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
+			$loginURL = url('user', 'login', array('returnto' => (string) URL::current()));
+			return $this->response->setBody('Redirect')->getHeaders()->redirect($loginURL);
 		}
 		if ($this->user->disabled) {
 			$ex = new LoginException('This account has been disabled permanently.', 401);
@@ -123,12 +126,15 @@ class AuthController extends BaseController
 			throw new PublicException('No token', 404);
 		}
 		
+		$continueURL = url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), array('grant' => 1)));
+		
 		$this->view->set('token', $token);
 		$this->view->set('cancelURL', $failureURL);
-		$this->view->set('continue', (string) url('auth', 'oauth', $tokenid, array_merge($_GET->getRaw(), array('grant' => 1))));
+		$this->view->set('continue', (string) $continueURL);
 		
 		if (!$session->getUser()) {
-			return $this->response->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
+			$loginURL = url('user', 'login', array('returnto' => (string) URL::current()));
+			return $this->response->getHeaders()->redirect($loginURL);
 		}
 		if ($grant === false) {
 			return $this->response->getHeaders()->redirect($failureURL);
@@ -140,7 +146,12 @@ class AuthController extends BaseController
 		 * logged in next time.
 		 */
 		if ($grant === true) {
-			if (isset($_POST['authorize']) && !db()->table('user\authorizedapp')->get('user', $token->user)->addRestriction('app', $token->app)->fetch()) {
+			$preauthorized = db()->table('user\authorizedapp')
+				->get('user', $token->user)
+				->where('app', $token->app)
+				->fetch();
+			
+			if (isset($_POST['authorize']) && !$preauthorized) {
 				$authorization = db()->table('user\authorizedapp')->newRecord();
 				$authorization->user = $this->user;
 				$authorization->app  = $token->app;
@@ -150,7 +161,7 @@ class AuthController extends BaseController
 			/*
 			 * Retrieve the IP information from the client. This should allow the
 			 * application to provide the user with data where they connected from.
-			 * 
+			 *
 			 * @todo While Cloudflare is very convenient. It's definitely not a generic
 			 * protocol and produces vendor lock-in. This should be replaced with an
 			 * interface that allows using a different vendor for location detection.
@@ -228,6 +239,8 @@ class AuthController extends BaseController
 	
 	/**
 	 *
+	 * @todo Remove deprecated mechanism
+	 *
 	 * @validate GET#signatures (required)
 	 * @param string $confirm
 	 * @throws PublicException
@@ -253,7 +266,8 @@ class AuthController extends BaseController
 		 * first to ensure that they can create the connection.
 		 */
 		if (!$this->user) {
-			$this->response->setBody('Redirecting...')->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
+			$loginURL = url('user', 'login', array('returnto' => (string) URL::current()));
+			$this->response->setBody('Redirecting...')->getHeaders()->redirect($loginURL);
 		}
 		
 		if (!isset($_GET['signatures'])) {
@@ -339,7 +353,8 @@ class AuthController extends BaseController
 				$connection->store();
 			}
 			
-			return $this->response->setBody('Redirecting...')->getHeaders()->redirect($_GET['returnto']?: url(/*Grant success page or w/e*/));
+			return $this->response->setBody('Redirecting...')
+				->getHeaders()->redirect($_GET['returnto']?: url(/*Grant success page or w/e*/));
 		}
 		
 		$this->view->set('ctx', $signatures->each(function (Signature$e) {
@@ -459,7 +474,10 @@ class AuthController extends BaseController
 		 * exchange for a token.
 		 */
 		if ($_GET['response_type'] !== 'code') {
-			throw new PublicException('This server does only accept a response_type of code. Please refer to the manual', 400);
+			throw new PublicException(
+				'This server does only accept a response_type of code. Please refer to the manual',
+				400
+			);
 		}
 		
 		/*
@@ -468,7 +486,8 @@ class AuthController extends BaseController
 		 */
 		if (!$this->user) {
 			$this->response->setBody('Redirecting...');
-			return $this->response->getHeaders()->redirect(url('user', 'login', array('returnto' => (string) URL::current())));
+			$loginURL = url('user', 'login', array('returnto' => (string) URL::current()));
+			return $this->response->getHeaders()->redirect($loginURL);
 		}
 		
 		
@@ -476,7 +495,7 @@ class AuthController extends BaseController
 		 * Check whether the user was banned. If the account is disabled due to administrative
 		 * action, we inform the user that the account was disabled and why.
 		 */
-		$banned = db()->table('user\suspension')->get('user', $this->user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->first();
+		$banned = $this->user->isSuspended();
 		
 		if ($banned) {
 			$ex = new LoginException('Your account was suspended, login is disabled.', 401);
@@ -519,21 +538,30 @@ class AuthController extends BaseController
 		$redirect = URLReflection::fromURL($_GET['redirect_uri']);
 		
 		/**
+		 * Create a cancel URL in case the user chaanges their mind.
+		 */
+		$cancelURL = (string)$redirect->withQuery(QueryString::encode([
+			'error' => 'denied',
+			'description' => 'Authentication request was denied'
+		]));
+		
+		/**
 		 * In order to validate the redirect we make sure that the protocol, hostname
 		 * and paths for the redirect match.
 		 *
 		 * @todo Actually check the redirect
 		 */
-		$valid = true || db()->table(LocationModel::class)->get('client', $client)->all()->reduce(function ($valid, LocationModel $e) use ($redirect) {
-			if ($e->hostname !== $redirect->getHost()) {
-				return $valid;
-			}
-			if (!Strings::startsWith($redirect->getPath(), $e->path)) {
-				return $valid;
-			}
-			
-			return true;
-		}, false);
+		$valid = true || db()->table(LocationModel::class)->get('client', $client)->all()
+			->reduce(function ($valid, LocationModel $e) use ($redirect) {
+				if ($e->hostname !== $redirect->getHost()) {
+					return $valid;
+				}
+				if (!Strings::startsWith($redirect->getPath(), $e->path)) {
+					return $valid;
+				}
+				
+				return true;
+			}, false);
 		
 		if (!$valid) {
 			throw new PublicException(sprintf('Redirect to %s is invalid', __($redirect)), 401);
@@ -606,14 +634,17 @@ class AuthController extends BaseController
 			}
 			
 			return $this->response->setBody('Redirect')
-				->getHeaders()->redirect((clone $redirect)->setQueryString(['code' => $challenge->code, 'state' => $challenge->state]));
+				->getHeaders()->redirect($redirect->withQuery(QueryString::encode([
+					'code' => $challenge->code,
+					'state' => $challenge->state
+				])));
 		}
 		
 		/*
 		 * If the request was posted, the user selected to deny the application access
 		 */
 		elseif ($this->request->isPost()) {
-			$this->response->setBody('Redirect')->getHeaders()->redirect($redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+			$this->response->setBody('Redirect')->getHeaders()->redirect($cancelURL);
 		}
 		
 		/**
@@ -624,7 +655,7 @@ class AuthController extends BaseController
 		 * server's decision and will just result in a denied error being issued immediately.
 		 */
 		elseif (($_GET['prompt']?? false) === 'none') {
-			$this->response->setBody('Redirect')->getHeaders()->redirect($redirect . '?' . http_build_query(['error' => 'denied', 'description' => 'Authentication request was denied']));
+			$this->response->setBody('Redirect')->getHeaders()->redirect($cancelURL);
 		}
 		
 		/*
@@ -635,6 +666,6 @@ class AuthController extends BaseController
 		$this->view->set('client', $client);
 		$this->view->set('audience', $audience);
 		$this->view->set('redirect', (string)$redirect);
-		$this->view->set('cancel', (string)(clone $redirect)->setQueryString(['error' => 'denied', 'description' => 'Authentication request was denied']));
+		$this->view->set('cancel', $cancelURL);
 	}
 }

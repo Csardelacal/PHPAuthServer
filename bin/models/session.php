@@ -33,7 +33,6 @@ use spitfire\storage\database\Schema;
  * tokens that have not been granted as offline will be terminated.
  *
  * @property UserModel     $user     Session owner
- * @property UserModel     $claim    When a user is logging in, they can claim to be a certain person. This is not a valid user authentication.
  * @property LocationModel $location The location from where the session was authorized
  * @property DeviceModel   $device   The device from which the session was authorized
  *

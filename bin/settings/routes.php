@@ -13,7 +13,10 @@
  * It's really easy and fun!
  */
 
-spitfire\core\router\Router::getInstance()->request('/app/permissions/:action?', ['controller' => ['permissions'], 'action' => ':action']);
+spitfire\core\router\Router::getInstance()->request(
+	'/app/permissions/:action?',
+	['controller' => ['permissions'], 'action' => ':action']
+);
 
 spitfire\core\router\Router::getInstance()->request(
 	'/.well-known/openid-configuration',

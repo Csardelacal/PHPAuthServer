@@ -60,7 +60,9 @@ abstract class BaseController extends Controller
 		 * being extracted from here.
 		 */
 		if ($u) {
-			$this->session = db()->table('session')->get('_id', SessionModel::TOKEN_PREFIX . Session::sessionId())->first();
+			$this->session = db()->table('session')
+				->get('_id', SessionModel::TOKEN_PREFIX . Session::sessionId())
+				->first();
 			
 			if ($this->session === null) {
 				$this->session = db()->table('session')->newRecord();
@@ -93,7 +95,10 @@ abstract class BaseController extends Controller
 			$this->user  = $user;
 			$this->token = $t;
 			
-			$isAdmin = !!db()->table('user\group')->get('group__id', $admingroupid)->addRestriction('user', $user)->fetch();
+			$isAdmin = !!db()->table('user\group')
+				->get('group__id', $admingroupid)
+				->where('user', $user)
+				->fetch();
 		}
 		
 		$this->signature = new \signature\Helper(db());

@@ -67,10 +67,7 @@ class TokenController extends BaseController
 		 * secret available.
 		 *
 		 * While I originally had a much leaner version that would just run a search
-		 * for this:
-		 *
-		 * $app = db()->table('authapp')->get('appID', $appid)
-		 *   ->addRestriction('credentials', db()->table('client\credential')->get('secret', $secret)->group()->where('expires', null)->where('expires', '<', time()))->fetch();
+		 * for this.
 		 *
 		 * Which would run in a single query, the security of it was severely compromised
 		 * by the fact that database searches are rather lenient. While this only meant a
@@ -113,7 +110,10 @@ class TokenController extends BaseController
 			/*
 			 * Read the code the client sent
 			 */
-			$code = db()->table('access\code')->get('code', $_POST['code']?? null)->where('expires', '>', time())->first(true);
+			$code = db()->table('access\code')
+				->get('code', $_POST['code']?? null)
+				->where('expires', '>', time())
+				->first(true);
 			
 			/*
 			 * Verify that the code the client sent, is actually the client's code

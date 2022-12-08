@@ -47,7 +47,7 @@ class UserController extends BaseController
 	public function register()
 	{
 		
-		if (isset($_GET['returnto']) && (Strings::startsWith($_GET['returnto'], '/') || filter_var($_GET['input'], FILTER_VALIDATE_EMAIL))) {
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) {
 			$returnto = $_GET['returnto'];
 		}
 		else {
@@ -67,13 +67,27 @@ class UserController extends BaseController
 			 * We need to validate the data the user sends. This is a delicate process
 			 * and therefore requires quite a lot of attention
 			 */
-			$validatorUsername = validate()->addRule(new MinLengthValidationRule(4, 'Username must be more than 3 characters'));
+			$validatorUsername = validate()->addRule(new MinLengthValidationRule(
+				4,
+				'Username must be more than 3 characters'
+			));
+			
 			$validatorUsername->addRule(new MaxLengthValidationRule(20, 'Username must be shorter than 20 characters'));
-			$validatorUsername->addRule(new RegexValidationRule('/^[a-zA-Z][a-zA-Z0-9\-\_]+$/', 'Username must only contain characters, numbers, underscores and hyphens'));
-			$validatorEmail    = validate()->addRule(new FilterValidationRule(FILTER_VALIDATE_EMAIL, 'Invalid email found'));
+			$validatorUsername->addRule(new RegexValidationRule(
+				'/^[a-zA-Z][a-zA-Z0-9\-\_]+$/',
+				'Username must only contain characters, numbers, underscores and hyphens'
+			));
+			
+			$validatorEmail = validate()->addRule(new FilterValidationRule(
+				FILTER_VALIDATE_EMAIL,
+				'Invalid email found'
+			));
 			$validatorEmail->addRule(new MaxLengthValidationRule(50, 'Email cannot be longer than 50 characters'));
 			$validatorEmail->addRule(new SpamDomainValidationRule(new SpamDomainModelReader(db())));
-			$validatorPassword = validate()->addRule(new MinLengthValidationRule(8, 'Password must have 8 or more characters'));
+			$validatorPassword = validate()->addRule(new MinLengthValidationRule(
+				8,
+				'Password must have 8 or more characters'
+			));
 			
 			validate(
 				$validatorEmail->setValue(_def($_POST['email'], '')),
@@ -191,17 +205,35 @@ class UserController extends BaseController
 		}
 		
 		if ($_SERVER['REQUEST_METHOD'] === 'POST' && $verified) {
-			$query = db()->table('user')->getAll();
 			
+			/**
+			 * @todo This mechanism is extraordinarily inefficient, since it will require
+			 * the application to loop over each username it matches and query for the user
+			 * to extract their id. This is a flaw in Spitfire and planned to be resolved in
+			 * SF2020 but it's currently doing a lot of extra work.
+			 */
+			$username_ids = db()->table('username')
+				->get('name', $_POST['username'])
+				->where('expires', null)
+				->all()
+				->each(fn($u) => $u->user->_id);
+			
+			$query = db()->table('user')->getAll();
 			$query->group()
-					  ->addRestriction('email', $_POST['username'])
-					  ->addRestriction('usernames', db()->table('username')->get('name', $_POST['username'])->addRestriction('expires', null, 'IS'))
+					  ->where('email', $_POST['username'])
+					  ->where('_id', $username_ids)
 					->endGroup();
 			
-			$user = $query->fetch();
+			$user = $query->first();
 			
 			#Check whether the user was banned
-			$banned     = $user? db()->table('user\suspension')->get('user', $user)->addRestriction('expires', time(), '>')->addRestriction('preventLogin', 1)->fetch() : false;
+			$banned = $user?
+			db()->table('user\suspension')->get('user', $user)
+					->where('expires', '>', time())
+					->where('preventLogin', 1)
+					->first() :
+			false;
+			
 			if ($banned) {
 				$ex = new LoginException('Your account was suspended, login is disabled.', 401);
 				$ex->setUserID($user->_id);
@@ -278,8 +310,13 @@ class UserController extends BaseController
 		
 		#Get the affected profile
 		$profile = db()->table('user')->get('_id', $userid)->fetch()? :
-		db()->table('user')->get('usernames', db()->table('username')->get('name', $userid)->
-						group()->addRestriction('expires', null, 'IS')->addRestriction('expires', time(), '>')->endGroup())->first();
+		db()->table('user')
+			->get(
+				'usernames',
+				db()->table('username')->get('name', $userid)
+					->group()->where('expires', null)->where('expires', '>', time())->endGroup()
+			)
+			->first();
 		
 		#If there was no profile. Throw an error
 		if (!$profile) {
@@ -298,13 +335,19 @@ class UserController extends BaseController
 			 * unlock the attribute, we add the data to the list.
 			 */
 			if ($this->isAdmin || $lock->unlock($this->authapp)) {
-				$userAttr[$attr->_id] = db()->table('user\attribute')->get('user', $profile)->where('attr', $attr)->first();
+				$userAttr[$attr->_id] = db()->table('user\attribute')
+					->get('user', $profile)
+					->where('attr', $attr)
+					->first();
 			}
 		}
 		
 		#Get the currently active moderative issue
 		#Check if the user has been either banned or suspended
-		$suspension = db()->table('user\suspension')->get('user', $profile)->addRestriction('expires', time(), '>')->first();
+		$suspension = db()->table('user\suspension')
+			->get('user', $profile)
+			->where('expires', '>', time())
+			->first();
 		
 		$this->view->set('user', $profile);
 		$this->view->set('profile', $userAttr);
@@ -358,7 +401,11 @@ class UserController extends BaseController
 				$token->user = $user;
 				$token->store();
 				$url   = url('user', 'recover', $token->token, ['returnto' => $returnto])->absolute();
-				EmailModel::queue($user->email, 'Recover your password', sprintf('Click here to recover your password: <a href="%s">%s</a>', $url, $url));
+				EmailModel::queue(
+					$user->email,
+					'Recover your password',
+					sprintf('Click here to recover your password: <a href="%s">%s</a>', $url, $url)
+				);
 				
 				$this->view->set('success', 'An email with the link to recover your account was sent to you.');
 			}
@@ -403,7 +450,8 @@ class UserController extends BaseController
 			);
 		}
 		else {
-			return $this->response->setBody('Redirect...')->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(url('user', 'activate'))]));
+			return $this->response->setBody('Redirect...')
+				->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(url('user', 'activate'))]));
 			throw new PublicException('Not logged in', 403);
 		}
 		

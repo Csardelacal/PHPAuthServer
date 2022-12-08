@@ -12,18 +12,6 @@
  * @copyright 2012 Magic3W - All rights reserved
  */
 
-/* Define bootstrap settings. Environments are a better way to handle
- * config but we need to create them first.
- */
-define('BASEDIR', rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR));
-define('SPITFIRE_BASEDIR', BASEDIR.'/spitfire');
-define('APP_DIRECTORY', 'bin/apps/');
-define('CONFIG_DIRECTORY', 'bin/settings/');
-define('CONTROLLERS_DIRECTORY', 'bin/controllers/');
-define('ASSET_DIRECTORY', 'assets/');
-define('TEMPLATES_DIRECTORY', 'bin/templates/');
-define('SESSION_SAVE_PATH', 'bin/usr/sessions/');
-
 /* Set error handling directives. AS we do not want Apache / PHP
  * to send the data to the user but to our terminal we will tell
  * it to output the errors. Thanks to this linux command:
@@ -37,6 +25,7 @@ ini_set("display_errors", "0");
 
 /* Include Spitfire core.
  */
+include __DIR__ . '/bin/constants.php';
 include 'spitfire/bootstrap.php';
 include './vendor/autoload.php';
 

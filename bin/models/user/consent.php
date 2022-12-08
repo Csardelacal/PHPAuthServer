@@ -38,6 +38,8 @@ use spitfire\storage\database\Schema;
  * another application so the client requesting access is granted access to the
  * user's resources that match the scope within the resource provider application.
  *
+ * @todo Introduce mechanism for users to manage consent.
+ *
  * @property \UserModel $user The user granting access
  * @property \AuthAppModel $client The application receiving access
  * @property \client\ScopeModel $scope The scope being granted access to

@@ -49,7 +49,7 @@ class CertificatesController extends BaseController
 		return $this->response->setBody('Redirect')->getHeaders()->redirect(url('certificates'));
 	}
 	
-	public function public_key()
+	public function publickey()
 	{
 		$keys = db()->table('key')->getAll()->where('expires', null)->all();
 		$this->view->set('keys', $keys);
