@@ -4,7 +4,6 @@ use AuthAppModel;
 use IntegerField;
 use Reference;
 use SessionModel;
-use spitfire\exceptions\PrivateException;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 use StringField;
@@ -44,6 +43,16 @@ class RefreshModel extends Model
 	const TOKEN_LENGTH = 50;
 	const TOKEN_TTL = 63072000;
 	
+	/**
+	 * The public TTL affects tokens issued to clients running inside the user agent. This
+	 * includes SPA or native applications that run on the user's device. Sessions on these
+	 * devices may be limited in order to prevent refresh tokens from being hijacked.
+	 *
+	 * Unlike private tokens, the lifetime of these is not extended beyond their initial
+	 * expiration.
+	 */
+	const TOKEN_TTL_PUBLIC = 86400;
+	
 	public function definitions(Schema $schema)
 	{
 		$schema->token   = new StringField(self::TOKEN_LENGTH);
@@ -57,17 +66,6 @@ class RefreshModel extends Model
 		$schema->created = new IntegerField(true);
 		$schema->expires = new IntegerField(true);
 		$schema->ttl     = new IntegerField(true);
-		
-		/**
-		 * When a refresh token is used, a new one is issued and the old one is marked
-		 * as used. If an application tries to recycle the old one, the system will
-		 * invalidate the entire chain of tokens.
-		 *
-		 * @todo Mark tokens as used and expired when issuing a new one
-		 * @todo Fail if used token was used again
-		 * @todo Discard tokens that were used in the event of a collission
-		 */
-		$schema->usedby  = new Reference('access\refresh');
 		
 		$schema->session = new Reference(SessionModel::class);
 		

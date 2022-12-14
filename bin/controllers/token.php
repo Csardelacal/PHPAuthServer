@@ -1,5 +1,6 @@
 <?php
 
+use access\RefreshModel;
 use spitfire\exceptions\PublicException;
 
 class TokenController extends BaseController
@@ -61,6 +62,12 @@ class TokenController extends BaseController
 			throw new PublicException('No application found', 403);
 		}
 		
+		/**
+		 * We need a flag to determine whether the client itself authenticated itself
+		 * securely. Authenticated clients get perks, like extended refresh tokens.
+		 */
+		$client_authenticated = false;
+		
 		/*
 		 * In order to search for the application, we need to make sure that we're
 		 * querying the secrets to find whether the application has an appropriate
@@ -80,6 +87,9 @@ class TokenController extends BaseController
 			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
 			->all();
 		
+		/**
+		 * @todo Once legacy applications are gone, this can be removed.
+		 */
 		if ($app->appSecret !== null && $app->appSecret === $secret) {
 			/*
 			 * Legacy applications will have a set of credentials baked right into them. This
@@ -87,11 +97,13 @@ class TokenController extends BaseController
 			 * this has been the way we used to identify applications when they have all been
 			 * server-side.
 			 */
+			$client_authenticated = true;
 		}
 		elseif ($credentials && !$credentials->extract('secret')->contains($secret)) {
 			/*
 			 * If the application was issued credentials, it MUST provide a valid credential.
 			 */
+			$client_authenticated = true;
 		}
 		elseif ($type === 'code' || $type === 'refresh_token') {
 			/*
@@ -140,8 +152,6 @@ class TokenController extends BaseController
 			$code->expires = time();
 			$code->store();
 			
-			#TODO: This code could be extracted into an helper that could be pulled
-			#in via service providers to reduce the amount of code duplication.
 			/*
 			 * Instance a token that can be sent to the client to provide them access
 			 * to the resources of the owner.
@@ -153,11 +163,18 @@ class TokenController extends BaseController
 			$token->client  = $app;
 			$token->store();
 			
+			/**
+			 * Calculate the TTL for the token. If the client is authenticated we will trust
+			 * it for longer.
+			 */
+			$ttl = ($client_authenticated? RefreshModel::TOKEN_TTL : RefreshModel::TOKEN_TTL_PUBLIC);
+			
 			$refresh = db()->table('access\refresh')->newRecord();
 			$refresh->session = $code->session;
 			$refresh->owner   = $code->user;
 			$refresh->audience = $code->audience;
 			$refresh->client  = $app;
+			$refresh->expires = time() + $ttl;
 			$refresh->store();
 			
 			/**
@@ -197,18 +214,39 @@ class TokenController extends BaseController
 			$refresh = null;
 		}
 		elseif ($type === 'refresh_token') {
-			throw new PublicException('Nah');
+			
+			/**
+			 * The refresh token must be sent with the request and be a string.
+			 * @todo When SF 2020 is introduced, this needs to be replaced with assume()
+			 */
+			assert(is_string($_POST['refreh_token']));
+			
+			/**
+			 * @var string
+			 */
+			$_provided = $_POST['refresh_token'];
+			
 			/**
 			 * The provided refresh token. The application MUST use this to validate
 			 * the client's claims.
 			 *
 			 * @var RefreshModel
 			 */
-			$_provided = $_POST['refresh_token']?? null;
 			$provided = db()->table('access\refresh')->get('token', $_provided)->first(true);
 			
 			if ($provided->client->appID != $app->appID) {
 				throw new PublicException('Tried refreshing a token owned by a different client', 403);
+			}
+			
+			/**
+			 * If the refresh token has expired, or has been used to refresh another token, the renewal
+			 * should fail. This is only the case in the event of the application not being authenticated.
+			 *
+			 * @todo Flag the session as potentially compromised if there was an attempt to use a
+			 * token that was expired (this indicates a potential attack).
+			 */
+			if (!$client_authenticated && $provided->expires < time()) {
+				throw new PublicException('Refresh token has already expired', 401);
 			}
 			
 			#TODO: This code could be extracted into an helper that could be pulled
@@ -229,6 +267,7 @@ class TokenController extends BaseController
 			$refresh->owner   = $provided->owner;
 			$refresh->audience = $provided->audience;
 			$refresh->client  = $provided->client;
+			$refresh->expires = $client_authenticated? time() + RefreshModel::TOKEN_TTL : $provided->expires;
 			$refresh->store();
 			
 			/**
@@ -244,6 +283,16 @@ class TokenController extends BaseController
 			$legacy->extends = false;
 			$legacy->ttl     = $token->expires - time();
 			$legacy->store();
+			
+			/**
+			 * The old token can now be expired, allowing the application to perform token rotation.
+			 * This measure increases the chances of preventing a user's credential being stolen by an
+			 * attacker.
+			 */
+			if (!$client_authenticated) {
+				$provided->expires = time();
+				$provided->store();
+			}
 		}
 		else {
 			throw new PublicException('Invalid grant_type selected', 400);
