@@ -1,6 +1,6 @@
 <?php namespace mail\spam\domain;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -33,22 +33,24 @@ class SpamDomainTester
 	 */
 	private $reader;
 	
-	public function __construct(StorageInterface $reader) {
+	public function __construct(StorageInterface $reader)
+	{
 		$this->reader = $reader;
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param Domain $domain
 	 * @return boolean True if the domain is blocked, false if the domain is accepted
 	 */
-	public function check(Domain$domain, $nxdomainfail = true) {
+	public function check(Domain$domain, $nxdomainfail = true)
+	{
 		
 		/*
 		 * If we got to the top of the resolution, we will stop. This is a recursive
 		 * function, and this is the exit condition.
 		 */
-		if(empty($domain->getPieces())) {
+		if (empty($domain->getPieces())) {
 			return false;
 		}
 		
@@ -69,25 +71,29 @@ class SpamDomainTester
 		
 		/**
 		 * If the system is required to check for the integrity of the domain name, the
-		 * system should check whether the a or mx records exist. 
+		 * system should check whether the a or mx records exist.
 		 */
 		if ($nxdomainfail && ($mx->isEmpty() || $a->isEmpty())) {
 			return true;
 		}
 		
-		$ipban = $mx->add($a)->reduce(function ($p, IP$e) { 
+		$ipban = $mx->add($a)->reduce(function ($p, IP$e) {
 			do {
 				/*
-				 * If the IP was whitelisted, then we return false. It is implied that 
+				 * If the IP was whitelisted, then we return false. It is implied that
 				 * the IP can be safely operated.
 				 */
-				if ($this->reader->isWhitelisted($e)) { return false; }
-
+				if ($this->reader->isWhitelisted($e)) {
+					return false;
+				}
+				
 				/*
 				 * Check whether the IP itself was blacklisted.
 				 */
-				if ($p || $this->reader->isBlacklisted($e)) { return true; }
-			} 
+				if ($p || $this->reader->isBlacklisted($e)) {
+					return true;
+				}
+			}
 			while ($e = $e->getParentSubnet());
 			
 			/*
@@ -101,7 +107,7 @@ class SpamDomainTester
 			return true;
 		}
 		
-		if (!$domain->getParent() ) {
+		if (!$domain->getParent()) {
 			return false;
 		}
 		
@@ -115,18 +121,18 @@ class SpamDomainTester
 		}
 		
 		/**
-		 * Sometimes temporary email providers will use a single mail exchange 
+		 * Sometimes temporary email providers will use a single mail exchange
 		 * domain coupled with several IPs. In this case, banning the mx server
 		 * will do the trick.
-		 * 
-		 * @todo we should record the mx server IPs for use in a domain structure so we 
+		 *
+		 * @todo we should record the mx server IPs for use in a domain structure so we
 		 * can associate bad apples.
 		 */
 		$mxDomain = Domain::mx($domain);
 		
 		/*
-		 * If we don't have a record for the domain to send email to, we will make 
-		 * the validation depend on NXDOMAINFAIL which will indicate whether the 
+		 * If we don't have a record for the domain to send email to, we will make
+		 * the validation depend on NXDOMAINFAIL which will indicate whether the
 		 * validation should fail due to an unavailable DNS record
 		 */
 		if ($mxDomain === false) {
@@ -137,5 +143,4 @@ class SpamDomainTester
 			return $c || $this->reader->isBlacklisted($e);
 		}, false);
 	}
-
 }
