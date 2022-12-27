@@ -221,7 +221,7 @@ class UserController extends BaseController
 			$query = db()->table('user')->getAll();
 			$query->group()
 					  ->where('email', $_POST['username'])
-					  ->where('_id', $username_ids)
+					  ->where('_id', $username_ids->toArray())
 					->endGroup();
 			
 			$user = $query->first();
