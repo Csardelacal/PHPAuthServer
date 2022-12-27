@@ -122,8 +122,25 @@ class IP
 			$hostname = $hostname->getHostname();
 		}
 		
-		if(!getmxrr($hostname, $mxhosts)) { return false; }
+		if(!getmxrr($hostname, $mxhosts)) { return collect(); }
 		return collect($mxhosts)->each(function ($e) { return new IP(gethostbyname($e)); });
+	}
+	
+	/**
+	 * Check whether a domain name resolves it's A record.
+	 * 
+	 * @todo This function currently only supports IPV4
+	 * @param $hostname string
+	 */
+	public static function a($hostname) {
+		if ($hostname instanceof Domain) {
+			$hostname = $hostname->getHostname();
+		}
+		
+		$result = dns_get_record($hostname, DNS_A);
+		
+		if(!isset($result[0])) { return collect(); }
+		return collect($result)->each(function ($e) { return new IP($e['ip']); });
 	}
 	
 }

@@ -65,7 +65,17 @@ class SpamDomainTester
 		 * return a negative result for this server.
 		 */
 		$mx = IP::mx($domain);
-		$ipban = !$mx? $nxdomainfail : $mx->reduce(function ($p, IP$e) { 
+		$a  = IP::a($domain);
+		
+		/**
+		 * If the system is required to check for the integrity of the domain name, the
+		 * system should check whether the a or mx records exist. 
+		 */
+		if ($nxdomainfail && ($mx->isEmpty() || $a->isEmpty())) {
+			return true;
+		}
+		
+		$ipban = $mx->add($a)->reduce(function ($p, IP$e) { 
 			do {
 				/*
 				 * If the IP was whitelisted, then we return false. It is implied that 
@@ -104,10 +114,13 @@ class SpamDomainTester
 			return true;
 		}
 		
-		/*
+		/**
 		 * Sometimes temporary email providers will use a single mail exchange 
 		 * domain coupled with several IPs. In this case, banning the mx server
 		 * will do the trick.
+		 * 
+		 * @todo we should record the mx server IPs for use in a domain structure so we 
+		 * can associate bad apples.
 		 */
 		$mxDomain = Domain::mx($domain);
 		
