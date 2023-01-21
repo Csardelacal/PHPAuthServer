@@ -2,8 +2,8 @@
 
 use AndrewBreksa\RSMQ\Exceptions\QueueNotFoundException;
 use AndrewBreksa\RSMQ\RSMQClient;
-use defer\TaskFactory;
-use defer\WorkerFactory;
+use spitfire\defer\TaskFactory;
+use spitfire\defer\WorkerFactory;
 use jwt\Base64URL;
 use Predis\Client;
 use spitfire\mvc\Director;
@@ -80,16 +80,6 @@ class CronDirector extends Director
 	
 	public function defer()
 	{
-		
-		$file = spitfire()->getCWD() . '/bin/usr/.defer.cron.sem';
-		$fh = fopen($file, file_exists($file)? 'r' : 'w+');
-		
-		if (!flock($fh, LOCK_EX)) {
-			console()->error('Could not acquire lock')->ln();
-			return 1;
-		}
-		
-		console()->success('Acquired lock!')->ln();
 		
 		$container = new Container();
 		$client    = new RSMQClient(new Client(['host' => 'redis', 'port' => 6379]));
