@@ -19,7 +19,7 @@ class SessionController extends BaseController
 		
 		/**
 		 *
-		 * @todo Invalidate tokens depending on those sessions
+		 * @todo Invalidate access tokens depending on those sessions
 		 * @todo Notify applications using those tokens
 		 * @todo Add a json API
 		 *
@@ -37,7 +37,7 @@ class SessionController extends BaseController
 		 *
 		 * @todo Add task to kill any tokens that are connected with the session and notify the clients
 		 */
-		$this->defer->defer(15 * 86400, IncinerateSessionTask::class, $this->session->_id);
+		$this->defer->defer(3600, IncinerateSessionTask::class, $this->session->_id);
 		
 		$this->response->setBody('Redirect')->getHeaders()->redirect(url());
 	}

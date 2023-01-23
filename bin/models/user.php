@@ -1,7 +1,16 @@
 <?php
 
 use \spitfire\exceptions\PrivateException;
+use spitfire\model\adapters\ChildrenAdapter;
 
+/**
+ *
+ * @property int $_id
+ * @property string $email
+ * @property bool $verified
+ * @property ChildrenAdapter $usernames
+ * @property int $created
+ */
 class UserModel extends spitfire\Model
 {
 	

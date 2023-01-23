@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * 
+ * @property string $name
+ * @property int expires
+ */
 class UsernameModel extends spitfire\Model
 {
 	

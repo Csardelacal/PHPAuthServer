@@ -2,10 +2,15 @@
 
 use AndrewBreksa\RSMQ\Exceptions\QueueNotFoundException;
 use AndrewBreksa\RSMQ\RSMQClient;
+use defer\tasks\IncinerateAccessCodeTask;
+use defer\tasks\IncinerateAccessTokenTask;
 use spitfire\defer\TaskFactory;
 use spitfire\defer\WorkerFactory;
 use jwt\Base64URL;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Predis\Client;
+use Psr\Log\LoggerInterface;
 use spitfire\mvc\Director;
 use spitfire\provider\Container;
 
@@ -98,10 +103,52 @@ class CronDirector extends Director
 			$queue
 		);
 		
+		$logger = new Logger('debug');
+		$logger->pushHandler(new StreamHandler(STDERR));
+		
+		$container->set(LoggerInterface::class, $logger);
 		$container->set(WorkerFactory::class, $workerFactory);
 		$container->set(TaskFactory::class, new TaskFactory($client, $queue));
 		
 		
 		$workerFactory->make()->work();
+	}
+	
+	/**
+	 *
+	 * @param int $interval By letting prune know the interval the system prunes at, it can
+	 * ensure that database load is evenly staggered across the interval.
+	 */
+	public function prune(int $interval = 86400)
+	{
+		$started = time();
+		$client  = new RSMQClient(new Client(['host' => 'redis', 'port' => 6379]));
+		$queue   = Base64URL::fromString(spitfire()->getCWD());
+		
+		$taskFactory = new TaskFactory($client, $queue);
+		
+		# Start pruning access tokens that were expired but never actively terminated
+		db()->table('access\token')->getAll()->where('expires', '<', $started)->all()
+			->each(fn($e) => $taskFactory->defer(
+				$started + rand(0, $interval),
+				IncinerateAccessTokenTask::class,
+				$e->_id
+			));
+		
+		# Prune refresh tokens that were expired
+		db()->table('access\refresh')->getAll()->where('expires', '<', $started)->all()
+			->each(fn($e) => $taskFactory->defer(
+				$started + rand(0, $interval),
+				IncinerateRefreshTokenTask::class,
+				$e->_id
+			));
+		
+		# Prune access codes that were expired
+		db()->table('access\code')->getAll()->where('expires', '<', $started)->all()
+			->each(fn($e) => $taskFactory->defer(
+				$started + rand(0, $interval),
+				IncinerateAccessCodeTask::class,
+				$e->_id
+			));
 	}
 }

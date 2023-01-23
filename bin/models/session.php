@@ -39,6 +39,11 @@ use spitfire\storage\database\Schema;
  * @property int $created The timestamp of creation
  * @property int $expires The timestamp this record expires
  *
+ * @todo Introduce a lifecycle property that tells whether the session is active, winding-down
+ * or finished. These should be set by the SessionEndTask to indiciate it's progress notifying
+ * other applications of the session termination. Usually a session should not involve a lot of
+ * active tokens so they should be quick to expire and clean.
+ *
  * @author César de la Cal Bretschneider <cesar@magic3w.com>
  */
 class SessionModel extends Model

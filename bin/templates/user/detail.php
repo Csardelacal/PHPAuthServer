@@ -1,9 +1,10 @@
-
+<?php /** @var UserModel $user */ ?>
+<?php /** @var UsernameModel */ $username = $user->usernames->getQuery()->where('expires', 'IS', null)->fetch(); ?>
 <div class="row">
 	<div class="span">
 		<div class="heading" data-sticky="top">
 			<img src="<?= url('image', 'user', $user->_id, 64) ?>" width="64" height="64" class="user-icon small">
-			<?= __($user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name) ?>
+			<?= __($username->name) ?>
 		</div>
 	</div>
 </div>
@@ -31,7 +32,7 @@
 		</div>
 	</div>
 	<div class="span l2">
-		<?php $aliases = $user->usernames->getQuery()->addRestriction('expires', time(), '>')->fetchAll(); ?>
+		<?php /** @var \spitfire\collection\Collection<UsernameModel> */$aliases = $user->usernames->getQuery()->where('expires', '>', strval(time()))->fetchAll(); ?>
 		<?= $aliases->count()? $aliases->join('<br>') : '<i>None</i>'; ?>
 	</div>
 </div>

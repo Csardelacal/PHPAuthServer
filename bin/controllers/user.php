@@ -11,6 +11,7 @@ use spitfire\validation\rules\FilterValidationRule;
 use spitfire\validation\rules\MaxLengthValidationRule;
 use spitfire\validation\rules\MinLengthValidationRule;
 use spitfire\validation\rules\RegexValidationRule;
+use spitfire\validation\ValidationError;
 use spitfire\validation\ValidationException;
 
 class UserController extends BaseController
@@ -40,7 +41,7 @@ class UserController extends BaseController
 	/**
 	 *
 	 * @layout minimal.php
-	 * @return type
+	 * @return void
 	 * @throws HTTPMethodException
 	 * @throws ValidationException
 	 */
@@ -104,7 +105,7 @@ class UserController extends BaseController
 				->fetch();
 			
 			if ($exists) {
-				throw new ValidationException('Username is taken', 0, array('Username is taken'));
+				throw new ValidationException('Username is taken', 0, array(new ValidationError('Username is taken')));
 			}
 			
 			if (stripos($_POST['email'], 'gmail.com') !== false) {
@@ -118,14 +119,18 @@ class UserController extends BaseController
 			
 			
 			if (db()->table('user')->get('email', $_POST['email'])->fetch()) {
-				throw new ValidationException('Email is taken', 0, array('Email is already in use'));
+				throw new ValidationException(
+					'Email is taken',
+					0,
+					[new ValidationError('Email is already in use')]
+				);
 			}
 			
 			/**
 			 * Once we validated the data, let's move onto the next step, store the
 			 * data.
 			 *
-			 * @var $user UserModel
+			 * @var UserModel
 			 */
 			$user = db()->table('user')->newRecord();
 			$user->email    = $_POST['email'];
@@ -151,7 +156,8 @@ class UserController extends BaseController
 			$s = Session::getInstance();
 			$s->lock($user->_id);
 			
-			return $this->response->getHeaders()->redirect($returnto);
+			$this->response->getHeaders()->redirect($returnto);
+			return;
 		}
 		catch (HTTPMethodException$e) {
 /*Do nothing, we'll show the form*/
@@ -168,7 +174,7 @@ class UserController extends BaseController
 	/**
 	 *
 	 * @layout minimal.php
-	 * @return type
+	 * @return void
 	 * @throws PublicException
 	 */
 	public function login()
@@ -177,7 +183,8 @@ class UserController extends BaseController
 		
 		if ($session->get('IP') && $session->get('IP') !== $_SERVER['REMOTE_ADDR']) {
 			$session->destroy();
-			return $this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login'));
+			$this->response->setBody('Redirecting')->getHeaders()->redirect(url('user', 'login'));
+			return;
 		}
 		
 		if (!$session->get('IP')) {
@@ -281,7 +288,8 @@ class UserController extends BaseController
 				$this->session->user = $user;
 				$this->session->store();
 				
-				return $this->response->getHeaders()->redirect($returnto);
+				$this->response->getHeaders()->redirect($returnto);
+				return;
 			} else {
 				$this->view->set('message', 'Username or password did not match');
 			}
@@ -359,7 +367,7 @@ class UserController extends BaseController
 	/**
 	 *
 	 * @layout minimal.php
-	 * @return type
+	 * @return void
 	 * @throws PublicException
 	 */
 	public function recover($tokenid = null)
@@ -375,7 +383,8 @@ class UserController extends BaseController
 		if ($token && $this->request->isPost() && $_POST['password'][0] === $_POST['password'][1]) {
 			#Store the new password
 			$token->user->setPassword($_POST['password'][0])->store();
-			return $this->response->getHeaders()->redirect($returnto);
+			$this->response->getHeaders()->redirect($returnto);
+			return;
 		}
 		elseif ($token) { //The user clicked on the recovery email
 			#Let the user enter a new password
