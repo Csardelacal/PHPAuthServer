@@ -437,9 +437,9 @@ class UserController extends BaseController
 			$token->user->verified = 1;
 			$token->user->store();
 		}
-		elseif ($this->user || ($token && $token->user)) {
+		elseif ($this->user) {
 			$token = TokenModel::create(null, 1800, false);
-			$token->user = $this->user? : $token->user;
+			$token->user = $this->user;
 			$token->store();
 			$url   = url('user', 'activate', $token->token)->absolute();
 			EmailModel::queue(
@@ -450,9 +450,9 @@ class UserController extends BaseController
 			);
 		}
 		else {
-			return $this->response->setBody('Redirect...')
+			$this->response->setBody('Redirect...')
 				->getHeaders()->redirect(url('user', 'login', ['returnto' => strval(url('user', 'activate'))]));
-			throw new PublicException('Not logged in', 403);
+			return;
 		}
 		
 		#We need to redirect the user back to the home page
