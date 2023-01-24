@@ -18,7 +18,7 @@ class CertificatesController extends BaseController
 			throw new PublicException('Not an admin', 401);
 		}
 		
-		$keys = db()->table('key')->getAll()->all();
+		$keys = db()->table('key')->getAll()->setOrder('expires', 'DESC')->all();
 		$this->view->set('keys', $keys);
 	}
 	
@@ -49,6 +49,17 @@ class CertificatesController extends BaseController
 		$key->store();
 		
 		return $this->response->setBody('Redirect')->getHeaders()->redirect(url('certificates'));
+	}
+	
+	public function expire(KeyModel $key) 
+	{
+		if ($key) {
+			$key->expires = time() + 14 * 86400;
+			$key->store();
+		}
+		
+		$this->response->setBody('Redirect')->getHeaders()->redirect(url('certificates'));
+		return;
 	}
 	
 	public function publickey()

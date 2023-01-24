@@ -53,7 +53,6 @@ class KeyModel extends Model
 	 */
 	public function definitions(Schema $schema)
 	{
-		$schema->client  = new \Reference(\AuthAppModel::class);
 		$schema->public  = new TextField();
 		$schema->private = new TextField();
 		$schema->created = new \IntegerField(true);
