@@ -32,6 +32,7 @@ use spitfire\storage\database\Schema;
  * logs in, a session is started for them. When a user ends a session, all related
  * tokens that have not been granted as offline will be terminated.
  *
+ * @property string        $_id      Session ID
  * @property UserModel     $user     Session owner
  * @property LocationModel $location The location from where the session was authorized
  * @property DeviceModel   $device   The device from which the session was authorized

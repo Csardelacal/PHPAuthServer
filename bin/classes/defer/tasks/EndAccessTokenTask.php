@@ -27,12 +27,13 @@ use spitfire\defer\TaskFactory;
  * THE SOFTWARE.
  */
 
-class IncinerateRefreshTokenTask implements Task
+class EndAccessTokenTask implements Task
 {
+	
 	
 	public function body($settings) : void
 	{
-		$token = db()->table('access\refresh')->get('_id', $settings)->first();
+		$token = db()->table('access\token')->get('_id', $settings)->first();
 		
 		/**
 		 * No token exists anymore
@@ -41,15 +42,11 @@ class IncinerateRefreshTokenTask implements Task
 			return;
 		}
 		
-		if ($token->expires > time()) {
-			return;
-		}
-		
-		/*
-		 * If the token is already expired and ready to be incinerated, just delete
-		 * it.
+		/**
+		 * @todo Execute a webhook to the application, this allows the depending
+		 * application to clean up the session on the other side. This could be done
+		 * by some event mechanism.
 		 */
-		$token->delete();
 		
 		return; # Incinerated token successfully
 	}

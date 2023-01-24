@@ -1,5 +1,7 @@
 <?php
 
+use spitfire\exceptions\PublicException;
+
 class CertificatesController extends BaseController
 {
 	

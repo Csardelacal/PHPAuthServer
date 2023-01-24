@@ -30,13 +30,6 @@ use spitfire\defer\TaskFactory;
 class IncinerateAccessTokenTask implements Task
 {
 	
-	private $defer;
-	
-	public function __construct(TaskFactory $defer)
-	{
-		$this->defer = $defer;
-	}
-	
 	public function body($settings) : void
 	{
 		$token = db()->table('access\token')->get('_id', $settings)->first();

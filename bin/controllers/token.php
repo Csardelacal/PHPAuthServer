@@ -301,12 +301,11 @@ class TokenController extends BaseController
 		//Send the token to the view so it can render it
 		$this->view->set('token', $token);
 		$this->view->set('refresh', $refresh);
-		$this->view->set('session', $provided->session);
+		$this->view->set('session', $this->session);
 	}
 	
 	/**
 	 *
-	 * @template none
 	 * @param string $tokenid
 	 */
 	public function end($tokenid)
@@ -323,6 +322,7 @@ class TokenController extends BaseController
 		$token->expires = time();
 		$token->store();
 		
+		$this->response->setBody('Redirect');
 		$this->response->getHeaders()->redirect(new URL('token', array('message' => 'ended')));
 	}
 }

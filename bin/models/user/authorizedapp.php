@@ -6,6 +6,8 @@ use spitfire\Model;
 use spitfire\storage\database\Schema;
 
 /**
+ *
+ * @deprecated
  * @todo Remove the authorized model in favor of the consent model
  */
 class AuthorizedappModel extends Model

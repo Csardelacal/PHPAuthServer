@@ -25,7 +25,7 @@ use function db;
  *
  * @property UserModel $owner The resource owner
  * @property AuthAppModel $client The application requesting access to the owner's information
- * @property AuthAppModel $server The application containing the application owner's information
+ * @property AuthAppModel $audience The application containing the application owner's information
  * @property string $scopes A comma separated list of contexts the client wishes to have access to
  *
  * @property int $created The time the token was created
