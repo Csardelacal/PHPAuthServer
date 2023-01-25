@@ -11,6 +11,7 @@
 
 <form method="post" class="condensed standalone" action="" enctype="multipart/form-data">
 	<input type="hidden"   name="_xsrf_"   value="<?= $xsrf ?>" />
+	<input type="hidden"   name="time"     value="" id="uatime"/>
 	<input type="text"     name="username" placeholder="Username" autocomplete="off" spellcheck="false">
 	<input type="password" name="password" placeholder="Password">
 	<?php if (isset($message) && $message): ?> 
@@ -30,3 +31,10 @@
 	<a href="<?= url('user', 'recover') ?>"                                 >Forgot password?</a> ·
 	<a href="<?= url('user', 'register', Array('returnto' => $returnto)) ?>">Create account</a>
 </p>
+
+<script type="text/javascript">
+(function (){
+	let timeinput = document.getElementById('uatime');
+	timeinput.value = (new Date()).toString();
+}());
+</script>

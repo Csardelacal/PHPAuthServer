@@ -78,6 +78,13 @@ class SessionModel extends Model
 		$schema->country  = new StringField(02);
 		$schema->city     = new StringField(20);
 		
+		/**
+		 * Collect a few variables from the browser for the purpose of fraud detection. Please
+		 * note that these will not curb sophisticated attacks.
+		 */
+		$schema->userTime = new StringField(100);
+		$schema->locale   = new StringField(50);
+		
 		$schema->created  = new IntegerField(true);
 		$schema->expires  = new IntegerField(true);
 		
@@ -102,5 +109,12 @@ class SessionModel extends Model
 		if (!$this->expires) {
 			$this->expires = time() + 86400 * 365;
 		}
+	}
+	
+	public function getTimeZoneOffset()
+	{
+		assert($this->userTime !== null);
+		$matched = preg_match('/GMT[\+\-]\d{4}/', $this->userTime, $matches);
+		return new DateTimeZone($matches[0]);
 	}
 }

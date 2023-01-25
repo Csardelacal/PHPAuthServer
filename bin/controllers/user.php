@@ -274,6 +274,8 @@ class UserController extends BaseController
 				$this->session->_id = SessionModel::TOKEN_PREFIX . Session::sessionId();
 				
 				$this->session->expires = time() + 365 * 86400;
+				$this->session->userTime = $_POST['time'];
+				$this->session->locale = $_SERVER["HTTP_ACCEPT_LANGUAGE"]?? '';
 				
 				/*
 				* Retrieve the IP information from the client. This should allow the

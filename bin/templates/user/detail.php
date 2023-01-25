@@ -93,6 +93,16 @@
 		<div class="flex items-center gap-2">
 			<img src="https://raw.githubusercontent.com/lipis/flag-icons/main/flags/1x1/<?= strtolower($session->country?: 'DE') ?>.svg" class="w-5 h-5 rounded-full">
 			<span><?= $session->city?: 'Unknown city' ?></span>
+			<?php if ($session->userTime && $session->country && !(\utils\TimeZone::check($session->getTimeZoneOffset(), $session->country))): ?>
+				<span class="inline-block py-0.5 px-1 border border-indigo-500 text-indigo-500 bg-indigo-50 font-bold rounded leading-tight text-sm" title="Suspected VPN use">vpn</span>
+			<?php endif; ?>
+		</div>
+		<div class="flex items-center gap-2">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" />
+			</svg>
+
+			<?= htmlspecialchars($session->locale) ?>
 		</div>
 	</div>
 	<div>
