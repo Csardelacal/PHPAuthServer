@@ -27,7 +27,7 @@ class SessionController extends BaseController
 		 *
 		 * @todo Remove the SESSION_SAVE_PATH constant
 		 */
-		$path = rtrim(realpath(session_save_path()?: sys_get_temp_dir()), '\/');
+		$path = rtrim(realpath(session_save_path()?: SESSION_SAVE_PATH), '\/');
 		$filename = sprintf('sess_%s', substr($session->_id, 2));
 		
 		unlink($path . '/' . $filename);

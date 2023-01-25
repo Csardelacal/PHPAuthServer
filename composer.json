@@ -35,7 +35,8 @@
 		"andrewbreksa/rsmq": "^2.0",
 		"spitfire/dependency-provider": "^0.2.8",
 		"monolog/monolog": "^3.2",
-		"spitfire/collection": "^0.2.0"
+		"spitfire/collection": "^0.2.0",
+		"guzzlehttp/guzzle": "^7.5"
 	},
 	
 	"require-dev": {

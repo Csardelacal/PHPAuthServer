@@ -1,5 +1,7 @@
 <?php namespace defer\tasks;
 
+use access\TokenModel;
+use GuzzleHttp\Client as GuzzleHttp;
 use spitfire\defer\Task;
 use spitfire\defer\TaskFactory;
 
@@ -33,6 +35,10 @@ class EndAccessTokenTask implements Task
 	
 	public function body($settings) : void
 	{
+		/**
+		 *
+		 * @var TokenModel
+		 */
 		$token = db()->table('access\token')->get('_id', $settings)->first();
 		
 		/**
@@ -43,10 +49,15 @@ class EndAccessTokenTask implements Task
 		}
 		
 		/**
-		 * @todo Execute a webhook to the application, this allows the depending
-		 * application to clean up the session on the other side. This could be done
-		 * by some event mechanism.
+		 * @todo Add an event broker mechanism that allows us to introduce logout
+		 * events into the service mesh, instead of having each application relay
+		 * it's own events with custom webhooks.
 		 */
+		(new GuzzleHttp())->get($token->client->logout, [
+			'headers' => [
+				'Authorization' => 'Bearer ' . (string)$token,
+			]
+		])->getBody()->getContents();
 		
 		return; # Incinerated token successfully
 	}

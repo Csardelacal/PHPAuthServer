@@ -9,12 +9,12 @@ use DateTimeZone;
  */
 class TimeZone
 {
-
-
+	
+	
 	/*
 	* Map a two-letter country code onto the name of the country's time zone.
 	* Countries with multiple time-zones are represented by an array of time-zone
-	* name and time-zone longitude pairs. 
+	* name and time-zone longitude pairs.
 	*/
 	public static $COUNTRY_TIME_ZONES = array(
 		"AD" => "Europe/Andorra",
@@ -472,7 +472,7 @@ class TimeZone
 		"ZW" => "Africa/Harare"
 	);
 	
-	public static function check(DateTimeZone $zone, string $country) 
+	public static function check(DateTimeZone $zone, string $country)
 	{
 		
 		$lookup = self::$COUNTRY_TIME_ZONES[$country];
@@ -486,7 +486,7 @@ class TimeZone
 		foreach ($lookup as $_lookup) {
 			$check = new DateTimeZone($_lookup[0]);
 			
-			if($check->getOffset($utc) === $zone->getOffset($utc)) {
+			if ($check->getOffset($utc) === $zone->getOffset($utc)) {
 				return true;
 			}
 		}

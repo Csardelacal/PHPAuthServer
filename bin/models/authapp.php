@@ -24,6 +24,17 @@ class AuthAppModel extends Model
 		$schema->url    = new StringField(100);
 		$schema->icon   = new FileField();
 		
+		/**
+		 * The URL to invoke when the user wishes to logout. This will notify the
+		 * client in order to terminate the appropriate session. Please note that
+		 * the client needs a mechanism to find the session associated with a token
+		 * so it can invalidate it.
+		 *
+		 * The server will send an empty request, identified by the token it wishes
+		 * to expire.
+		 */
+		$schema->logout = new StringField(1024);
+		
 		/*
 		 * System applications do not need to request permissions to access data,
 		 * nor will the user be able to block them. In return, sys apps are only

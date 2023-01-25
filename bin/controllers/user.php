@@ -260,7 +260,7 @@ class UserController extends BaseController
 				/**
 				 * Create a fresh session whenever a user logs in.
 				 */
-				session_regenerate_id();
+				session_regenerate_id(true);
 				
 				/**
 				 *
@@ -271,7 +271,7 @@ class UserController extends BaseController
 				$session->lock($user->_id);
 				
 				$this->session = $this->session?: db()->table('session')->newRecord();
-				$this->session->_id = SessionModel::TOKEN_PREFIX . Session::sessionId();
+				$this->session->_id = SessionModel::TOKEN_PREFIX . session_id();
 				
 				$this->session->expires = time() + 365 * 86400;
 				$this->session->userTime = $_POST['time'];

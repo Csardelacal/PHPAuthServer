@@ -79,6 +79,11 @@ class AppController extends BaseController
 				$app->url = trim($_POST['url']);
 			}
 			
+			#The URL to notify of logouts
+			if (isset($_POST['logout'])) {
+				$app->logout = trim($_POST['logout']);
+			}
+			
 			if ($_POST['icon'] instanceof Upload) {
 				$app->icon = $_POST['icon']->store()->uri();
 			}

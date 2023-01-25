@@ -51,7 +51,7 @@ class CertificatesController extends BaseController
 		return $this->response->setBody('Redirect')->getHeaders()->redirect(url('certificates'));
 	}
 	
-	public function expire(KeyModel $key) 
+	public function expire(KeyModel $key)
 	{
 		if ($key) {
 			$key->expires = time() + 14 * 86400;

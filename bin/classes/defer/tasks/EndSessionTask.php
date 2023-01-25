@@ -65,6 +65,7 @@ class EndSessionTask implements Task
 		 * When the session is ended, the tokens associated with it need to be ended too.
 		 */
 		$tokens = db()->table('access\token')->get('session', $session)->where('expires', '>', time())->all();
+		var_dump($tokens->count());
 		
 		/**
 		 * If the tokens are all expired the session is properly finished and can be
