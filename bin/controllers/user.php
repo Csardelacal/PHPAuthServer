@@ -1,6 +1,8 @@
 <?php
 
 use app\AttributeLock;
+use defer\tasks\EndSessionTask;
+use defer\tasks\IncinerateSessionTask;
 use mail\spam\domain\implementation\SpamDomainModelReader;
 use mail\spam\domain\SpamDomainValidationRule;
 use spitfire\exceptions\HTTPMethodException;
@@ -306,7 +308,27 @@ class UserController extends BaseController
 		$s = Session::getInstance();
 		$s->destroy();
 		
-		return $this->response->getHeaders()->redirect(new URL());
+		if (isset($_GET['returnto']) && Strings::startsWith($_GET['returnto'], '/')) {
+			$returnto = $_GET['returnto'];
+		}
+		else {
+			$returnto = (string)url();
+		}
+		
+		if ($this->session !== null) {
+			$this->session->expires = time();
+			$this->session->store();
+		
+			/**
+			 * Mark the session to be ended and incinerated
+			 */
+			$this->defer->defer(1, EndSessionTask::class, $this->session->_id);
+			$this->defer->defer(3600, IncinerateSessionTask::class, $this->session->_id);
+		}
+		
+		$this->response->setBody('Redirect...');
+		$this->response->getHeaders()->redirect($returnto);
+		return;
 	}
 	
 	public function detail($userid)
