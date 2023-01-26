@@ -64,7 +64,12 @@ class CertificatesController extends BaseController
 	
 	public function publickey()
 	{
-		$keys = db()->table('key')->getAll()->where('expires', null)->all();
+		$keys = db()->table('key')->getAll()
+			->group()
+				->where('expires', null)
+				->where('expires', '>', time())
+			->endGroup()
+			->all();
 		$this->view->set('keys', $keys);
 	}
 }

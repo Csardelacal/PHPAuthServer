@@ -6,6 +6,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Utils;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
 use Lcobucci\JWT\Token\Parser;
@@ -13,6 +14,7 @@ use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\Validator;
 use magic3w\http\url\reflection\URLReflection;
+use magic3w\phpauth\sdk\constraints\SignedWithAnyOf;
 use magic3w\phpauth\sdk\signature\Hash;
 use magic3w\phpauth\sdk\signature\Signature;
 
@@ -53,16 +55,16 @@ class SSO
 	
 	/**
 	 *
-	 * @var non-empty-string|null
+	 * @var KeySet|null
 	 */
-	private ?string $publicKey;
+	private ?KeySet $publicKey;
 	
 	/**
 	 *
 	 * @param string $credentials
-	 * @param null|non-empty-string $publicKey
+	 * @param null|KeySet $publicKeys
 	 */
-	public function __construct(string $credentials, ?string $publicKey = null)
+	public function __construct(string $credentials, ?KeySet $publicKeys = null)
 	{
 		$reflection = URLReflection::fromURL($credentials);
 		$path = $reflection->getPath();
@@ -76,7 +78,7 @@ class SSO
 		$this->appSecret = $secret;
 		
 		$this->client = new Client(['base_uri' => $this->endpoint]);
-		$this->publicKey = $publicKey;
+		$this->publicKey = $publicKeys;
 	}
 	
 	/**
@@ -172,7 +174,7 @@ class SSO
 		
 		if ($this->publicKey !== null) {
 			assert(!empty($this->publicKey));
-			$validator->validate($parsed, new SignedWith(new RsaSha256, InMemory::plainText($this->publicKey)));
+			$validator->validate($parsed, new SignedWithAnyOf(new RsaSha256, $this->publicKey));
 		}
 		else {
 			assert(!empty($this->appSecret));
@@ -366,7 +368,7 @@ class SSO
 		$access = $response->tokens->access;
 		$parsed = $parser->parse($access->token);
 		
-		$validator->validate($parsed, new SignedWith(new RsaSha256, InMemory::plainText($this->publicKey)));
+		$validator->validate($parsed, new SignedWithAnyOf(new RsaSha256, $this->publicKey));
 		
 		assert($parsed instanceof UnencryptedToken);
 		
