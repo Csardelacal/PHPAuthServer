@@ -318,7 +318,7 @@ class UserController extends BaseController
 		if ($this->session !== null) {
 			$this->session->expires = time();
 			$this->session->store();
-		
+			
 			/**
 			 * Mark the session to be ended and incinerated
 			 */

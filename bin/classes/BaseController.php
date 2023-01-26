@@ -58,7 +58,7 @@ abstract class BaseController extends Controller
 		 *
 		 * @todo The session should be correctly created during login or registration,
 		 * there is no good reason for this sanity check ocurring here.
-		 * 
+		 *
 		 * This section is basically repeat code from the log-in and registration of the
 		 * user and should be deprecated and subsequently removed.
 		 */
