@@ -1,9 +1,10 @@
-
+<?php /** @var UserModel $user */ ?>
+<?php /** @var UsernameModel */ $username = $user->usernames->getQuery()->where('expires', 'IS', null)->fetch(); ?>
 <div class="row">
 	<div class="span">
 		<div class="heading" data-sticky="top">
 			<img src="<?= url('image', 'user', $user->_id, 64) ?>" width="64" height="64" class="user-icon small">
-			<?= __($user->usernames->getQuery()->addRestriction('expires', null, 'IS')->fetch()->name) ?>
+			<?= __($username->name) ?>
 		</div>
 	</div>
 </div>
@@ -31,7 +32,7 @@
 		</div>
 	</div>
 	<div class="span l2">
-		<?php $aliases = $user->usernames->getQuery()->addRestriction('expires', time(), '>')->fetchAll(); ?>
+		<?php /** @var \spitfire\collection\Collection<UsernameModel> */$aliases = $user->usernames->getQuery()->where('expires', '>', strval(time()))->fetchAll(); ?>
 		<?= $aliases->count()? $aliases->join('<br>') : '<i>None</i>'; ?>
 	</div>
 </div>
@@ -79,6 +80,40 @@
 	</div>
 </div>
 <?php endforeach; ?>
+
+
+
+<?php $sessions = db()->table('session')->get('user', $user)->where('expires', '>', time())->all(); ?>
+<?php foreach ($sessions as $session): ?>
+<div class="h-6"></div>
+<div class="container max-w-5xl mx-auto p-4 bg-white border border-gray-100 rounded box-shadow flex justify-between">
+	<div>
+		<div class="text-sm text-gray-600">Started <?= date('M d Y', $session->created) ?></div>
+		<div class="h-2"></div>
+		<div class="flex items-center gap-2">
+			<img src="https://raw.githubusercontent.com/lipis/flag-icons/main/flags/1x1/<?= strtolower($session->country?: 'DE') ?>.svg" class="w-5 h-5 rounded-full">
+			<span><?= $session->city?: 'Unknown city' ?></span>
+			<?php if ($session->userTime && $session->country && !(\utils\TimeZone::check($session->getTimeZoneOffset(), $session->country))): ?>
+				<span class="inline-block py-0.5 px-1 border border-indigo-500 text-indigo-500 bg-indigo-50 font-bold rounded leading-tight text-sm" title="Suspected VPN use">vpn</span>
+			<?php endif; ?>
+		</div>
+		<div class="flex items-center gap-2">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802" />
+			</svg>
+			<?= htmlspecialchars($session->locale) ?>
+		</div>
+	</div>
+	<div>
+		<a href="<?= url('session', 'end', $session->_id) ?>" class="gap-1 text-gray-600 hover:text-gray-800 flex items-center">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
+			<span class="text-sm">End session</span>
+
+		</a>
+	</div>
+</div>
+<?php endforeach; ?>
+
 
 <div class="spacer" style="height: 20px"></div>
 

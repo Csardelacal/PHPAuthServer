@@ -121,29 +121,28 @@
 			<div class="spacer" style="height: 30px"></div>
 
 
-			<?php $sessions = db()->table('token')->get('user', $user)->addRestriction('expires', time(), '>')->addRestriction('app', null, 'IS NOT')->fetchAll(); ?>
+			<?php $sessions = db()->table('session')->get('user', $user)->where('expires', '>', time())->all(); ?>
 			<div class="heading topbar" data-sticky>
 				Active sessions
 			</div>
 
 			<?php foreach ($sessions as $session): ?>
-			<div class="spacer" style="height: 10px"></div>
-			<div class="row l6 fluid has-dials">
-				<div class="span l3">
-					<img src="<?= url('image', 'app', $session->app->_id, 32) ?>" style="vertical-align: middle; height: 18px;">
-					<?php if ($session->app->url): ?><a href="<?= $session->app->url ?>"><?= $session->app->name ?></a>
-					<?php else: ?><span><?= $session->app->name ?></span><?php endif; ?>
+			<div class="h-6"></div>
+			<div class="container mx-auto p-4 bg-white border border-gray-100 rounded box-shadow flex justify-between">
+				<div>
+					<div class="text-sm text-gray-600">Started <?= date('M d Y', $session->created) ?></div>
+					<div class="h-2"></div>
+					<div class="flex items-center gap-2">
+						<img src="https://raw.githubusercontent.com/lipis/flag-icons/main/flags/1x1/<?= strtolower($session->country?: 'DE') ?>.svg" class="w-5 h-5 rounded-full">
+						<span><?= $session->city?: 'Unknown city' ?></span>
+					</div>
 				</div>
-				<div class="span l2">
-					<?php if ($session->country): ?>
-					<img src="https://raw.githubusercontent.com/lipis/flag-icons/main/flags/1x1/<?= strtolower($session->country) ?>.svg" style="vertical-align: middle; height: 18px;">
-					<span><?= $session->city ?></span>
-					<?php endif; ?>
-				</div>
-				<div class="span l1 dials">
-					<ul>
-						<li><a href="<?= url('token', 'end', $session->token) ?>">End session</a></li>
-					</ul>
+				<div>
+					<a href="<?= url('session', 'end', $session->_id) ?>" class="gap-1 text-gray-600 hover:text-gray-800 flex items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
+						<span class="text-sm">End session</span>
+
+					</a>
 				</div>
 			</div>
 			<?php endforeach; ?>

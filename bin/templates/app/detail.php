@@ -72,6 +72,26 @@
 		</div>
 	</div>
 	
+	<!-- Logout URL -->
+	<div class="row l5 has-dials">
+		<div class="span l4">
+			<div style="font-size: .75em; color: #555">
+				Logout URL (this will be invoked when the session is terminated by the user)
+			</div>
+			
+			<div class="field">
+				<input type="text" name="logout" value="<?= __($app->logout) ?>">
+			</div>
+		</div>
+		<div class="span l1 dials">
+			<ul>
+				<li>
+					<!-- No dials yet-->
+				</li>
+			</ul>
+		</div>
+	</div>
+	
 	<div class="separator large light"></div>
 	
 	<!-- App ID -->
@@ -312,6 +332,8 @@
 	This application has defined no contexts
 </div>
 <?php endif; ?>
+
+<div class="spacer" style="height: 50px"></div>
 
 <div class="spacer" style="height: 50px"></div>
 

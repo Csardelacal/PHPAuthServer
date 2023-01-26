@@ -136,7 +136,7 @@
 		</script>
 		
 		<!--Import depend.js and the router it uses to load locations -->
-		<script src="<?= spitfire\core\http\URL::asset('js/depend.js') ?>" type="text/javascript"></script>
+		<script src="<?= spitfire\core\http\URL::asset('js/m3/depend.js') ?>" type="text/javascript"></script>
 		<script src="<?= spitfire\core\http\URL::asset('js/m3/depend/router.js') ?>" type="text/javascript"></script>
 		<script type="text/javascript">
 		(function () {

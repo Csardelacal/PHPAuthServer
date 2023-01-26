@@ -13,6 +13,9 @@
 	],
 	
 	"autoload": {
+		"classmap": [
+			"bin"
+		],
 		"psr-4": {
 			
 		}
@@ -27,11 +30,17 @@
 	"require": {
 		"spitfire/defer": "master",
 		"postal/postal": "^1.0",
-		"lcobucci/jwt": "^4.1"
+		"lcobucci/jwt": "^4.2",
+		"magic3w/url-reflection": "^0.3.0",
+		"andrewbreksa/rsmq": "^2.0",
+		"spitfire/dependency-provider": "^0.2.8",
+		"monolog/monolog": "^3.2",
+		"spitfire/collection": "^0.2.0",
+		"guzzlehttp/guzzle": "^7.5"
 	},
 	
 	"require-dev": {
-		"phpstan/phpstan": "^0.12.64",
+		"phpstan/phpstan": "^1.9",
         "magic3w/php-coding-standard": "^1.0",
 		"php-webdriver/webdriver": "^1.12",
 		"phpunit/phpunit": "^9.5",
@@ -41,6 +50,10 @@
 	"scripts" : {
 		"test" : [
 			"./vendor/bin/phpstan analyse --level 5 bin/",
+			"./vendor/bin/phpcs ."
+		],
+		"test-changed" : [
+			"./vendor/bin/phpstan analyse --level 5 $(git diff master --diff-filter=d --name-only -- bin/controllers bin/classes | grep -E '\\.php$')",
 			"./vendor/bin/phpcs ."
 		],
 		"baseline" : "./vendor/bin/phpstan analyse --level 5 . --generate-baseline",

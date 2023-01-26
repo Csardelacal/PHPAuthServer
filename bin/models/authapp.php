@@ -6,19 +6,34 @@ use spitfire\Model;
 use spitfire\storage\database\Schema;
 
 /**
- * 
+ *
  * @todo Add ownership to the apps. So a certain user can administrate his own apps
+ *
+ * @property string $appID
+ * @property string $appSecret
  */
 class AuthAppModel extends Model
 {
 	
-	public function definitions(Schema $schema) {
+	public function definitions(Schema $schema)
+	{
 		$schema->appID  = new StringField(20);
 		$schema->appSecret = new StringField(50);
 		
 		$schema->name   = new StringField(20);
 		$schema->url    = new StringField(100);
 		$schema->icon   = new FileField();
+		
+		/**
+		 * The URL to invoke when the user wishes to logout. This will notify the
+		 * client in order to terminate the appropriate session. Please note that
+		 * the client needs a mechanism to find the session associated with a token
+		 * so it can invalidate it.
+		 *
+		 * The server will send an empty request, identified by the token it wishes
+		 * to expire.
+		 */
+		$schema->logout = new StringField(1024);
 		
 		/*
 		 * System applications do not need to request permissions to access data,
@@ -39,7 +54,8 @@ class AuthAppModel extends Model
 		$schema->appID->setUnique(true);
 	}
 	
-	public function canAccess($app, $user, $context) {
+	public function canAccess($app, $user, $context)
+	{
 		
 		$db = $this->getTable()->getDb();
 		$q  = $db->table('connection\auth')->getAll();
@@ -59,21 +75,38 @@ class AuthAppModel extends Model
 		$result = $q->all();
 		
 		$_r = $result->reduce(function (AuthModel$c, AuthModel$e) {
-			if ($e->user && $e->final) { return $e; }
-			if ($c->user && $c->final) { return $c; }
-			if ($e->user && $e->state == AuthModel::STATE_DENIED) { return $e; }
-			if ($c->user && $c->state == AuthModel::STATE_DENIED) { return $c; }
-			if ($e->final) { return $e; }
-			if ($c->final) { return $c; }
-			if ($e->user ) { return $e; }
-			if ($c->user ) { return $c; }
+			if ($e->user && $e->final) {
+				return $e;
+			}
+			if ($c->user && $c->final) {
+				return $c;
+			}
+			if ($e->user && $e->state == AuthModel::STATE_DENIED) {
+				return $e;
+			}
+			if ($c->user && $c->state == AuthModel::STATE_DENIED) {
+				return $c;
+			}
+			if ($e->final) {
+				return $e;
+			}
+			if ($c->final) {
+				return $c;
+			}
+			if ($e->user) {
+				return $e;
+			}
+			if ($c->user) {
+				return $c;
+			}
 			return $e;
 		}, $result->rewind());
-			
+		
 		return $_r? $_r->state : AuthModel::STATE_PENDING;
 	}
 	
-	public function getContext($context) {
+	public function getContext($context)
+	{
 		if (!is_string($context)) {
 			throw new InvalidArgumentException('Context must be string', 1806130942);
 		}
@@ -88,11 +121,11 @@ class AuthAppModel extends Model
 		$r = $q->fetch();
 		
 		return $r? new Context(true, $r->ctx, $r->app->appID, $r->title, $r->descr, $r->expires) :
-			new Context(false, $context, $this->appID, null, null, null);
+		new Context(false, $context, $this->appID, null, null, null);
 	}
-
-	public function __toString() {
+	
+	public function __toString()
+	{
 		return sprintf('App (%s)', $this->name);
 	}
-
 }
