@@ -23,7 +23,8 @@
 	
 	"autoload-dev": {
 		"psr-4": {
-			"magic3w\\phpauth\\tests\\" : "./tests"
+			"magic3w\\phpauth\\tests\\" : "./tests",
+			"magic3w\\phpauth\\sdk\\" : "./sdk/php"
 		}
 	},
 	
@@ -53,7 +54,7 @@
 			"./vendor/bin/phpcs ."
 		],
 		"test-changed" : [
-			"./vendor/bin/phpstan analyse --level 5 $(git diff master --diff-filter=d --name-only -- bin/controllers bin/classes | grep -E '\\.php$')",
+			"./vendor/bin/phpstan analyse --level 5 $(git diff master --diff-filter=d --name-only -- bin/controllers bin/classes sdk/php | grep -E '\\.php$')",
 			"./vendor/bin/phpcs ."
 		],
 		"baseline" : "./vendor/bin/phpstan analyse --level 5 . --generate-baseline",

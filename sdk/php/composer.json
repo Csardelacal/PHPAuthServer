@@ -1,0 +1,27 @@
+{
+	"name": "magic3w/phpauth-sdk-php",
+	"description": "PHP SDK for PHPAuthServer (magic3w/phpauth)",
+	"type": "library",
+	"license": "MIT",
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"authors": [
+		{
+			"name": "César de la Cal Bretschneider",
+			"email": "cesar@magic3w.com"
+		}
+	],
+
+	"autoload": {
+		"psr-4": {
+			"magic3w\\phpauth\\sdk\\": "./src/"
+		}
+	},
+	
+	"require": {
+		"magic3w/url-reflection": "^0.3.1",
+		"lcobucci/jwt": "^4.2",
+		"guzzlehttp/guzzle": "^7.3",
+		"spitfire/exception": "^0.1.1"
+	}
+}

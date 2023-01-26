@@ -1,0 +1,9 @@
+{
+    "subtree-splits": [
+        {
+            "name": "php-sdk",
+            "directory": "sdk/php/",
+            "target": "git@github.com:Magic3W/phpauth-sdk-php.git"
+        }
+    ]
+}
