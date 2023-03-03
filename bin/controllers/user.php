@@ -222,15 +222,15 @@ class UserController extends BaseController
 			 * SF2020 but it's currently doing a lot of extra work.
 			 */
 			$username_ids = db()->table('username')
-				->get('name', $_POST['username'])
+				->get('name', trim($_POST['username']))
 				->where('expires', null)
 				->all()
 				->each(fn($u) => $u->user->_id);
 			
 			$query = db()->table('user')->getAll();
 			$query->group()
-					  ->where('email', $_POST['username'])
-					  ->where('_id', $username_ids->toArray())
+					  ->where('email', trim($_POST['username']))
+					  ->where('_id', $username_ids->toArray()?: null)
 					->endGroup();
 			
 			$user = $query->first();
