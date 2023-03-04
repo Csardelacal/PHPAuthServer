@@ -30,6 +30,8 @@ jobs:
             -   uses: frankdejonge/use-github-token@1.0.1
                 with:
                     authentication: 'Csardelacal:${{ secrets.PERSONAL_GITHUB_TOKEN }}'
+                    user_name: 'Split Bot'
+                    user_email: 'cesar@magic3w.com'
 
             # Cache the splitsh executable to speedup future runs
             -   name: Cache splitsh-lite
