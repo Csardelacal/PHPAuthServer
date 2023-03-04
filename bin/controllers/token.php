@@ -219,7 +219,7 @@ class TokenController extends BaseController
 			 * The refresh token must be sent with the request and be a string.
 			 * @todo When SF 2020 is introduced, this needs to be replaced with assume()
 			 */
-			assert(is_string($_POST['refreh_token']));
+			assert(is_string($_POST['refresh_token']));
 			
 			/**
 			 * @var string
