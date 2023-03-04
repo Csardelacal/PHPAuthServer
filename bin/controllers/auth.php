@@ -36,6 +36,8 @@ class AuthController extends BaseController
 			$token = null;
 		}
 		
+		assert($token->user !== null);
+		
 		#Check if the user has been either banned or suspended
 		$suspension = $token? $token->user->isSuspended() : null;
 		
