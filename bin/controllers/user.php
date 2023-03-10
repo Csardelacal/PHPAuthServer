@@ -236,12 +236,7 @@ class UserController extends BaseController
 			$user = $query->first();
 			
 			#Check whether the user was banned
-			$banned = $user?
-			db()->table('user\suspension')->get('user', $user)
-					->where('expires', '>', time())
-					->where('preventLogin', 1)
-					->first() :
-			false;
+			$banned = $user->isSuspended();
 			
 			if ($banned) {
 				$ex = new LoginException('Your account was suspended, login is disabled.', 401);
@@ -275,6 +270,7 @@ class UserController extends BaseController
 				$this->session = $this->session?: db()->table('session')->newRecord();
 				$this->session->_id = SessionModel::TOKEN_PREFIX . session_id();
 				
+				$this->session->ip      = bin2hex(inet_pton($_SERVER["HTTP_X_FORWARDED_FOR"]?? $_SERVER["REMOTE_ADDR"]));
 				$this->session->expires = time() + 365 * 86400;
 				$this->session->userTime = $_POST['time'];
 				$this->session->locale = $_SERVER["HTTP_ACCEPT_LANGUAGE"]?? '';

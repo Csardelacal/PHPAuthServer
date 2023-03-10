@@ -2,6 +2,7 @@
 
 use \spitfire\exceptions\PrivateException;
 use spitfire\model\adapters\ChildrenAdapter;
+use user\SuspensionModel;
 
 /**
  *
@@ -136,12 +137,12 @@ class UserModel extends spitfire\Model
 		return $this;
 	}
 	
-	public function isSuspended()
+	public function isSuspended() :? SuspensionModel
 	{
 		$suspensions = db()->table('user\suspension')
 			->get('user', $this)
 			->where('expires', '>', time())
-			->fetch();
+			->first();
 		
 		return $suspensions;
 	}

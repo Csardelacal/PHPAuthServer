@@ -4,6 +4,7 @@ use AndrewBreksa\RSMQ\Exceptions\QueueNotFoundException;
 use AndrewBreksa\RSMQ\RSMQClient;
 use defer\tasks\IncinerateAccessCodeTask;
 use defer\tasks\IncinerateAccessTokenTask;
+use defer\tasks\IncinerateLegacyTokenTask;
 use spitfire\defer\TaskFactory;
 use spitfire\defer\WorkerFactory;
 use jwt\Base64URL;
@@ -118,17 +119,23 @@ class CronDirector extends Director
 	 *
 	 * @param int $interval By letting prune know the interval the system prunes at, it can
 	 * ensure that database load is evenly staggered across the interval.
+	 * 
+	 * @param int $retention During the retention period data will not be eliminated, retention
+	 * periods allow administrators and moderators to detect ill behavior.
 	 */
-	public function prune(int $interval = 86400)
+	public function prune(int $interval = 86400, int $retention = 2592000)
 	{
 		$started = time();
+		$limit   = $started - $retention;
+		
 		$client  = new RSMQClient(new Client(['host' => 'redis', 'port' => 6379]));
 		$queue   = Base64URL::fromString(spitfire()->getCWD());
 		
 		$taskFactory = new TaskFactory($client, $queue);
 		
+		
 		# Start pruning access tokens that were expired but never actively terminated
-		db()->table('access\token')->getAll()->where('expires', '<', $started)->all()
+		db()->table('access\token')->getAll()->where('expires', '<', $limit)->all()
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateAccessTokenTask::class,
@@ -136,7 +143,7 @@ class CronDirector extends Director
 			));
 		
 		# Prune refresh tokens that were expired
-		db()->table('access\refresh')->getAll()->where('expires', '<', $started)->all()
+		db()->table('access\refresh')->getAll()->where('expires', '<', $limit)->all()
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateRefreshTokenTask::class,
@@ -144,10 +151,26 @@ class CronDirector extends Director
 			));
 		
 		# Prune access codes that were expired
-		db()->table('access\code')->getAll()->where('expires', '<', $started)->all()
+		db()->table('access\code')->getAll()->where('expires', '<', $limit)->all()
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateAccessCodeTask::class,
+				$e->_id
+			));
+	
+		# Prune sessions that were expired
+		db()->table('session')->getAll()->where('expires', '<', $limit)->all()
+			->each(fn($e) => $taskFactory->defer(
+				$started + rand(0, $interval),
+				IncinerateAccessCodeTask::class,
+				$e->_id
+			));
+
+		# Prune legacy tokens that were expired
+		db()->table('token')->getAll()->where('expires', '<', $limit)->range(0, 20000)
+			->each(fn($e) => $taskFactory->defer(
+				$started + rand(0, $interval),
+				IncinerateLegacyTokenTask::class,
 				$e->_id
 			));
 	}

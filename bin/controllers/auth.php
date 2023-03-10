@@ -36,10 +36,8 @@ class AuthController extends BaseController
 			$token = null;
 		}
 		
-		assert($token->user !== null);
-		
 		#Check if the user has been either banned or suspended
-		$suspension = $token? $token->user->isSuspended() : null;
+		$suspension = $token && $token->user? $token->user->isSuspended() : null;
 		
 		#Check if the application grants generous TTLs
 		$generous = Environment::get('phpAuth.token.extraTTL');
@@ -83,6 +81,13 @@ class AuthController extends BaseController
 		$grant      = isset($_GET['grant'])  ? ((int)$_GET['grant']) === 1 : null;
 		$session    = Session::getInstance();
 		
+		#Check whether the user is authenticated. If this is not the case, redirect them
+		#to the login page.
+		if (!$this->user) {
+			$loginURL = url('user', 'login', array('returnto' => (string) URL::current()));
+			return $this->response->setBody('Redirect')->getHeaders()->redirect($loginURL);
+		}
+		
 		#Check whether the user was banned. If the account is disabled due to administrative
 		#action, we inform the user that the account was disabled and why.
 		$banned = $this->user->isSuspended();
@@ -95,11 +100,6 @@ class AuthController extends BaseController
 			throw $ex;
 		}
 		
-		#Check whether the user was disabled
-		if (!$session->getUser()) {
-			$loginURL = url('user', 'login', array('returnto' => (string) URL::current()));
-			return $this->response->setBody('Redirect')->getHeaders()->redirect($loginURL);
-		}
 		if ($this->user->disabled) {
 			$ex = new LoginException('This account has been disabled permanently.', 401);
 			$ex->setUserID($this->user->_id);

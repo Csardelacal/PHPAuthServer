@@ -114,51 +114,6 @@ blockquote {
 	font-size:                  .9em;
 }
 
-/**
- * @todo Remove
- */
-table {
-	width: 100%;
-	border-radius:        3px;
-	border-collapse: collapse;
-	font-size:          .85em;
-	
-	thead tr {
-		box-shadow: 1px 1px 2px #CCC;
-		
-		th {
-			border-bottom: solid 1px #AAA;
-			background: #888;
-			color: #FFF;
-			
-			&:first-child {
-				border-radius: 2px 0px 0 0;
-			}
-			
-			&:last-child {
-				border-radius: 0px 2px 0 0;
-			}
-		}
-	}
-	
-	tr {
-		background: #FFF;
-		border-top: solid 1px #EEE;
-	}
-	
-	tr:first-child {
-		border-top: none;
-	}
-	
-	tr:nth-child(2n) {
-		background: #FAFAFA;
-	}
-	
-	td, th {
-		margin: 0;
-		padding: 8px 20px;
-	}
-}
 
 /**
  * @todo Remove

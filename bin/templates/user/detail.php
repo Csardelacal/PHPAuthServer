@@ -96,6 +96,9 @@
 			<?php if ($session->userTime && $session->country && !(\utils\TimeZone::check($session->getTimeZoneOffset(), $session->country))): ?>
 				<span class="inline-block py-0.5 px-1 border border-indigo-500 text-indigo-500 bg-indigo-50 font-bold rounded leading-tight text-sm" title="Suspected VPN use">vpn</span>
 			<?php endif; ?>
+			<?php if ($session->ip): ?>
+				<a href="<?= url('session', 'ip', $session->ip) ?>" class="inline-block py-0.5 px-1 border border-green-500 text-green-500 bg-green-50 font-bold rounded leading-tight text-sm" title="Recorded the IP of the session">ip</a>
+			<?php endif; ?>
 		</div>
 		<div class="flex items-center gap-2">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

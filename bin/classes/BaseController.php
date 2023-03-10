@@ -81,6 +81,7 @@ abstract class BaseController extends Controller
 				* protocol and produces vendor lock-in. This should be replaced with an
 				* interface that allows using a different vendor for location detection.
 				*/
+				$this->session->ip      = bin2hex(inet_pton($_SERVER["HTTP_X_FORWARDED_FOR"]?? $_SERVER["REMOTE_IP"]));
 				$this->session->country = $_SERVER["HTTP_CF_IPCOUNTRY"];
 				$this->session->city    = substr($_SERVER["HTTP_CF_IPCITY"], 0, 20);
 				$this->session->store();
