@@ -255,9 +255,13 @@ class UserController extends BaseController
 			elseif ($user && $user->checkPassword($_POST['password'])) {
 				
 				/**
-				 * Create a fresh session whenever a user logs in.
+				 * Create a fresh session whenever a user logs in. Make sure that the session
+				 * does not exist on the database yet.
 				 */
-				session_regenerate_id(true);
+				do {
+					session_regenerate_id(true);
+					$found = db()->table('session')->get('_id', SessionModel::TOKEN_PREFIX . session_id())->first();
+				} while ($found);
 				
 				/**
 				 *
@@ -270,7 +274,16 @@ class UserController extends BaseController
 				$this->session = $this->session?: db()->table('session')->newRecord();
 				$this->session->_id = SessionModel::TOKEN_PREFIX . session_id();
 				
-				$this->session->ip      = bin2hex(inet_pton($_SERVER["HTTP_X_FORWARDED_FOR"]?? $_SERVER["REMOTE_ADDR"]));
+				
+				/**
+				 * The IP address. In the event of it being forwarded by one (or multiple) proxies,
+				 * the IP will be in the X_FORWARDED_FOR header. While the REMOTE_ADDR becomes absolutely
+				 * useless.
+				 */
+				$rawip  = explode(',', $_SERVER["HTTP_X_FORWARDED_FOR"]?? $_SERVER["REMOTE_ADDR"]);
+				$ipaddr = trim(array_shift($rawip));
+				
+				$this->session->ip      = bin2hex(inet_pton($ipaddr));
 				$this->session->expires = time() + 365 * 86400;
 				$this->session->userTime = $_POST['time'];
 				$this->session->locale = $_SERVER["HTTP_ACCEPT_LANGUAGE"]?? '';
