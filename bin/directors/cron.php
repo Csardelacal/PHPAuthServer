@@ -60,12 +60,8 @@ class CronDirector extends Director
 		
 		console()->success('Acquired lock!')->ln();
 		
-		try {
-			$flipflop = new cron\FlipFlop($file);
-		} catch (Exception $ex) {
-			console()->error('SysV is not enabled, falling back to timed flip-flop')->ln();
-			$flipflop = new cron\TimerFlipFlop($file);
-		}
+		console()->error('SysV is not enabled, falling back to timed flip-flop')->ln();
+		$flipflop = new cron\TimerFlipFlop($file);
 		
 		while (($delivered = EmailModel::deliver()) || $flipflop->wait()) {
 			if ($delivered) {
@@ -167,7 +163,7 @@ class CronDirector extends Director
 			));
 
 		# Prune legacy tokens that were expired
-		db()->table('token')->getAll()->where('expires', '<', $limit)->range(0, 20000)
+		db()->table('token')->getAll()->where('expires', '<', $limit)->range(0, 30000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateLegacyTokenTask::class,
