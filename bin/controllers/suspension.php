@@ -1,5 +1,8 @@
 <?php
 
+use defer\tasks\EndSessionTask;
+use defer\tasks\IncinerateRefreshTokenTask;
+use defer\tasks\IncinerateSessionTask;
 use spitfire\exceptions\PrivateException;
 use spitfire\exceptions\PublicException;
 
@@ -71,6 +74,52 @@ class SuspensionController extends BaseController
 			 * to use them.
 			 */
 			$this->hook && $this->hook->trigger('token.expire', ['token' => $token->token, 'user' => $user->_id]);
+		}
+
+		/**
+		 * List all of the user's sessions and terminate them prematurely.
+		 */
+		$sessions = db()->table('session')->get('user', $user)->where('expires', '>', time())->all();
+
+		foreach ($sessions as $session) {
+			/*
+			 * All of the user's tokens are expired, forcing them to log back into
+			 * the application.
+			 */
+			$session->expires = time() - 1;
+			$session->store();
+			
+			/**
+			 * Mark the session to be ended and incinerated
+			 */
+			$this->defer->defer(1, EndSessionTask::class, $session->_id);
+			$this->defer->defer(3600, IncinerateSessionTask::class, $session->_id);
+		}
+
+		/**
+		 * Since the user is no longer allowed to proceed on the application, all of the refresh tokens
+		 * that have been issued to applications need to be appropriately terminated.
+		 * 
+		 * Refresh tokens do not end with a session, since they allow an application to perform background
+		 * tasks. Tasks performed on behalf of the user should no longer be allowed.
+		 * 
+		 * In the event of the application using tokens to perform management tasks (like deleting old records
+		 * they created or similar), please consider introducing permissions for applications to the network.
+		 */
+		$refreshTokens = db()->table('access\refresh')->get('owner', $user)->where('expires', '>', time())->all();
+
+		foreach ($refreshTokens as $refreshToken) {
+			/*
+			 * All of the user's tokens are expired, forcing them to log back into
+			 * the application.
+			 */
+			$refreshToken->expires = time() - 1;
+			$refreshToken->store();
+			
+			/**
+			 * Mark the session to be ended and incinerated
+			 */
+			$this->defer->defer(3600, IncinerateRefreshTokenTask::class, $refreshToken->_id);
 		}
 
 		/*
