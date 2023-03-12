@@ -249,6 +249,16 @@ class TokenController extends BaseController
 				throw new PublicException('Refresh token has already expired', 401);
 			}
 			
+			/**
+			 * We cannot issue new tokens to suspended users. These tokens should be already destroyed by the
+			 * suspension mechanism.
+			 * 
+			 * @todo Add logging to record this impossible condition
+			 */
+			if ($provided->owner->isSuspended()) {
+				throw new PublicException('User is suspended. Token cannot be refreshed', 401);
+			}
+			
 			#TODO: This code could be extracted into an helper that could be pulled
 			#in via service providers to reduce the amount of code duplication.
 			/*
