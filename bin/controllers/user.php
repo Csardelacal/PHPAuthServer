@@ -235,6 +235,10 @@ class UserController extends BaseController
 			
 			$user = $query->first();
 			
+			if(!isset($user)){
+				$this->view->set('message', 'Username or password did not match');
+			}
+			
 			#Check whether the user was banned
 			$banned = $user->isSuspended();
 			
