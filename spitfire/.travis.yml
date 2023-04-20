@@ -1,0 +1,10 @@
+language: php
+php:
+  - 7.1 
+  - 7.2
+
+script: phpunit --configuration=phpunit.xml tests
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - if [ -f /tmp/coverage.xml ]; then php ocular.phar code-coverage:upload --format=php-clover /tmp/coverage.xml; fi;

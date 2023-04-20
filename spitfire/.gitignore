@@ -1,0 +1,7 @@
+Documentation/*
+*.*~
+*.DS_STORE
+*.sublime-project
+
+*.sublime-workspace
+/nbproject/private/
