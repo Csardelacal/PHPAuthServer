@@ -235,24 +235,23 @@ class UserController extends BaseController
 			
 			$user = $query->first();
 			
-			#Check whether the user was banned
-			$banned = $user->isSuspended();
-			
-			if ($banned) {
-				$ex = new LoginException('Your account was suspended, login is disabled.', 401);
-				$ex->setUserID($user->_id);
-				$ex->setReason($banned->reason);
-				$ex->setExpiry($banned->expires);
-				throw $ex;
-			}
-			
-			
-			if ($user && $user->disabled !== null) {
-				$ex = new LoginException('This account has been disabled permanently.', 401);
-				$ex->setUserID($user->_id);
-				throw $ex;
-			}
-			elseif ($user && $user->checkPassword($_POST['password'])) {
+			if ($user && $user->checkPassword($_POST['password'])) {
+				#Check whether the user was banned
+				$banned = $user->isSuspended();
+				
+				if ($banned) {
+					$ex = new LoginException('Your account was suspended, login is disabled.', 401);
+					$ex->setUserID($user->_id);
+					$ex->setReason($banned->reason);
+					$ex->setExpiry($banned->expires);
+					throw $ex;
+				}
+				
+				if ($user->disabled !== null) {
+					$ex = new LoginException('This account has been disabled permanently.', 401);
+					$ex->setUserID($user->_id);
+					throw $ex;
+				}
 				
 				/**
 				 * Create a fresh session whenever a user logs in. Make sure that the session
