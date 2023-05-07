@@ -161,7 +161,7 @@ class CronDirector extends Director
 				IncinerateAccessCodeTask::class,
 				$e->_id
 			));
-
+		
 		# Prune legacy tokens that were expired
 		db()->table('token')->getAll()->where('expires', '<', $limit)->range(0, 30000)
 			->each(fn($e) => $taskFactory->defer(
@@ -169,5 +169,11 @@ class CronDirector extends Director
 				IncinerateLegacyTokenTask::class,
 				$e->_id
 			));
+		
+		# Prune emails that were sent and are now expired
+		# Since emails do not have side effects to their deletion, we can just remove them
+		# TODO: It'd be super cool if this would just delete them 20K instead of pulling them first
+		db()->table('email')->getAll()->where('delivered', '<', $limit - 90 * 86400)->range(0, 20000)
+			->each(fn($e) => $e->delete());
 	}
 }
