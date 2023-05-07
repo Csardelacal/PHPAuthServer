@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+echo "Root $root"
+chdir $root;
+
+# Make sure the storage directories exist and are writable by the webserver
+mkdir "${root}/bin/usr" || true
+mkdir "${root}/bin/usr/uploads" || true
+chown www-data: "${root}/bin/usr/"
+chown www-data: "${root}/bin/usr/uploads"
+
+if [ -z ${DEBUG+x} ]; then
+	export DEBUG=false
+fi
+
+# Run composer install. If the system is in production mode, we will optimize the 
+# autoload and omit development artifacts. Otherwise, the normal autoload is generated
+if [ "$DEBUG" = true ]; then
+	composer install --no-interaction
+fi
+
+wait-for ${DBSERVER:-mysql}:3306 -- echo 'MySQL is ready'
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+	set -- apache2-foreground "$@"
+fi
+
+exec "$@"

@@ -8,16 +8,18 @@ services:
     volumes:
       - '.:/code'
   web:
-    build: .
-    ports:
-      - "8085:80"
+    build:
+      context: .
+      target:  ${WEB_TARGET:-debug}
     volumes:
-      - .:/var/www/html
-      - /var/www/html/bin/usr
+      - .:/var/www/phpauth
+      - /var/www/phpauth/bin/usr
     links:
       - memcached
       - mysql
       - mailhog
+    ports:
+      - 80:80
     extra_hosts:
       - "host.docker.internal:host-gateway"
   memcached:
