@@ -7,7 +7,7 @@ use spitfire\storage\database\Table;
 /**
  * This class allows to track changes on database data along the use of a program
  * and creates interactions with the database in a safe way.
- * 
+ *
  * @todo Make this class implement Iterator
  * @author César de la Cal <cesar@magic3w.com>
  */
@@ -16,18 +16,18 @@ abstract class Model
 	
 	/**
 	 * The actual data that the record contains. The record is basically a wrapper
-	 * around the array that allows to validate data on the go and to alert the 
+	 * around the array that allows to validate data on the go and to alert the
 	 * programmer about inconsistent types.
-	 * 
+	 *
 	 * @var \spitfire\model\adapters\AdapterInterface[]
 	 */
 	private $data;
 	
 	/**
 	 * Keeps information about the table that owns the record this Model represents.
-	 * This allows it to power functions like store that require knowledge about 
+	 * This allows it to power functions like store that require knowledge about
 	 * the database keeping the information.
-	 * 
+	 *
 	 * @var Table
 	 */
 	private $table;
@@ -37,15 +37,16 @@ abstract class Model
 	
 	/**
 	 * Creates a new record.
-	 * 
+	 *
 	 * @param Table $table DB Table this record belongs to. Easiest way
 	 *                       to get this is by using $this->model->*tablename*
-	 * 
-	 * @param mixed $data  Attention! This parameter is intended to be 
+	 *
+	 * @param mixed $data  Attention! This parameter is intended to be
 	 *                       used by the system. To create a new record, leave
 	 *                       empty and use setData.
 	 */
-	public function __construct(Table$table = null, $data = null) {
+	public function __construct(Table$table = null, $data = null)
+	{
 		
 		$this->table   = $table;
 		$this->new     = empty($data);
@@ -53,7 +54,7 @@ abstract class Model
 		$this->makeAdapters();
 		$this->populateAdapters($data);
 	}
-
+	
 	/**
 	 * This method is used to generate the 'template' for the table that allows
 	 * spitfire to automatically generate tables and allows it to check the types
@@ -63,16 +64,17 @@ abstract class Model
 	 * @return Schema
 	 * @abstract
 	 */
-	public abstract function definitions(Schema$schema);
+	abstract public function definitions(Schema$schema);
 	
 	/**
 	 * Returns the data this record currently contains as associative array.
 	 * Remember that this data COULD be invalid when using setData to provide
 	 * it.
-	 * 
+	 *
 	 * @return mixed
 	 */
-	public function getData() {
+	public function getData()
+	{
 		return $this->data;
 	}
 	
@@ -80,10 +82,11 @@ abstract class Model
 	 * This method stores the data of this record to the database. In case
 	 * of database error it throws an Exception and leaves the state of the
 	 * record unchanged.
-	 * 
+	 *
 	 * @throws PrivateException
 	 */
-	public function store() {
+	public function store()
+	{
 		$dependencies = $this->getDependencies();
 		
 		$processed = collect([$this]);
@@ -107,9 +110,10 @@ abstract class Model
 		});
 	}
 	
-	public function write() {
+	public function write()
+	{
 		#Decide whether to insert or update depending on the Model
-		if ($this->new) { 
+		if ($this->new) {
 			#Get the autoincrement field
 			$id = $this->table->getCollection()->insert($this);
 			$ai = $this->table->getAutoIncrement();
@@ -117,40 +121,42 @@ abstract class Model
 			
 			#If the autoincrement field is empty set the new DB given id
 			if ($ai && !reset($ad)) {
-				$this->data[$ai->getName()]->dbSetData(Array($ai->getName() => $id));
+				$this->data[$ai->getName()]->dbSetData(array($ai->getName() => $id));
 			}
 		}
-		else { 
+		else {
 			$this->table->getCollection()->update($this);
 		}
 		
 		$this->new = false;
 		
-		foreach($this->data as $value) {
+		foreach ($this->data as $value) {
 			$value->commit();
 		}
 	}
-        
+	
 	/**
 	 * Returns the values of the fields included in this records primary
 	 * fields
-	 * 
+	 *
 	 * @todo Find better function name
 	 * @return array
 	 */
-	public function getPrimaryData() {
+	public function getPrimaryData()
+	{
 		$primaryFields = $this->table->getPrimaryKey()->getFields();
-		$ret = Array();
-	    
+		$ret = array();
+		
 		foreach ($primaryFields as $field) {
 			$logical = $field->getLogicalField();
 			$ret = array_merge($ret, $this->data[$logical->getName()]->dbGetData());
-	    }
-	    
-	    return $ret;
+		}
+		
+		return $ret;
 	}
 	
-	public function getQuery() {
+	public function getQuery()
+	{
 		$query     = $this->getTable()->getDb()->getObjectFactory()->queryInstance($this->getTable());
 		$primaries = $this->table->getModel()->getPrimary()->getFields();
 		
@@ -164,14 +170,16 @@ abstract class Model
 	
 	/**
 	 * Returns the table this record belongs to.
-	 * 
+	 *
 	 * @return \spitfire\storage\database\Table
 	 */
-	public function getTable() {
+	public function getTable()
+	{
 		return $this->table;
 	}
-
-	public function __set($field, $value) {
+	
+	public function __set($field, $value)
+	{
 		
 		if (!isset($this->data[$field])) {
 			throw new PrivateException("Setting non existent field: " . $field);
@@ -180,7 +188,8 @@ abstract class Model
 		$this->data[$field]->usrSetData($value);
 	}
 	
-	public function __get($field) {
+	public function __get($field)
+	{
 		#If the field is in the record we return it's contents
 		if (isset($this->data[$field])) {
 			return $this->data[$field]->usrGetData();
@@ -190,26 +199,31 @@ abstract class Model
 		}
 	}
 	
-	public function __isset($name) {
+	public function __isset($name)
+	{
 		return (array_key_exists($name, $this->data));
 	}
 	
 	//TODO: This now breaks due to the adapters
-	public function serialize() {
+	public function serialize()
+	{
 		$data = array();
-		foreach($this->data as $adapter) {
-			if (! $adapter->isSynced()) throw new PrivateException("Database record cannot be serialized out of sync");
+		foreach ($this->data as $adapter) {
+			if (! $adapter->isSynced()) {
+				throw new PrivateException("Database record cannot be serialized out of sync");
+			}
 			$data = array_merge($data, $adapter->dbGetData());
 		}
 		
-		$output = Array();
+		$output = array();
 		$output['model'] = $this->table->getModel()->getName();
 		$output['data']  = $data;
 		
 		return serialize($output);
 	}
 	
-	public function unserialize($serialized) {
+	public function unserialize($serialized)
+	{
 		
 		$input = unserialize($serialized);
 		$this->table = db()->table($input['model']);
@@ -218,11 +232,17 @@ abstract class Model
 		$this->populateAdapters($input['data']);
 	}
 	
-	public function __toString() {
-		return sprintf('%s(%s)', $this->getTable()->getModel()->getName(), implode(',', $this->getPrimaryData()) );
+	public function onbeforesave()
+	{
 	}
 	
-	public function delete() {
+	public function __toString()
+	{
+		return sprintf('%s(%s)', $this->getTable()->getModel()->getName(), implode(',', $this->getPrimaryData()));
+	}
+	
+	public function delete()
+	{
 		$this->table->getCollection()->delete($this);
 	}
 	
@@ -230,18 +250,22 @@ abstract class Model
 	 * Increments a value on high read/write environments. Using update can
 	 * cause data to be corrupted. Increment requires the data to be in sync
 	 * aka. stored to database.
-	 * 
+	 *
 	 * @param String $key
 	 * @param int|float $diff
 	 * @throws PrivateException
 	 */
-	public function increment($key, $diff = 1) {
+	public function increment($key, $diff = 1)
+	{
 		$this->table->increment($this, $key, $diff);
 	}
 	
-	protected function makeAdapters() {
+	protected function makeAdapters()
+	{
 		#If there is no table defined there is no need to create adapters
-		if ($this->table === null) { return; }
+		if ($this->table === null) {
+			return;
+		}
 		
 		$fields = $this->getTable()->getModel()->getFields();
 		foreach ($fields as $field) {
@@ -249,9 +273,12 @@ abstract class Model
 		}
 	}
 	
-	protected function populateAdapters($data) {
+	protected function populateAdapters($data)
+	{
 		#If the set carries no data, why bother reading?
-		if (empty($data)) { return; }
+		if (empty($data)) {
+			return;
+		}
 		
 		#Retrieves the full list of fields this adapter needs to populate
 		$fields = $this->getTable()->getModel()->getFields();
@@ -259,7 +286,7 @@ abstract class Model
 		#Loops through the fields retrieving the physical fields
 		foreach ($fields as $field) {
 			$physical = $field->getPhysical();
-			$current  = Array();
+			$current  = array();
 			
 			#The physical fields are matched to the content and it is assigned.
 			foreach ($physical as $p) {
@@ -271,7 +298,8 @@ abstract class Model
 		}
 	}
 	
-	public function getDependencies() {
+	public function getDependencies()
+	{
 		
 		$dependencies = collect($this->data)
 			->each(function ($e) {
@@ -282,5 +310,4 @@ abstract class Model
 		
 		return $dependencies;
 	}
-
 }

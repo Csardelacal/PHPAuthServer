@@ -3,7 +3,7 @@
 use Reference;
 use spitfire\storage\database\RestrictionGroup;
 
-/* 
+/*
  * The MIT License
  *
  * Copyright 2017 César de la Cal Bretschneider <cesar@magic3w.com>.
@@ -31,29 +31,36 @@ class ValueNulledWorker implements WorkerInterface
 {
 	
 	/**
-	 * 
+	 *
 	 * @param RestrictionGroup  $parent
 	 * @param string $field
 	 * @param string $operator
 	 * @param mixed  $value
 	 */
-	public function make(RestrictionGroup$parent, $field, $operator, $value) {
+	public function make(RestrictionGroup$parent, $field, $operator, $value)
+	{
 		
 		/*
-		 * If the value is not null, then this worker is not our match, since it 
+		 * If the value is not null, then this worker is not our match, since it
 		 * only works if the value is null.
 		 */
-		if ($value !== null)   { return false; }
-		if (is_string($field)) { $field = $parent->getQuery()->getTable()->getSchema()->getField($field); }
+		if ($value !== null) {
+			return false;
+		}
+		if (is_string($field)) {
+			$field = $parent->getQuery()->getTable()->getSchema()->getField($field);
+		}
 		
 		/*
-		 * If no field was found, then we do not need to continue either. Since it 
+		 * If no field was found, then we do not need to continue either. Since it
 		 * implies that the worker is not gonna work here either.
 		 */
-		if (!$field instanceof Reference) { return false; }
+		if (!$field instanceof Reference) {
+			return false;
+		}
 		
 		/*
-		 * Prepare the resources we need to assemble the appropriate restriction 
+		 * Prepare the resources we need to assemble the appropriate restriction
 		 * group to create the "sub-restrictions"
 		 */
 		$of       = $parent->getQuery()->getTable()->getDb()->getObjectFactory();
@@ -64,10 +71,9 @@ class ValueNulledWorker implements WorkerInterface
 		 * Create the appropriate restrictions for this.
 		 */
 		foreach ($physical as $f) {
-			$restr->add([$of->restrictionInstance($restr, $of->queryFieldInstance($parent->getQuery()->getQueryTable(), $f), $value, $operator)]);
+			$restr->add(collect([$of->restrictionInstance($restr, $of->queryFieldInstance($parent->getQuery()->getQueryTable(), $f), $value, $operator)]));
 		}
 		
 		return $restr;
 	}
-
 }

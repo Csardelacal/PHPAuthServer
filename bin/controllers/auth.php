@@ -430,7 +430,7 @@ class AuthController extends BaseController
 		 */
 		$scopes = collect(explode(' ', $_GET['scope']))
 			->filter()
-			->add(['basic'])
+			->add(collect(['basic']))
 			->unique();
 		
 		/*

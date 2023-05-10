@@ -31,7 +31,7 @@
 	"require": {
 		"spitfire/defer": "master",
 		"postal/postal": "^1.0",
-		"lcobucci/jwt": "^4.2",
+		"lcobucci/jwt": "^5.0",
 		"magic3w/url-reflection": "^0.3.0",
 		"andrewbreksa/rsmq": "^2.0",
 		"spitfire/dependency-provider": "^0.2.8",
@@ -57,7 +57,7 @@
 			"./vendor/bin/phpstan analyse --level 5 $(git diff master --diff-filter=d --name-only -- bin/controllers bin/classes sdk/php | grep -E '\\.php$')",
 			"./vendor/bin/phpcs ."
 		],
-		"baseline" : "./vendor/bin/phpstan analyse --level 5 . --generate-baseline",
+		"baseline" : "./vendor/bin/phpstan analyse --level 5 bin/ --generate-baseline",
 		"sniff" : [
 			"#cp ./vendor/magic3w/php-coding-standard/.phpcs.xml ./.phpcs.xml",
 			"./vendor/bin/phpcs -s --encoding=utf-8 -p $(git diff master --diff-filter=d --cached --name-only | grep -E '\\.php$')"
