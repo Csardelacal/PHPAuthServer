@@ -1182,17 +1182,53 @@
             "time": "2023-04-27T16:35:45+00:00"
         },
         {
+            "name": "spitfire/contracts",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spitfire-php/contracts.git",
+                "reference": "06af5af54b9d869c0f9ea13670c0d020953efa01"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spitfire-php/contracts/zipball/06af5af54b9d869c0f9ea13670c0d020953efa01",
+                "reference": "06af5af54b9d869c0f9ea13670c0d020953efa01",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7||^8",
+                "psr/container": "^1.1.1|^2.0.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "spitfire\\contracts\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0+"
+            ],
+            "description": "Contract package for Spitfire. Use this to write code compatible with the framework",
+            "homepage": "https://spitfirephp.com",
+            "support": {
+                "issues": "https://github.com/spitfire-php/contracts/issues",
+                "source": "https://github.com/spitfire-php/contracts/tree/0.1.1"
+            },
+            "time": "2023-05-11T14:08:21+00:00"
+        },
+        {
             "name": "spitfire/defer",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spitfire-php/defer.git",
-                "reference": "89c1f498eef6c2107e18d07463b5775e137d1a00"
+                "reference": "157dcc5477ec6b9d70d9d23af33654c18e395e14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spitfire-php/defer/zipball/89c1f498eef6c2107e18d07463b5775e137d1a00",
-                "reference": "89c1f498eef6c2107e18d07463b5775e137d1a00",
+                "url": "https://api.github.com/repos/spitfire-php/defer/zipball/157dcc5477ec6b9d70d9d23af33654c18e395e14",
+                "reference": "157dcc5477ec6b9d70d9d23af33654c18e395e14",
                 "shasum": ""
             },
             "require": {
@@ -1210,15 +1246,15 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "LGPL-3.0+"
             ],
             "description": "Deferal package for spitfire",
             "homepage": "https://spitfirephp.com",
             "support": {
                 "issues": "https://github.com/spitfire-php/defer/issues",
-                "source": "https://github.com/spitfire-php/defer/tree/0.1.0"
+                "source": "https://github.com/spitfire-php/defer/tree/master"
             },
-            "time": "2023-02-16T14:59:53+00:00"
+            "time": "2023-05-11T14:08:21+00:00"
         },
         {
             "name": "spitfire/dependency-provider",
@@ -1266,13 +1302,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/spitfire-php/kernel.git",
-                "reference": "04b1ce38d34a2538e474717d9378c6a6ead7e32e"
+                "reference": "5ef19484e0aa390fa9381b80cb92b07dc6d8dc9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spitfire-php/kernel/zipball/04b1ce38d34a2538e474717d9378c6a6ead7e32e",
-                "reference": "04b1ce38d34a2538e474717d9378c6a6ead7e32e",
+                "url": "https://api.github.com/repos/spitfire-php/kernel/zipball/5ef19484e0aa390fa9381b80cb92b07dc6d8dc9d",
+                "reference": "5ef19484e0aa390fa9381b80cb92b07dc6d8dc9d",
                 "shasum": ""
+            },
+            "require": {
+                "spitfire/contracts": "self.version"
             },
             "type": "library",
             "autoload": {
@@ -1295,7 +1334,7 @@
                 "issues": "https://github.com/spitfire-php/kernel/issues",
                 "source": "https://github.com/spitfire-php/kernel/tree/0.1.1"
             },
-            "time": "2023-05-11T14:08:21+00:00"
+            "time": "2023-05-11T14:47:52+00:00"
         },
         {
             "name": "symfony/console",
@@ -2791,16 +2830,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.7",
+            "version": "9.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c993f0d3b0489ffc42ee2fe0bd645af1538a63b2"
+                "reference": "17d621b3aff84d0c8b62539e269e87d8d5baa76e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c993f0d3b0489ffc42ee2fe0bd645af1538a63b2",
-                "reference": "c993f0d3b0489ffc42ee2fe0bd645af1538a63b2",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/17d621b3aff84d0c8b62539e269e87d8d5baa76e",
+                "reference": "17d621b3aff84d0c8b62539e269e87d8d5baa76e",
                 "shasum": ""
             },
             "require": {
@@ -2874,7 +2913,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.7"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.8"
             },
             "funding": [
                 {
@@ -2890,7 +2929,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-04-14T08:58:40+00:00"
+            "time": "2023-05-11T05:14:45+00:00"
         },
         {
             "name": "sebastian/cli-parser",

@@ -13,23 +13,37 @@
  * @copyright 2018 Magic3W - All rights reserved
  */
 
-/* Set error handling directives. AS we do not want Apache / PHP
- * to send the data to the user but to our terminal we will tell
- * it to output the errors. Thanks to this linux command:
- * # tail -f *logfile*
- * We can watch errors happening live. Grepping them can also help
- * filtering.
- */
-ini_set("log_errors" , 1);
-ini_set("error_log" , "logs/error_log.log");
-ini_set("display_errors" , 0);
+use Monolog\Handler\StreamHandler;
+use Psr\Log\LoggerInterface;
+use spitfire\contracts\core\kernel\ConsoleKernelInterface;
+use spitfire\contracts\core\kernel\KernelInterface;
+use spitfire\contracts\core\LocationsInterface;
+use spitfire\core\kernel\ConsoleKernel;
+use spitfire\core\kernel\WebKernel;
+use spitfire\core\Locations;
+use spitfire\provider\Container;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /* Include Spitfire core.
  */
-include './spitfire/bootstrap.php';
-include './vendor/autoload.php';
+define('BASEDIR', __DIR__);
 
-ini_set('memory_limit', '4G');/**/
+include __DIR__ . '/vendor/autoload.php';
 
-/* Call the selected controller with the selected method. */
-exit(spitfire()->fire());
+$provider = new Container();
+
+$provider->set(Locations::class, new Locations(__DIR__));
+$provider->set(LocationsInterface::class, new Locations(__DIR__));
+$provider->set(ConsoleKernel::class, $kernel = new ConsoleKernel);
+$provider->set(ConsoleKernelInterface::class, $kernel);
+$provider->set(KernelInterface::class, $kernel);
+$provider->set(WebKernel::class, $provider->get(WebKernel::class));
+$provider->set(LoggerInterface::class, new Monolog\Logger('log', [new StreamHandler(STDOUT)]));
+
+/**
+ * 
+ * @var ConsoleKernel
+ */
+$kernel = $provider->get(ConsoleKernel::class);
+exit($kernel->handle(new ArgvInput, new ConsoleOutput));

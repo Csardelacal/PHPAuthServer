@@ -17,7 +17,7 @@
 			"bin"
 		],
 		"psr-4": {
-			
+			"spitfire\\": "./spitfire/"
 		}
 	},
 	
