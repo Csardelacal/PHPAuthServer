@@ -20,7 +20,7 @@
 	
 	"require": {
 		"magic3w/url-reflection": "^0.3.1",
-		"lcobucci/jwt": "^4.2",
+		"lcobucci/jwt": "^5.0",
 		"guzzlehttp/guzzle": "^7.3",
 		"spitfire/exception": "^0.1.1"
 	}
