@@ -1,0 +1,30 @@
+{
+    "name": "magic3w/qa-test-runner",
+    "description": "Executes tests in a Selenium environment.",
+	"config": {
+        "platform": {
+            "php": "7.4"
+        }
+	},
+    "autoload": {
+		"files": [
+			"services.php"
+		],
+        "psr-4": {
+            "commishes\\qa\\runner\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "César de la Cal Bretschneider",
+            "email": "cesar@magic3w.com"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^9.6",
+        "phpunit/php-code-coverage": "^9.2",
+        "php-webdriver/webdriver": "^1.13",
+        "monolog/monolog": "^2.9",
+        "spitfire/dependency-provider": "^0.2.8"
+    }
+}

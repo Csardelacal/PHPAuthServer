@@ -11,6 +11,8 @@ services:
     build:
       context: .
       target:  ${WEB_TARGET:-debug}
+    ports:
+      - "80:80"
     volumes:
       - .:/var/www/phpauth
       - /var/www/phpauth/bin/usr
@@ -36,8 +38,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: www
       MYSQL_PASSWORD: test
-    ports:
-      - "3385:3306"
   mailhog:
     image: mailhog/mailhog:latest
     ports:

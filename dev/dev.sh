@@ -19,6 +19,7 @@ cp /etc/hosts /tmp/hosts
 echo "127.0.0.1 phpauth.local" >> /tmp/hosts
 mount --bind /tmp/hosts /etc/hosts
 
+export COMPOSE_PROJECT_NAME="phpas"
 docker compose up $@
 
 umount -f /etc/hosts

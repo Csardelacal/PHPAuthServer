@@ -10,3 +10,5 @@ logs/*.log
 /vendor/
 local.log
 browserstack.err
+/dev/integration/app/screenshots/
+/dev/integration/app/vendor/

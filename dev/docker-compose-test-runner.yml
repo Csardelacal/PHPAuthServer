@@ -1,0 +1,81 @@
+# To execute this docker-compose yml file use `docker-compose -f docker-compose-v3.yml up`
+# Add the `-d` flag at the end for detached execution
+# To stop the execution, hit Ctrl+C, and then `docker-compose -f docker-compose-v3.yml down`
+version: "3"
+services:
+
+  chrome:
+    image: selenium/node-chrome:4.8.0-20230202
+    shm_size: 2gb
+    profiles:
+      - tools
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  # edge:
+  #   image: selenium/node-edge:4.8.0-20230202
+  #   shm_size: 2gb
+  #   depends_on:
+  #     - selenium-hub
+  #   environment:
+  #     - SE_EVENT_BUS_HOST=selenium-hub
+  #     - SE_EVENT_BUS_PUBLISH_PORT=4442
+  #     - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  # firefox:
+  #   image: selenium/node-firefox:4.8.0-20230202
+  #   shm_size: 2gb
+  #   depends_on:
+  #     - selenium-hub
+  #   environment:
+  #     - SE_EVENT_BUS_HOST=selenium-hub
+  #     - SE_EVENT_BUS_PUBLISH_PORT=4442
+  #     - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  selenium-hub:
+    image: selenium/hub:4.8.0-20230202
+    profiles:
+      - tools
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+  runner:
+    build: 
+      context: ./docker/runner
+      target: staging
+    # Init prevents docker from creating the process we run with PID 1, which prevents it
+    # from being killed by ctrl-c.
+    init: true
+    working_dir: /src
+    volumes:
+      - "../:/var/www/html:ro"
+      - "./integration/app:/src"
+      - "./integration/coverage:/coverage-report"
+      # The container will generate coverage into this directory, allowing us to maintain
+      # an exact state of our coverage across time.
+      - "./integration/coverage:/coverage"
+    environment:
+      - XDEBUG_MODE=off
+    command: "php /src/main.php"
+    restart: on-failure
+    # The tools profile is not loaded by default and has to be explicitly requested, this
+    # prevents docker from booting the test runner during normal operation.
+    profiles:
+      - tools
+    depends_on:
+      - chrome
+      - selenium-hub
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      
+volumes:
+  coverage:
+  uploads:
+  annatmp:
+  cache:
+  annadata:
