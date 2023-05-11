@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d73e29d3b25552e7a4c06aa12af01f3c",
+    "content-hash": "0c92db1912979a8955daf250ba25b63c",
     "packages": [
         {
             "name": "andrewbreksa/rsmq",
@@ -1259,6 +1259,43 @@
                 "source": "https://github.com/Magic3W/provider/tree/0.2.10"
             },
             "time": "2023-05-08T09:02:02+00:00"
+        },
+        {
+            "name": "spitfire/kernel",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spitfire-php/kernel.git",
+                "reference": "04b1ce38d34a2538e474717d9378c6a6ead7e32e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spitfire-php/kernel/zipball/04b1ce38d34a2538e474717d9378c6a6ead7e32e",
+                "reference": "04b1ce38d34a2538e474717d9378c6a6ead7e32e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "spitfire\\core\\kernel\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "César de la Cal Bretschneider",
+                    "email": "cesar@magic3w.com"
+                }
+            ],
+            "description": "Spitfire kernels",
+            "support": {
+                "issues": "https://github.com/spitfire-php/kernel/issues",
+                "source": "https://github.com/spitfire-php/kernel/tree/0.1.1"
+            },
+            "time": "2023-05-11T14:08:21+00:00"
         },
         {
             "name": "symfony/console",
