@@ -79,6 +79,6 @@ const emits = defineEmits([
 	
 ]);
 
-const _btoa = function (str) { return window.btoa(str); };
+const _btoa = function (str: string) { return window.btoa(str); };
 
 </script>
