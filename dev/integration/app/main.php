@@ -51,7 +51,11 @@ do {
 }
 while ($conn === false);
 
-file_get_contents('http://coverage/init.php');
+$apps = ['web'];
+
+foreach ($apps as $app) {
+	file_get_contents(sprintf('http://%s/init.php', $app));
+}
 
 $cmd = sprintf(
 	'XDEBUG_MODE=off %1$s/vendor/bin/phpunit --testdox %1$s/tests/%2$s',
