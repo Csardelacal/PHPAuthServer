@@ -12,3 +12,4 @@ local.log
 browserstack.err
 /dev/integration/app/screenshots/
 /dev/integration/app/vendor/
+/dev/integration/coverage/
