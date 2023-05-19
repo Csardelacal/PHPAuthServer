@@ -1,5 +1,7 @@
 FROM php:8-apache AS deploy
 
+#TODO Focus this dockerfile on deploying the applicatio to docker hub
+
 # PHP_CPPFLAGS are used by the docker-php-ext-* scripts, which in turn are required
 # in order to build the intl extension.
 ENV PHP_CPPFLAGS="$PHP_CPPFLAGS"

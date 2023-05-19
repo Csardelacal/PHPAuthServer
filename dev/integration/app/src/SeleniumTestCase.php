@@ -11,6 +11,8 @@ use ReflectionClass;
 abstract class SeleniumTestCase extends TestCase
 {
 	
+	protected $coverage = 'web.coverage';
+	
 	protected $db;
 	protected RemoteWebDriver $driver;
 	
@@ -21,7 +23,7 @@ abstract class SeleniumTestCase extends TestCase
 	
 	public function setUp(): void
 	{
-		$pdo = new PDO('mysql:dbname=commishes;host=mysql', 'root', 'root');
+		$pdo = new PDO('mysql:dbname=phpas;host=mysql', 'root', 'root');
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$db = new Database($pdo);
 		#$db->loadFromXML('./fixtures/mvp.xml');
@@ -35,7 +37,7 @@ abstract class SeleniumTestCase extends TestCase
 		/**
 		 * Set the coverage collection to collect data for this test.
 		 */
-		file_get_contents('http://coverage/start.php?testname=' . $this->getName());
+		file_get_contents(sprintf('http://%s/start.php?testname=%s', $this->coverage, $this->getName()));
 		
 	}
 	

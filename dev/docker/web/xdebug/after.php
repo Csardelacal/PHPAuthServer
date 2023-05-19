@@ -7,7 +7,7 @@ $uniqid = uniqid("xdebug-", true);
 
 $folder = file_exists('/tmp/current.txt')? file_get_contents('/tmp/current.txt') : '/var/www/coverage/incoming/';
 
-if ($_SERVER['SERVER_NAME'] == 'coverage' || php_sapi_name() === 'cli') {
+if (php_sapi_name() === 'cli' || strpos($_SERVER['SERVER_NAME'], 'coverage') !== false) {
 	return;
 }
 

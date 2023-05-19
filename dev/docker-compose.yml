@@ -9,19 +9,23 @@ services:
       - '../:/code'
   web:
     build:
-      context: ..
+      context: docker/web
       target:  ${WEB_TARGET:-debug}
     ports:
       - "80:80"
     volumes:
-      - ..:/var/www/html
-      - /var/www/html/bin/usr
+      - ..:/var/www/phpauth
+      - /var/www/phpauth/bin/usr
     links:
       - memcached
       - mysql
       - mailhog
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      default:
+        aliases:
+          - "web.coverage"
   memcached:
     image: memcached:latest
   redis:
@@ -32,7 +36,7 @@ services:
   mysql:
     image: mariadb:latest
     environment:
-      MYSQL_DATABASE: testdb
+      MYSQL_DATABASE: phpas
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: www
       MYSQL_PASSWORD: test

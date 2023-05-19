@@ -53,7 +53,7 @@ services:
     init: true
     working_dir: /src
     volumes:
-      - "../:/var/www/html:ro"
+      - "../:/var/www/phpauth:ro"
       - "./integration/app:/src"
       - "./integration/coverage:/coverage-report"
       # The container will generate coverage into this directory, allowing us to maintain

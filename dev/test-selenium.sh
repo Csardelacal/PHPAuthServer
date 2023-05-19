@@ -14,7 +14,7 @@ DC="${DC} -f docker-compose.yml -f docker-compose-test-runner.yml"
 # instance. Deletes all the databases and the config from the containers
 ${DC} down
 
-${DC} up -d --build
+WEB_TARGET=integration ${DC} up -d --build
 
 # Execute the test runner to start testing the application
 COMPOSE_PROFILES=tools ${DC} run runner php main.php $1

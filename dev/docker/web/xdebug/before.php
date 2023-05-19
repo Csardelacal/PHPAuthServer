@@ -1,7 +1,7 @@
 <?php
 
 
-if ($_SERVER['SERVER_NAME'] == 'coverage' || php_sapi_name() === 'cli') {
+if (php_sapi_name() === 'cli' || strpos($_SERVER['SERVER_NAME'], 'coverage') !== false) {
 	return;
 }
 

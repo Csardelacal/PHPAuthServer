@@ -51,7 +51,7 @@ do {
 }
 while ($conn === false);
 
-$apps = ['web'];
+$apps = ['web.coverage'];
 
 foreach ($apps as $app) {
 	file_get_contents(sprintf('http://%s/init.php', $app));
@@ -71,9 +71,6 @@ passthru($cmd);
  */
 $filter = new Filter;
 $filter->includeDirectory('/var/www/');
-$filter->excludeDirectory('/var/www/html/inc/vendor');
-$filter->excludeDirectory('/var/www/anna/lib/vendor');
-$filter->excludeDirectory('/var/www/anna/vendor');
 
 defined('XDEBUG_FILTER_CODE_COVERAGE') || define('XDEBUG_FILTER_CODE_COVERAGE', 1);
 defined('XDEBUG_PATH_INCLUDE') || define('XDEBUG_PATH_INCLUDE', 1);
@@ -90,42 +87,45 @@ $coverage = new CodeCoverage(
 
 putenv('XDEBUG_MODE=');
 
-/**
- * Loop over the resulting file system and extract the coverage data. This needs
- * to get mangled together into a single coverage file per test (otherwise PHPCoverage
- * will generate a bunch of entries for each test when generating coverage)
- */
-$resp = file_get_contents('http://coverage/list.php');
-$list = json_decode($resp);
-
-$logger->debug($resp);
-
-foreach($list as /** @var string */$test)
-{
+foreach ($apps as $app) {
 	/**
-	 * Output the name of the directory we're processing to debugging.
+	 * Loop over the resulting file system and extract the coverage data. This needs
+	 * to get mangled together into a single coverage file per test (otherwise PHPCoverage
+	 * will generate a bunch of entries for each test when generating coverage)
 	 */
-	$logger->debug(
-		sprintf('Processing coverage for test %s', $test)
-	);
-	
-	$ctx = stream_context_create([
-		'http' => [
-			'timeout' => 600
-		]
-	]);
-	
-	$resp = file_get_contents('http://coverage/get.php?testname=' . $test, true, $ctx);
-	$lcov = json_decode($resp, true);
-	
-	/**
-	 * @todo Upon failure of the request, this step should be skipped so the
-	 * other coverage data is not lost.
-	 */
-	$coverage->append(
-		RawCodeCoverageData::fromXdebugWithMixedCoverage($lcov),
-		$test
-	);
+	$resp = file_get_contents(sprintf('http://%s/list.php', $app));
+	$list = json_decode($resp);
+
+	$logger->debug($resp);
+
+	foreach($list as /** @var string */$test)
+	{
+		/**
+		 * Output the name of the directory we're processing to debugging.
+		 */
+		$logger->debug(
+			sprintf('Processing coverage for test %s', $test)
+		);
+		
+		$ctx = stream_context_create([
+			'http' => [
+				'timeout' => 600
+			]
+		]);
+		
+		$resp = file_get_contents(sprintf('http://%s/get.php?testname=%s', $app, $test), true, $ctx);
+		var_dump(substr($resp, 0, 2000));
+		$lcov = json_decode($resp, true);
+		
+		/**
+		 * @todo Upon failure of the request, this step should be skipped so the
+		 * other coverage data is not lost.
+		 */
+		$coverage->append(
+			RawCodeCoverageData::fromXdebugWithMixedCoverage($lcov),
+			$test
+		);
+	}
 }
 
 $logger->info('Generating coverage report...');
