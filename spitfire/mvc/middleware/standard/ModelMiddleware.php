@@ -79,6 +79,7 @@ class ModelMiddleware implements MiddlewareInterface
 			
 			if (!$param->getType()) { continue; }
 			if (!$param->getType()->getName()) { continue; }
+			if ($param->getType()->isBuiltin()) { continue; }
 			if (!(new ReflectionClass($param->getType()->getName()))->isSubclassOf(Model::class)) { continue; }
 			
 			$table = $this->db->table(substr($param->getType()->getName(), 0, 0 - strlen('model')));
