@@ -16,6 +16,10 @@ ${DC} down
 
 WEB_TARGET=integration ${DC} up -d --build
 
+# Todo: This needs to be replaced with proper migrations
+# Start by collecting stats so the system creates all the tables it needs
+${DC} run web php console admin stats
+
 # Execute the test runner to start testing the application
 COMPOSE_PROFILES=tools ${DC} run runner php main.php $1
 

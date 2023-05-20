@@ -1,0 +1,9 @@
+<fixture>
+	<schema name="phpas">
+		<!-- @todo Implement drop-->
+		<table name="user"><drop /></table>
+		<table name="username"><drop /></table>
+		<table name="group"><drop /></table>
+		<table name="user-group"><drop /></table>
+	</schema>
+</fixture>

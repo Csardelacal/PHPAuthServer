@@ -35,6 +35,9 @@ class SchemaProcessor
 				case 'record':
 					$this->insert($tablename, ((array)$record->attributes())['@attributes']);
 					break;
+				case 'delete':
+					$this->delete($tablename, ((array)$record->attributes())['@attributes']);
+					break;
 			}
 		}
 	}
@@ -42,6 +45,27 @@ class SchemaProcessor
 	private function truncate(string $tablename)
 	{
 		$this->exec(sprintf('TRUNCATE %s', $this->name . '.' . $tablename));			
+	}
+	
+	private function delete(string $tablename, array $values)
+	{
+		$this->exec(sprintf(
+			'DELETE FROM `%s`.`%s` WHERE %s',
+			$this->name,
+			$tablename,
+			$this->makeRestrictions($values)
+		));
+	}
+	
+	private function makeRestrictions(array $values)
+	{	
+		$_ret = [];
+		
+		foreach ($values as $key => $value) {
+			$_ret[] = sprintf('`%s` = %s', $key, $this->connection->quote($value));
+		}
+		
+		return implode(' AND ', $_ret);
 	}
 	
 	private function insert(string $tablename, array $values) : void
@@ -52,8 +76,9 @@ class SchemaProcessor
 		);
 		
 		$this->exec(sprintf(
-			'INSERT INTO %s (%s) VALUES (%s)',
-			$this->name . '.' . $tablename,
+			'INSERT INTO `%s`.`%s` (%s) VALUES (%s)',
+			$this->name,
+			$tablename,
 			implode(', ', array_keys($values)),
 			implode(',', $_values)
 		));
@@ -65,7 +90,7 @@ class SchemaProcessor
 			$this->connection->exec($sql);
 		}
 		catch (\Exception $e) {
-			trigger_error(sprintf('Could not process:  %s', $sql));
+			trigger_error(sprintf('Could not process:  %s - %s', $sql, $e->getMessage()));
 			throw $e;
 		}
 	}

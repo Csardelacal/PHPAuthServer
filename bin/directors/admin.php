@@ -50,4 +50,14 @@ class AdminDirector extends Director
 		$membership->role  = 'owner';
 		$membership->store();
 	}
+	
+	public function stats()
+	{
+		var_dump([
+			db()->table('username')->getAll()->count(),
+			db()->table('group')->getAll()->count(),
+			db()->table('user')->getAll()->count(),
+			db()->table('user\group')->getAll()->count(),
+		]);
+	}
 }

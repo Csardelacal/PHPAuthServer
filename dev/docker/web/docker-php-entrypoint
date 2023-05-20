@@ -7,9 +7,12 @@ echo "Root ${rootdir}"
 
 # Make sure the storage directories exist and are writable by the webserver
 mkdir "${rootdir}/bin/usr" || true
+mkdir "${rootdir}/bin/usr/sessions" || true
 mkdir "${rootdir}/bin/usr/uploads" || true
+
 chown www-data: "${rootdir}/bin/usr/"
 chown www-data: "${rootdir}/bin/usr/uploads"
+chown www-data: "${rootdir}/bin/usr/sessions"
 
 if [ -z ${DEBUG+x} ]; then
 	export DEBUG=false

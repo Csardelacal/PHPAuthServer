@@ -1,0 +1,17 @@
+<fixture>
+	<schema name="phpas">
+		<table name="user">
+			<!-- Password is "testtest"-->
+			<record _id="1" email="admin@test.com" password="$2y$10$NOuJQLHjA3dDGQr.qRyP7.O.yq8LPAcm.tu0VX86vESZLicL0rH0." verified="1" />
+		</table>
+		<table name="username">
+			<record _id="1" user__id="1" name="admin" />
+		</table>
+		<table name="group">
+			<record _id="1" creator__id="1" name="admins" description="Admin group" />
+		</table>
+		<table name="user-group">
+			<record _id="1" user__id="1" group__id="1" role="owner" />
+		</table>
+	</schema>
+</fixture>

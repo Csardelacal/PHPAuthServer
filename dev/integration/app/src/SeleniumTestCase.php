@@ -13,7 +13,7 @@ abstract class SeleniumTestCase extends TestCase
 	
 	protected $coverage = 'web.coverage';
 	
-	protected $db;
+	protected Database $db;
 	protected RemoteWebDriver $driver;
 	
 	public function __construct()

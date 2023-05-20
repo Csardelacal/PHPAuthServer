@@ -15,14 +15,14 @@
 	<input type="text"     name="username" placeholder="Username" autocomplete="off" spellcheck="false">
 	<input type="password" name="password" placeholder="Password">
 	<?php if (isset($message) && $message): ?> 
-	<div class="message error"><?= $message ?></div>
+	<div class="message error" id="loginfailure"><?= $message ?></div>
 	<?php else: ?>
 	<div class="message info">
 		Authenticating you requires our application to provide your browser with a 
 		cookie and to record your IP. This is required to secure your account.
 	</div>
 	<?php endif; ?> 
-	<input type="submit" value="Log in">
+	<input type="submit" id="login" value="Log in">
 </form>
 
 <div class="spacer" style="height: 10px;"></div>
