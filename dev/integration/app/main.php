@@ -114,7 +114,6 @@ foreach ($apps as $app) {
 		]);
 		
 		$resp = file_get_contents(sprintf('http://%s/get.php?testname=%s', $app, $test), true, $ctx);
-		var_dump(substr($resp, 0, 2000));
 		$lcov = json_decode($resp, true);
 		
 		/**
