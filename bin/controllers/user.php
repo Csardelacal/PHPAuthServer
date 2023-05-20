@@ -233,12 +233,14 @@ class UserController extends BaseController
 					  ->where('_id', $username_ids->toArray()?: null)
 					->endGroup();
 			
+			/**
+			 * @var UserModel|null
+			 */
 			$user = $query->first();
 			
 			#Check whether the user was banned
-			$banned = $user->isSuspended();
-			
-			if ($banned) {
+			if ($user && $user->isSuspended()) {
+				$banned = $user->isSuspended();
 				$ex = new LoginException('Your account was suspended, login is disabled.', 401);
 				$ex->setUserID($user->_id);
 				$ex->setReason($banned->reason);
