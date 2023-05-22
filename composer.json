@@ -38,7 +38,7 @@
 		"monolog/monolog": "^3.2",
 		"spitfire/collection": "^0.2.0",
 		"guzzlehttp/guzzle": "^7.5",
-		"spitfire/kernel": "^0.1.1"
+		"spitfire/kernel": "dev-master"
 	},
 	
 	"require-dev": {

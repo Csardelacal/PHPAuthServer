@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c92db1912979a8955daf250ba25b63c",
+    "content-hash": "c980b746cf1233dbe53ffc8060069f5f",
     "packages": [
         {
             "name": "andrewbreksa/rsmq",
@@ -986,6 +986,62 @@
             "time": "2023-04-04T09:50:52+00:00"
         },
         {
+            "name": "psr/http-server-handler",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-handler.git",
+                "reference": "84c4fb66179be4caaf8e97bd239203245302e7d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/84c4fb66179be4caaf8e97bd239203245302e7d4",
+                "reference": "84c4fb66179be4caaf8e97bd239203245302e7d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0 || ^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side request handler",
+            "keywords": [
+                "handler",
+                "http",
+                "http-interop",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response",
+                "server"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-server-handler/tree/1.0.2"
+            },
+            "time": "2023-04-10T20:06:20+00:00"
+        },
+        {
             "name": "psr/log",
             "version": "3.0.0",
             "source": {
@@ -1183,7 +1239,7 @@
         },
         {
             "name": "spitfire/contracts",
-            "version": "0.1.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spitfire-php/contracts.git",
@@ -1199,6 +1255,7 @@
                 "php": "^7||^8",
                 "psr/container": "^1.1.1|^2.0.1"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -1252,7 +1309,7 @@
             "homepage": "https://spitfirephp.com",
             "support": {
                 "issues": "https://github.com/spitfire-php/defer/issues",
-                "source": "https://github.com/spitfire-php/defer/tree/master"
+                "source": "https://github.com/spitfire-php/defer/tree/0.1.1"
             },
             "time": "2023-05-11T14:08:21+00:00"
         },
@@ -1298,21 +1355,24 @@
         },
         {
             "name": "spitfire/kernel",
-            "version": "0.1.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spitfire-php/kernel.git",
-                "reference": "5ef19484e0aa390fa9381b80cb92b07dc6d8dc9d"
+                "reference": "5a9e9508b475086be2b341fb5e525db53b531a74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spitfire-php/kernel/zipball/5ef19484e0aa390fa9381b80cb92b07dc6d8dc9d",
-                "reference": "5ef19484e0aa390fa9381b80cb92b07dc6d8dc9d",
+                "url": "https://api.github.com/repos/spitfire-php/kernel/zipball/5a9e9508b475086be2b341fb5e525db53b531a74",
+                "reference": "5a9e9508b475086be2b341fb5e525db53b531a74",
                 "shasum": ""
             },
             "require": {
-                "spitfire/contracts": "self.version"
+                "psr/http-server-handler": "^1.0",
+                "spitfire/contracts": "self.version",
+                "symfony/console": "^6"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -1332,9 +1392,9 @@
             "description": "Spitfire kernels",
             "support": {
                 "issues": "https://github.com/spitfire-php/kernel/issues",
-                "source": "https://github.com/spitfire-php/kernel/tree/0.1.1"
+                "source": "https://github.com/spitfire-php/kernel/tree/master"
             },
-            "time": "2023-05-11T14:47:52+00:00"
+            "time": "2023-05-11T18:38:17+00:00"
         },
         {
             "name": "symfony/console",
@@ -4066,6 +4126,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "spitfire/kernel": 20,
         "browserstack/browserstack-local": 20
     },
     "prefer-stable": true,
