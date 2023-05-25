@@ -75,11 +75,16 @@ class SchemaProcessor
 			$values
 		);
 		
+		$keys = array_map(
+			fn(string $e) : string => sprintf('`%s`', $e),
+			array_keys($values)
+		);
+		
 		$this->exec(sprintf(
 			'INSERT INTO `%s`.`%s` (%s) VALUES (%s)',
 			$this->name,
 			$tablename,
-			implode(', ', array_keys($values)),
+			implode(', ', $keys),
 			implode(',', $_values)
 		));
 	}
