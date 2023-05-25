@@ -4,5 +4,6 @@
 		<table name="username"><delete _id="1" /></table>
 		<table name="group"><delete _id="1" /></table>
 		<table name="user-group"><delete _id="1" /></table>
+		<table name="syssetting"><delete key="admin.group" /></table>
 	</schema>
 </fixture>
