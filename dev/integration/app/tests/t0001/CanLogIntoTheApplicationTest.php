@@ -40,4 +40,26 @@ class CanLogIntoTheApplicationTest extends SeleniumTestCase
 			$this->driver()->findElement(WebDriverBy::partialLinkText('Edit profile'))
 		);
 	}
+	
+	public function testSucessfulLoginWithEmailAddress()
+	{
+		$this->driver()->get('http://web/');
+		$this->screenshot('01-login');
+		
+		$this->assertInstanceOf(
+			RemoteWebElement::class,
+			$this->driver()->findElement(WebDriverBy::name('username'))
+		);
+		
+		$this->driver()->findElement(WebDriverBy::name('username'))->sendKeys('admin@test.com');
+		$this->driver()->findElement(WebDriverBy::name('password'))->sendKeys('testtest');
+		$this->driver()->findElement(WebDriverBy::id('login'))->click();
+		
+		$this->screenshot('02-profile');
+		
+		$this->assertInstanceOf(
+			RemoteWebElement::class,
+			$this->driver()->findElement(WebDriverBy::partialLinkText('Edit profile'))
+		);
+	}
 }
