@@ -1,0 +1,14 @@
+<fixture>
+	<schema name="phpas">
+		<table name="user">
+			<!-- Password is "testtest"-->
+			<record _id="3" email="banned@test.com" password="$2y$10$NOuJQLHjA3dDGQr.qRyP7.O.yq8LPAcm.tu0VX86vESZLicL0rH0." verified="1" />
+		</table>
+		<table name="username">
+			<record _id="3" user__id="3" name="banned" />
+		</table>
+		<table name="user-suspension">
+			<record _id="1" user__id="3" reason="Test suspension" expires="2000647043" preventLogin="1" />
+		</table>
+	</schema>
+</fixture>

@@ -1,0 +1,7 @@
+<fixture>
+	<schema name="phpas">
+		<table name="user"><delete _id="3" /></table>
+		<table name="username"><delete _id="3" /></table>
+		<table name="user-suspension"><delete _id="3" /></table>
+	</schema>
+</fixture>
