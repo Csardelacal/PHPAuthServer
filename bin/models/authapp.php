@@ -2,6 +2,7 @@
 
 use auth\Context;
 use connection\AuthModel;
+use spitfire\collection\Collection;
 use spitfire\Model;
 use spitfire\storage\database\Schema;
 
@@ -100,7 +101,7 @@ class AuthAppModel extends Model
 				return $c;
 			}
 			return $e;
-		}, $result->rewind());
+		}, $result->first());
 		
 		return $_r? $_r->state : AuthModel::STATE_PENDING;
 	}
