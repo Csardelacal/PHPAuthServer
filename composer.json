@@ -13,10 +13,15 @@
 	],
 	
 	"autoload": {
+		"files": [
+			"./spitfire/core/functions.php"
+		],
 		"classmap": [
-			"bin"
+			"bin",
+			"spitfire"
 		],
 		"psr-4": {
+			"magic3w\\phpas\\": "./app/",
 			"spitfire\\": "./spitfire/"
 		}
 	},

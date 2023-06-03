@@ -69,7 +69,7 @@ class NameLocator implements TableLocatorInterface
 	public function locate(string $tablename) {
 		try {
 			#Create a reflection of the Model
-			$className = $tablename . 'Model';
+			$className = ucfirst($tablename) . 'Model';
 			$reflection = new ReflectionClass($className);
 			
 			#Run some basic checks
@@ -85,7 +85,7 @@ class NameLocator implements TableLocatorInterface
 			return new Table($this->db, $schema);
 		} 
 		catch (ReflectionException$ex) {
-			throw new PrivateException('No table ' . $tablename);
+			throw new PrivateException('No table ' . $tablename, 0, $ex);
 		}
 	}
 
