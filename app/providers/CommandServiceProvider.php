@@ -1,6 +1,7 @@
 <?php namespace magic3w\phpas\providers;
 
 use magic3w\phpas\commands\user\DeleteCommand as UserDeleteCommand;
+use magic3w\phpas\commands\storage\PruneCommand as StoragePruneCommand;
 use Psr\Container\ContainerInterface;
 use spitfire\contracts\core\kernel\ConsoleKernelInterface;
 use spitfire\contracts\services\ProviderInterface;
@@ -21,6 +22,7 @@ class CommandServiceProvider implements ProviderInterface
 		 */
 		$kernel = $container->get(ConsoleKernelInterface::class);
 		$kernel->register(new UserDeleteCommand());
+		$kernel->register(new StoragePruneCommand());
 		
 	}
 }

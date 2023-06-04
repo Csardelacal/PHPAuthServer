@@ -72,8 +72,8 @@ class TokenModel extends Model
 		$schema->token   = new StringField(self::TOKEN_LENGTH);
 		
 		$schema->owner   = new Reference('user');
-		$schema->client  = new Reference('authapp');
-		$schema->audience = new Reference('authapp');
+		$schema->client  = new Reference(AuthAppModel::class);
+		$schema->audience = new Reference(AuthAppModel::class);
 		
 		$schema->scopes  = new StringField(255);
 		

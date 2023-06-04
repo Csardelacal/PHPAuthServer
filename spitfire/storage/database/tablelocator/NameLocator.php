@@ -7,6 +7,7 @@ use spitfire\Model;
 use spitfire\storage\database\DB;
 use spitfire\storage\database\Schema;
 use spitfire\storage\database\Table;
+use Strings;
 
 /* 
  * The MIT License
@@ -67,9 +68,17 @@ class NameLocator implements TableLocatorInterface
 	 * @throws PrivateException
 	 */
 	public function locate(string $tablename) {
+		
+		if (Strings::endsWith($tablename, 'Model')) {
+			$className = $tablename;
+			$tablename = strtolower(substr($className, 0, strlen($tablename) - strlen('Model')));
+		}
+		else {
+			$className = ucfirst($tablename) . 'Model';
+		}
+		
 		try {
 			#Create a reflection of the Model
-			$className = ucfirst($tablename) . 'Model';
 			$reflection = new ReflectionClass($className);
 			
 			#Run some basic checks
