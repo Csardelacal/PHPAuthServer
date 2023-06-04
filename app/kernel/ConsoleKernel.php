@@ -1,7 +1,7 @@
-<?php namespace magic3w\phpas\kernel;
+<?php namespace magic3w\phpauth\kernel;
 
-use magic3w\phpas\kernel\_init\ProvidersInit;
-use magic3w\phpas\kernel\_init\ProvidersRegister;
+use magic3w\phpauth\kernel\_init\ProvidersInit;
+use magic3w\phpauth\kernel\_init\ProvidersRegister;
 use spitfire\core\kernel\ConsoleKernel as CoreConsoleKernel;
 
 class ConsoleKernel extends CoreConsoleKernel

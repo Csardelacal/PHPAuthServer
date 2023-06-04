@@ -21,7 +21,7 @@
 			"spitfire"
 		],
 		"psr-4": {
-			"magic3w\\phpas\\": "./app/",
+			"magic3w\\phpauth\\": "./app/",
 			"spitfire\\": "./spitfire/"
 		}
 	},

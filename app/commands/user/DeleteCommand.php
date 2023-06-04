@@ -1,4 +1,4 @@
-<?php namespace magic3w\phpas\commands\user;
+<?php namespace magic3w\phpauth\commands\user;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

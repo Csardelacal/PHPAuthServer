@@ -1,6 +1,6 @@
-<?php namespace magic3w\phpas\kernel\_init;
+<?php namespace magic3w\phpauth\kernel\_init;
 
-use magic3w\phpas\providers\CommandServiceProvider;
+use magic3w\phpauth\providers\CommandServiceProvider;
 use Psr\Container\ContainerInterface;
 use spitfire\contracts\core\kernel\InitScriptInterface;
 use spitfire\core\service\Provider;

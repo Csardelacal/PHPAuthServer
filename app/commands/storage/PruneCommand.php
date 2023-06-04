@@ -1,4 +1,4 @@
-<?php namespace magic3w\phpas\commands\storage;
+<?php namespace magic3w\phpauth\commands\storage;
 
 use access\CodeModel;
 use access\TokenModel as AccessTokenModel;

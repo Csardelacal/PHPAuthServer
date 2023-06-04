@@ -1,7 +1,7 @@
-<?php namespace magic3w\phpas\providers;
+<?php namespace magic3w\phpauth\providers;
 
-use magic3w\phpas\commands\user\DeleteCommand as UserDeleteCommand;
-use magic3w\phpas\commands\storage\PruneCommand as StoragePruneCommand;
+use magic3w\phpauth\commands\user\DeleteCommand as UserDeleteCommand;
+use magic3w\phpauth\commands\storage\PruneCommand as StoragePruneCommand;
 use Psr\Container\ContainerInterface;
 use spitfire\contracts\core\kernel\ConsoleKernelInterface;
 use spitfire\contracts\services\ProviderInterface;

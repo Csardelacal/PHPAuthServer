@@ -13,7 +13,7 @@
  * @copyright 2018 Magic3W - All rights reserved
  */
 
-use magic3w\phpas\kernel\ConsoleKernel as AppConsoleKernel;
+use magic3w\phpauth\kernel\ConsoleKernel as AppConsoleKernel;
 use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 use spitfire\contracts\core\kernel\ConsoleKernelInterface;

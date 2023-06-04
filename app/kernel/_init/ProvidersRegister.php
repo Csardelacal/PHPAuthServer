@@ -1,4 +1,4 @@
-<?php namespace magic3w\phpas\kernel\_init;
+<?php namespace magic3w\phpauth\kernel\_init;
 
 use Psr\Container\ContainerInterface;
 use spitfire\contracts\ConfigurationInterface;
