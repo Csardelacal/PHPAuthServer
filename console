@@ -33,6 +33,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 define('BASEDIR', __DIR__);
 
 include __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/bin/settings/environments.php';
 
 $provider = new Container();
 

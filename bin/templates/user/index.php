@@ -47,7 +47,7 @@
 				<td style="width: 40%;">
 					<?php
 						$banned = $user?
-							db()->table('user\suspension')->get('user', $user)
+							db()->table(user\SuspensionModel::class)->get('user', $user)
 								->addRestriction('expires', time(), '>')->fetch():
 							false;
 					if ($banned) {

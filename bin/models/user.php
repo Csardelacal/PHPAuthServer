@@ -139,7 +139,7 @@ class UserModel extends spitfire\Model
 	
 	public function isSuspended() :? SuspensionModel
 	{
-		$suspensions = db()->table('user\suspension')
+		$suspensions = db()->table(user\SuspensionModel::class)
 			->get('user', $this)
 			->where('expires', '>', time())
 			->first();

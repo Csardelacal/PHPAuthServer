@@ -93,7 +93,7 @@
 				List the user's authorized apps. This way they can see what applications they
 				can log into with their account without confirmation.
 			-->
-			<?php $authorized = db()->table('user\authorizedapp')->get('user', $user)->fetchAll(); ?>
+			<?php $authorized = db()->table(user\AuthorizedappModel::class)->get('user', $user)->fetchAll(); ?>
 
 			<div class="heading topbar" data-sticky>
 				Authorized apps

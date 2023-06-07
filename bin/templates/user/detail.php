@@ -203,7 +203,7 @@
 	</div>
 </div>
 
-<?php $suspensions = db()->table('user\suspension')->get('user', $user)->where('expires', '>', time() - 360 * 2 * 86400)->setOrder('expires', 'DESC')->fetchAll(); ?>
+<?php $suspensions = db()->table(user\SuspensionModel::class)->get('user', $user)->where('expires', '>', time() - 360 * 2 * 86400)->setOrder('expires', 'DESC')->fetchAll(); ?>
 
 <?php foreach ($suspensions as $suspension): ?>
 	<div class="spacer" style="height: 20px"></div>

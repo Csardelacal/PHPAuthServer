@@ -42,7 +42,6 @@ if (!defined('BASEDIR')         ) { define('BASEDIR', rtrim(dirname(dirname(__FI
 
 #Start loading the core files.
 require_once SPITFIRE_BASEDIR . '/Strings.php';
-require_once SPITFIRE_BASEDIR . '/core/functions.php';
 require_once SPITFIRE_BASEDIR . '/ClassInfo.php';  //TODO: Remove - Deprecated
 require_once SPITFIRE_BASEDIR . '/autoload/Autoload.php';
 require_once SPITFIRE_BASEDIR . '/autoload/ClassLocator.php';

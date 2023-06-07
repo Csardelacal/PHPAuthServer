@@ -45,7 +45,7 @@ class SuspensionController extends BaseController
 
 		$blockLogin = _def($_POST['blockLogin'], 'n') === 'y';
 
-		$ban = db()->table('user\suspension')->newRecord();
+		$ban = db()->table(user\SuspensionModel::class)->newRecord();
 		$ban->user   = $user;
 		$ban->expires = time() + $duration;
 		$ban->preventLogin = $blockLogin;

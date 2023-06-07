@@ -58,7 +58,7 @@ class AdminDirector extends Director
 			db()->table('group')->getAll()->count(),
 			db()->table('user')->getAll()->count(),
 			db()->table('user\group')->getAll()->count(),
-			db()->table('user\suspension')->getAll()->count(),
+			db()->table(user\SuspensionModel::class)->getAll()->count(),
 			db()->table('syssetting')->getAll()->count(),
 		]);
 	}

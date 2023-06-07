@@ -19,7 +19,7 @@
  * We can watch errors happening live. Grepping them can also help
  * filtering.
  */
-ini_set("log_errors", "0");
+ini_set("log_errors", "1");
 ini_set("error_log", "logs/error_log.log");
 ini_set("display_errors", "0");
 

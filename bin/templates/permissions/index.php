@@ -17,7 +17,7 @@
 		<div class="spacer" style="height: 50px"></div>
 
 		<?php foreach ($apps->records() as $app): ?>
-		<?php $granted = db()->table('user\authorizedapp')->get('app', $app)->where('user', $authUser)->where('revoked', null)->first(); ?> 
+		<?php $granted = db()->table(user\AuthorizedappModel::class)->get('app', $app)->where('user', $authUser)->where('revoked', null)->first(); ?> 
 		<div class="row l9 m4 s3 has-dials">
 			<div class="span l1 m1 s1">
 				<div style="text-align: center;">
