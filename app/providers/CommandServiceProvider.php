@@ -4,6 +4,7 @@ use magic3w\phpauth\commands\email\DispatchCommand as EmailDispatchCommand;
 use magic3w\phpauth\commands\email\SummaryCommand as EmailSummaryCommand;
 use magic3w\phpauth\commands\user\DeleteCommand as UserDeleteCommand;
 use magic3w\phpauth\commands\storage\PruneCommand as StoragePruneCommand;
+use magic3w\phpauth\commands\storage\StatsCommand as StorageStatsCommand;
 use magic3w\phpauth\commands\WorkerCommand;
 use Psr\Container\ContainerInterface;
 use spitfire\contracts\core\kernel\ConsoleKernelInterface;
@@ -29,6 +30,7 @@ class CommandServiceProvider implements ProviderInterface
 		$kernel->register($container->get(WorkerCommand::class));
 		$kernel->register($container->get(EmailDispatchCommand::class));
 		$kernel->register($container->get(EmailSummaryCommand::class));
+		$kernel->register($container->get(StorageStatsCommand::class));
 		
 	}
 }
