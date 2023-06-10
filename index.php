@@ -29,7 +29,7 @@ include __DIR__ . '/bin/constants.php';
 include 'spitfire/bootstrap.php';
 include './vendor/autoload.php';
 
-ini_set('memory_limit', '128M');/**/
+ini_set('memory_limit', '4G');/**/
 
 /* Call the selected controller with the selected method. */
 spitfire()->fire();
