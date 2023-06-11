@@ -20,7 +20,7 @@ echo "127.0.0.1 phpauth.local" >> /tmp/hosts
 mount --bind /tmp/hosts /etc/hosts
 
 export COMPOSE_PROJECT_NAME="phpas"
-WEB_TARGET=debug docker compose up $@ --force-recreate --build
+WEB_TARGET=debug docker compose up $@ --force-recreate
 
 umount -f /etc/hosts
 rm /tmp/hosts
