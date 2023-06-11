@@ -1,5 +1,13 @@
 <?php
 
+use spitfire\collection\Collection;
+
+/**
+ * @property string $groupId
+ * @property string $name
+ * @property string $description
+ * @property Collection<\user\GroupModel> $members
+ */
 class GroupModel extends spitfire\Model
 {
 	

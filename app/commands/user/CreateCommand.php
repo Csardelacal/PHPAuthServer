@@ -53,11 +53,11 @@ class CreateCommand extends Command
 		 * @todo Validate password
 		 * @todo Validate username
 		 */
-		if (db()->table(UserModel::class)->get('email', $input->getArgument(self::ARG_EMAIL)->first())) {
+		if (db()->table(UserModel::class)->get('email', $input->getArgument(self::ARG_EMAIL))->first()) {
 			throw new InvalidArgumentException('Email is already in use');
 		}
 		
-		if (db()->table(UsernameModel::class)->get('username', $input->getArgument(self::ARG_USERNAME)->first())) {
+		if (db()->table(UsernameModel::class)->get('name', $input->getArgument(self::ARG_USERNAME))->first()) {
 			throw new InvalidArgumentException('Username is already in use');
 		}
 		
