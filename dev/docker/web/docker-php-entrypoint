@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+#TODO: The App Root should be defaulted inside of public. But we need to move the storage
+#and stuff first.
 rootdir="${APP_ROOT:-$(pwd)}"
 
 echo "Root ${rootdir}"
