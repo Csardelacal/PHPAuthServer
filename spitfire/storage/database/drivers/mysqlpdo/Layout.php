@@ -110,7 +110,7 @@ class Layout implements LayoutInterface
 			$indexes->each(function($e) { return $e->definition(); })->toArray()
 		));
 		
-		$stt = sprintf('CREATE TABLE %s (%s) ENGINE=InnoDB CHARACTER SET=utf8',
+		$stt = sprintf('CREATE TABLE %s (%s) ENGINE=InnoDB CHARACTER SET=utf8mb4',
 			$table,
 			implode(', ', $clean)
 			);

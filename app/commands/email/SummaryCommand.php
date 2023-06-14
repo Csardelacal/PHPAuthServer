@@ -1,10 +1,21 @@
-<?php
+<?php namespace magic3w\phpauth\commands\email;
 
-use spitfire\mvc\Director;
+use EmailModel;
 use spitfire\io\template\Template;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class EmailSummaryDirector extends Director
+#[AsCommand(name: 'email:summary', description: 'Send email with signups')]
+class SummaryCommand extends Command
 {
+	
+	protected function configure()
+	{
+		$this->addArgument('userid');
+	}
+	
 	/**
 	 * Sends an email to the given user-ID with the
 	 * summary of the email providers wich were used
@@ -13,8 +24,10 @@ class EmailSummaryDirector extends Director
 	 * @param  $userID  The userID to send the email to
 	 * @return email\Templates;
 	 */
-	public function send($userID = 1)
+	public function execute(InputInterface $input, OutputInterface $output) : int
 	{
+		$userID = (int)$input->getArgument('userid');
+		
 		$users  = db()->table('user')->get('created', time() - 86400, '>=')->all();
 		$emails = [];
 
@@ -36,5 +49,7 @@ class EmailSummaryDirector extends Director
 			'Your daily email-provider summary!',
 			$view->render($data)
 		);
+		
+		return Command::SUCCESS;
 	}
 }

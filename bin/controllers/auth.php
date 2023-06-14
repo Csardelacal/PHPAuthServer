@@ -111,7 +111,7 @@ class AuthController extends BaseController
 		}
 		
 		#If the user already automatically grants the application in, then we continue
-		if (db()->table('user\authorizedapp')->get('user', $this->user)->addRestriction('app', $token->app)->fetch()) {
+		if (db()->table(user\AuthorizedappModel::class)->get('user', $this->user)->addRestriction('app', $token->app)->fetch()) {
 			$grant = true;
 		}
 		
@@ -148,13 +148,13 @@ class AuthController extends BaseController
 		 * logged in next time.
 		 */
 		if ($grant === true) {
-			$preauthorized = db()->table('user\authorizedapp')
+			$preauthorized = db()->table(user\AuthorizedappModel::class)
 				->get('user', $token->user)
 				->where('app', $token->app)
 				->fetch();
 			
 			if (isset($_POST['authorize']) && !$preauthorized) {
-				$authorization = db()->table('user\authorizedapp')->newRecord();
+				$authorization = db()->table(user\AuthorizedappModel::class)->newRecord();
 				$authorization->user = $this->user;
 				$authorization->app  = $token->app;
 				$authorization->store();

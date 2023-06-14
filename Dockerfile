@@ -38,6 +38,7 @@ COPY dev/docker-php-entrypoint dev/wait-for /usr/local/bin/
 
 # Copy the entire application into the container
 COPY composer.* console .htaccess index.php mix-manifest.json ./
+COPY app app
 COPY assets assets
 COPY bin bin
 COPY spitfire spitfire

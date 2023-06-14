@@ -13,12 +13,14 @@
  * @copyright 2018 Magic3W - All rights reserved
  */
 
+use magic3w\phpauth\kernel\ConsoleKernel as AppConsoleKernel;
 use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 use spitfire\contracts\core\kernel\ConsoleKernelInterface;
 use spitfire\contracts\core\kernel\KernelInterface;
 use spitfire\contracts\core\LocationsInterface;
 use spitfire\core\kernel\ConsoleKernel;
+use spitfire\core\kernel\KernelFactory;
 use spitfire\core\kernel\WebKernel;
 use spitfire\core\Locations;
 use spitfire\provider\Container;
@@ -31,12 +33,13 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 define('BASEDIR', __DIR__);
 
 include __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/bin/settings/environments.php';
 
 $provider = new Container();
 
 $provider->set(Locations::class, new Locations(__DIR__));
 $provider->set(LocationsInterface::class, new Locations(__DIR__));
-$provider->set(ConsoleKernel::class, $kernel = new ConsoleKernel(new Application()));
+$provider->set(ConsoleKernel::class, $kernel = new AppConsoleKernel(new Application()));
 $provider->set(ConsoleKernelInterface::class, $kernel);
 $provider->set(KernelInterface::class, $kernel);
 $provider->set(WebKernel::class, $provider->get(WebKernel::class));
@@ -46,5 +49,5 @@ $provider->set(LoggerInterface::class, new Monolog\Logger('log', [new StreamHand
  * 
  * @var ConsoleKernel
  */
-$kernel = $provider->get(ConsoleKernel::class);
+$kernel = $provider->get(KernelFactory::class)->boot($provider->get(ConsoleKernel::class));
 exit($kernel->handle(new ArgvInput, new ConsoleOutput));

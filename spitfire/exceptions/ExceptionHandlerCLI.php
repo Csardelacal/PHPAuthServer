@@ -27,8 +27,6 @@ class ExceptionHandlerCLI
 	private $msgs     = Array();
 
 	public function __construct() {
-		set_exception_handler( Array($this, 'exceptionHandle'));
-		register_shutdown_function( Array($this, 'shutdownHook'));
 	}
 	
 	/**
@@ -36,28 +34,9 @@ class ExceptionHandlerCLI
 	 * @param \Throwable|\Exception $e
 	 */
 	public function exceptionHandle ($e) {
-		if (!$e instanceof Exception && !$e instanceof Throwable) {
-			throw new BadMethodCallException('Requires throwable type to work.', 1608011002);
-		}
-		
-		console()->error($e->getCode() . ': ' . $e->getMessage())->ln();
-		console()->error($e->getTraceAsString())->ln();
-		
 	}
 	
 	public function shutdownHook () {
-		$last_error = error_get_last();
-		
-		switch($last_error['type']){
-			case E_ERROR:
-			case E_CORE_ERROR:
-			case E_COMPILE_ERROR:
-			case E_USER_ERROR:
-			case E_PARSE:
-			case E_RECOVERABLE_ERROR:
-				console()->error($last_error['message'] . "@$last_error[file] [$last_error[line]]")->ln();
-		}
-		
 	}
 
 	public function log ($msg) {

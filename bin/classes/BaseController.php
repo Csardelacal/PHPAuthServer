@@ -99,7 +99,7 @@ abstract class BaseController extends Controller
 			$this->user  = $user;
 			$this->token = $t;
 			
-			$isAdmin = !!db()->table('user\group')
+			$isAdmin = !!db()->table(user\GroupModel::class)
 				->get('group__id', $admingroupid)
 				->where('user', $user)
 				->fetch();

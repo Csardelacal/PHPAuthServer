@@ -166,7 +166,7 @@ class PermissionsController extends BaseController
 	public function deauthorize($appID)
 	{
 		$app  = db()->table('authapp')->get('_id', $appID)->fetch();
-		$auth = db()->table('user\authorizedapp')->get('user', $this->user)->where('app', $app)->first(true);
+		$auth = db()->table(user\AuthorizedappModel::class)->get('user', $this->user)->where('app', $app)->first(true);
 		
 		if ($auth) {
 			$auth->delete();

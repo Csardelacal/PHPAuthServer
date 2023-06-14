@@ -19,7 +19,7 @@
  * We can watch errors happening live. Grepping them can also help
  * filtering.
  */
-ini_set("log_errors", "0");
+ini_set("log_errors", "1");
 ini_set("error_log", "logs/error_log.log");
 ini_set("display_errors", "0");
 
@@ -29,7 +29,7 @@ include __DIR__ . '/bin/constants.php';
 include 'spitfire/bootstrap.php';
 include './vendor/autoload.php';
 
-ini_set('memory_limit', '128M');/**/
+ini_set('memory_limit', '4G');/**/
 
 /* Call the selected controller with the selected method. */
 spitfire()->fire();

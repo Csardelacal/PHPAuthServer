@@ -72,8 +72,8 @@ class TokenModel extends Model
 		$schema->token   = new StringField(self::TOKEN_LENGTH);
 		
 		$schema->owner   = new Reference('user');
-		$schema->client  = new Reference('authapp');
-		$schema->audience = new Reference('authapp');
+		$schema->client  = new Reference(AuthAppModel::class);
+		$schema->audience = new Reference(AuthAppModel::class);
 		
 		$schema->scopes  = new StringField(255);
 		
@@ -171,7 +171,7 @@ class TokenModel extends Model
 		);
 		
 		$suspension = db()
-			->table('user\suspension')
+			->table(user\SuspensionModel::class)
 			->get('user', $this->owner)
 			->where('expires', '>', time())
 			->first();
