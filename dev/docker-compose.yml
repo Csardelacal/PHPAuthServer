@@ -9,7 +9,7 @@ services:
       - '../:/code'
   web:
     build:
-      context: docker/web
+      context: ..
       target:  ${WEB_TARGET:-debug}
     ports:
       - "80:80"

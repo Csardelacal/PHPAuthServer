@@ -26,7 +26,7 @@ if [ "$DEBUG" = true ]; then
 	composer install --no-interaction
 fi
 
-wait-for ${DBSERVER:-mysql}:3306 -- echo 'MySQL is ready'
+wait-for-it ${DBSERVER:-mysql}:3306 -- echo 'MySQL is ready'
 
 ls -la /etc/apache2/sites-enabled/
 

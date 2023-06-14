@@ -8,7 +8,7 @@ ENV PHP_CPPFLAGS="$PHP_CPPFLAGS"
 
 RUN apt-get update -y \
     && apt-get upgrade -y  \
-    && apt-get install memcached libicu-dev git zip unzip libgd3 zlib1g-dev libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev libfreetype6-dev -y 
+    && apt-get install memcached wait-for-it libicu-dev git zip unzip libgd3 zlib1g-dev libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev libfreetype6-dev -y 
 	
 RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
@@ -34,7 +34,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Copy utilities that the application can use to be more consistent during
 # bootstrap.
-COPY dev/docker-php-entrypoint dev/wait-for /usr/local/bin/
+COPY dev/docker/web/docker-php-entrypoint /usr/local/bin/
 
 # Copy the entire application into the container
 COPY composer.* console .htaccess index.php mix-manifest.json ./
@@ -69,11 +69,17 @@ RUN echo 'xdebug.start_with_request = yes' >> /usr/local/etc/php/php.ini
 RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/php.ini
 
 # Web driver needs libzip dev to work.
-RUN apt install netcat -y
-
-# Web driver needs libzip dev to work.
 RUN apt install libzip-dev -y
 RUN docker-php-ext-install zip
 
-RUN composer install --no-interaction --no-autoloader
-RUN composer dump-autoload --no-interaction
+FROM debug as integration
+
+COPY dev/docker/web/xdebug/001-xdebug.conf /etc/apache2/sites-enabled/
+COPY dev/docker/web/xdebug/ /opt/commishes/xdebug/
+
+RUN sed "s/xdebug.mode = debug/xdebug.mode = coverage/i" -i"" /usr/local/etc/php/php.ini
+RUN echo 'opcache.enable=0' >> /usr/local/etc/php/conf.d/xebug-integration.ini
+RUN service apache2 restart
+RUN echo 'auto_prepend_file=/opt/commishes/xdebug/before.php' >> /usr/local/etc/php/conf.d/xebug-integration.ini
+RUN echo 'auto_append_file=/opt/commishes/xdebug/after.php' >> /usr/local/etc/php/conf.d/xebug-integration.ini
+RUN mkdir --mode=0777 /var/www/coverage/
