@@ -31,7 +31,7 @@ function spitfire() {
 	if ($sf !== null) { 
 		return $sf; 
 	} else {
-		$sf = php_sapi_name() === 'cli'? new SpitFireCLI() : new SpitFire();
+		$sf = new SpitFire();
 		$sf->prepare();
 		return $sf;
 	}
