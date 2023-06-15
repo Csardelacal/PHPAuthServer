@@ -2,6 +2,7 @@
 
 use magic3w\phpauth\commands\app\CreateCommand as AppCreateCommand;
 use magic3w\phpauth\commands\app\ShowCommand as AppShowCommand;
+use magic3w\phpauth\commands\certificate\CreateCommand as CertificateCreateCommand;
 use magic3w\phpauth\commands\email\DispatchCommand as EmailDispatchCommand;
 use magic3w\phpauth\commands\email\SummaryCommand as EmailSummaryCommand;
 use magic3w\phpauth\commands\user\CreateCommand as UserCreateCommand;
@@ -43,6 +44,7 @@ class CommandServiceProvider implements ProviderInterface
 		$kernel->register($container->get(EmailDispatchCommand::class));
 		$kernel->register($container->get(EmailSummaryCommand::class));
 		$kernel->register($container->get(StorageStatsCommand::class));
+		$kernel->register($container->get(CertificateCreateCommand::class));
 		
 	}
 }
