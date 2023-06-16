@@ -5,6 +5,7 @@
  * and several machines. We can even set automatic environment detection to 
  * make the process of switching the settings for several servers seamless.
  * 
+ * @deprecated
  * @author  César de la Cal <cesar@magic3w.com>
  */
 

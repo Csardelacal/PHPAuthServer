@@ -20,6 +20,10 @@ services:
       - memcached
       - mysql
       - mailhog
+    env_file:
+      - .env
+    environment:
+      TEST: HELLO WORLD
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

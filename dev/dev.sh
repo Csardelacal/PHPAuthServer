@@ -15,6 +15,11 @@ if [ -f /tmp/hosts ]; then
 	rm /tmp/hosts
 fi
 
+if ! [ -f .env ]; then
+	echo "No .env file found in /dev. Creating default"
+	cp .env.example .env
+fi
+
 cp /etc/hosts /tmp/hosts
 echo "127.0.0.1 phpauth.local" >> /tmp/hosts
 mount --bind /tmp/hosts /etc/hosts

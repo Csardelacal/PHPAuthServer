@@ -1,8 +1,13 @@
 <?php
 
+use Dotenv\Dotenv;
+
+$reader = Dotenv::createImmutable(dirname(__DIR__, 2));
+$reader->load();
+
 $p = new spitfire\core\Environment('dev');
 
-$p->set('db', 'mysqlpdo://www:test@mysql:3306/testdb');
+$p->set('db', $_ENV['PHPAUTH_DB']?? 'mysqlpdo://www:test@mysql:3306/testdb');
 
 /*
  * This enables generous TTLs for sessions. This means that the session will be
@@ -13,7 +18,7 @@ $p->set('db', 'mysqlpdo://www:test@mysql:3306/testdb');
  */
 $p->set('phpAuth.token.extraTTL', true);
 
-$p->set('server_name', 'localhost:8085');
+$p->set('server_name', $_ENV['PHPAUTH_URL']?? 'localhost:8085');
 
 $p->set('email.cron', false);
 $p->set('email.transport', new \mail\MailhogTransport());
