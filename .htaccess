@@ -1,6 +1,11 @@
 #Disable GPC
 php_flag magic_quotes_gpc Off
 
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
 #Enable mod rewrite to send requests to Spitfire
 <IfModule mod_rewrite.c>
 	RewriteEngine on
