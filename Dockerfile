@@ -37,7 +37,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY dev/docker/web/docker-php-entrypoint /usr/local/bin/
 
 # Copy the entire application into the container
-COPY composer.* console .htaccess index.php mix-manifest.json ./
+COPY composer.* console .htaccess .env.example index.php mix-manifest.json ./
 COPY app app
 COPY assets assets
 COPY bin bin
