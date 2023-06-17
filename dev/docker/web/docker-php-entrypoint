@@ -33,7 +33,7 @@ fi
 
 if ! [ -f "${rootdir}/bin/settings/environments.php" ]; then
 	echo "No bin/settings/environments.php file found in ${rootdir}/ Creating default"
-	cp ${rootdir}/bin/settings/environments.php.sample ${rootdir}/bin/settings/environments.php
+	cp ${rootdir}/bin/settings/environments.sample.php ${rootdir}/bin/settings/environments.php
 fi
 
 wait-for-it ${DBSERVER:-mysql}:3306 -- echo 'MySQL is ready'
