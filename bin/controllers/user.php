@@ -288,7 +288,7 @@ class UserController extends BaseController
 				$this->session->ip      = bin2hex(inet_pton($ipaddr));
 				$this->session->expires = time() + 365 * 86400;
 				$this->session->userTime = $_POST['time'];
-				$this->session->locale = $_SERVER["HTTP_ACCEPT_LANGUAGE"]?? '';
+				$this->session->locale = substr($_SERVER["HTTP_ACCEPT_LANGUAGE"]?? '', 0, 50);
 				
 				/*
 				* Retrieve the IP information from the client. This should allow the
@@ -387,7 +387,7 @@ class UserController extends BaseController
 		
 		#Get the currently active moderative issue
 		#Check if the user has been either banned or suspended
-		$suspension = db()->table(user\SuspensionModel::class)
+		$suspension = db()->table(\user\SuspensionModel::class)
 			->get('user', $profile)
 			->where('expires', '>', time())
 			->first();
