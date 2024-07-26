@@ -4,6 +4,11 @@ use access\CodeModel;
 use access\TokenModel as AccessTokenModel;
 use access\RefreshModel as RefreshTokenModel;
 use AndrewBreksa\RSMQ\RSMQClient;
+use defer\tasks\IncinerateAccessCodeTask;
+use defer\tasks\IncinerateAccessTokenTask;
+use defer\tasks\IncinerateLegacyTokenTask;
+use defer\tasks\IncinerateRefreshTokenTask;
+use defer\tasks\IncinerateSessionTask;
 use jwt\Base64URL;
 use Predis\Client;
 use SessionModel;
@@ -88,7 +93,7 @@ class PruneCommand extends Command
 		db()->table(SessionModel::class)->getAll()->where('expires', '<', $limit)->all()
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
-				IncinerateAccessCodeTask::class,
+				IncinerateSessionTask::class,
 				$e->_id
 			));
 		

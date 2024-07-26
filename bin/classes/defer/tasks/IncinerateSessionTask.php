@@ -92,7 +92,7 @@ class IncinerateSessionTask implements Task
 			 * revoke the authorization the application was given. It just allows the
 			 * user to signal they wish to no longer have this token active.
 			 */
-			$tokens->each(function ($token) {
+			$refresh->each(function ($token) {
 				$token->session = null;
 				$token->store();
 			});
