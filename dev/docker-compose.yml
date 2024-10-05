@@ -12,7 +12,7 @@ services:
       context: ..
       target:  ${WEB_TARGET:-debug}
     ports:
-      - "80:80"
+      - "8085:80"
     volumes:
       - ..:/var/www/phpauth
       - /var/www/phpauth/bin/usr
@@ -43,7 +43,9 @@ services:
       MYSQL_DATABASE: phpas
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: www
-      MYSQL_PASSWORD: test
+      MYSQL_PASSWORD: test    
+    ports:
+      - "3306:3306"
   mailhog:
     image: axllent/mailpit:latest
     ports:
