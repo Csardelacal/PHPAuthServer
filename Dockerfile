@@ -1,4 +1,4 @@
-FROM php:8-apache AS deploy
+FROM php:8.2-apache AS deploy
 
 #TODO Focus this dockerfile on deploying the applicatio to docker hub
 
