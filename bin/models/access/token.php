@@ -171,7 +171,7 @@ class TokenModel extends Model
 		);
 		
 		$suspension = db()
-			->table(user\SuspensionModel::class)
+			->table(\user\SuspensionModel::class)
 			->get('user', $this->owner)
 			->where('expires', '>', time())
 			->first();

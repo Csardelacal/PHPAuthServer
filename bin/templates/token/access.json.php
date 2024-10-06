@@ -18,7 +18,7 @@ $payload = Array(
 		]
 	],
 	'session' => [
-		'id' => $session->_id
+		'id' => $session?->_id
 	]
 );
 
