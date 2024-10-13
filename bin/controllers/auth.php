@@ -1,6 +1,6 @@
 <?php
 
-use app\AuthLock;
+use magic3w\phpauth\AuthLock;
 use client\LocationModel;
 use connection\AuthModel;
 use magic3w\http\url\reflection\QueryString;

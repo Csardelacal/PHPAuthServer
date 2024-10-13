@@ -266,9 +266,9 @@
 		
 		<?php $attributes = db()->table('attribute')->getAll()->all(); ?>
 		<?php foreach ($attributes as $a): ?>
-		<?php $lock  = new app\AttributeLock($a, null); ?>
+		<?php $lock  = new magic3w\phpauth\AttributeLock($a, null); ?>
 		<?php $read  = $lock->unlock($app); ?>
-		<?php $write = $lock->unlock($app, app\AttributeLock::MODE_W); ?>
+		<?php $write = $lock->unlock($app, magic3w\phpauth\AttributeLock::MODE_W); ?>
 		
 		<div class="row l3">
 			<div class="span l2">
@@ -280,10 +280,10 @@
 						<input type="hidden" name="_XSRF"    value="<?= new spitfire\io\XSSToken() ?>">
 						<input type="hidden" name="returnto" value="<?=url('app', 'detail', $app->_id) ?>">
 						<select name="grant" id="attr-<?= $a->_id ?>" onchange="this.form.submit()">
-							<option value="<?= app\AttributeLock::MODE_N ?>" <?= $read === false && $write === false? 'selected' : '' ?>>No access</option>
-							<option value="<?= app\AttributeLock::MODE_R ?>" <?= $read === true  && $write === false? 'selected' : '' ?>>Read-only access</option>
-							<option value="<?= app\AttributeLock::MODE_W ?>" <?= $read === false && $write === true ? 'selected' : '' ?>>Write-only access</option>
-							<option value="<?= app\AttributeLock::MODE_RW ?>" <?= $read === true  && $write === true ? 'selected' : '' ?>>Full access</option>
+							<option value="<?= magic3w\phpauth\AttributeLock::MODE_N ?>" <?= $read === false && $write === false? 'selected' : '' ?>>No access</option>
+							<option value="<?= magic3w\phpauth\AttributeLock::MODE_R ?>" <?= $read === true  && $write === false? 'selected' : '' ?>>Read-only access</option>
+							<option value="<?= magic3w\phpauth\AttributeLock::MODE_W ?>" <?= $read === false && $write === true ? 'selected' : '' ?>>Write-only access</option>
+							<option value="<?= magic3w\phpauth\AttributeLock::MODE_RW ?>" <?= $read === true  && $write === true ? 'selected' : '' ?>>Full access</option>
 						</select>
 					</form>
 				</div>

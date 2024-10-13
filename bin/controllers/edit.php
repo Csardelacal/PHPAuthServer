@@ -1,6 +1,6 @@
 <?php
 
-use app\AttributeLock;
+use magic3w\phpauth\AttributeLock;
 use mail\spam\domain\implementation\SpamDomainModelReader;
 use mail\spam\domain\SpamDomainValidationRule;
 use spitfire\exceptions\HTTPMethodException;
