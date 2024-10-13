@@ -1,6 +1,6 @@
 <?php
 
-use app\AttributeLock;
+use magic3w\phpauth\AttributeLock;
 use defer\tasks\EndSessionTask;
 use defer\tasks\IncinerateSessionTask;
 use mail\spam\domain\implementation\SpamDomainModelReader;

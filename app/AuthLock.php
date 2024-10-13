@@ -1,4 +1,4 @@
-<?php namespace app;
+<?php namespace magic3w\phpauth;
 
 use UserModel;
 use AuthAppModel;
