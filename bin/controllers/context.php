@@ -52,7 +52,7 @@ class ContextController extends BaseController
 			throw new PublicException('No application found', 404);
 		}
 		
-		$query = db()->table('connection\context')->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup();
+		$query = db()->table(connection\ContextModel::class)->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup();
 		$pagination = new Paginator($query);
 		
 		$this->view->set('records', $pagination->records());
@@ -89,7 +89,7 @@ class ContextController extends BaseController
 		}
 		
 		/*@var $record ContextModel*/
-		$record = db()->table('connection\context')->get('ctx', $context)->where('app', $this->authapp)->first()?: db()->table('connection\context')->newRecord();
+		$record = db()->table(connection\ContextModel::class)->get('ctx', $context)->where('app', $this->authapp)->first()?: db()->table(connection\ContextModel::class)->newRecord();
 		$record->ctx     = $context;
 		$record->app     = $this->authapp;
 		$record->title   = _def($_POST['name'], 'Unnamed context');
@@ -151,7 +151,7 @@ class ContextController extends BaseController
 			throw new PublicException('No permissions to edit this context', 403);
 		}
 		
-		$record = db()->table('connection\auth')->newRecord();
+		$record = db()->table(connection\AuthModel::class)->newRecord();
 		$record->source = $auth->source;
 		$record->target = $auth->target;
 		$record->user   = $this->user;
@@ -201,7 +201,7 @@ class ContextController extends BaseController
 			throw new PublicException('Forbidden', 403);
 		}
 		
-		$grants = db()->table('connection\auth')
+		$grants = db()->table(connection\AuthModel::class)
 			->get('source', $ctx->app)
 			->where('context', $ctx->ctx)
 			->where('user', null)
@@ -227,12 +227,12 @@ class ContextController extends BaseController
 			throw new PublicException('Generalized grants cannot be set to pending. This is the default', 400);
 		}
 		
-		$grant = db()->table('connection\auth')
+		$grant = db()->table(connection\AuthModel::class)
 			->get('source', $ctx->app)
 			->where('context', $ctx->ctx)
 			->where('target', db()->table('authapp')->get('_id', $_GET['app']))
 			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
-			->first()? : db()->table('connection\auth')->newRecord();
+			->first()? : db()->table(connection\Authmodel::class)->newRecord();
 		
 		$grant->source  = $ctx->app;
 		$grant->target  = db()->table('authapp')->get('_id', $_GET['app'])->first();

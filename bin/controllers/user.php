@@ -1,6 +1,5 @@
 <?php
 
-use app\AttributeLock;
 use defer\tasks\EndSessionTask;
 use defer\tasks\IncinerateSessionTask;
 use mail\spam\domain\implementation\SpamDomainModelReader;
@@ -148,7 +147,7 @@ class UserController extends BaseController
 			$username->store();
 			
 			foreach ($attributes as $attribute) {
-				$userattribute = db()->table('user\attribute')->newRecord();
+				$userattribute = db()->table(user\AttributeModel::class)->newRecord();
 				$userattribute->user = $user;
 				$userattribute->attr = $attribute;
 				$userattribute->value = $_POST[$attribute->_id];
@@ -273,9 +272,8 @@ class UserController extends BaseController
 				$session = Session::getInstance();
 				$session->lock($user->_id);
 				
-				$this->session = $this->session?: db()->table('session')->newRecord();
+				$this->session = db()->table('session')->newRecord();
 				$this->session->_id = SessionModel::TOKEN_PREFIX . session_id();
-				
 				
 				/**
 				 * The IP address. In the event of it being forwarded by one (or multiple) proxies,
@@ -371,18 +369,17 @@ class UserController extends BaseController
 		$userAttr   = collect();
 		
 		foreach ($attributes as $attr) {
-			$lock = new AttributeLock($attr, $profile);
 			
 			/*
 			 * Depending on whether the user is an administrator or an app that can
 			 * unlock the attribute, we add the data to the list.
 			 */
-			if ($this->isAdmin || $lock->unlock($this->authapp)) {
-				$userAttr[$attr->_id] = db()->table('user\attribute')
+			#if ($this->isAdmin || $lock->unlock($this->authapp)) {
+				$userAttr[$attr->_id] = db()->table(user\AttributeModel::class)
 					->get('user', $profile)
 					->where('attr', $attr)
 					->first();
-			}
+			#}
 		}
 		
 		#Get the currently active moderative issue

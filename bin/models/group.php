@@ -21,7 +21,7 @@ class GroupModel extends spitfire\Model
 		$schema->public      = new BooleanField(); //A public page appears in search results
 		$schema->open        = new BooleanField(); //An open page accepts members without admin approval
 		
-		$schema->members     = new ChildrenField('user\group', 'group');
+		$schema->members     = new ChildrenField(user\GroupModel::class, 'group');
 		
 		$schema->groupId->setUnique(true);
 	}

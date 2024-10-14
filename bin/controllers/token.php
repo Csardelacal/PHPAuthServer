@@ -81,7 +81,7 @@ class TokenController extends BaseController
 		 * cost in enthropy, it still makes more sense to separate the queries and
 		 * test the result in PHP.
 		 */
-		$credentials = db()->table('client\credential')
+		$credentials = db()->table(client\CredentialModel::class)
 			->get('secret', $secret)
 			->where('client', $app)
 			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
@@ -122,7 +122,7 @@ class TokenController extends BaseController
 			/*
 			 * Read the code the client sent
 			 */
-			$code = db()->table('access\code')
+			$code = db()->table(access\CodeModel::class)
 				->get('code', $_POST['code']?? null)
 				->where('expires', '>', time())
 				->first(true);
@@ -156,7 +156,7 @@ class TokenController extends BaseController
 			 * Instance a token that can be sent to the client to provide them access
 			 * to the resources of the owner.
 			 */
-			$token = db()->table('access\token')->newRecord();
+			$token = db()->table(access\TokenModel::class)->newRecord();
 			$token->session = $code->session;
 			$token->owner   = $code->user;
 			$token->audience = $code->audience;
@@ -169,7 +169,7 @@ class TokenController extends BaseController
 			 */
 			$ttl = ($client_authenticated? RefreshModel::TOKEN_TTL : RefreshModel::TOKEN_TTL_PUBLIC);
 			
-			$refresh = db()->table('access\refresh')->newRecord();
+			$refresh = db()->table(access\RefreshModel::class)->newRecord();
 			$refresh->session = $code->session;
 			$refresh->owner   = $code->user;
 			$refresh->audience = $code->audience;
@@ -200,7 +200,7 @@ class TokenController extends BaseController
 			$audience = $_GET['audience']?
 			db()->table(AuthAppModel::class)->get('appID', $_GET['audience'])->first(true) : null;
 			
-			$token = db()->table('access\token')->newRecord();
+			$token = db()->table(access\TokenModel::class)->newRecord();
 			$token->session  = null;
 			$token->owner    = null;
 			$token->client   = $app;
@@ -232,7 +232,7 @@ class TokenController extends BaseController
 			 *
 			 * @var RefreshModel
 			 */
-			$provided = db()->table('access\refresh')->get('token', $_provided)->first(true);
+			$provided = db()->table(access\RefreshModel::class)->get('token', $_provided)->first(true);
 			
 			if ($provided->client->appID != $app->appID) {
 				throw new PublicException('Tried refreshing a token owned by a different client', 403);
@@ -245,7 +245,7 @@ class TokenController extends BaseController
 			 * @todo Flag the session as potentially compromised if there was an attempt to use a
 			 * token that was expired (this indicates a potential attack).
 			 */
-			if (!$client_authenticated && $provided->expires < time()) {
+			if ($provided->expires < time()) {
 				throw new PublicException('Refresh token has already expired', 401);
 			}
 			
@@ -265,14 +265,14 @@ class TokenController extends BaseController
 			 * Instance a token that can be sent to the client to provide them access
 			 * to the resources of the owner.
 			 */
-			$token = db()->table('access\token')->newRecord();
+			$token = db()->table(access\TokenModel::class)->newRecord();
 			$token->session = $provided->session;
 			$token->owner   = $provided->owner;
 			$token->audience = $provided->audience;
 			$token->client  = $provided->client;
 			$token->store();
 			
-			$refresh = db()->table('access\refresh')->newRecord();
+			$refresh = db()->table(access\RefreshModel::class)->newRecord();
 			$refresh->session = $provided->session;
 			$refresh->owner   = $provided->owner;
 			$refresh->audience = $provided->audience;

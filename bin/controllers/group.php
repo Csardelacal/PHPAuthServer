@@ -14,7 +14,7 @@ class GroupController extends BaseController
 		else {
 			$query = db()->table('group')->getAll()->group()
 				->addRestriction('public', 1)
-				->addRestriction('members', db()->table('user\group')->get('user', $this->user))->endGroup();
+				->addRestriction('members', db()->table(user\GroupModel::class)->get('user', $this->user))->endGroup();
 		}
 		
 		$pages = new \spitfire\storage\database\pagination\Paginator($query);
@@ -34,7 +34,7 @@ class GroupController extends BaseController
 			throw new PublicException('No group found');
 		}
 		
-		if (!$group->public && !$this->isAdmin && db()->table('user\group')->get('user', $this->user)->addRestriction('group', $group)->fetch()) {
+		if (!$group->public && !$this->isAdmin && db()->table(user\GroupModel::class)->get('user', $this->user)->addRestriction('group', $group)->fetch()) {
 			throw new PublicException('No group found');
 		}
 		
@@ -77,7 +77,7 @@ class GroupController extends BaseController
 		
 		
 		#Add the user to the group
-		$membership = db()->table('user\group')->get('user', $profile)->addRestriction('group', $group)->fetch()? : db()->table('user\group')->newRecord();
+		$membership = db()->table(user\GroupModel::class)->get('user', $profile)->addRestriction('group', $group)->fetch()? : db()->table(user\GroupModel::class)->newRecord();
 		$membership->user  = $profile;
 		$membership->group = $group;
 		$membership->role  = $role;
@@ -92,7 +92,7 @@ class GroupController extends BaseController
 		
 		
 		#Fetch the membership and destroy shortly afterwards
-		$membership = db()->table('user\group')->get('_id', $memberid)->fetch()? : null;
+		$membership = db()->table(user\GroupModel::class)->get('_id', $memberid)->fetch()? : null;
 		
 		if ($membership) {
 			$group = $membership->group;

@@ -64,7 +64,7 @@ class SpamDomainModelReader implements StorageInterface
 			throw new InvalidArgumentException('Expected IP or domain, got: ' . ($host === null? 'null' : get_class($host)));
 		}
 		
-		$record = db()->table('email\domain')
+		$record = db()->table(\email\DomainModel::class)
 			->get('host', $host )
 			->addRestriction('type', $type)
 			->addRestriction('list', StorageInterface::LIST_BLACKLIST)
@@ -93,7 +93,7 @@ class SpamDomainModelReader implements StorageInterface
 			throw new InvalidArgumentException('Expected IP or domain, got: ' . ($host === null? 'null' : get_class($host)));
 		}
 		
-		$record = db()->table('email\domain')
+		$record = db()->table(\email\DomainModel::class)
 			->get('host', $host )
 			->addRestriction('type', $type)
 			->addRestriction('list', StorageInterface::LIST_WHITELIST)

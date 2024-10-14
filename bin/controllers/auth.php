@@ -49,10 +49,10 @@ class AuthController extends BaseController
 		}
 		
 		#Check whether the app has signed the package, and whether it has been registered
-		$usage = db()->table('token\usage')->get('token', $token)->where('app', $this->authapp)->first();
+		$usage = db()->table(token\UsageModel::class)->get('token', $token)->where('app', $this->authapp)->first();
 		
 		if (!$usage) {
-			$usage = db()->table('token\usage')->newRecord();
+			$usage = db()->table(token\UsageModel::class)->newRecord();
 			$usage->token = $token;
 			$usage->app   = $this->authapp;
 			$usage->store();
@@ -345,7 +345,7 @@ class AuthController extends BaseController
 				 * connection already exists, since it would have been filtered from
 				 * the signatures list at about line 242
 				 */
-				$connection = db()->table('connection\auth')->newRecord();
+				$connection = db()->table(connection\AuthModel::class)->newRecord();
 				$connection->target  = $tgt;
 				$connection->source  = $src;
 				$connection->user    = $this->user;
@@ -441,14 +441,14 @@ class AuthController extends BaseController
 		 * Policy based consent is generally used when handling internal applications where the
 		 * developer can assume that the consent is already given.
 		 */
-		$consent_implied = db()->table('user\consent')
+		$consent_implied = db()->table(user\ConsentModel::class)
 			->get('client', $client)
 			->where('scope', $scopes->toArray())
 			->where('user', null)
 			->where('revoked', null)
 			->all()
 			->add(
-				db()->table('user\consent')
+				db()->table(user\ConsentModel::class)
 					->get('client', $client)
 					->where('scope', $scopes->toArray())
 					->where('user', $this->user)
@@ -593,7 +593,7 @@ class AuthController extends BaseController
 			 * Record the code challenge, and the user approving this challenge, together
 			 * with the state the application passed.
 			 */
-			$challenge = db()->table('access\code')->newRecord();
+			$challenge = db()->table(access\CodeModel::class)->newRecord();
 			$challenge->code = str_replace(['-', '/', '='], '', base64_encode(random_bytes(64)));
 			$challenge->audience = $audience;
 			$challenge->client = $client;

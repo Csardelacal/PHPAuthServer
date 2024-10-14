@@ -61,7 +61,7 @@ class IncinerateSessionTask implements Task
 		 * If there's access tokens that would be left dangling, we need to ensure
 		 * that they are removed before this session can be garbage collected.
 		 */
-		$tokens = db()->table('access\token')->get('session', $session)->range(0, 100);
+		$tokens = db()->table(\access\TokenModel::class)->get('session', $session)->range(0, 100);
 		
 		if (!$tokens->isEmpty()) {
 			/*
@@ -83,7 +83,7 @@ class IncinerateSessionTask implements Task
 		 * If there's access tokens that would be left dangling, we need to ensure
 		 * that they are removed before this session can be garbage collected.
 		 */
-		$refresh = db()->table('access\refresh')->get('session', $session)->range(0, 100);
+		$refresh = db()->table(\access\RefreshModel::class)->get('session', $session)->range(0, 100);
 		
 		if (!$refresh->isEmpty()) {
 			/*
@@ -92,7 +92,7 @@ class IncinerateSessionTask implements Task
 			 * revoke the authorization the application was given. It just allows the
 			 * user to signal they wish to no longer have this token active.
 			 */
-			$tokens->each(function ($token) {
+			$refresh->each(function ($token) {
 				$token->session = null;
 				$token->store();
 			});

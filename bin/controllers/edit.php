@@ -1,6 +1,5 @@
 <?php
 
-use app\AttributeLock;
 use mail\spam\domain\implementation\SpamDomainModelReader;
 use mail\spam\domain\SpamDomainValidationRule;
 use spitfire\exceptions\HTTPMethodException;
@@ -233,7 +232,6 @@ class EditController extends BaseController
 		 * sufficient privileges to edit this attribute.
 		 */
 		$attribute = db()->table('attribute')->get('_id', $attrid)->fetch();
-		$lock = new AttributeLock($attribute, $this->user);
 		
 		if (!$attribute) {
 			throw new Exception('No property found', 404);
@@ -244,7 +242,7 @@ class EditController extends BaseController
 		 * application can access the data. If it does not have the necessary
 		 * privileges, we can stop it right there.
 		 */
-		if ($this->authapp && !$lock->unlock($this->authapp, AttributeLock::MODE_W)) {
+		if ($this->authapp) {
 			throw new PublicException('No write permission', 403);
 		}
 		/*
@@ -258,13 +256,13 @@ class EditController extends BaseController
 		/*
 		 * Get the value for the attribute.
 		 */
-		$attributeValue = db()->table('user\attribute')->get('user', $this->user)->where('attr', $attribute)->first();
+		$attributeValue = db()->table(user\AttributeModel::class)->get('user', $this->user)->where('attr', $attribute)->first();
 		
 		/*
 		 * Fetch the validators the system has for the value. This way we can check
 		 * the data submitted and can also inform the user of errors.
 		 */
-		$validators = db()->table('attribute\validator')->get('attribute', $attribute)->fetchAll();
+		$validators = db()->table(attribute\ValidatorModel::class)->get('attribute', $attribute)->fetchAll();
 		
 		try {
 			if (!$this->request->isPost()) {
@@ -276,7 +274,7 @@ class EditController extends BaseController
 			 * case, we're creating it.
 			 */
 			if ($attributeValue === null) {
-				$attributeValue = db()->table('user\attribute')->newRecord();
+				$attributeValue = db()->table(user\AttributeModel::class)->newRecord();
 				$attributeValue->user = $this->user;
 				$attributeValue->attr = $attribute;
 			}
@@ -345,10 +343,7 @@ class EditController extends BaseController
 			$this->view->set('errors', $e->getResult());
 		}
 		
-		$grants = db()->table('authapp')->get('system', false)->all()
-			->filter(function ($e) use ($lock) {
-				return $lock->unlock($e) || $lock->unlock($e, AttributeLock::MODE_W);
-			});
+		$grants = db()->table('authapp')->get('system', false)->all();
 		
 		$this->view->set('apps', $grants);
 		$this->view->set('attribute', $attribute);

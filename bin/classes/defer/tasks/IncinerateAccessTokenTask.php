@@ -32,7 +32,7 @@ class IncinerateAccessTokenTask implements Task
 	
 	public function body($settings) : void
 	{
-		$token = db()->table('access\token')->get('_id', $settings)->first();
+		$token = db()->table(\access\TokenModel::class)->get('_id', $settings)->first();
 		
 		/**
 		 * No token exists anymore

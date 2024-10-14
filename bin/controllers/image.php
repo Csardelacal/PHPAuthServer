@@ -121,7 +121,7 @@ class ImageController extends Controller
 	public function attribute($attribute, $id, $width = 700)
 	{
 		$user  = db()->table('user')->get('_id', $id)->fetch();
-		$attr  = db()->table('user\attribute')->get('user', $user)->addRestriction('attr__id', $attribute)->fetch();
+		$attr  = db()->table(user\AttributeModel::class)->get('user', $user)->addRestriction('attr__id', $attribute)->fetch();
 		
 		if (!$user || !$attr) {
 			throw new PublicException('Invalid user / attribute id');

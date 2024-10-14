@@ -59,7 +59,7 @@ class AuthAppModel extends Model
 	{
 		
 		$db = $this->getTable()->getDb();
-		$q  = $db->table('connection\auth')->getAll();
+		$q  = $db->table(connection\AuthModel::class)->getAll();
 		
 		$q->addRestriction('source', $this);
 		$q->addRestriction('target', $app);
@@ -113,7 +113,7 @@ class AuthAppModel extends Model
 		}
 		
 		$db = $this->getTable()->getDb();
-		$q  = $db->table('connection\context')->getAll();
+		$q  = $db->table(connection\ContextModel::class)->getAll();
 		
 		$q->addRestriction('app', $this);
 		$q->addRestriction('ctx', $context);

@@ -4,6 +4,11 @@ use access\CodeModel;
 use access\TokenModel as AccessTokenModel;
 use access\RefreshModel as RefreshTokenModel;
 use AndrewBreksa\RSMQ\RSMQClient;
+use defer\tasks\IncinerateAccessCodeTask;
+use defer\tasks\IncinerateAccessTokenTask;
+use defer\tasks\IncinerateRefreshTokenTask;
+use defer\tasks\IncinerateLegacyTokenTask;
+use defer\tasks\IncinerateSessionTask;
 use jwt\Base64URL;
 use Predis\Client;
 use SessionModel;
@@ -58,18 +63,20 @@ class PruneCommand extends Command
 		$queue   = Base64URL::fromString(spitfire()->getCWD());
 		
 		$taskFactory = new TaskFactory($client, $queue);
+echo 'hi';
 		
 		
 		# Start pruning access tokens that were expired but never actively terminated
-		db()->table(AccessTokenModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(AccessTokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 1000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateAccessTokenTask::class,
 				$e->_id
 			));
+echo 'hi';
 		
 		# Prune refresh tokens that were expired
-		db()->table(RefreshTokenModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(RefreshTokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 1000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateRefreshTokenTask::class,
@@ -77,34 +84,38 @@ class PruneCommand extends Command
 			));
 		
 		# Prune access codes that were expired
-		db()->table(CodeModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(CodeModel::class)->getAll()->where('expires', '<', $limit)->range(0, 5000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateAccessCodeTask::class,
 				$e->_id
 			));
+echo 'codes';
 	
 		# Prune sessions that were expired
-		db()->table(SessionModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(SessionModel::class)->getAll()->where('expires', '<', $limit)->range(0, 5000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
-				IncinerateAccessCodeTask::class,
+				IncinerateSessionTask::class,
 				$e->_id
 			));
+echo 'sessions';
 		
 		# Prune legacy tokens that were expired
-		db()->table(TokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 30000)
+		db()->table(TokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 5000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateLegacyTokenTask::class,
 				$e->_id
 			));
+echo 'tokens';
 		
 		# Prune emails that were sent and are now expired
 		# Since emails do not have side effects to their deletion, we can just remove them
 		# TODO: It'd be super cool if this would just delete them 20K instead of pulling them first
-		db()->table('email')->getAll()->where('delivered', '<', $limit - 90 * 86400)->range(0, 20000)
+		db()->table('email')->getAll()->where('delivered', '<', $limit - 90 * 86400)->range(0, 500)
 			->each(fn($e) => $e->delete());
+echo 'emails';
 			
 		return Command::SUCCESS;
 	}

@@ -39,7 +39,7 @@ class ChildrenField extends Field
 		
 		#If the target is actually a class name.
 		if (is_string($this->target) && Strings::endsWith($this->target, 'Model')) {
-			$this->target = trim(substr($this->target, 0, 0 - strlen('Model')), '\/');
+			#$this->target = trim(substr($this->target, 0, 0 - strlen('Model')), '\/');
 		}
 		
 		#Check if the passed argument already is a model

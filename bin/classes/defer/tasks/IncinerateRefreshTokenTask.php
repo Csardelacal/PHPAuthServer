@@ -32,7 +32,7 @@ class IncinerateRefreshTokenTask implements Task
 	
 	public function body($settings) : void
 	{
-		$token = db()->table('access\refresh')->get('_id', $settings)->first();
+		$token = db()->table(\access\RefreshModel::class)->get('_id', $settings)->first();
 		
 		/**
 		 * No token exists anymore

@@ -8,7 +8,7 @@ use spitfire\storage\database\pagination\Paginator;
 class SessionController extends BaseController
 {
 	
-	public function location(string $country, ?string $city)
+	public function location(string $country, string $city = null)
 	{
 		
 		#Get the user model
