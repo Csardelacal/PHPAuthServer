@@ -13,7 +13,7 @@ namespace mail {
 			//Server settings
 			$this->mailer->isSMTP();							//Send using SMTP
 			$this->mailer->Host			= 'mailhog';			//Set the SMTP server to send through
-			$this->mailer->SMTPAuth		= true; 				//Enable SMTP authentication
+			$this->mailer->SMTPAuth		= false; 				//Enable SMTP authentication
 			$this->mailer->Username		= 'user@example.com';	//SMTP username
 			$this->mailer->Password		= 'secret';				//SMTP password
 			$this->mailer->Port			= 1025;
