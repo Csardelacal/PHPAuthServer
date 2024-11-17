@@ -43,7 +43,6 @@ abstract class BaseController extends Controller
 		#Get the user session, if no session is given - we skip all of the processing
 		#The user could also check the token
 		$s = Session::getInstance();
-		$u = $s->getUser();
 		$t = isset($_GET['token'])? db()->table('token')->get('token', $_GET['token'])->fetch() : null;
 		
 		try {
@@ -62,40 +61,45 @@ abstract class BaseController extends Controller
 		 * This section is basically repeat code from the log-in and registration of the
 		 * user and should be deprecated and subsequently removed.
 		 */
-		if ($u) {
-			$this->session = db()->table('session')
-				->get('_id', SessionModel::TOKEN_PREFIX . Session::sessionId())
-				->first();
+		$this->session = db()->table('session')
+			->get('_id', SessionModel::TOKEN_PREFIX . Session::sessionId())
+			->first();
+		
+		if ($this->session === null) {
+			$this->session = db()->table('session')->newRecord();
+			$this->session->_id = SessionModel::TOKEN_PREFIX . Session::sessionId();
 			
-			if ($this->session === null) {
-				$this->session = db()->table('session')->newRecord();
-				$this->session->_id = SessionModel::TOKEN_PREFIX . Session::sessionId();
-				
-				$this->session->expires = time() + 365 * 86400;
-				
-				/*
-				* Retrieve the IP information from the client. This should allow the
-				* application to provide the user with data where they connected from.
-				*
-				* @todo While Cloudflare is very convenient. It's definitely not a generic
-				* protocol and produces vendor lock-in. This should be replaced with an
-				* interface that allows using a different vendor for location detection.
-				*/
-				$this->session->ip      = bin2hex(inet_pton($_SERVER["HTTP_X_FORWARDED_FOR"]?? $_SERVER["REMOTE_IP"]));
-				$this->session->country = $_SERVER["HTTP_CF_IPCOUNTRY"];
-				$this->session->city    = substr($_SERVER["HTTP_CF_IPCITY"], 0, 20);
-				$this->session->store();
-			}
+			$this->session->expires = time() + 365 * 86400;
 			
-			if ($this->session->expires < time() + 90 * 86400) {
-				$this->session->expires = time() + 365 * 86400;
-				$this->session->store();
-			}
+			/*
+			* Retrieve the IP information from the client. This should allow the
+			* application to provide the user with data where they connected from.
+			*
+			* @todo While Cloudflare is very convenient. It's definitely not a generic
+			* protocol and produces vendor lock-in. This should be replaced with an
+			* interface that allows using a different vendor for location detection.
+			*/
+			$this->session->ip      = bin2hex(inet_pton($_SERVER["HTTP_X_FORWARDED_FOR"]?? $_SERVER["REMOTE_IP"]));
+			$this->session->country = $_SERVER["HTTP_CF_IPCOUNTRY"];
+			$this->session->city    = substr($_SERVER["HTTP_CF_IPCITY"], 0, 20);
+			$this->session->store();
 		}
+		
+		if ($this->session->expires < time()) {
+			$this->session->user = null;
+			$this->session->store();
+		}
+		
+		if ($this->session->expires < time() + 90 * 86400) {
+			$this->session->expires = time() + 365 * 86400;
+			$this->session->store();
+		}
+		
+		$u = $this->session? $this->session->user : null;
 		
 		if ($u || $t) {
 			#Export the user to the controllers that may need it.
-			$user = $u? db()->table('user')->get('_id', $u)->fetch() : $t->user;
+			$user = $u?: $t->user;
 			$this->user  = $user;
 			$this->token = $t;
 			
