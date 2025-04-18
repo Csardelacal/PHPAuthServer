@@ -58,7 +58,7 @@ class Session
 		/* @var $app App */
 		$namespace = ($app->getNameSpace())? $app->getNameSpace() : '*';
 
-		if (!self::sessionId()) { $this->start(); }
+		if (!self::isStarted()) { $this->start(); }
 		$_SESSION[$namespace][$key] = $value;
 
 	}
@@ -68,7 +68,7 @@ class Session
 		$namespace = $app && $app->getNameSpace()? $app->getNameSpace() : '*';
 
 		if (!isset($_COOKIE[session_name()])) { return null; }
-		if (!self::sessionId()) { $this->start(); }
+		if (!self::isStarted()) { $this->start(); }
 		return isset($_SESSION[$namespace][$key])? $_SESSION[$namespace][$key] : null;
 
 	}
@@ -82,6 +82,10 @@ class Session
 
 		$this->set('_SF_Auth', $user, $app);
 
+	}
+	
+	public static function isStarted() {
+		return session_status() !== PHP_SESSION_NONE;
 	}
 
 	public function isSafe(App$app = null) {
@@ -105,7 +109,8 @@ class Session
 	}
 
 	public function start() {
-		if (self::sessionId()) { return; }
+		if (self::isStarted()) { return; }
+		
 		$this->handler->attach();
 		session_start();
 		
@@ -161,15 +166,19 @@ class Session
 		#Get the session_id the system is using.
 		$sid = session_id();
 		
+		if (!session_id()) {
+			$sid = $_COOKIE[session_name()]?? null;
+		}
+		
 		#If the session is valid, we return the ID and we're done.
 		if (!$sid || preg_match('/^[-,a-zA-Z0-9]{1,128}$/', $sid)) {
 			return $sid;
 		}
 		
 		#Otherwise we'll attempt to repair the broken 
-		if (!$allowRegen || !session_regenerate_id()) {
-			throw new \Exception('Session ID ' . ($allowRegen? 'generation' : 'validation') . ' failed');
-		}
+		// if (!$allowRegen || !self::isStarted() || !session_regenerate_id()) {
+		// 	throw new \Exception('Session ID ' . ($allowRegen? 'generation' : 'validation') . ' failed');
+		// }
 		
 		return $sid;
 	}
