@@ -111,6 +111,13 @@ abstract class BaseController extends Controller
 		
 		$this->signature = new \signature\Helper(db());
 		
+		/**
+		 * Application signatures are a legacy feature of PHPAS and are
+		 * deprecated. They are not to be used in future code.
+		 * 
+		 * @deprecated
+		 * @todo Remove
+		 */
 		if (isset($_GET['signature']) && is_string($_GET['signature'])) {
 			list($signature, $src, $target) = $this->signature->verify();
 			
