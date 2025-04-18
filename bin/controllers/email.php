@@ -1,6 +1,8 @@
 <?php
 
 use email\DomainModel;
+use magic3w\phpauth\sdk\JWTRS256Parser;
+use magic3w\phpauth\sdk\KeySet;
 use mail\spam\domain\implementation\SpamDomainModelReader;
 use mail\spam\domain\IP;
 use spitfire\exceptions\HTTPMethodException;
@@ -60,6 +62,32 @@ class EmailController extends BaseController
 		
 		//TODO: Add search by username
 		
+		/**
+		 * @todo Loading the keys from the database seems like a process that
+		 * could be moved into a service.
+		 */
+		$keys = db()->table('key')->getAll()
+			->group()
+				->where('expires', null)
+				->where('expires', '>', time())
+			->endGroup()
+			->all()
+			->extract('public');
+		
+		/**
+		 * @todo The JWT parser should be moved into a service. This is a
+		 * process that is repeated in multiple places and should be
+		 * abstracted away.
+		 */
+		if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+			$parser = new JWTRS256Parser(KeySet::fromArray($keys->toArray()));
+			sscanf($_SERVER['HTTP_AUTHORIZATION'], 'Bearer %s', $jwt);
+			$jwt = $parser->parse($jwt);
+		}
+		else {
+			$jwt = null;
+		}
+		
 		try {
 			#Check if the request is post and subject and body are not empty
 			if (!$this->request->isPost()) { throw new HTTPMethodException(); }
@@ -84,11 +112,25 @@ class EmailController extends BaseController
 			 * right now, it's gonna be invaluable to help determining whether an app
 			 * was compromised and is sending garbage.
 			 */
-			if (!$this->token) { 
-				$app = db()->table('authapp')->get('appID', $_GET['appId'])->addRestriction('appSecret', $_GET['appSecret'])->fetch();
+			if ($jwt) {
+				
+				/**
+				 * If the token is restricted to be used by another application, it
+				 * implies that the application is not okay with it being used by
+				 * another application.
+				 */
+				if ($jwt->claims()->get('aud') !== null) {
+					throw new PublicException('Invalid audience', 401);
+				}
+				
+				if ($jwt->claims()->get('uid') !== null) {
+					throw new PublicException('Email can only be sent using client credentials', 401);
+				}
+				
+				$app = db()->table('authapp')->get('appID', $jwt->claims()->get('for'))->first(true);
 			}
-			else {
-				$app = $this->token->app;
+			else { 
+				$app = db()->table('authapp')->get('appID', $_GET['appId'])->where('appSecret', $_GET['appSecret'])->first(true);
 			}
 
 			if (!$app) { 

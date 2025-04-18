@@ -60,4 +60,15 @@ class KeySet
 		
 		return $_return;
 	}
+	
+	public static function fromArray(array $keys) : KeySet
+	{
+		$_return = new KeySet;
+		$_return->keys = array_map(
+			fn($raw) => InMemory::plainText($raw),
+			$keys
+		);
+		
+		return $_return;
+	}
 }
