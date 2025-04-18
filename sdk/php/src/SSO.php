@@ -207,7 +207,7 @@ class SSO
 	 * @param int|null $audience
 	 * @return Token
 	 */
-	public function credentials(int $audience = null)
+	public function credentials(?int $audience = null)
 	{
 		
 		$post = [
