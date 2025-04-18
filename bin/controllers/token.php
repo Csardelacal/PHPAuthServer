@@ -41,7 +41,7 @@ class TokenController extends BaseController
 			throw new PublicException('No application found', 403);
 		}
 		
-		$token = TokenModel::create($app, $expires);
+		$token = GlobalTokenModel::create($app, $expires);
 		
 		//Send the token to the view so it can render it
 		$this->view->set('token', $token);
