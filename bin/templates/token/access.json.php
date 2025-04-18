@@ -11,11 +11,11 @@ $payload = Array(
 			'token' => (string)$token,
 			'expires' => $token->expires
 		],
-		'refresh' => [
+		'refresh' => $refresh? [
 			'type'  => 'Bearer',
 			'token' => $refresh->token,
 			'expires' => $refresh->expires
-		]
+		] : null
 	],
 	'session' => [
 		'id' => $session?->_id
