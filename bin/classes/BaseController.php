@@ -144,3 +144,4 @@ abstract class BaseController extends Controller
 		$this->view->set('administrativeGroup', $admingroupid);
 	}
 }
+

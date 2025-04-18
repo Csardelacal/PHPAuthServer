@@ -181,7 +181,7 @@ class EmailController extends BaseController
 			throw new PublicException('Unauthorized', 403);
 		}
 		
-		$q = db()->table('email\domain')->getAll();
+		$q = db()->table(email\DomainModel::class)->getAll();
 		
 		$p = new Paginator($q);
 		
@@ -199,7 +199,7 @@ class EmailController extends BaseController
 	public function rule(DomainModel$domain = null) {
 		
 		if ($domain === null) {
-			$domain = db()->table('email\domain')->newRecord();
+			$domain = db()->table(email\DomainModel::class)->newRecord();
 		}
 		
 		try {

@@ -17,7 +17,9 @@
 			"./spitfire/core/functions.php"
 		],
 		"classmap": [
-			"bin",
+			"bin/classes",
+			"bin/controllers",
+			"bin/models",
 			"spitfire"
 		],
 		"psr-4": {

@@ -68,7 +68,7 @@ $autoload->registerLocator(new NamespacedClassLocator('', BASEDIR . '/bin/classe
 
 #Import the locations of the most critical components to Spitfire so it has no
 #need to look for them.
-require_once SPITFIRE_BASEDIR . '/autoload_core_files.php';
+#require_once SPITFIRE_BASEDIR . '/autoload_core_files.php';
 
 #Create the exceptionhandler that will capture errors and try to present useful
 #information to the user.

@@ -42,6 +42,7 @@ class ExceptionHandler {
 	 */
 	public function exceptionHandle (Throwable$e) {
 		
+		trigger_error('Unhandled exception' . $e->getMessage(), E_USER_WARNING);
 		while(ob_get_clean()); //The content generated till now is not valid. DESTROY. DESTROY!
 
 		$response  = new Response(null);

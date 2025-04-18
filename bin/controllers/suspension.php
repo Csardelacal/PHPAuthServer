@@ -106,7 +106,7 @@ class SuspensionController extends BaseController
 		 * In the event of the application using tokens to perform management tasks (like deleting old records
 		 * they created or similar), please consider introducing permissions for applications to the network.
 		 */
-		$refreshTokens = db()->table('access\refresh')->get('owner', $user)->where('expires', '>', time())->all();
+		$refreshTokens = db()->table(access\RefreshModel::class)->get('owner', $user)->where('expires', '>', time())->all();
 
 		foreach ($refreshTokens as $refreshToken) {
 			/*

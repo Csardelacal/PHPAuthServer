@@ -64,9 +64,8 @@ class PruneCommand extends Command
 		
 		$taskFactory = new TaskFactory($client, $queue);
 		
-		
 		# Start pruning access tokens that were expired but never actively terminated
-		db()->table(AccessTokenModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(AccessTokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 1000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateAccessTokenTask::class,
@@ -74,7 +73,7 @@ class PruneCommand extends Command
 			));
 		
 		# Prune refresh tokens that were expired
-		db()->table(RefreshTokenModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(RefreshTokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 1000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateRefreshTokenTask::class,
@@ -82,7 +81,7 @@ class PruneCommand extends Command
 			));
 		
 		# Prune access codes that were expired
-		db()->table(CodeModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(CodeModel::class)->getAll()->where('expires', '<', $limit)->range(0, 5000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateAccessCodeTask::class,
@@ -90,7 +89,7 @@ class PruneCommand extends Command
 			));
 	
 		# Prune sessions that were expired
-		db()->table(SessionModel::class)->getAll()->where('expires', '<', $limit)->all()
+		db()->table(SessionModel::class)->getAll()->where('expires', '<', $limit)->range(0, 5000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateSessionTask::class,
@@ -98,7 +97,7 @@ class PruneCommand extends Command
 			));
 		
 		# Prune legacy tokens that were expired
-		db()->table(TokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 30000)
+		db()->table(TokenModel::class)->getAll()->where('expires', '<', $limit)->range(0, 5000)
 			->each(fn($e) => $taskFactory->defer(
 				$started + rand(0, $interval),
 				IncinerateLegacyTokenTask::class,
@@ -108,7 +107,7 @@ class PruneCommand extends Command
 		# Prune emails that were sent and are now expired
 		# Since emails do not have side effects to their deletion, we can just remove them
 		# TODO: It'd be super cool if this would just delete them 20K instead of pulling them first
-		db()->table('email')->getAll()->where('delivered', '<', $limit - 90 * 86400)->range(0, 20000)
+		db()->table('email')->getAll()->where('delivered', '<', $limit - 90 * 86400)->range(0, 2000)
 			->each(fn($e) => $e->delete());
 			
 		return Command::SUCCESS;

@@ -89,7 +89,7 @@ class EmailModel extends Model
 		$email->delivered = time();
 		$email->store();
 		
-		return true;
+		return $email->_id;
 	}
 
 }

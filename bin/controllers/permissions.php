@@ -55,7 +55,7 @@ class PermissionsController extends BaseController
 			throw new PublicException('This action cannot be performed in token context', 403);
 		}
 		
-		$connections = db()->table('connection\auth')
+		$connections = db()->table(connection\AuthModel::class)
 			->get('target', $app)
 			->where('source', '!=', db()->table('authapp')->get('system', true))
 			->group()->where('user', $this->user)->where('user', null)->endGroup()

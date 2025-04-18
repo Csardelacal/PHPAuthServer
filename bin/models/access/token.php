@@ -98,7 +98,7 @@ class TokenModel extends Model
 			do {
 				$this->token = substr(self::TOKEN_PREFIX . bin2hex(random_bytes(25)), 0, self::TOKEN_LENGTH);
 			}
-			while (db()->table('access\token')->get('token', $this->token)->first());
+			while (db()->table(TokenModel::class)->get('token', $this->token)->first());
 		}
 		
 		/*
@@ -130,7 +130,7 @@ class TokenModel extends Model
 		
 		
 		/*@var $jwt Configuration*/
-		$credential = db()->table('client\credential')
+		$credential = db()->table(client\credentialModel::class)
 			->get('expires', null)
 			->where('client', $this->client)
 			->first(true);

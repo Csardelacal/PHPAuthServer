@@ -249,7 +249,7 @@ class TokenController extends BaseController
 			 * @todo Flag the session as potentially compromised if there was an attempt to use a
 			 * token that was expired (this indicates a potential attack).
 			 */
-			if (!$client_authenticated && $provided->expires < time()) {
+			if ($provided->expires < time()) {
 				throw new PublicException('Refresh token has already expired', 401);
 			}
 			
