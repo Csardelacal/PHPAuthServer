@@ -260,6 +260,8 @@ class UserController extends BaseController
 				 * Create a fresh session whenever a user logs in. Make sure that the session
 				 * does not exist on the database yet.
 				 */
+				$this->session = null;
+				
 				do {
 					session_regenerate_id(true);
 					$found = db()->table('session')->get('_id', SessionModel::TOKEN_PREFIX . session_id())->first();
