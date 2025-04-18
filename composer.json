@@ -29,14 +29,14 @@
 	"autoload-dev": {
 		"psr-4": {
 			"magic3w\\phpauth\\tests\\" : "./tests",
-			"magic3w\\phpauth\\sdk\\" : "./sdk/php"
+			"magic3w\\phpauth\\sdk\\" : "./sdk/php/src"
 		}
 	},
 	
 	"require": {
 		"spitfire/defer": "master",
 		"postal/postal": "^1.0",
-		"lcobucci/jwt": "^5.0",
+		"lcobucci/jwt": "^5.5",
 		"magic3w/url-reflection": "^0.3.0",
 		"andrewbreksa/rsmq": "^2.0",
 		"spitfire/dependency-provider": "^0.2.8",
@@ -44,7 +44,8 @@
 		"spitfire/collection": "^0.2.0",
 		"guzzlehttp/guzzle": "^7.5",
 		"spitfire/kernel": "dev-master",
-		"vlucas/phpdotenv": "^5.5"
+		"vlucas/phpdotenv": "^5.5",
+		"lcobucci/clock": "^3.3"
 	},
 	
 	"require-dev": {
