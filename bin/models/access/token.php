@@ -176,16 +176,24 @@ class TokenModel extends Model
 			->where('expires', '>', time())
 			->first();
 		
-		return $jwt->builder()
+		$builder = $jwt->builder()
 			#->issuedBy($issuer->appID)
 			->withClaim('for', $this->client->appID)
 			#->permittedFor($this->audience->appID)
 			->issuedAt($time->setTimestamp($this->created))
 			->identifiedBy($this->token)
 			->expiresAt($time->setTimestamp($this->expires))
-			->withClaim('uid', $this->owner->_id)
-			->withClaim('restricted', !$this->owner->verified || $suspension)
-			->getToken($jwt->signer(), $jwt->signingKey())
-			->toString();
+			;
+			
+		if ($this->owner !== null) {
+			$builder = $builder
+				->withClaim('uid', $this->owner->_id)
+				->withClaim('restricted', !$this->owner->verified || $suspension);
+		}
+		
+		$token = $builder
+			->getToken($jwt->signer(), $jwt->signingKey());
+		
+		return $token->toString();
 	}
 }
