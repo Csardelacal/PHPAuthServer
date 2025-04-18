@@ -308,7 +308,7 @@
 
 <div class="spacer" style="height: 20px"></div>
 
-<?php $contexts = db()->table('connection\context')->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup()->fetchAll(); ?>
+<?php $contexts = db()->table(connection\ContextModel::class)->get('app', $app)->group()->where('expires', '>', time())->where('expires', null)->endGroup()->fetchAll(); ?>
 <?php foreach ($contexts as $context): ?>
 <div class="row l5 has-dials">
 	<div class="span l4">

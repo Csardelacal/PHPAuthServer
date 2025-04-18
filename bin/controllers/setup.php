@@ -1,5 +1,7 @@
 <?php
 
+use user\GroupModel;
+
 class SetupController extends Controller
 {
 	
@@ -43,7 +45,7 @@ class SetupController extends Controller
 			SysSettingModel::setValue('admin.group', $group->_id);
 			
 			#Add the user to the group
-			$membership = db()->table('user\group')->newRecord();
+			$membership = db()->table(GroupModel::class)->newRecord();
 			$membership->user  = $user;
 			$membership->group = $group;
 			$membership->role  = 'owner';

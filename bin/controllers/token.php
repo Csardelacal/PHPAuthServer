@@ -1,7 +1,11 @@
 <?php
 
+use access\CodeModel;
 use access\RefreshModel;
+use access\TokenModel;
+use client\CredentialModel;
 use spitfire\exceptions\PublicException;
+use TokenModel as GlobalTokenModel;
 
 class TokenController extends BaseController
 {
@@ -81,7 +85,7 @@ class TokenController extends BaseController
 		 * cost in enthropy, it still makes more sense to separate the queries and
 		 * test the result in PHP.
 		 */
-		$credentials = db()->table('client\credential')
+		$credentials = db()->table(CredentialModel::class)
 			->get('secret', $secret)
 			->where('client', $app)
 			->group()->where('expires', null)->where('expires', '>', time())->endGroup()
@@ -122,7 +126,7 @@ class TokenController extends BaseController
 			/*
 			 * Read the code the client sent
 			 */
-			$code = db()->table('access\code')
+			$code = db()->table(CodeModel::class)
 				->get('code', $_POST['code']?? null)
 				->where('expires', '>', time())
 				->first(true);
@@ -156,7 +160,7 @@ class TokenController extends BaseController
 			 * Instance a token that can be sent to the client to provide them access
 			 * to the resources of the owner.
 			 */
-			$token = db()->table('access\token')->newRecord();
+			$token = db()->table(TokenModel::class)->newRecord();
 			$token->session = $code->session;
 			$token->owner   = $code->user;
 			$token->audience = $code->audience;
@@ -169,7 +173,7 @@ class TokenController extends BaseController
 			 */
 			$ttl = ($client_authenticated? RefreshModel::TOKEN_TTL : RefreshModel::TOKEN_TTL_PUBLIC);
 			
-			$refresh = db()->table('access\refresh')->newRecord();
+			$refresh = db()->table(RefreshModel::class)->newRecord();
 			$refresh->session = $code->session;
 			$refresh->owner   = $code->user;
 			$refresh->audience = $code->audience;
@@ -182,7 +186,7 @@ class TokenController extends BaseController
 			 * @todo Remove this code once the legacy systems are finally gone
 			 * @deprecated
 			 */
-			$legacy = db()->table('token')->newRecord();
+			$legacy = db()->table(GlobalTokenModel::class)->newRecord();
 			$legacy->token   = $token->token;
 			$legacy->user    = $token->owner;
 			$legacy->app     = $token->client;
@@ -200,7 +204,7 @@ class TokenController extends BaseController
 			$audience = $_GET['audience']?
 			db()->table(AuthAppModel::class)->get('appID', $_GET['audience'])->first(true) : null;
 			
-			$token = db()->table('access\token')->newRecord();
+			$token = db()->table(TokenModel::class)->newRecord();
 			$token->session  = null;
 			$token->owner    = null;
 			$token->client   = $app;
@@ -232,7 +236,7 @@ class TokenController extends BaseController
 			 *
 			 * @var RefreshModel
 			 */
-			$provided = db()->table('access\refresh')->get('token', $_provided)->first(true);
+			$provided = db()->table(RefreshModel::class)->get('token', $_provided)->first(true);
 			
 			if ($provided->client->appID != $app->appID) {
 				throw new PublicException('Tried refreshing a token owned by a different client', 403);
@@ -265,14 +269,14 @@ class TokenController extends BaseController
 			 * Instance a token that can be sent to the client to provide them access
 			 * to the resources of the owner.
 			 */
-			$token = db()->table('access\token')->newRecord();
+			$token = db()->table(TokenModel::class)->newRecord();
 			$token->session = $provided->session;
 			$token->owner   = $provided->owner;
 			$token->audience = $provided->audience;
 			$token->client  = $provided->client;
 			$token->store();
 			
-			$refresh = db()->table('access\refresh')->newRecord();
+			$refresh = db()->table(RefreshModel::class)->newRecord();
 			$refresh->session = $provided->session;
 			$refresh->owner   = $provided->owner;
 			$refresh->audience = $provided->audience;
@@ -285,7 +289,7 @@ class TokenController extends BaseController
 			 * @todo Remove this code once the legacy systems are finally gone
 			 * @deprecated
 			 */
-			$legacy = db()->table('token')->newRecord();
+			$legacy = db()->table(GlobalTokenModel::class)->newRecord();
 			$legacy->token   = $token->token;
 			$legacy->user    = $token->owner;
 			$legacy->app     = $token->client;
